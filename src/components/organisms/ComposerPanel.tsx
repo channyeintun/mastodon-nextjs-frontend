@@ -3,11 +3,12 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '../atoms/Button';
 import { Card } from '../atoms/Card';
 import { useCurrentAccount } from '@/api/queries';
-import { useCreateStatus } from '@/api/mutations';
+import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
 import { Avatar } from '../atoms/Avatar';
 import { Image, Globe, Lock, Users, Mail, X } from 'lucide-react';
 import type { CreateStatusParams } from '@/types/mastodon';
@@ -23,15 +24,33 @@ const visibilityOptions: Array<{ value: Visibility; label: string; icon: typeof 
   { value: 'direct', label: 'Direct', icon: Mail, description: 'Only mentioned users' },
 ];
 
-export function ComposerPanel() {
+interface ComposerPanelProps {
+  editMode?: boolean;
+  statusId?: string;
+  initialContent?: string;
+  initialSpoilerText?: string;
+  initialVisibility?: Visibility;
+  initialSensitive?: boolean;
+}
+
+export function ComposerPanel({
+  editMode = false,
+  statusId,
+  initialContent = '',
+  initialSpoilerText = '',
+  initialVisibility = 'public',
+  initialSensitive = false,
+}: ComposerPanelProps) {
+  const router = useRouter();
   const { data: currentAccount } = useCurrentAccount();
   const createStatusMutation = useCreateStatus();
+  const updateStatusMutation = useUpdateStatus();
 
-  const [visibility, setVisibility] = useState<Visibility>('public');
+  const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
   const [showVisibilityMenu, setShowVisibilityMenu] = useState(false);
-  const [contentWarning, setContentWarning] = useState('');
-  const [showCWInput, setShowCWInput] = useState(false);
-  const [sensitive, setSensitive] = useState(false);
+  const [contentWarning, setContentWarning] = useState(initialSpoilerText);
+  const [showCWInput, setShowCWInput] = useState(!!initialSpoilerText);
+  const [sensitive, setSensitive] = useState(initialSensitive);
   const [charCount, setCharCount] = useState(0);
 
   const editor = useEditor({
@@ -58,8 +77,21 @@ export function ComposerPanel() {
     },
     immediatelyRender: false,
   });
+
+  // Set initial content in edit mode
+  useEffect(() => {
+    if (editor && editMode && initialContent) {
+      // Strip HTML tags and set plain text content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = initialContent;
+      const plainText = tempDiv.textContent || tempDiv.innerText || '';
+      editor.commands.setContent(plainText);
+    }
+  }, [editor, editMode, initialContent]);
+
   const isOverLimit = charCount > MAX_CHAR_COUNT;
-  const canPost = charCount > 0 && !isOverLimit && !createStatusMutation.isPending;
+  const isPending = editMode ? updateStatusMutation.isPending : createStatusMutation.isPending;
+  const canPost = charCount > 0 && !isOverLimit && !isPending;
 
   const currentVisibility = visibilityOptions.find((v) => v.value === visibility);
   const VisibilityIcon = currentVisibility?.icon || Globe;
@@ -85,16 +117,21 @@ export function ComposerPanel() {
     }
 
     try {
-      await createStatusMutation.mutateAsync(params);
-      editor.commands.clearContent();
-      setCharCount(0);
-      setContentWarning('');
-      setShowCWInput(false);
-      setSensitive(false);
-      // TODO: Show success message or redirect
+      if (editMode && statusId) {
+        // Update existing post
+        await updateStatusMutation.mutateAsync({ id: statusId, params });
+        router.back();
+      } else {
+        // Create new post
+        await createStatusMutation.mutateAsync(params);
+        editor.commands.clearContent();
+        setCharCount(0);
+        setContentWarning('');
+        setShowCWInput(false);
+        setSensitive(false);
+      }
     } catch (error) {
-      // TODO: Show error message
-      console.error('Failed to create post:', error);
+      console.error(`Failed to ${editMode ? 'update' : 'create'} post:`, error);
     }
   };
 
@@ -304,13 +341,13 @@ export function ComposerPanel() {
               {charCount} / {MAX_CHAR_COUNT}
             </div>
 
-            {/* Post button */}
+            {/* Post/Update button */}
             <Button
               onClick={handlePost}
               disabled={!canPost}
-              isLoading={createStatusMutation.isPending}
+              isLoading={isPending}
             >
-              Post
+              {editMode ? 'Update' : 'Post'}
             </Button>
           </div>
         </div>

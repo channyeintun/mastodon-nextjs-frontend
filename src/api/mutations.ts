@@ -80,6 +80,25 @@ export function useDeleteStatus() {
       queryClient.removeQueries({ queryKey: queryKeys.statuses.detail(id) })
       // Invalidate timelines
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+    },
+  })
+}
+
+export function useUpdateStatus() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, params }: { id: string; params: CreateStatusParams }) =>
+      getMastodonClient().updateStatus(id, params),
+    onSuccess: (data, { id }) => {
+      // Update the status in cache
+      queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), data)
+      // Invalidate all caches to refetch updated status
+      queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
     },
   })
 }

@@ -122,6 +122,13 @@ export class MastodonClient {
     })
   }
 
+  async updateStatus(id: string, params: CreateStatusParams): Promise<Status> {
+    return this.request<Status>(`/api/v1/statuses/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(params),
+    })
+  }
+
   async getStatusContext(id: string): Promise<Context> {
     return this.request<Context>(`/api/v1/statuses/${id}/context`)
   }

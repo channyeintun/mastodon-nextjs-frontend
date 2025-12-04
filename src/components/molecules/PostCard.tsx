@@ -1,18 +1,22 @@
 'use client';
 
-import { type CSSProperties } from 'react';
+import { type CSSProperties, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Heart,
   Repeat2,
   MessageCircle,
   Bookmark,
   MoreHorizontal,
-  Share
+  Share,
+  Trash2,
+  Edit2
 } from 'lucide-react';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
 import { IconButton } from '../atoms/IconButton';
+import { Button } from '../atoms/Button';
 import type { Status } from '@/types/mastodon';
 import {
   useFavouriteStatus,
@@ -21,7 +25,9 @@ import {
   useUnreblogStatus,
   useBookmarkStatus,
   useUnbookmarkStatus,
+  useDeleteStatus,
 } from '@/api/mutations';
+import { useCurrentAccount } from '@/api/queries';
 
 interface PostCardProps {
   status: Status;
@@ -43,16 +49,25 @@ function formatRelativeTime(dateString: string): string {
 }
 
 export function PostCard({ status, showThread = false, style }: PostCardProps) {
+  const router = useRouter();
+  const [showMenu, setShowMenu] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const { data: currentAccount } = useCurrentAccount();
   const favouriteMutation = useFavouriteStatus();
   const unfavouriteMutation = useUnfavouriteStatus();
   const reblogMutation = useReblogStatus();
   const unreblogMutation = useUnreblogStatus();
   const bookmarkMutation = useBookmarkStatus();
   const unbookmarkMutation = useUnbookmarkStatus();
+  const deleteStatusMutation = useDeleteStatus();
 
   // Handle reblog (boost) - show the original status
   const displayStatus = status.reblog || status;
   const isReblog = !!status.reblog;
+
+  // Check if this is the current user's post
+  const isOwnPost = currentAccount?.id === displayStatus.account.id;
 
   const handleFavourite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -82,6 +97,21 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
     } else {
       bookmarkMutation.mutate(displayStatus.id);
     }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteStatusMutation.mutateAsync(displayStatus.id);
+      setShowDeleteConfirm(false);
+      setShowMenu(false);
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
+
+  const handleEdit = () => {
+    setShowMenu(false);
+    router.push(`/status/${displayStatus.id}/edit`);
   };
 
   return (
@@ -160,9 +190,110 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
               >
                 {formatRelativeTime(displayStatus.created_at)}
               </Link>
-              <IconButton size="small">
-                <MoreHorizontal size={16} />
-              </IconButton>
+              {isOwnPost && (
+                <div style={{ position: 'relative' }}>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowMenu(!showMenu);
+                    }}
+                  >
+                    <MoreHorizontal size={16} />
+                  </IconButton>
+
+                  {showMenu && (
+                    <>
+                      <div
+                        style={{
+                          position: 'fixed',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          zIndex: 40,
+                        }}
+                        onClick={() => setShowMenu(false)}
+                      />
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '100%',
+                          right: 0,
+                          marginTop: 'var(--size-2)',
+                          background: 'var(--surface-2)',
+                          borderRadius: 'var(--radius-2)',
+                          boxShadow: 'var(--shadow-4)',
+                          padding: 'var(--size-2)',
+                          minWidth: '150px',
+                          zIndex: 50,
+                        }}
+                      >
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleEdit();
+                          }}
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 'var(--size-2)',
+                            padding: 'var(--size-2)',
+                            border: 'none',
+                            background: 'transparent',
+                            borderRadius: 'var(--radius-2)',
+                            cursor: 'pointer',
+                            color: 'var(--text-1)',
+                            fontSize: 'var(--font-size-1)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'var(--surface-3)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          <Edit2 size={16} />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setShowMenu(false);
+                            setShowDeleteConfirm(true);
+                          }}
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 'var(--size-2)',
+                            padding: 'var(--size-2)',
+                            border: 'none',
+                            background: 'transparent',
+                            borderRadius: 'var(--radius-2)',
+                            cursor: 'pointer',
+                            color: 'var(--red-6)',
+                            fontSize: 'var(--font-size-1)',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'var(--red-2)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          <Trash2 size={16} />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -382,6 +513,84 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           </div>
         </div>
       </div>
+
+      {/* Delete confirmation dialog */}
+      {showDeleteConfirm && (
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 100,
+            }}
+            onClick={() => setShowDeleteConfirm(false)}
+          />
+          <div
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              background: 'var(--surface-2)',
+              borderRadius: 'var(--radius-3)',
+              boxShadow: 'var(--shadow-6)',
+              padding: 'var(--size-5)',
+              maxWidth: '400px',
+              width: '90%',
+              zIndex: 101,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{
+              fontSize: 'var(--font-size-3)',
+              fontWeight: 'var(--font-weight-6)',
+              color: 'var(--text-1)',
+              marginBottom: 'var(--size-3)',
+            }}>
+              Delete post?
+            </div>
+            <div style={{
+              fontSize: 'var(--font-size-1)',
+              color: 'var(--text-2)',
+              marginBottom: 'var(--size-5)',
+              lineHeight: '1.5',
+            }}>
+              This action cannot be undone. Your post will be permanently deleted from your profile and the timelines of your followers.
+            </div>
+            <div style={{
+              display: 'flex',
+              gap: 'var(--size-3)',
+              justifyContent: 'flex-end',
+            }}>
+              <Button
+                variant="ghost"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleteStatusMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDelete}
+                disabled={deleteStatusMutation.isPending}
+                isLoading={deleteStatusMutation.isPending}
+                style={{
+                  background: 'var(--red-6)',
+                  color: 'white',
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
     </Card>
   );
 }
