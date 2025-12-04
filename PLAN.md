@@ -30,7 +30,7 @@ A minimal, performant social media frontend for Mastodon with modern React patte
 ### Phase 4: Component Library
 - ✅ Task 10: Build Base UI Atoms
 - ⏳ Task 11: Build Molecules (incremental as features are added)
-- ⏳ Task 12: Setup Tiptap Editor (will do when it comes to article features)
+- ⏳ Task 12: Setup Tiptap Editor
 
 ### Phase 5: Feature Pages
 - ⏳ Task 13: Implement Article List Page (Timeline)

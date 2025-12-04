@@ -256,12 +256,12 @@ Components are organized by complexity:
 - [x] All route pages created
 - [x] TypeScript types ported
 - [x] View Transitions utilities
+- [x] Authentication flow (OAuth) with Next.js
+- [x] Next.js proxy for route protection
+- [x] UI atoms (Button, Input, etc.)
+- [ ] UI molecules (PostCard, UserCard, etc.)[skip - do incrementally]
 
 ### To Be Implemented
-- [ ] Authentication flow (OAuth) with Next.js
-- [ ] Next.js middleware for route protection
-- [ ] UI atoms (Button, Input, etc.)
-- [ ] UI molecules (PostCard, UserCard, etc.)
 - [ ] Tiptap editor setup for compose
 - [ ] Timeline page with infinite scroll (TanStack Virtual)
 - [ ] Compose page with Tiptap
