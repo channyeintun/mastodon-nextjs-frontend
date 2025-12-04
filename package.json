@@ -3,12 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 9003",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 9003"
   },
   "dependencies": {
+    "@tanstack/react-form": "^1.27.0",
+    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-query-devtools": "^5.91.1",
+    "@tanstack/react-virtual": "^3.13.12",
+    "@tiptap/extension-mention": "^3.12.1",
+    "@tiptap/extension-placeholder": "^3.12.1",
+    "@tiptap/react": "^3.12.1",
+    "@tiptap/starter-kit": "^3.12.1",
+    "autoprefixer": "^10.4.22",
+    "lucide-react": "^0.555.0",
+    "mobx": "^6.15.0",
+    "mobx-persist-store": "^1.1.8",
+    "mobx-react-lite": "^4.1.1",
+    "motion": "^12.23.25",
     "next": "16.0.7",
+    "open-props": "^1.7.17",
+    "postcss-import": "^16.1.1",
+    "postcss-nesting": "^13.0.2",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
