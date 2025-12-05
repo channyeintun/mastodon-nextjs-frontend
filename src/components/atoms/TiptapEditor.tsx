@@ -53,11 +53,7 @@ export function TiptapEditor({
         },
         ...(mentionSuggestion && { suggestion: mentionSuggestion }),
       }),
-      Hashtag.configure({
-        HTMLAttributes: {
-          class: 'hashtag',
-        },
-      }),
+      Hashtag,
       CustomEmoji.configure({
         emojis,
         HTMLAttributes: {

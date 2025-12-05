@@ -1,111 +1,58 @@
-import { Mark, mergeAttributes } from '@tiptap/core';
+import { Extension } from '@tiptap/core';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Decoration, DecorationSet } from '@tiptap/pm/view';
 
 export interface HashtagOptions {
   HTMLAttributes: Record<string, any>;
-  onHashtagClick?: (hashtag: string) => void;
 }
 
-declare module '@tiptap/core' {
-  interface Commands<ReturnType> {
-    hashtag: {
-      /**
-       * Set a hashtag mark
-       */
-      setHashtag: () => ReturnType;
-      /**
-       * Toggle a hashtag mark
-       */
-      toggleHashtag: () => ReturnType;
-      /**
-       * Unset a hashtag mark
-       */
-      unsetHashtag: () => ReturnType;
-    };
-  }
-}
-
-export const Hashtag = Mark.create<HashtagOptions>({
+export const Hashtag = Extension.create<HashtagOptions>({
   name: 'hashtag',
-
-  priority: 1000,
 
   addOptions() {
     return {
       HTMLAttributes: {},
-      onHashtagClick: undefined,
     };
   },
 
-  parseHTML() {
+  addProseMirrorPlugins() {
     return [
-      {
-        tag: 'a.hashtag',
-        getAttrs: (node) => {
-          if (typeof node === 'string') return false;
-          const href = (node as HTMLElement).getAttribute('href');
-          const match = href?.match(/\/tags\/(.+)$/);
-          return match ? { hashtag: match[1] } : false;
+      new Plugin({
+        key: new PluginKey('hashtagHighlight'),
+        props: {
+          decorations(state) {
+            const decorations: Decoration[] = [];
+            const doc = state.doc;
+
+            doc.descendants((node, pos) => {
+              if (node.isText) {
+                const text = node.text || '';
+                const regex = /#[a-zA-Z0-9_]+/g;
+                let match;
+
+                // Skip if node has a link mark
+                const hasLinkMark = node.marks && node.marks.some(mark => mark.type.name === 'link');
+                if (hasLinkMark) return;
+
+                while ((match = regex.exec(text)) !== null) {
+                  const startIndex = pos + match.index;
+                  const endIndex = startIndex + match[0].length;
+
+                  const decoration = Decoration.inline(startIndex, endIndex, {
+                    class: 'hashtag',
+                    style: 'color: var(--indigo-6); font-weight: var(--font-weight-6); cursor: pointer;',
+                    'data-hashtag': match[0].substring(1), // Store hashtag without #
+                  });
+                  decorations.push(decoration);
+                }
+              }
+            });
+
+            return DecorationSet.create(state.doc, decorations);
+          },
         },
-      },
-      {
-        tag: 'span[data-type="hashtag"]',
-      },
+      }),
     ];
   },
 
-  addAttributes() {
-    return {
-      hashtag: {
-        default: null,
-        parseHTML: (element) => {
-          return element.getAttribute('data-hashtag');
-        },
-        renderHTML: (attributes) => {
-          if (!attributes.hashtag) {
-            return {};
-          }
-
-          return {
-            'data-hashtag': attributes.hashtag,
-          };
-        },
-      },
-    };
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    return [
-      'span',
-      mergeAttributes(
-        {
-          'data-type': 'hashtag',
-          class: 'hashtag',
-          style: 'color: var(--indigo-6); font-weight: var(--font-weight-6); cursor: pointer;',
-        },
-        this.options.HTMLAttributes,
-        HTMLAttributes
-      ),
-      0,
-    ];
-  },
-
-  addKeyboardShortcuts() {
-    return {
-      Backspace: () => {
-        const { state } = this.editor;
-        const { selection } = state;
-        const { $from } = selection;
-
-        // Check if we're at the start of a hashtag
-        const marks = $from.marks();
-        const hashtagMark = marks.find((mark) => mark.type.name === 'hashtag');
-
-        if (hashtagMark && $from.parentOffset === 0) {
-          return this.editor.commands.unsetHashtag();
-        }
-
-        return false;
-      },
-    };
-  },
 });
