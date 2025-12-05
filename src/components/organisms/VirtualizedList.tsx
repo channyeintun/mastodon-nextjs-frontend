@@ -125,6 +125,8 @@ export function VirtualizedList<T>({
     estimateSize: () => estimateSize,
     overscan,
     lanes: 1,
+    // Provide getItemKey to generate stable keys
+    getItemKey: (index) => getItemKey(items[index], index),
     // Scroll restoration: restore initial offset and measurements
     initialOffset: savedState?.offset,
     initialMeasurementsCache: savedState?.measurements,
@@ -166,6 +168,8 @@ export function VirtualizedList<T>({
       style={{
         height,
         overflow: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        contain: 'strict',
         ...style,
       }}
     >
@@ -196,6 +200,7 @@ export function VirtualizedList<T>({
                   left: 0,
                   width: '100%',
                   transform: `translateY(${virtualItem.start}px)`,
+                  willChange: 'transform',
                 }}
               >
                 {renderItem(item, virtualItem.index)}
