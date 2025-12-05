@@ -591,15 +591,22 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           {/* Poll - hidden if CW active and not revealed */}
           {(!hasContentWarning || showCWContent) && displayStatus.poll && (() => {
             const poll = displayStatus.poll!;
+            // Show voting interface only if authenticated, not expired, and not voted
+            // Note: API returns voted:true for poll creators, so this handles that case
+            const canVote = authStore.isAuthenticated && !poll.expired && !poll.voted;
+
             return (
-              <div style={{
-                marginTop: 'var(--size-3)',
-                padding: 'var(--size-3)',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-2)',
-              }}>
-                {/* Show voting interface if not voted and not expired */}
-                {!poll.voted && !poll.expired ? (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  marginTop: 'var(--size-3)',
+                  padding: 'var(--size-3)',
+                  background: 'var(--surface-3)',
+                  borderRadius: 'var(--radius-2)',
+                }}
+              >
+                {/* Show voting interface if authenticated, not voted and not expired */}
+                {canVote ? (
                   <>
                     {poll.options.map((option, index) => (
                       <label

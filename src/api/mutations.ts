@@ -20,7 +20,7 @@ import {
   votePoll,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { CreateStatusParams, Status, UpdateAccountParams } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll } from '../types/mastodon'
 
 // Helper function to update status in all infinite query caches
 function updateStatusInCaches(
@@ -65,6 +65,103 @@ function updateStatusInCaches(
         ...old,
         pages: old.pages.map((page) =>
           page.map((status) => (status.id === statusId ? updateFn(status) : status))
+        ),
+      }
+    }
+  )
+}
+
+// Helper function to update poll in all statuses that contain it
+function updatePollInCaches(
+  queryClient: QueryClient,
+  pollId: string,
+  updatedPoll: Poll
+) {
+  // Update timelines
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: queryKeys.timelines.all },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) =>
+            status.poll?.id === pollId
+              ? { ...status, poll: updatedPoll }
+              : status
+          )
+        ),
+      }
+    }
+  )
+
+  // Update bookmarks
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: queryKeys.bookmarks.all() },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) =>
+            status.poll?.id === pollId
+              ? { ...status, poll: updatedPoll }
+              : status
+          )
+        ),
+      }
+    }
+  )
+
+  // Update account statuses
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: ['accounts'] },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) =>
+            status.poll?.id === pollId
+              ? { ...status, poll: updatedPoll }
+              : status
+          )
+        ),
+      }
+    }
+  )
+
+  // Update hashtag timelines
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: ['timelines', 'hashtag'] },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) =>
+            status.poll?.id === pollId
+              ? { ...status, poll: updatedPoll }
+              : status
+          )
+        ),
+      }
+    }
+  )
+
+  // Update trending statuses
+  queryClient.setQueriesData<InfiniteData<Status[]>>(
+    { queryKey: queryKeys.trends.statuses() },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) =>
+          page.map((status) =>
+            status.poll?.id === pollId
+              ? { ...status, poll: updatedPoll }
+              : status
+          )
         ),
       }
     }
@@ -406,21 +503,25 @@ export function useVotePoll() {
   return useMutation({
     mutationFn: ({ pollId, choices }: { pollId: string; choices: number[] }) =>
       votePoll(pollId, choices),
+    onMutate: async ({ pollId, choices }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.timelines.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.bookmarks.all() })
+
+      // Store previous state for rollback on error
+      return { pollId, choices }
+    },
     onSuccess: (updatedPoll, { pollId }) => {
       // Update the poll in all cached statuses that contain it
-      updateStatusInCaches(queryClient, pollId, (status) => {
-        if (status.poll?.id === pollId) {
-          return {
-            ...status,
-            poll: updatedPoll,
-          }
-        }
-        return status
-      })
-
-      // Invalidate all relevant queries to ensure consistency
+      updatePollInCaches(queryClient, pollId, updatedPoll)
+    },
+    onError: (_error, { pollId }) => {
+      // Invalidate all relevant queries to refetch on error
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      queryClient.invalidateQueries({ queryKey: ['timelines', 'hashtag'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.trends.statuses() })
     },
   })
 }

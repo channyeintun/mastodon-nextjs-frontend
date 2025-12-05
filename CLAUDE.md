@@ -444,11 +444,13 @@ The application uses two complementary approaches for rendering post content:
 - **Two modes in PostCard**:
   1. **Voting mode** (not voted & not expired): Shows radio/checkbox inputs, Vote button
   2. **Results mode** (voted or expired): Shows percentage bars, vote counts, own votes highlighted
+- **Vote detection**: Checks `poll.voted` flag (API returns `voted: true` for poll creators to prevent self-voting)
 - **Poll creation in ComposerPanel**:
   - PollComposer component with add/remove options
   - Configurable as single or multiple choice
   - Expiration time selector (30 mins to 7 days)
-- **API integration**: `getPoll()`, `votePoll()` with optimistic cache updates
+- **API integration**: `votePoll(pollId, choices)` with cache updates via `updatePollInCaches()` helper
+- **Authentication guard**: Vote button redirects to sign-in if not authenticated
 
 ### Emoji System
 - **emoji-mart library**: Professional picker with full Unicode database
