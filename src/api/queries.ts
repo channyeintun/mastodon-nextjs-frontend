@@ -24,6 +24,7 @@ import {
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status } from '../types/mastodon'
+import { useAuthStore } from '../hooks/useStores'
 
 // Timelines
 export function useHomeTimeline(params?: TimelineParams) {
@@ -110,9 +111,12 @@ export function useLookupAccount(acct: string) {
 }
 
 export function useCurrentAccount() {
+  const authStore = useAuthStore()
+
   return useQuery({
     queryKey: queryKeys.accounts.current(),
     queryFn: () => verifyCredentials(),
+    enabled: authStore.isAuthenticated,
   })
 }
 

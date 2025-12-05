@@ -58,6 +58,23 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
+      // Handle 401 Unauthorized errors
+      if (error.response.status === 401) {
+        const requestUrl = error.config?.url || ''
+        // Don't show modal for sign-in related endpoints
+        const isSignInRequest = requestUrl.includes('/oauth/token') || requestUrl.includes('/api/v1/apps')
+
+        if (!isSignInRequest) {
+          // Emit auth event to show modal
+          if (typeof window !== 'undefined') {
+            // Import dynamically to avoid issues during SSR
+            import('../lib/authEvents').then(({ authEvents }) => {
+              authEvents.emit()
+            })
+          }
+        }
+      }
+
       const errorMessage = error.response.data?.error || `HTTP ${error.response.status}`
       throw new Error(errorMessage)
     }

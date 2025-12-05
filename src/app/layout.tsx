@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorationProvider";
+import { AuthModal } from "@/components/molecules";
 import Header from "@/components/organisms/Header";
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export default async function RootLayout({
             <ScrollRestorationProvider />
             <Header />
             {children}
+            <AuthModal />
           </StoreProvider>
         </QueryProvider>
       </body>
