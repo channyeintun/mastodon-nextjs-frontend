@@ -4,7 +4,21 @@
  */
 
 import { useMutation, useQueryClient, type QueryClient, type InfiniteData } from '@tanstack/react-query'
-import { getMastodonClient } from './client'
+import {
+  createStatus,
+  deleteStatus,
+  updateStatus,
+  favouriteStatus,
+  unfavouriteStatus,
+  reblogStatus,
+  unreblogStatus,
+  bookmarkStatus,
+  unbookmarkStatus,
+  followAccount,
+  unfollowAccount,
+  updateCredentials,
+  votePoll,
+} from './client'
 import { queryKeys } from './queryKeys'
 import type { CreateStatusParams, Status, UpdateAccountParams } from '../types/mastodon'
 
@@ -62,7 +76,7 @@ export function useCreateStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (params: CreateStatusParams) => getMastodonClient().createStatus(params),
+    mutationFn: (params: CreateStatusParams) => createStatus(params),
     onSuccess: () => {
       // Invalidate home timeline to fetch new post
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.home() })
@@ -74,7 +88,7 @@ export function useDeleteStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().deleteStatus(id),
+    mutationFn: (id: string) => deleteStatus(id),
     onSuccess: (_data, id) => {
       // Remove from cache
       queryClient.removeQueries({ queryKey: queryKeys.statuses.detail(id) })
@@ -91,7 +105,7 @@ export function useUpdateStatus() {
 
   return useMutation({
     mutationFn: ({ id, params }: { id: string; params: CreateStatusParams }) =>
-      getMastodonClient().updateStatus(id, params),
+      updateStatus(id, params),
     onSuccess: (data, { id }) => {
       // Update the status in cache
       queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), data)
@@ -107,7 +121,7 @@ export function useFavouriteStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().favouriteStatus(id),
+    mutationFn: (id: string) => favouriteStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
@@ -148,7 +162,7 @@ export function useUnfavouriteStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().unfavouriteStatus(id),
+    mutationFn: (id: string) => unfavouriteStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
@@ -188,7 +202,7 @@ export function useReblogStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().reblogStatus(id),
+    mutationFn: (id: string) => reblogStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
@@ -228,7 +242,7 @@ export function useUnreblogStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().unreblogStatus(id),
+    mutationFn: (id: string) => unreblogStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
@@ -268,7 +282,7 @@ export function useBookmarkStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().bookmarkStatus(id),
+    mutationFn: (id: string) => bookmarkStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
@@ -307,7 +321,7 @@ export function useUnbookmarkStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().unbookmarkStatus(id),
+    mutationFn: (id: string) => unbookmarkStatus(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
 
@@ -347,7 +361,7 @@ export function useFollowAccount() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().followAccount(id),
+    mutationFn: (id: string) => followAccount(id),
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       queryClient.invalidateQueries({
@@ -361,7 +375,7 @@ export function useUnfollowAccount() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => getMastodonClient().unfollowAccount(id),
+    mutationFn: (id: string) => unfollowAccount(id),
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       queryClient.invalidateQueries({
@@ -375,7 +389,7 @@ export function useUpdateAccount() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (params: UpdateAccountParams) => getMastodonClient().updateCredentials(params),
+    mutationFn: (params: UpdateAccountParams) => updateCredentials(params),
     onSuccess: (data) => {
       // Update current account in cache
       queryClient.setQueryData(queryKeys.accounts.current(), data)
@@ -391,7 +405,7 @@ export function useVotePoll() {
 
   return useMutation({
     mutationFn: ({ pollId, choices }: { pollId: string; choices: number[] }) =>
-      getMastodonClient().votePoll(pollId, choices),
+      votePoll(pollId, choices),
     onSuccess: (updatedPoll, { pollId }) => {
       // Update the poll in all cached statuses that contain it
       updateStatusInCaches(queryClient, pollId, (status) => {

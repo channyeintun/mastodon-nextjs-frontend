@@ -3,15 +3,33 @@
  */
 
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
-import { getMastodonClient, MastodonClient } from './client'
+import {
+  getHomeTimeline,
+  getPublicTimeline,
+  getHashtagTimeline,
+  getStatus,
+  getStatusContext,
+  getAccount,
+  lookupAccount,
+  verifyCredentials,
+  getAccountStatuses,
+  getFollowers,
+  getFollowing,
+  getRelationships,
+  getBookmarks,
+  search,
+  getCustomEmojis,
+  getTrendingStatuses,
+  createCustomClient,
+} from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status } from '../types/mastodon'
 
 // Timelines
 export function useHomeTimeline(params?: TimelineParams) {
   return useQuery({
     queryKey: queryKeys.timelines.home(params),
-    queryFn: () => getMastodonClient().getHomeTimeline(params),
+    queryFn: () => getHomeTimeline(params),
   })
 }
 
@@ -21,7 +39,7 @@ export function useInfiniteHomeTimeline() {
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getMastodonClient().getHomeTimeline(params)
+      return getHomeTimeline(params)
     },
     getNextPageParam: (lastPage) => {
       // Stop fetching if page is empty or has fewer items than requested (last page)
@@ -35,7 +53,7 @@ export function useInfiniteHomeTimeline() {
 export function usePublicTimeline(params?: TimelineParams) {
   return useQuery({
     queryKey: queryKeys.timelines.public(params),
-    queryFn: () => getMastodonClient().getPublicTimeline(params),
+    queryFn: () => getPublicTimeline(params),
   })
 }
 
@@ -45,7 +63,7 @@ export function useInfiniteHashtagTimeline(hashtag: string) {
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getMastodonClient().getHashtagTimeline(hashtag, params)
+      return getHashtagTimeline(hashtag, params)
     },
     getNextPageParam: (lastPage) => {
       // Stop fetching if page is empty or has fewer items than requested (last page)
@@ -61,7 +79,7 @@ export function useInfiniteHashtagTimeline(hashtag: string) {
 export function useStatus(id: string) {
   return useQuery({
     queryKey: queryKeys.statuses.detail(id),
-    queryFn: () => getMastodonClient().getStatus(id),
+    queryFn: () => getStatus(id),
     enabled: !!id,
   })
 }
@@ -69,7 +87,7 @@ export function useStatus(id: string) {
 export function useStatusContext(id: string) {
   return useQuery({
     queryKey: queryKeys.statuses.context(id),
-    queryFn: () => getMastodonClient().getStatusContext(id),
+    queryFn: () => getStatusContext(id),
     enabled: !!id,
   })
 }
@@ -78,7 +96,7 @@ export function useStatusContext(id: string) {
 export function useAccount(id: string) {
   return useQuery({
     queryKey: queryKeys.accounts.detail(id),
-    queryFn: () => getMastodonClient().getAccount(id),
+    queryFn: () => getAccount(id),
     enabled: !!id,
   })
 }
@@ -86,7 +104,7 @@ export function useAccount(id: string) {
 export function useLookupAccount(acct: string) {
   return useQuery({
     queryKey: queryKeys.accounts.lookup(acct),
-    queryFn: () => getMastodonClient().lookupAccount(acct),
+    queryFn: () => lookupAccount(acct),
     enabled: !!acct,
   })
 }
@@ -94,14 +112,14 @@ export function useLookupAccount(acct: string) {
 export function useCurrentAccount() {
   return useQuery({
     queryKey: queryKeys.accounts.current(),
-    queryFn: () => getMastodonClient().verifyCredentials(),
+    queryFn: () => verifyCredentials(),
   })
 }
 
 export function useAccountStatuses(id: string, params?: TimelineParams) {
   return useQuery({
     queryKey: queryKeys.accounts.statuses(id, params),
-    queryFn: () => getMastodonClient().getAccountStatuses(id, params),
+    queryFn: () => getAccountStatuses(id, params),
     enabled: !!id,
   })
 }
@@ -112,7 +130,7 @@ export function useInfiniteAccountStatuses(id: string) {
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getMastodonClient().getAccountStatuses(id, params)
+      return getAccountStatuses(id, params)
     },
     getNextPageParam: (lastPage) => {
       // Stop fetching if page is empty or has fewer items than requested (last page)
@@ -127,7 +145,7 @@ export function useInfiniteAccountStatuses(id: string) {
 export function useFollowers(id: string) {
   return useQuery({
     queryKey: queryKeys.accounts.followers(id),
-    queryFn: () => getMastodonClient().getFollowers(id),
+    queryFn: () => getFollowers(id),
     enabled: !!id,
   })
 }
@@ -135,7 +153,7 @@ export function useFollowers(id: string) {
 export function useFollowing(id: string) {
   return useQuery({
     queryKey: queryKeys.accounts.following(id),
-    queryFn: () => getMastodonClient().getFollowing(id),
+    queryFn: () => getFollowing(id),
     enabled: !!id,
   })
 }
@@ -143,7 +161,7 @@ export function useFollowing(id: string) {
 export function useRelationships(ids: string[]) {
   return useQuery({
     queryKey: queryKeys.accounts.relationships(ids),
-    queryFn: () => getMastodonClient().getRelationships(ids),
+    queryFn: () => getRelationships(ids),
     enabled: ids.length > 0,
   })
 }
@@ -152,7 +170,7 @@ export function useRelationships(ids: string[]) {
 export function useBookmarks(params?: TimelineParams) {
   return useQuery({
     queryKey: queryKeys.bookmarks.all(params),
-    queryFn: () => getMastodonClient().getBookmarks(params),
+    queryFn: () => getBookmarks(params),
   })
 }
 
@@ -162,7 +180,7 @@ export function useInfiniteBookmarks() {
     queryFn: ({ pageParam }) => {
       const params: TimelineParams = { limit: 20 }
       if (pageParam) params.max_id = pageParam
-      return getMastodonClient().getBookmarks(params)
+      return getBookmarks(params)
     },
     getNextPageParam: (lastPage) => {
       // Stop fetching if page is empty or has fewer items than requested (last page)
@@ -177,7 +195,7 @@ export function useInfiniteBookmarks() {
 export function useSearch(params: SearchParams) {
   return useQuery({
     queryKey: queryKeys.search.all(params.q, params.type),
-    queryFn: () => getMastodonClient().search(params),
+    queryFn: () => search(params),
     enabled: !!params.q && params.q.trim().length > 0,
   })
 }
@@ -186,7 +204,7 @@ export function useSearch(params: SearchParams) {
 export function useCustomEmojis() {
   return useQuery({
     queryKey: ['customEmojis'],
-    queryFn: () => getMastodonClient().getCustomEmojis(),
+    queryFn: () => getCustomEmojis(),
     staleTime: 1000 * 60 * 60, // Cache for 1 hour
   })
 }
@@ -195,11 +213,12 @@ export function useCustomEmojis() {
 export function useInfiniteTrendingStatuses() {
   return useInfiniteQuery({
     queryKey: queryKeys.trends.statuses(),
-    queryFn: ({ pageParam }) => {
+    queryFn: async ({ pageParam }) => {
       // Use mastodon.social for trending statuses (public API, no auth required)
-      const trendingClient = new MastodonClient('https://mastodon.social')
+      const trendingClient = createCustomClient('https://mastodon.social')
       const params = { limit: 20, offset: pageParam }
-      return trendingClient.getTrendingStatuses(params)
+      const { data } = await trendingClient.get<Status[]>('/api/v1/trends/statuses', { params })
+      return data
     },
     getNextPageParam: (lastPage, allPages) => {
       // Stop fetching if page is empty or has fewer items than requested (last page)

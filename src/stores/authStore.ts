@@ -6,7 +6,6 @@
 
 import { makeAutoObservable } from 'mobx'
 import Cookies from 'js-cookie'
-import { initMastodonClient } from '@/api/client'
 
 export interface AuthState {
   instanceURL: string | null
@@ -44,14 +43,6 @@ export class AuthStore {
     }
 
     makeAutoObservable(this)
-
-    // Initialize Mastodon client if we have instance URL
-    if (this.instanceURL && typeof window !== 'undefined') {
-      const client = initMastodonClient(this.instanceURL)
-      if (this.accessToken) {
-        client.setAccessToken(this.accessToken)
-      }
-    }
   }
 
   get isAuthenticated(): boolean {
@@ -62,11 +53,6 @@ export class AuthStore {
     this.instanceURL = url.replace(/\/$/, '') // Remove trailing slash
     if (typeof window !== 'undefined') {
       Cookies.set('instanceURL', this.instanceURL, COOKIE_OPTIONS)
-      // Initialize client with new instance URL
-      const client = initMastodonClient(this.instanceURL)
-      if (this.accessToken) {
-        client.setAccessToken(this.accessToken)
-      }
     }
   }
 
@@ -83,12 +69,6 @@ export class AuthStore {
       Cookies.set('accessToken', accessToken, COOKIE_OPTIONS)
       Cookies.set('clientId', clientId, COOKIE_OPTIONS)
       Cookies.set('clientSecret', clientSecret, COOKIE_OPTIONS)
-
-      // Update client with access token
-      if (this.instanceURL) {
-        const client = initMastodonClient(this.instanceURL)
-        client.setAccessToken(accessToken)
-      }
     }
   }
 
@@ -96,12 +76,6 @@ export class AuthStore {
     this.accessToken = token
     if (typeof window !== 'undefined') {
       Cookies.set('accessToken', token, COOKIE_OPTIONS)
-
-      // Update client with access token
-      if (this.instanceURL) {
-        const client = initMastodonClient(this.instanceURL)
-        client.setAccessToken(token)
-      }
     }
   }
 

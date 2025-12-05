@@ -3,7 +3,7 @@ import tippy, { Instance as TippyInstance } from 'tippy.js';
 import { SuggestionOptions, SuggestionProps } from '@tiptap/suggestion';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import type { Account } from '@/types/mastodon';
-import { getMastodonClient } from '@/api/client';
+import { search } from '@/api/client';
 import { Avatar } from '@/components/atoms/Avatar';
 import { EmojiText } from '@/components/atoms/EmojiText';
 
@@ -135,8 +135,7 @@ export const createMentionSuggestion = (): Omit<SuggestionOptions, 'editor'> => 
     }
 
     try {
-      const client = getMastodonClient();
-      const results = await client.search({ q: query, type: 'accounts', limit: 5 });
+      const results = await search({ q: query, type: 'accounts', limit: 5 });
       return results.accounts;
     } catch (error) {
       console.error('Failed to search accounts:', error);

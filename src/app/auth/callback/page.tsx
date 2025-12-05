@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { MastodonClient } from '@/api/client';
+import axios from 'axios';
 import { useAuthStore } from '@/hooks/useStores';
 import { getRedirectURI } from '@/utils/oauth';
 
@@ -27,22 +27,28 @@ function CallbackContent() {
           throw new Error('Missing authentication data. Please try signing in again.');
         }
 
-        // Create API client
-        const client = new MastodonClient(instanceURL);
+        // Create axios client for token exchange
+        const instanceClient = axios.create({
+          baseURL: instanceURL.replace(/\/$/, ''),
+        });
 
         // Exchange code for access token
-        const token = await client.getToken(
-          clientId,
-          clientSecret,
+        const formData = new URLSearchParams({
+          grant_type: 'authorization_code',
           code,
-          getRedirectURI()
-        );
+          client_id: clientId,
+          client_secret: clientSecret,
+          redirect_uri: getRedirectURI(),
+        });
+
+        const { data: token } = await instanceClient.post('/oauth/token', formData.toString(), {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        });
 
         // Store access token
         authStore.setAccessToken(token.access_token);
-
-        // Set token in client
-        client.setAccessToken(token.access_token);
 
         // Redirect to home page
         router.push('/');

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MastodonClient } from '@/api/client';
+import axios from 'axios';
 import { useAuthStore } from '@/hooks/useStores';
 import {
   normalizeInstanceURL,
@@ -27,11 +27,16 @@ export default function SignInPage() {
       const normalizedURL = normalizeInstanceURL(instanceURL);
       authStore.setInstance(normalizedURL);
 
-      // Create API client
-      const client = new MastodonClient(normalizedURL);
+      // Create axios client for this specific instance
+      const instanceClient = axios.create({
+        baseURL: normalizedURL.replace(/\/$/, ''),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       // Create OAuth app
-      const app = await client.createApp({
+      const { data: app } = await instanceClient.post('/api/v1/apps', {
         client_name: getAppName(),
         redirect_uris: getRedirectURI(),
         scopes: getScopes(),

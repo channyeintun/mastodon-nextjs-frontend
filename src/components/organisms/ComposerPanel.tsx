@@ -13,7 +13,7 @@ import { PollComposer, type PollData } from '../molecules/PollComposer';
 import { EmojiPicker } from './EmojiPicker';
 import { TiptapEditor } from '../atoms/TiptapEditor';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
-import { getMastodonClient } from '@/api/client';
+import { uploadMedia, updateMedia } from '@/api/client';
 import { Globe, Lock, Users, Mail, X, Smile } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types/mastodon';
 
@@ -78,7 +78,7 @@ export function ComposerPanel({
   const handleMediaAdd = async (file: File) => {
     setIsUploadingMedia(true);
     try {
-      const attachment = await getMastodonClient().uploadMedia(file);
+      const attachment = await uploadMedia(file);
       setMedia((prev) => [...prev, attachment]);
     } catch (error) {
       console.error('Failed to upload media:', error);
@@ -93,7 +93,7 @@ export function ComposerPanel({
 
   const handleAltTextChange = async (id: string, altText: string) => {
     try {
-      const updated = await getMastodonClient().updateMedia(id, altText);
+      const updated = await updateMedia(id, altText);
       setMedia((prev) => prev.map((m) => (m.id === id ? updated : m)));
     } catch (error) {
       console.error('Failed to update alt text:', error);
