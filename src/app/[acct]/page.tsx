@@ -1,17 +1,19 @@
 'use client';
 
-import { use, useRef, useEffect } from 'react';
+import { use } from 'react';
 import Link from 'next/link';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
 import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount } from '@/api/queries';
 import { useFollowAccount, useUnfollowAccount } from '@/api/mutations';
 import { PostCard } from '@/components/molecules/PostCard';
+import { VirtualizedList } from '@/components/organisms/VirtualizedList';
+import { PostCardSkeletonList, PostCardSkeleton } from '@/components/atoms/PostCardSkeleton';
 import { Avatar } from '@/components/atoms/Avatar';
 import { Button } from '@/components/atoms/Button';
 import { Spinner } from '@/components/atoms/Spinner';
 import { IconButton } from '@/components/atoms/IconButton';
 import { EmojiText } from '@/components/atoms/EmojiText';
+import type { Status } from '@/types/mastodon';
 
 export default function AccountPage({
   params,
@@ -58,43 +60,12 @@ export default function AccountPage({
   const followMutation = useFollowAccount();
   const unfollowMutation = useUnfollowAccount();
 
-  const parentRef = useRef<HTMLDivElement>(null);
-
   const allStatuses = statusPages?.pages.flatMap((page) => page) ?? [];
 
   // Deduplicate statuses by ID (handles pagination overlaps)
   const uniqueStatuses = Array.from(
     new Map(allStatuses.map((status) => [status.id, status])).values()
   );
-
-  const virtualizer = useVirtualizer({
-    count: uniqueStatuses.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 300,
-    overscan: 5,
-    lanes: 1,
-  });
-
-  // Remeasure when uniqueStatuses changes (items added/deleted)
-  useEffect(() => {
-    virtualizer.measure();
-  }, [uniqueStatuses.length, virtualizer]);
-
-  const virtualItems = virtualizer.getVirtualItems();
-
-  useEffect(() => {
-    const [lastItem] = [...virtualItems].reverse();
-
-    if (!lastItem) return;
-
-    if (
-      lastItem.index >= uniqueStatuses.length - 1 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
-      fetchNextPage();
-    }
-  }, [hasNextPage, fetchNextPage, uniqueStatuses.length, isFetchingNextPage, virtualItems]);
 
   const handleFollowToggle = () => {
     if (!accountId) return;
@@ -341,68 +312,34 @@ export default function AccountPage({
         </h3>
 
         {statusesLoading && uniqueStatuses.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 'var(--size-8)' }}>
-            <Spinner />
-          </div>
-        ) : uniqueStatuses.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-            No posts yet
-          </div>
+          <PostCardSkeletonList count={3} />
         ) : (
-          <div
-            ref={parentRef}
-            style={{
-              height: 'calc(100vh - 600px)',
-              minHeight: '400px',
-              overflow: 'auto',
-              contain: 'strict',
-            }}
-          >
-            <div
-              style={{
-                height: `${virtualizer.getTotalSize()}px`,
-                width: '100%',
-                position: 'relative',
-              }}
-            >
-              {virtualItems.map((virtualItem) => {
-                const status = uniqueStatuses[virtualItem.index];
-                return (
-                  <div
-                    key={status.id}
-                    data-index={virtualItem.index}
-                    ref={virtualizer.measureElement}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      transform: `translateY(${virtualItem.start}px)`,
-                    }}
-                  >
-                    <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
-                  </div>
-                );
-              })}
-            </div>
-
-            {isFetchingNextPage && (
-              <div style={{ textAlign: 'center', padding: 'var(--size-4)' }}>
-                <Spinner />
-              </div>
+          <VirtualizedList<Status>
+            items={uniqueStatuses}
+            renderItem={(status) => (
+              <PostCard
+                status={status}
+                style={{ marginBottom: 'var(--size-3)' }}
+              />
             )}
-
-            {!hasNextPage && uniqueStatuses.length > 0 && (
-              <div style={{
-                textAlign: 'center',
-                padding: 'var(--size-6)',
-                color: 'var(--text-2)',
-                fontSize: 'var(--font-size-1)',
-              }}>
-                No more posts
+            getItemKey={(status) => status.id}
+            estimateSize={300}
+            overscan={5}
+            onLoadMore={fetchNextPage}
+            isLoadingMore={isFetchingNextPage}
+            hasMore={hasNextPage}
+            loadMoreThreshold={1}
+            height="calc(100vh - 600px)"
+            style={{ minHeight: '400px' }}
+            scrollRestorationKey={`account-${acct}`}
+            loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+            endIndicator="No more posts"
+            emptyState={
+              <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
+                No posts yet
               </div>
-            )}
-          </div>
+            }
+          />
         )}
       </div>
     </div>

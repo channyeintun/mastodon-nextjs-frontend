@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
+import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorationProvider";
 import Header from "@/components/organisms/Header";
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default async function RootLayout({
       <body>
         <QueryProvider>
           <StoreProvider initialState={initialState}>
+            <ScrollRestorationProvider />
             <Header />
             {children}
           </StoreProvider>
