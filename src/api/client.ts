@@ -290,7 +290,11 @@ export class MastodonClient {
 
   // Search
   async search(params: SearchParams): Promise<SearchResults> {
-    const query = new URLSearchParams(params as any).toString()
+    // Filter out undefined values to avoid "type=undefined" in query string
+    const filteredParams = Object.fromEntries(
+      Object.entries(params).filter(([_, value]) => value !== undefined)
+    )
+    const query = new URLSearchParams(filteredParams as any).toString()
     return this.request<SearchResults>(`/api/v2/search?${query}`)
   }
 

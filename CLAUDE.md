@@ -357,6 +357,7 @@ const uniqueStatuses = Array.from(
 - **URL Pattern**: `/@username` or `/@username@domain.com` (requires @ prefix)
 - **Implementation**:
   - Route folder: `/app/[acct]`
+  - URL decoding: `decodeURIComponent()` to handle `@` → `%40` encoding
   - Parameter validation: Checks if `acct` starts with `@`, throws error if not (shows 404)
   - Handle extraction: Strips @ prefix, uses result for API lookup
   - API: `lookupAccount(acct)` endpoint (`/api/v1/accounts/lookup?acct=username`)
@@ -368,6 +369,18 @@ const uniqueStatuses = Array.from(
   - Cleaner URLs (no `/accounts` prefix)
   - Consistent with social media conventions
   - Supports both local (`/@user`) and remote (`/@user@instance`) handles
+
+### Search Query Parameter Handling
+- **Issue**: `URLSearchParams` converts `undefined` values to literal string `"undefined"`
+- **Example**: `{ q: 'test', type: undefined }` → `"?q=test&type=undefined"`
+- **Solution**: Filter out undefined values before creating URLSearchParams
+```typescript
+const filteredParams = Object.fromEntries(
+  Object.entries(params).filter(([_, value]) => value !== undefined)
+)
+const query = new URLSearchParams(filteredParams).toString()
+```
+- **Result**: When searching with "all" tab, URL becomes `?q=test` instead of `?q=test&type=undefined`
 
 ## Development Workflow
 
