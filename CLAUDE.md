@@ -470,6 +470,24 @@ const uniqueStatuses = Array.from(
 ```
 - Applied to: Home timeline, Bookmarks, Account pages
 
+### Infinite Scroll Pagination
+- **Problem**: Infinite queries would continue fetching indefinitely when reaching the end
+- **Root Cause**: The `getNextPageParam` only checked for empty pages (`length === 0`), but the API may return fewer items than requested on the last page
+- **Solution**: Check if page length is less than the requested limit (20 items):
+```typescript
+getNextPageParam: (lastPage) => {
+  // Stop fetching if page is empty or has fewer items than requested (last page)
+  if (lastPage.length === 0 || lastPage.length < 20) return undefined
+  return lastPage[lastPage.length - 1]?.id
+}
+```
+- **Applied to**: All infinite queries
+  - `useInfiniteHomeTimeline` - Home timeline pagination
+  - `useInfiniteBookmarks` - Bookmarks pagination
+  - `useInfiniteAccountStatuses` - Account posts pagination
+  - `useInfiniteHashtagTimeline` - Hashtag feed pagination
+- **Result**: Properly detects the last page and stops fetching, preventing infinite requests
+
 ### TypeScript Strict Mode Fixes
 - Motion library incompatible with DOM element animation types
 - Replaced with CSS transitions and keyframe animations
