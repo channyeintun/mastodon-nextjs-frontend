@@ -227,10 +227,11 @@ Components are organized by complexity:
 - Consistent query key structure via factory
 
 ### Styling Approach
-- **Open Props**: CSS design tokens for consistent design
+- **Open Props**: CSS design tokens for consistent design ([Documentation](https://open-props.style/) | [DeepWiki Reference](https://deepwiki.com/argyleink/open-props))
 - **PostCSS**: Nesting, imports, autoprefixing
 - **No Tailwind**: Custom CSS with Open Props variables
 - **View Transitions**: Native browser animations
+- **CSS animations**: Using CSS keyframes and transitions (Motion library removed due to TypeScript compatibility issues in strict mode)
 - **CSS Modules**: Available for component-scoped styles (use `*.module.css`)
 
 ## Authentication Flow
@@ -249,7 +250,7 @@ Components are organized by complexity:
 - [x] Next.js 16 project with App Router
 - [x] TanStack Query with provider
 - [x] MobX stores ported from TanStack Start
-- [x] PostCSS with Open Props
+- [x] PostCSS with Open Props (with documentation references)
 - [x] Atomic component architecture folders
 - [x] React Compiler enabled
 - [x] Mastodon API client ported
@@ -258,26 +259,85 @@ Components are organized by complexity:
 - [x] View Transitions utilities
 - [x] Authentication flow (OAuth) with Next.js
 - [x] Next.js proxy for route protection
-- [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge)
-- [x] UI molecules (PostCard, UserCard)
-- [x] UI organisms (ComposerPanel with Tiptap, Header, AuthGuard)
-- [x] Timeline page with infinite scroll (TanStack Virtual)
+- [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge, EmojiText)
+- [x] UI molecules (PostCard, UserCard, MentionSuggestions)
+- [x] UI organisms (ComposerPanel with Tiptap, EmojiPicker with emoji-mart, Header, AuthGuard)
+- [x] Timeline page with infinite scroll (TanStack Virtual + deduplication)
 - [x] Status detail page with full thread context
-- [x] Bookmarks page with infinite scroll
-- [x] Account page with profile & posts timeline
+- [x] Bookmarks page with infinite scroll (+ deduplication)
+- [x] Account page with profile & posts timeline (+ deduplication)
 - [x] Search page with tabs (accounts, statuses, hashtags)
 - [x] Compose page with Tiptap editor (visibility, content warnings, character count)
-- [x] Optimistic updates for all mutations (favorite, reblog, bookmark)
+- [x] Optimistic updates for all mutations (favorite, reblog, bookmark, poll voting)
+- [x] Content Warning hiding/revealing in PostCard
+- [x] Interactive poll voting with two modes (voting interface & results visualization)
+- [x] Media upload functionality (images, videos, up to 4 attachments) in ComposerPanel
+- [x] Poll creation in composer (PollComposer component)
+- [x] Custom emoji rendering (EmojiText component for Mastodon custom emojis)
+- [x] Mention suggestions in composer (useMentionAutocomplete hook with @ detection)
+- [x] Professional emoji picker (emoji-mart library) with custom emoji support
+- [x] Duplicate status deduplication in virtualized lists (pagination overlap handling)
+- [x] Production build passing with TypeScript strict mode
 
 ### To Be Implemented
-- [ ] Media upload functionality (images, videos, up to 4 attachments)
-- [ ] Poll creation in composer
 - [ ] Settings page (profile editing)
 - [ ] Activity component (visibility toggling)
-- [ ] Motion animations
-- [ ] Custom emoji rendering
 - [ ] Link preview cards
-- [ ] Mention suggestions in composer
+- [ ] Notifications page
+
+## Implementation Notes
+
+### Content Warning (Spoiler Text)
+- PostCard checks for `spoiler_text` presence and trims whitespace
+- Content, media, and polls are hidden by default when CW is active
+- User can toggle visibility with "Show content" / "Hide content" button
+- Preserves user's choice during session
+
+### Poll Functionality
+- **Two modes in PostCard**:
+  1. **Voting mode** (not voted & not expired): Shows radio/checkbox inputs, Vote button
+  2. **Results mode** (voted or expired): Shows percentage bars, vote counts, own votes highlighted
+- **Poll creation in ComposerPanel**:
+  - PollComposer component with add/remove options
+  - Configurable as single or multiple choice
+  - Expiration time selector (30 mins to 7 days)
+- **API integration**: `getPoll()`, `votePoll()` with optimistic cache updates
+
+### Emoji System
+- **emoji-mart library**: Professional picker with full Unicode database
+  - Skin tone support, search, frequently used tracking
+  - Two tabs: Standard emojis and Custom Mastodon emojis
+- **EmojiText component**: Renders custom Mastodon emojis in display names and content
+  - Regex-based shortcode detection (`:emoji_name:`)
+  - Replaces with `<img>` tags from emoji.url
+
+### Mention Autocomplete
+- **useMentionAutocomplete hook**: Detects `@` in composer
+- Searches Mastodon API for matching accounts
+- MentionSuggestions component with keyboard navigation (↑/↓, Enter, Esc)
+- Calculates popup position based on cursor location
+
+### Media Upload
+- MediaUpload component in ComposerPanel
+- Supports up to 4 attachments (images/videos)
+- Preview thumbnails with remove button
+- File input with drag & drop (future enhancement)
+
+### Virtualized List Deduplication
+- **Problem**: Pagination overlaps caused duplicate status IDs, triggering React key errors
+- **Solution**: Map-based deduplication in all infinite query pages
+```typescript
+const uniqueStatuses = Array.from(
+  new Map(allStatuses.map((status) => [status.id, status])).values()
+);
+```
+- Applied to: Home timeline, Bookmarks, Account pages
+
+### TypeScript Strict Mode Fixes
+- Motion library incompatible with DOM element animation types
+- Replaced with CSS transitions and keyframe animations
+- Fixed RefObject nullable types in hooks
+- Added null assertion for poll rendering (IIFE pattern for type narrowing)
 
 ## Development Workflow
 

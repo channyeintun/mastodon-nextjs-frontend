@@ -1,5 +1,4 @@
-import { type ButtonHTMLAttributes, type ReactNode, useRef } from 'react';
-import { animate } from 'motion';
+import { type ButtonHTMLAttributes, type ReactNode } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
@@ -18,20 +17,6 @@ export function Button({
   style,
   ...props
 }: ButtonProps) {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const handlePress = () => {
-    if (buttonRef.current && !disabled && !isLoading) {
-      animate(buttonRef.current, { scale: 0.95 }, { duration: 0.1 });
-    }
-  };
-
-  const handleRelease = () => {
-    if (buttonRef.current && !disabled && !isLoading) {
-      animate(buttonRef.current, { scale: 1 }, { duration: 0.2, easing: [0.22, 1, 0.36, 1] });
-    }
-  };
-
   const baseStyles = {
     display: 'inline-flex',
     alignItems: 'center',
@@ -82,7 +67,6 @@ export function Button({
 
   return (
     <button
-      ref={buttonRef}
       {...props}
       disabled={disabled || isLoading}
       className={className}
@@ -92,9 +76,6 @@ export function Button({
         ...variantStyles[variant],
         ...style,
       }}
-      onMouseDown={handlePress}
-      onMouseUp={handleRelease}
-      onMouseLeave={handleRelease}
     >
       {isLoading && <span className="spinner" style={{ width: '1em', height: '1em' }} />}
       {children}

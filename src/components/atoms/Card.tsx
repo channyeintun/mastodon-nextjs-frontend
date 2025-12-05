@@ -29,15 +29,6 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     ...style,
   };
 
-  const hoverStyle: CSSProperties = hoverable
-    ? {
-        ':hover': {
-          boxShadow: 'var(--shadow-4)',
-          transform: 'translateY(-2px)',
-        },
-      }
-    : {};
-
   return (
     <div
       ref={ref}

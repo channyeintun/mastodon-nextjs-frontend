@@ -4,7 +4,7 @@ import type { Account } from '@/types/mastodon';
 
 interface UseMentionAutocompleteProps {
   content: string;
-  textareaRef: RefObject<HTMLTextAreaElement>;
+  textareaRef: RefObject<HTMLTextAreaElement | null>;
   onSelect: (account: Account, mentionStart: number, cursorPos: number) => void;
 }
 

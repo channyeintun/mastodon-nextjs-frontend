@@ -1,9 +1,8 @@
 'use client';
 
-import { type CSSProperties, useState, useRef, useEffect } from 'react';
+import { type CSSProperties, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { animate, inView } from 'motion';
 import {
   Heart,
   Repeat2,
@@ -57,52 +56,9 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCWContent, setShowCWContent] = useState(false);
   const [selectedPollChoices, setSelectedPollChoices] = useState<number[]>([]);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
-  const backdropRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const { data: currentAccount } = useCurrentAccount();
   const votePollMutation = useVotePoll();
-
-  // Animate card entrance
-  useEffect(() => {
-    if (cardRef.current) {
-      const unsubscribe = inView(cardRef.current, () => {
-        if (cardRef.current) {
-          animate(
-            cardRef.current,
-            { opacity: [0, 1], y: [20, 0] },
-            { duration: 0.4, easing: [0.22, 1, 0.36, 1] }
-          );
-        }
-      });
-      return unsubscribe;
-    }
-  }, []);
-
-  // Animate delete modal
-  useEffect(() => {
-    if (showDeleteConfirm && modalRef.current && backdropRef.current) {
-      animate(backdropRef.current, { opacity: [0, 1] }, { duration: 0.2 });
-      animate(
-        modalRef.current,
-        { opacity: [0, 1], scale: [0.95, 1] },
-        { duration: 0.3, easing: [0.22, 1, 0.36, 1] }
-      );
-    }
-  }, [showDeleteConfirm]);
-
-  // Animate dropdown menu
-  useEffect(() => {
-    if (showMenu && menuRef.current) {
-      animate(
-        menuRef.current,
-        { opacity: [0, 1], y: [-10, 0] },
-        { duration: 0.2, easing: [0.22, 1, 0.36, 1] }
-      );
-    }
-  }, [showMenu]);
   const favouriteMutation = useFavouriteStatus();
   const unfavouriteMutation = useUnfavouriteStatus();
   const reblogMutation = useReblogStatus();
@@ -117,6 +73,9 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
 
   // Check if this is the current user's post
   const isOwnPost = currentAccount?.id === displayStatus.account.id;
+
+  // Check if content warning is active (has actual text)
+  const hasContentWarning = displayStatus.spoiler_text && displayStatus.spoiler_text.trim().length > 0;
 
   const handleFavourite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -192,7 +151,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   };
 
   return (
-    <Card padding="medium" style={{ ...style, opacity: 0 }} ref={cardRef}>
+    <Card padding="medium" style={style}>
       {/* Reblog indicator */}
       {isReblog && (
         <div style={{
@@ -302,7 +261,6 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                         onClick={() => setShowMenu(false)}
                       />
                       <div
-                        ref={menuRef}
                         style={{
                           position: 'absolute',
                           top: '100%',
@@ -314,7 +272,6 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                           padding: 'var(--size-2)',
                           minWidth: '150px',
                           zIndex: 50,
-                          opacity: 0,
                         }}
                       >
                         <button
@@ -385,7 +342,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           </div>
 
           {/* Spoiler warning */}
-          {displayStatus.spoiler_text && (
+          {hasContentWarning && (
             <div style={{
               marginTop: 'var(--size-2)',
               padding: 'var(--size-3)',
@@ -423,7 +380,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           )}
 
           {/* Post content - hidden if CW active and not revealed */}
-          {(!displayStatus.spoiler_text || showCWContent) && (
+          {(!hasContentWarning || showCWContent) && (
             <div
               style={{
                 marginTop: 'var(--size-3)',
@@ -436,7 +393,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           )}
 
           {/* Media attachments - hidden if CW active and not revealed */}
-          {(!displayStatus.spoiler_text || showCWContent) && displayStatus.media_attachments.length > 0 && (
+          {(!hasContentWarning || showCWContent) && displayStatus.media_attachments.length > 0 && (
             <div style={{
               marginTop: 'var(--size-3)',
               display: 'grid',
@@ -497,17 +454,19 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           )}
 
           {/* Poll - hidden if CW active and not revealed */}
-          {(!displayStatus.spoiler_text || showCWContent) && displayStatus.poll && (
-            <div style={{
-              marginTop: 'var(--size-3)',
-              padding: 'var(--size-3)',
-              background: 'var(--surface-3)',
-              borderRadius: 'var(--radius-2)',
-            }}>
-              {/* Show voting interface if not voted and not expired */}
-              {!displayStatus.poll.voted && !displayStatus.poll.expired ? (
-                <>
-                  {displayStatus.poll.options.map((option, index) => (
+          {(!hasContentWarning || showCWContent) && displayStatus.poll && (() => {
+            const poll = displayStatus.poll!;
+            return (
+              <div style={{
+                marginTop: 'var(--size-3)',
+                padding: 'var(--size-3)',
+                background: 'var(--surface-3)',
+                borderRadius: 'var(--radius-2)',
+              }}>
+                {/* Show voting interface if not voted and not expired */}
+                {!poll.voted && !poll.expired ? (
+                  <>
+                    {poll.options.map((option, index) => (
                     <label
                       key={index}
                       style={{
@@ -532,8 +491,8 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                       }}
                     >
                       <input
-                        type={displayStatus.poll.multiple ? 'checkbox' : 'radio'}
-                        name={`poll-${displayStatus.poll.id}`}
+                        type={poll.multiple ? 'checkbox' : 'radio'}
+                        name={`poll-${poll.id}`}
                         checked={selectedPollChoices.includes(index)}
                         onChange={() => handlePollChoiceToggle(index)}
                         onClick={(e) => e.stopPropagation()}
@@ -562,7 +521,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                       fontSize: 'var(--font-size-0)',
                       color: 'var(--text-2)',
                     }}>
-                      {displayStatus.poll.votes_count} votes · {displayStatus.poll.multiple ? 'Multiple choice' : 'Single choice'}
+                      {poll.votes_count} votes · {poll.multiple ? 'Multiple choice' : 'Single choice'}
                     </div>
                     <Button
                       size="small"
@@ -581,11 +540,11 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
               ) : (
                 <>
                   {/* Show results if voted or expired */}
-                  {displayStatus.poll.options.map((option, index) => {
-                    const percentage = displayStatus.poll!.votes_count > 0
-                      ? ((option.votes_count || 0) / displayStatus.poll!.votes_count) * 100
+                  {poll.options.map((option, index) => {
+                    const percentage = poll.votes_count > 0
+                      ? ((option.votes_count || 0) / poll.votes_count) * 100
                       : 0;
-                    const isOwnVote = displayStatus.poll!.own_votes?.includes(index);
+                    const isOwnVote = poll.own_votes?.includes(index);
 
                     return (
                       <div
@@ -648,20 +607,21 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                     fontSize: 'var(--font-size-0)',
                     color: 'var(--text-2)',
                   }}>
-                    {displayStatus.poll.votes_count.toLocaleString()} votes
-                    {displayStatus.poll.voters_count !== null &&
-                      ` · ${displayStatus.poll.voters_count.toLocaleString()} voters`}
+                    {poll.votes_count.toLocaleString()} votes
+                    {poll.voters_count !== null &&
+                      ` · ${poll.voters_count.toLocaleString()} voters`}
                     {' · '}
-                    {displayStatus.poll.expired ? (
+                    {poll.expired ? (
                       <span style={{ color: 'var(--red-6)' }}>Closed</span>
                     ) : (
-                      `Closes ${new Date(displayStatus.poll.expires_at!).toLocaleString()}`
+                      `Closes ${new Date(poll.expires_at!).toLocaleString()}`
                     )}
                   </div>
                 </>
               )}
-            </div>
-          )}
+              </div>
+            );
+          })()}
 
           {/* Action bar */}
           <div style={{
@@ -745,7 +705,6 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
       {showDeleteConfirm && (
         <>
           <div
-            ref={backdropRef}
             style={{
               position: 'fixed',
               top: 0,
@@ -757,12 +716,10 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
               alignItems: 'center',
               justifyContent: 'center',
               zIndex: 100,
-              opacity: 0,
             }}
             onClick={() => setShowDeleteConfirm(false)}
           />
           <div
-            ref={modalRef}
             style={{
               position: 'fixed',
               top: '50%',
@@ -775,7 +732,6 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
               maxWidth: '400px',
               width: '90%',
               zIndex: 101,
-              opacity: 0,
             }}
             onClick={(e) => e.stopPropagation()}
           >

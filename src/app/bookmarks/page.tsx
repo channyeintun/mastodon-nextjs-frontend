@@ -23,22 +23,27 @@ export default function BookmarksPage() {
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  // Flatten all pages into a single array of statuses
+  // Flatten all pages into a single array of statuses and deduplicate by ID
   const allStatuses = data?.pages.flatMap((page) => page) ?? [];
+
+  // Deduplicate statuses by ID (handles pagination overlaps)
+  const uniqueStatuses = Array.from(
+    new Map(allStatuses.map((status) => [status.id, status])).values()
+  );
 
   // Setup virtualizer
   const virtualizer = useVirtualizer({
-    count: allStatuses.length,
+    count: uniqueStatuses.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 300,
     overscan: 5,
     lanes: 1,
   });
 
-  // Remeasure when allStatuses changes (items added/deleted)
+  // Remeasure when uniqueStatuses changes (items added/deleted)
   useEffect(() => {
     virtualizer.measure();
-  }, [allStatuses.length, virtualizer]);
+  }, [uniqueStatuses.length, virtualizer]);
 
   const virtualItems = virtualizer.getVirtualItems();
 
@@ -49,7 +54,7 @@ export default function BookmarksPage() {
     if (!lastItem) return;
 
     if (
-      lastItem.index >= allStatuses.length - 1 &&
+      lastItem.index >= uniqueStatuses.length - 1 &&
       hasNextPage &&
       !isFetchingNextPage
     ) {
@@ -58,7 +63,7 @@ export default function BookmarksPage() {
   }, [
     hasNextPage,
     fetchNextPage,
-    allStatuses.length,
+    uniqueStatuses.length,
     isFetchingNextPage,
     virtualItems,
   ]);
@@ -90,7 +95,7 @@ export default function BookmarksPage() {
     );
   }
 
-  if (allStatuses.length === 0) {
+  if (uniqueStatuses.length === 0) {
     return (
       <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
         {/* Header */}
@@ -156,7 +161,7 @@ export default function BookmarksPage() {
             Bookmarks
           </h1>
           <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-            {allStatuses.length} {allStatuses.length === 1 ? 'post' : 'posts'}
+            {uniqueStatuses.length} {allStatuses.length === 1 ? 'post' : 'posts'}
           </p>
         </div>
       </div>
@@ -178,7 +183,7 @@ export default function BookmarksPage() {
           }}
         >
           {virtualItems.map((virtualItem) => {
-            const status = allStatuses[virtualItem.index];
+            const status = uniqueStatuses[virtualItem.index];
             return (
               <div
                 key={status.id}
@@ -209,7 +214,7 @@ export default function BookmarksPage() {
         )}
 
         {/* End of list message */}
-        {!hasNextPage && allStatuses.length > 0 && (
+        {!hasNextPage && uniqueStatuses.length > 0 && (
           <div style={{
             textAlign: 'center',
             padding: 'var(--size-6)',

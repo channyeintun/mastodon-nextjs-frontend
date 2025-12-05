@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 import type { Emoji } from '@/types/mastodon';
 
 interface EmojiTextProps {
@@ -18,7 +18,7 @@ export function EmojiText({ text, emojis, style, className }: EmojiTextProps) {
   }
 
   // Split text by emoji shortcodes and replace with images
-  const parts: (string | JSX.Element)[] = [];
+  const parts: (string | ReactElement)[] = [];
   let lastIndex = 0;
   let key = 0;
 

@@ -63,12 +63,17 @@ const TimelinePage = observer(() => {
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  // Flatten all pages into a single array of statuses
+  // Flatten all pages into a single array of statuses and deduplicate by ID
   const allStatuses = data?.pages.flatMap((page) => page) ?? [];
+
+  // Deduplicate statuses by ID (handles pagination overlaps)
+  const uniqueStatuses = Array.from(
+    new Map(allStatuses.map((status) => [status.id, status])).values()
+  );
 
   // Setup virtualizer
   const virtualizer = useVirtualizer({
-    count: allStatuses.length,
+    count: uniqueStatuses.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 300, // Estimated height of each post card
     overscan: 5, // Render 5 items before/after visible area
@@ -76,10 +81,10 @@ const TimelinePage = observer(() => {
     lanes: 1,
   });
 
-  // Remeasure when allStatuses changes (items added/deleted)
+  // Remeasure when uniqueStatuses changes (items added/deleted)
   useEffect(() => {
     virtualizer.measure();
-  }, [allStatuses.length, virtualizer]);
+  }, [uniqueStatuses.length, virtualizer]);
 
   const virtualItems = virtualizer.getVirtualItems();
 
@@ -90,7 +95,7 @@ const TimelinePage = observer(() => {
     if (!lastItem) return;
 
     if (
-      lastItem.index >= allStatuses.length - 1 &&
+      lastItem.index >= uniqueStatuses.length - 1 &&
       hasNextPage &&
       !isFetchingNextPage
     ) {
@@ -99,7 +104,7 @@ const TimelinePage = observer(() => {
   }, [
     hasNextPage,
     fetchNextPage,
-    allStatuses.length,
+    uniqueStatuses.length,
     isFetchingNextPage,
     virtualItems,
   ]);
@@ -131,7 +136,7 @@ const TimelinePage = observer(() => {
     );
   }
 
-  if (allStatuses.length === 0) {
+  if (uniqueStatuses.length === 0) {
     return (
       <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
         <h2 style={{ marginBottom: 'var(--size-3)' }}>Your Timeline is Empty</h2>
@@ -196,7 +201,7 @@ const TimelinePage = observer(() => {
           }}
         >
           {virtualItems.map((virtualItem) => {
-            const status = allStatuses[virtualItem.index];
+            const status = uniqueStatuses[virtualItem.index];
             return (
               <div
                 key={status.id}
@@ -227,7 +232,7 @@ const TimelinePage = observer(() => {
         )}
 
         {/* End of timeline message */}
-        {!hasNextPage && allStatuses.length > 0 && (
+        {!hasNextPage && uniqueStatuses.length > 0 && (
           <div style={{
             textAlign: 'center',
             padding: 'var(--size-6)',

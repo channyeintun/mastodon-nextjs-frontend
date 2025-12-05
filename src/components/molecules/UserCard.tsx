@@ -1,8 +1,7 @@
 'use client';
 
-import { type CSSProperties, useState, useRef, useEffect } from 'react';
+import { type CSSProperties, useState } from 'react';
 import Link from 'next/link';
-import { animate, inView } from 'motion';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
 import { Button } from '../atoms/Button';
@@ -22,27 +21,10 @@ function stripHtmlTags(html: string): string {
 }
 
 export function UserCard({ account, showFollowButton = true, style }: UserCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
   const followMutation = useFollowAccount();
   const unfollowMutation = useUnfollowAccount();
   const { data: relationships } = useRelationships([account.id]);
   const relationship = relationships?.[0];
-
-  // Animate card entrance
-  useEffect(() => {
-    if (cardRef.current) {
-      const unsubscribe = inView(cardRef.current, () => {
-        if (cardRef.current) {
-          animate(
-            cardRef.current,
-            { opacity: [0, 1], y: [20, 0] },
-            { duration: 0.4, easing: [0.22, 1, 0.36, 1] }
-          );
-        }
-      });
-      return unsubscribe;
-    }
-  }, []);
 
   const handleFollowToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -59,7 +41,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   const isLoading = followMutation.isPending || unfollowMutation.isPending;
 
   return (
-    <Card padding="medium" hoverable style={{ ...style, opacity: 0 }} ref={cardRef}>
+    <Card padding="medium" hoverable style={style}>
       <Link
         href={`/accounts/${account.id}`}
         style={{ textDecoration: 'none', display: 'block' }}

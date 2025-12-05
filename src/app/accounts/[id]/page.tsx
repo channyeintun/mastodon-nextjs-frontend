@@ -47,18 +47,23 @@ export default function AccountPage({
 
   const allStatuses = statusPages?.pages.flatMap((page) => page) ?? [];
 
+  // Deduplicate statuses by ID (handles pagination overlaps)
+  const uniqueStatuses = Array.from(
+    new Map(allStatuses.map((status) => [status.id, status])).values()
+  );
+
   const virtualizer = useVirtualizer({
-    count: allStatuses.length,
+    count: uniqueStatuses.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 300,
     overscan: 5,
     lanes: 1,
   });
 
-  // Remeasure when allStatuses changes (items added/deleted)
+  // Remeasure when uniqueStatuses changes (items added/deleted)
   useEffect(() => {
     virtualizer.measure();
-  }, [allStatuses.length, virtualizer]);
+  }, [uniqueStatuses.length, virtualizer]);
 
   const virtualItems = virtualizer.getVirtualItems();
 
@@ -68,13 +73,13 @@ export default function AccountPage({
     if (!lastItem) return;
 
     if (
-      lastItem.index >= allStatuses.length - 1 &&
+      lastItem.index >= uniqueStatuses.length - 1 &&
       hasNextPage &&
       !isFetchingNextPage
     ) {
       fetchNextPage();
     }
-  }, [hasNextPage, fetchNextPage, allStatuses.length, isFetchingNextPage, virtualItems]);
+  }, [hasNextPage, fetchNextPage, uniqueStatuses.length, isFetchingNextPage, virtualItems]);
 
   const handleFollowToggle = () => {
     if (relationship?.following) {
@@ -319,11 +324,11 @@ export default function AccountPage({
           Posts
         </h3>
 
-        {statusesLoading && allStatuses.length === 0 ? (
+        {statusesLoading && uniqueStatuses.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--size-8)' }}>
             <Spinner />
           </div>
-        ) : allStatuses.length === 0 ? (
+        ) : uniqueStatuses.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
             No posts yet
           </div>
@@ -345,7 +350,7 @@ export default function AccountPage({
               }}
             >
               {virtualItems.map((virtualItem) => {
-                const status = allStatuses[virtualItem.index];
+                const status = uniqueStatuses[virtualItem.index];
                 return (
                   <div
                     key={status.id}
@@ -371,7 +376,7 @@ export default function AccountPage({
               </div>
             )}
 
-            {!hasNextPage && allStatuses.length > 0 && (
+            {!hasNextPage && uniqueStatuses.length > 0 && (
               <div style={{
                 textAlign: 'center',
                 padding: 'var(--size-6)',

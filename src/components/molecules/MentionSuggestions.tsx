@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { animate } from 'motion';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
 import { EmojiText } from '../atoms/EmojiText';
@@ -22,26 +20,12 @@ export function MentionSuggestions({
   position,
   selectedIndex,
 }: MentionSuggestionsProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Animate entrance
-  useEffect(() => {
-    if (position && containerRef.current) {
-      animate(
-        containerRef.current,
-        { opacity: [0, 1], y: [10, 0] },
-        { duration: 0.2, easing: [0.22, 1, 0.36, 1] }
-      );
-    }
-  }, [position]);
-
   if (!position || (!isLoading && accounts.length === 0)) {
     return null;
   }
 
   return (
     <div
-      ref={containerRef}
       style={{
         position: 'absolute',
         top: `${position.top}px`,
@@ -49,7 +33,7 @@ export function MentionSuggestions({
         zIndex: 100,
         minWidth: '300px',
         maxWidth: '400px',
-        opacity: 0,
+        animation: 'fadeInUp 0.2s ease-out',
       }}
     >
       <Card padding="none">

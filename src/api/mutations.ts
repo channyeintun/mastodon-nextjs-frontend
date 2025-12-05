@@ -378,7 +378,7 @@ export function useUpdateAccount() {
     mutationFn: (params: UpdateAccountParams) => getMastodonClient().updateCredentials(params),
     onSuccess: (data) => {
       // Update current account in cache
-      queryClient.setQueryData(queryKeys.currentAccount(), data)
+      queryClient.setQueryData(queryKeys.accounts.current(), data)
       // Invalidate account detail
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(data.id) })
     },
