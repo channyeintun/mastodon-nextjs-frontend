@@ -8,9 +8,9 @@ import { useFollowAccount, useUnfollowAccount } from '@/api/mutations';
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { PostCardSkeletonList, PostCardSkeleton } from '@/components/atoms/PostCardSkeleton';
+import { AccountProfileSkeleton } from '@/components/atoms/AccountProfileSkeleton';
 import { Avatar } from '@/components/atoms/Avatar';
 import { Button } from '@/components/atoms/Button';
-import { Spinner } from '@/components/atoms/Spinner';
 import { IconButton } from '@/components/atoms/IconButton';
 import { EmojiText } from '@/components/atoms/EmojiText';
 import type { Status } from '@/types/mastodon';
@@ -78,11 +78,67 @@ export default function AccountPage({
 
   if (accountLoading) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-        <Spinner />
-        <p style={{ marginTop: 'var(--size-4)', color: 'var(--text-2)' }}>
-          Loading profile...
-        </p>
+      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        {/* Header */}
+        <div style={{
+          position: 'sticky',
+          top: 0,
+          background: 'var(--surface-1)',
+          zIndex: 10,
+          padding: 'var(--size-4) 0',
+          marginBottom: 'var(--size-4)',
+          borderBottom: '1px solid var(--surface-3)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--size-3)',
+        }}>
+          <Link href="/">
+            <IconButton>
+              <ArrowLeft size={20} />
+            </IconButton>
+          </Link>
+          <div>
+            <div
+              style={{
+                width: '150px',
+                height: '24px',
+                background: 'var(--surface-3)',
+                borderRadius: 'var(--radius-1)',
+                marginBottom: 'var(--size-1)',
+                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              }}
+            />
+            <div
+              style={{
+                width: '100px',
+                height: '16px',
+                background: 'var(--surface-3)',
+                borderRadius: 'var(--radius-1)',
+                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Profile skeleton */}
+        <AccountProfileSkeleton />
+
+        {/* Posts Section */}
+        <div style={{
+          borderTop: '1px solid var(--surface-3)',
+          paddingTop: 'var(--size-4)',
+          marginTop: 'var(--size-4)',
+        }}>
+          <h3 style={{
+            fontSize: 'var(--font-size-3)',
+            fontWeight: 'var(--font-weight-6)',
+            marginBottom: 'var(--size-4)',
+            paddingLeft: 'var(--size-4)',
+          }}>
+            Posts
+          </h3>
+          <PostCardSkeletonList count={3} />
+        </div>
       </div>
     );
   }

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api/queries';
 import { PostCard } from '@/components/molecules/PostCard';
-import { Spinner } from '@/components/atoms/Spinner';
+import { PostCardSkeleton } from '@/components/atoms/PostCardSkeleton';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
 
@@ -34,11 +34,62 @@ export default function StatusPage({
 
   if (isLoading) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-        <Spinner />
-        <p style={{ marginTop: 'var(--size-4)', color: 'var(--text-2)' }}>
-          Loading post...
-        </p>
+      <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        {/* Header */}
+        <div style={{
+          position: 'sticky',
+          top: 0,
+          background: 'var(--surface-1)',
+          zIndex: 10,
+          padding: 'var(--size-4) 0',
+          marginBottom: 'var(--size-4)',
+          borderBottom: '1px solid var(--surface-3)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--size-3)',
+        }}>
+          <Link href="/">
+            <IconButton>
+              <ArrowLeft size={20} />
+            </IconButton>
+          </Link>
+          <h1 style={{ fontSize: 'var(--font-size-4)' }}>
+            Post
+          </h1>
+        </div>
+
+        {/* Skeleton loading */}
+        <div>
+          {/* Main post skeleton with highlight border */}
+          <div style={{
+            border: '2px solid var(--blue-6)',
+            borderRadius: 'var(--radius-3)',
+            overflow: 'hidden',
+            marginBottom: 'var(--size-4)',
+          }}>
+            <PostCardSkeleton />
+          </div>
+
+          {/* Replies section skeleton */}
+          <h2 style={{
+            fontSize: 'var(--font-size-2)',
+            fontWeight: 'var(--font-weight-6)',
+            marginBottom: 'var(--size-4)',
+            color: 'var(--text-2)',
+          }}>
+            <div
+              style={{
+                width: '120px',
+                height: '20px',
+                background: 'var(--surface-3)',
+                borderRadius: 'var(--radius-1)',
+                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              }}
+            />
+          </h2>
+          <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
+          <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
+        </div>
       </div>
     );
   }
