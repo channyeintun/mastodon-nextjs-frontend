@@ -32,7 +32,13 @@ export default function BookmarksPage() {
     getScrollElement: () => parentRef.current,
     estimateSize: () => 300,
     overscan: 5,
+    lanes: 1,
   });
+
+  // Remeasure when allStatuses changes (items added/deleted)
+  useEffect(() => {
+    virtualizer.measure();
+  }, [allStatuses.length, virtualizer]);
 
   const virtualItems = virtualizer.getVirtualItems();
 

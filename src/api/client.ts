@@ -9,12 +9,15 @@ import type {
   Context,
   CreateAppParams,
   CreateStatusParams,
+  Emoji,
+  MediaAttachment,
   Relationship,
   SearchParams,
   SearchResults,
   Status,
   TimelineParams,
   Token,
+  UpdateAccountParams,
 } from '../types/mastodon'
 
 export class MastodonClient {
@@ -178,6 +181,65 @@ export class MastodonClient {
     return this.request<Account>('/api/v1/accounts/verify_credentials')
   }
 
+  async updateCredentials(params: UpdateAccountParams): Promise<Account> {
+    const formData = new FormData()
+
+    // Add text fields
+    if (params.display_name !== undefined) {
+      formData.append('display_name', params.display_name)
+    }
+    if (params.note !== undefined) {
+      formData.append('note', params.note)
+    }
+    if (params.locked !== undefined) {
+      formData.append('locked', String(params.locked))
+    }
+    if (params.bot !== undefined) {
+      formData.append('bot', String(params.bot))
+    }
+    if (params.discoverable !== undefined) {
+      formData.append('discoverable', String(params.discoverable))
+    }
+
+    // Add file fields
+    if (params.avatar) {
+      formData.append('avatar', params.avatar)
+    }
+    if (params.header) {
+      formData.append('header', params.header)
+    }
+
+    // Add fields_attributes
+    if (params.fields_attributes) {
+      params.fields_attributes.forEach((field, index) => {
+        formData.append(`fields_attributes[${index}][name]`, field.name)
+        formData.append(`fields_attributes[${index}][value]`, field.value)
+      })
+    }
+
+    const url = `${this.baseURL}/api/v1/accounts/update_credentials`
+    const headers: Record<string, string> = {}
+
+    if (this.accessToken) {
+      headers['Authorization'] = `Bearer ${this.accessToken}`
+    }
+
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers,
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        error: response.statusText,
+      }))
+      throw new Error(error.error || `HTTP ${response.status}`)
+    }
+
+    return response.json()
+  }
+
   async getAccountStatuses(
     id: string,
     params?: TimelineParams,
@@ -225,6 +287,69 @@ export class MastodonClient {
   async search(params: SearchParams): Promise<SearchResults> {
     const query = new URLSearchParams(params as any).toString()
     return this.request<SearchResults>(`/api/v2/search?${query}`)
+  }
+
+  // Custom Emojis
+  async getCustomEmojis(): Promise<Emoji[]> {
+    return this.request<Emoji[]>('/api/v1/custom_emojis')
+  }
+
+  // Media
+  async uploadMedia(file: File, description?: string): Promise<MediaAttachment> {
+    const formData = new FormData()
+    formData.append('file', file)
+    if (description) {
+      formData.append('description', description)
+    }
+
+    const url = `${this.baseURL}/api/v2/media`
+    const headers: Record<string, string> = {}
+
+    if (this.accessToken) {
+      headers['Authorization'] = `Bearer ${this.accessToken}`
+    }
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        error: response.statusText,
+      }))
+      throw new Error(error.error || `HTTP ${response.status}`)
+    }
+
+    return response.json()
+  }
+
+  async updateMedia(id: string, description: string): Promise<MediaAttachment> {
+    const formData = new FormData()
+    formData.append('description', description)
+
+    const url = `${this.baseURL}/api/v1/media/${id}`
+    const headers: Record<string, string> = {}
+
+    if (this.accessToken) {
+      headers['Authorization'] = `Bearer ${this.accessToken}`
+    }
+
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers,
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        error: response.statusText,
+      }))
+      throw new Error(error.error || `HTTP ${response.status}`)
+    }
+
+    return response.json()
   }
 }
 

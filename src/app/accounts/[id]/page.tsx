@@ -4,13 +4,14 @@ import { use, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
-import { useAccount, useInfiniteAccountStatuses, useRelationships } from '@/api/queries';
+import { useAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount } from '@/api/queries';
 import { useFollowAccount, useUnfollowAccount } from '@/api/mutations';
 import { PostCard } from '@/components/molecules/PostCard';
 import { Avatar } from '@/components/atoms/Avatar';
 import { Button } from '@/components/atoms/Button';
 import { Spinner } from '@/components/atoms/Spinner';
 import { IconButton } from '@/components/atoms/IconButton';
+import { EmojiText } from '@/components/atoms/EmojiText';
 
 export default function AccountPage({
   params,
@@ -36,6 +37,9 @@ export default function AccountPage({
   const { data: relationships } = useRelationships([id]);
   const relationship = relationships?.[0];
 
+  const { data: currentAccount } = useCurrentAccount();
+  const isOwnProfile = currentAccount?.id === id;
+
   const followMutation = useFollowAccount();
   const unfollowMutation = useUnfollowAccount();
 
@@ -48,7 +52,13 @@ export default function AccountPage({
     getScrollElement: () => parentRef.current,
     estimateSize: () => 300,
     overscan: 5,
+    lanes: 1,
   });
+
+  // Remeasure when allStatuses changes (items added/deleted)
+  useEffect(() => {
+    virtualizer.measure();
+  }, [allStatuses.length, virtualizer]);
 
   const virtualItems = virtualizer.getVirtualItems();
 
@@ -126,7 +136,10 @@ export default function AccountPage({
         </Link>
         <div>
           <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
-            {account.display_name || account.username}
+            <EmojiText
+              text={account.display_name || account.username}
+              emojis={account.emojis}
+            />
           </h1>
           <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
             {account.statuses_count.toLocaleString()} posts
@@ -157,18 +170,29 @@ export default function AccountPage({
               background: 'var(--surface-1)',
             }}
           />
-          <Button
-            variant={isFollowing ? 'secondary' : 'primary'}
-            onClick={handleFollowToggle}
-            isLoading={isLoading}
-          >
-            {isFollowing ? 'Following' : 'Follow'}
-          </Button>
+          {isOwnProfile ? (
+            <Link href="/settings">
+              <Button variant="secondary">
+                Edit Profile
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              variant={isFollowing ? 'secondary' : 'primary'}
+              onClick={handleFollowToggle}
+              isLoading={isLoading}
+            >
+              {isFollowing ? 'Following' : 'Follow'}
+            </Button>
+          )}
         </div>
 
         <div style={{ marginBottom: 'var(--size-3)' }}>
           <h2 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', marginBottom: 'var(--size-1)' }}>
-            {account.display_name || account.username}
+            <EmojiText
+              text={account.display_name || account.username}
+              emojis={account.emojis}
+            />
             {account.bot && (
               <span style={{
                 marginLeft: 'var(--size-2)',

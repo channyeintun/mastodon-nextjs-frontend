@@ -1,0 +1,85 @@
+import type { CSSProperties } from 'react';
+import type { Emoji } from '@/types/mastodon';
+
+interface EmojiTextProps {
+  text: string;
+  emojis: Emoji[];
+  style?: CSSProperties;
+  className?: string;
+}
+
+/**
+ * Renders text with custom Mastodon emojis replaced by images
+ * Example: "Hello :custom_emoji:" -> "Hello <img src="..." />"
+ */
+export function EmojiText({ text, emojis, style, className }: EmojiTextProps) {
+  if (!emojis || emojis.length === 0) {
+    return <span style={style} className={className}>{text}</span>;
+  }
+
+  // Split text by emoji shortcodes and replace with images
+  const parts: (string | JSX.Element)[] = [];
+  let lastIndex = 0;
+  let key = 0;
+
+  // Create a regex pattern that matches all emoji shortcodes
+  const emojiMap = new Map(emojis.map(e => [e.shortcode, e]));
+  const shortcodes = Array.from(emojiMap.keys());
+
+  if (shortcodes.length === 0) {
+    return <span style={style} className={className}>{text}</span>;
+  }
+
+  // Create regex: :(shortcode1|shortcode2|...):
+  const pattern = new RegExp(`:(?:${shortcodes.map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')}):`, 'g');
+
+  let match;
+  while ((match = pattern.exec(text)) !== null) {
+    // Add text before the emoji
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+
+    // Extract shortcode (remove colons)
+    const shortcode = match[0].slice(1, -1);
+    const emoji = emojiMap.get(shortcode);
+
+    if (emoji) {
+      parts.push(
+        <img
+          key={key++}
+          src={emoji.url}
+          alt={`:${shortcode}:`}
+          title={`:${shortcode}:`}
+          style={{
+            height: '1.25em',
+            width: '1.25em',
+            verticalAlign: 'middle',
+            objectFit: 'contain',
+            display: 'inline-block',
+            margin: '0 0.1em',
+          }}
+          loading="lazy"
+        />
+      );
+    } else {
+      // If emoji not found, keep the original text
+      parts.push(match[0]);
+    }
+
+    lastIndex = pattern.lastIndex;
+  }
+
+  // Add remaining text
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return (
+    <span style={style} className={className}>
+      {parts.map((part, index) => (
+        typeof part === 'string' ? part : <span key={index}>{part}</span>
+      ))}
+    </span>
+  );
+}

@@ -243,3 +243,17 @@ export interface SearchParams {
   following?: boolean
   limit?: number
 }
+
+export interface UpdateAccountParams {
+  display_name?: string
+  note?: string
+  avatar?: File | Blob
+  header?: File | Blob
+  locked?: boolean
+  bot?: boolean
+  discoverable?: boolean
+  fields_attributes?: Array<{
+    name: string
+    value: string
+  }>
+}

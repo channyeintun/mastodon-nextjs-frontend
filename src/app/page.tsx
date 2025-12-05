@@ -72,7 +72,14 @@ const TimelinePage = observer(() => {
     getScrollElement: () => parentRef.current,
     estimateSize: () => 300, // Estimated height of each post card
     overscan: 5, // Render 5 items before/after visible area
+    // Add key based on status IDs to force remeasure when items change
+    lanes: 1,
   });
+
+  // Remeasure when allStatuses changes (items added/deleted)
+  useEffect(() => {
+    virtualizer.measure();
+  }, [allStatuses.length, virtualizer]);
 
   const virtualItems = virtualizer.getVirtualItems();
 

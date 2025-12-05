@@ -1,8 +1,9 @@
 'use client';
 
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { animate, inView } from 'motion';
 import {
   Heart,
   Repeat2,
@@ -17,6 +18,7 @@ import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
 import { IconButton } from '../atoms/IconButton';
 import { Button } from '../atoms/Button';
+import { EmojiText } from '../atoms/EmojiText';
 import type { Status } from '@/types/mastodon';
 import {
   useFavouriteStatus,
@@ -52,8 +54,51 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const { data: currentAccount } = useCurrentAccount();
+
+  // Animate card entrance
+  useEffect(() => {
+    if (cardRef.current) {
+      const unsubscribe = inView(cardRef.current, () => {
+        if (cardRef.current) {
+          animate(
+            cardRef.current,
+            { opacity: [0, 1], y: [20, 0] },
+            { duration: 0.4, easing: [0.22, 1, 0.36, 1] }
+          );
+        }
+      });
+      return unsubscribe;
+    }
+  }, []);
+
+  // Animate delete modal
+  useEffect(() => {
+    if (showDeleteConfirm && modalRef.current && backdropRef.current) {
+      animate(backdropRef.current, { opacity: [0, 1] }, { duration: 0.2 });
+      animate(
+        modalRef.current,
+        { opacity: [0, 1], scale: [0.95, 1] },
+        { duration: 0.3, easing: [0.22, 1, 0.36, 1] }
+      );
+    }
+  }, [showDeleteConfirm]);
+
+  // Animate dropdown menu
+  useEffect(() => {
+    if (showMenu && menuRef.current) {
+      animate(
+        menuRef.current,
+        { opacity: [0, 1], y: [-10, 0] },
+        { duration: 0.2, easing: [0.22, 1, 0.36, 1] }
+      );
+    }
+  }, [showMenu]);
   const favouriteMutation = useFavouriteStatus();
   const unfavouriteMutation = useUnfavouriteStatus();
   const reblogMutation = useReblogStatus();
@@ -115,7 +160,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   };
 
   return (
-    <Card padding="medium" style={style}>
+    <Card padding="medium" style={{ ...style, opacity: 0 }} ref={cardRef}>
       {/* Reblog indicator */}
       {isReblog && (
         <div style={{
@@ -128,7 +173,12 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
         }}>
           <Repeat2 size={14} style={{ marginLeft: 'var(--size-6)' }} />
           <span>
-            <strong>{status.account.display_name || status.account.username}</strong> boosted
+            <strong>
+              <EmojiText
+                text={status.account.display_name || status.account.username}
+                emojis={status.account.emojis}
+              />
+            </strong> boosted
           </span>
         </div>
       )}
@@ -160,7 +210,10 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
                 }}>
-                  {displayStatus.account.display_name || displayStatus.account.username}
+                  <EmojiText
+                    text={displayStatus.account.display_name || displayStatus.account.username}
+                    emojis={displayStatus.account.emojis}
+                  />
                 </div>
                 <div style={{
                   fontSize: 'var(--font-size-0)',
@@ -217,6 +270,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                         onClick={() => setShowMenu(false)}
                       />
                       <div
+                        ref={menuRef}
                         style={{
                           position: 'absolute',
                           top: '100%',
@@ -228,6 +282,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                           padding: 'var(--size-2)',
                           minWidth: '150px',
                           zIndex: 50,
+                          opacity: 0,
                         }}
                       >
                         <button
@@ -518,6 +573,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
       {showDeleteConfirm && (
         <>
           <div
+            ref={backdropRef}
             style={{
               position: 'fixed',
               top: 0,
@@ -529,10 +585,12 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
               alignItems: 'center',
               justifyContent: 'center',
               zIndex: 100,
+              opacity: 0,
             }}
             onClick={() => setShowDeleteConfirm(false)}
           />
           <div
+            ref={modalRef}
             style={{
               position: 'fixed',
               top: '50%',
@@ -545,6 +603,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
               maxWidth: '400px',
               width: '90%',
               zIndex: 101,
+              opacity: 0,
             }}
             onClick={(e) => e.stopPropagation()}
           >

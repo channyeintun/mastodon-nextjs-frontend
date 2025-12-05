@@ -1,10 +1,12 @@
 'use client';
 
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { animate, inView } from 'motion';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
 import { Button } from '../atoms/Button';
+import { EmojiText } from '../atoms/EmojiText';
 import type { Account } from '@/types/mastodon';
 import { useFollowAccount, useUnfollowAccount } from '@/api/mutations';
 import { useRelationships } from '@/api/queries';
@@ -20,10 +22,27 @@ function stripHtmlTags(html: string): string {
 }
 
 export function UserCard({ account, showFollowButton = true, style }: UserCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
   const followMutation = useFollowAccount();
   const unfollowMutation = useUnfollowAccount();
   const { data: relationships } = useRelationships([account.id]);
   const relationship = relationships?.[0];
+
+  // Animate card entrance
+  useEffect(() => {
+    if (cardRef.current) {
+      const unsubscribe = inView(cardRef.current, () => {
+        if (cardRef.current) {
+          animate(
+            cardRef.current,
+            { opacity: [0, 1], y: [20, 0] },
+            { duration: 0.4, easing: [0.22, 1, 0.36, 1] }
+          );
+        }
+      });
+      return unsubscribe;
+    }
+  }, []);
 
   const handleFollowToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -70,7 +89,10 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
                 }}>
-                  {account.display_name || account.username}
+                  <EmojiText
+                    text={account.display_name || account.username}
+                    emojis={account.emojis}
+                  />
                   {account.bot && (
                     <span style={{
                       marginLeft: 'var(--size-2)',

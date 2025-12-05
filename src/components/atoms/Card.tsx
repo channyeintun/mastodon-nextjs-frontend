@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode, forwardRef } from 'react';
 
 interface CardProps {
   children: ReactNode;
@@ -8,7 +8,10 @@ interface CardProps {
   onClick?: () => void;
 }
 
-export function Card({ children, padding = 'medium', hoverable = false, style, onClick }: CardProps) {
+export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
+  { children, padding = 'medium', hoverable = false, style, onClick },
+  ref
+) {
   const paddingMap = {
     none: '0',
     small: 'var(--size-2)',
@@ -37,6 +40,7 @@ export function Card({ children, padding = 'medium', hoverable = false, style, o
 
   return (
     <div
+      ref={ref}
       style={cardStyle}
       onClick={onClick}
       onMouseEnter={(e) => {
@@ -55,4 +59,4 @@ export function Card({ children, padding = 'medium', hoverable = false, style, o
       {children}
     </div>
   );
-}
+});

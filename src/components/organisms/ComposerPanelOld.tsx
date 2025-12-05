@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../atoms/Button';
 import { Card } from '../atoms/Card';
@@ -8,14 +11,8 @@ import { useCurrentAccount } from '@/api/queries';
 import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
 import { Avatar } from '../atoms/Avatar';
 import { EmojiText } from '../atoms/EmojiText';
-import { MediaUpload } from '../molecules/MediaUpload';
-import { PollComposer, type PollData } from '../molecules/PollComposer';
-import { EmojiPicker } from './EmojiPicker';
-import { MentionSuggestions } from '../molecules/MentionSuggestions';
-import { useMentionAutocomplete } from '@/hooks/useMentionAutocomplete';
-import { getMastodonClient } from '@/api/client';
-import { Globe, Lock, Users, Mail, X, Smile } from 'lucide-react';
-import type { CreateStatusParams, MediaAttachment, Account } from '@/types/mastodon';
+import { Image, Globe, Lock, Users, Mail, X } from 'lucide-react';
+import type { CreateStatusParams } from '@/types/mastodon';
 
 const MAX_CHAR_COUNT = 500;
 
@@ -49,111 +46,67 @@ export function ComposerPanel({
   const { data: currentAccount } = useCurrentAccount();
   const createStatusMutation = useCreateStatus();
   const updateStatusMutation = useUpdateStatus();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [content, setContent] = useState(initialContent);
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
   const [showVisibilityMenu, setShowVisibilityMenu] = useState(false);
   const [contentWarning, setContentWarning] = useState(initialSpoilerText);
   const [showCWInput, setShowCWInput] = useState(!!initialSpoilerText);
   const [sensitive, setSensitive] = useState(initialSensitive);
-  const [media, setMedia] = useState<MediaAttachment[]>([]);
-  const [poll, setPoll] = useState<PollData | null>(null);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+  const [charCount, setCharCount] = useState(0);
 
-  const charCount = content.length;
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        heading: false,
+        codeBlock: false,
+      }),
+      Placeholder.configure({
+        placeholder: "What's on your mind?",
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none',
+        style: 'min-height: 120px; max-height: 400px; overflow-y: auto; padding: var(--size-3);',
+      },
+    },
+    onCreate: ({ editor }) => {
+      setCharCount(editor.getText().length);
+    },
+    onUpdate: ({ editor }) => {
+      setCharCount(editor.getText().length);
+    },
+    immediatelyRender: false,
+  });
+
+  // Set initial content in edit mode
+  useEffect(() => {
+    if (editor && editMode && initialContent) {
+      // Strip HTML tags and set plain text content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = initialContent;
+      const plainText = tempDiv.textContent || tempDiv.innerText || '';
+      editor.commands.setContent(plainText);
+    }
+  }, [editor, editMode, initialContent]);
+
   const isOverLimit = charCount > MAX_CHAR_COUNT;
   const isPending = editMode ? updateStatusMutation.isPending : createStatusMutation.isPending;
-  const canPost = charCount > 0 && !isOverLimit && !isPending && (media.length > 0 || poll !== null || content.trim().length > 0);
+  const canPost = charCount > 0 && !isOverLimit && !isPending;
 
   const currentVisibility = visibilityOptions.find((v) => v.value === visibility);
   const VisibilityIcon = currentVisibility?.icon || Globe;
 
-  // Mention autocomplete
-  const {
-    suggestions: mentionSuggestions,
-    isLoading: isSearchingMentions,
-    mentionPosition,
-    selectedIndex,
-    handleSelect: handleMentionSelect,
-    handleKeyDown: handleMentionKeyDown,
-  } = useMentionAutocomplete({
-    content,
-    textareaRef,
-    onSelect: (account: Account, mentionStart: number, cursorPos: number) => {
-      const mention = `@${account.acct}`;
-      const before = content.substring(0, mentionStart);
-      const after = content.substring(cursorPos);
-      const newContent = before + mention + ' ' + after;
-      setContent(newContent);
-
-      // Set cursor after mention
-      setTimeout(() => {
-        const newPos = before.length + mention.length + 1;
-        if (textareaRef.current) {
-          textareaRef.current.selectionStart = newPos;
-          textareaRef.current.selectionEnd = newPos;
-          textareaRef.current.focus();
-        }
-      }, 0);
-    },
-  });
-
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-    }
-  }, [content]);
-
-  const handleMediaAdd = async (file: File) => {
-    setIsUploadingMedia(true);
-    try {
-      const attachment = await getMastodonClient().uploadMedia(file);
-      setMedia((prev) => [...prev, attachment]);
-    } catch (error) {
-      console.error('Failed to upload media:', error);
-    } finally {
-      setIsUploadingMedia(false);
-    }
-  };
-
-  const handleMediaRemove = (id: string) => {
-    setMedia((prev) => prev.filter((m) => m.id !== id));
-  };
-
-  const handleAltTextChange = async (id: string, altText: string) => {
-    try {
-      const updated = await getMastodonClient().updateMedia(id, altText);
-      setMedia((prev) => prev.map((m) => (m.id === id ? updated : m)));
-    } catch (error) {
-      console.error('Failed to update alt text:', error);
-    }
-  };
-
-  const handleEmojiSelect = (emoji: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newContent = content.substring(0, start) + emoji + content.substring(end);
-    setContent(newContent);
-
-    // Set cursor position after emoji
-    setTimeout(() => {
-      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
-      textarea.focus();
-    }, 0);
-  };
-
   const handlePost = async () => {
-    if (!canPost) return;
+    if (!editor || !canPost) return;
+
+    const content = editor.getHTML();
+    const plainText = editor.getText();
+
+    if (!plainText.trim()) return;
 
     const params: CreateStatusParams = {
-      status: content,
+      status: plainText,
       visibility,
     };
 
@@ -164,33 +117,19 @@ export function ComposerPanel({
       params.sensitive = true;
     }
 
-    if (media.length > 0) {
-      params.media_ids = media.map((m) => m.id);
-    }
-
-    if (poll) {
-      const validOptions = poll.options.filter((opt) => opt.trim().length > 0);
-      if (validOptions.length >= 2) {
-        params.poll = {
-          options: validOptions,
-          expires_in: poll.expiresIn,
-          multiple: poll.multiple,
-        };
-      }
-    }
-
     try {
       if (editMode && statusId) {
+        // Update existing post
         await updateStatusMutation.mutateAsync({ id: statusId, params });
         router.back();
       } else {
+        // Create new post
         await createStatusMutation.mutateAsync(params);
-        setContent('');
+        editor.commands.clearContent();
+        setCharCount(0);
         setContentWarning('');
         setShowCWInput(false);
         setSensitive(false);
-        setMedia([]);
-        setPoll(null);
       }
     } catch (error) {
       console.error(`Failed to ${editMode ? 'update' : 'create'} post:`, error);
@@ -209,7 +148,7 @@ export function ComposerPanel({
 
   return (
     <Card>
-      <div style={{ padding: 'var(--size-4)', position: 'relative' }}>
+      <div style={{ padding: 'var(--size-4)' }}>
         {/* Header with avatar */}
         <div style={{ display: 'flex', gap: 'var(--size-3)', marginBottom: 'var(--size-3)' }}>
           <Avatar
@@ -356,62 +295,17 @@ export function ComposerPanel({
           </div>
         )}
 
-        {/* Editor - Simple Textarea with Mention Suggestions */}
+        {/* Editor */}
         <div
           style={{
             border: '1px solid var(--surface-4)',
             borderRadius: 'var(--radius-2)',
             background: 'var(--surface-1)',
             marginBottom: 'var(--size-3)',
-            position: 'relative',
           }}
         >
-          <textarea
-            ref={textareaRef}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            onKeyDown={handleMentionKeyDown}
-            placeholder="What's on your mind?"
-            style={{
-              width: '100%',
-              minHeight: '120px',
-              maxHeight: '400px',
-              padding: 'var(--size-3)',
-              border: 'none',
-              background: 'transparent',
-              color: 'var(--text-1)',
-              fontSize: 'var(--font-size-2)',
-              resize: 'none',
-              fontFamily: 'inherit',
-              lineHeight: '1.5',
-            }}
-          />
-
-          {/* Mention Suggestions */}
-          <MentionSuggestions
-            accounts={mentionSuggestions}
-            isLoading={isSearchingMentions}
-            onSelect={handleMentionSelect}
-            position={mentionPosition}
-            selectedIndex={selectedIndex}
-          />
+          <EditorContent editor={editor} />
         </div>
-
-        {/* Media Upload */}
-        {poll === null && (
-          <MediaUpload
-            media={media}
-            onMediaAdd={handleMediaAdd}
-            onMediaRemove={handleMediaRemove}
-            onAltTextChange={handleAltTextChange}
-            isUploading={isUploadingMedia}
-          />
-        )}
-
-        {/* Poll Composer */}
-        {media.length === 0 && (
-          <PollComposer poll={poll} onPollChange={setPoll} />
-        )}
 
         {/* Bottom toolbar */}
         <div style={{
@@ -419,27 +313,14 @@ export function ComposerPanel({
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-          <div style={{ display: 'flex', gap: 'var(--size-2)', position: 'relative' }}>
-            {/* Emoji picker */}
-            <Button
-              type="button"
-              variant="ghost"
-              size="small"
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              title="Add emoji"
-            >
-              <Smile size={18} />
+          <div style={{ display: 'flex', gap: 'var(--size-2)' }}>
+            {/* Media upload button - TODO: implement */}
+            <Button variant="ghost" size="small" disabled title="Media upload (coming soon)">
+              <Image size={18} />
             </Button>
-            {showEmojiPicker && (
-              <EmojiPicker
-                onEmojiSelect={handleEmojiSelect}
-                onClose={() => setShowEmojiPicker(false)}
-              />
-            )}
 
             {/* Content Warning toggle */}
             <Button
-              type="button"
               variant="ghost"
               size="small"
               onClick={() => setShowCWInput(!showCWInput)}

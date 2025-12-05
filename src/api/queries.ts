@@ -152,3 +152,12 @@ export function useSearch(params: SearchParams) {
     enabled: !!params.q && params.q.trim().length > 0,
   })
 }
+
+// Custom Emojis
+export function useCustomEmojis() {
+  return useQuery({
+    queryKey: ['customEmojis'],
+    queryFn: () => getMastodonClient().getCustomEmojis(),
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+  })
+}

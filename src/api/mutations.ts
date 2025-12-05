@@ -6,7 +6,7 @@
 import { useMutation, useQueryClient, type QueryClient, type InfiniteData } from '@tanstack/react-query'
 import { getMastodonClient } from './client'
 import { queryKeys } from './queryKeys'
-import type { CreateStatusParams, Status } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams } from '../types/mastodon'
 
 // Helper function to update status in all infinite query caches
 function updateStatusInCaches(
@@ -367,6 +367,20 @@ export function useUnfollowAccount() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.accounts.relationships([id]),
       })
+    },
+  })
+}
+
+export function useUpdateAccount() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (params: UpdateAccountParams) => getMastodonClient().updateCredentials(params),
+    onSuccess: (data) => {
+      // Update current account in cache
+      queryClient.setQueryData(queryKeys.currentAccount(), data)
+      // Invalidate account detail
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(data.id) })
     },
   })
 }
