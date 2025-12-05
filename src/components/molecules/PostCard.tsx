@@ -19,6 +19,7 @@ import { IconButton } from '../atoms/IconButton';
 import { Button } from '../atoms/Button';
 import { EmojiText } from '../atoms/EmojiText';
 import { StatusContent } from '../atoms/StatusContent';
+import { LinkPreview } from '../atoms/LinkPreview';
 import type { Status } from '@/types/mastodon';
 import {
   useFavouriteStatus,
@@ -507,6 +508,16 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
                 </div>
               )}
             </div>
+          )}
+
+          {/* Link preview - shown only if there's a card and no media attachments */}
+          {(!hasContentWarning || showCWContent) &&
+            displayStatus.card &&
+            displayStatus.media_attachments.length === 0 && (
+            <LinkPreview
+              card={displayStatus.card}
+              style={{ marginTop: 'var(--size-3)' }}
+            />
           )}
 
           {/* Poll - hidden if CW active and not revealed */}

@@ -22,7 +22,7 @@ export function StatusContent({ html, style }: StatusContentProps) {
 
     const container = contentRef.current;
 
-    // Add styling to mentions and hashtags
+    // Add styling to mentions, hashtags, and regular links
     const mentions = container.querySelectorAll('a.mention, a.u-url.mention');
     mentions.forEach((link) => {
       const anchor = link as HTMLAnchorElement;
@@ -37,6 +37,21 @@ export function StatusContent({ html, style }: StatusContentProps) {
       anchor.style.color = 'var(--indigo-6)';
       anchor.style.fontWeight = 'var(--font-weight-6)';
       anchor.style.textDecoration = 'none';
+    });
+
+    // Style regular links (not mentions or hashtags)
+    const allLinks = container.querySelectorAll('a');
+    allLinks.forEach((link) => {
+      const anchor = link as HTMLAnchorElement;
+      // Skip if it's a mention or hashtag
+      if (anchor.classList.contains('mention') ||
+          anchor.classList.contains('u-url') ||
+          anchor.classList.contains('hashtag')) {
+        return;
+      }
+      // Style regular external links
+      anchor.style.color = 'var(--cyan-6)';
+      anchor.style.textDecoration = 'underline';
     });
 
     // Handle clicks on all links
