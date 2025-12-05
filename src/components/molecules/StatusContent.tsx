@@ -1,21 +1,44 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import type { Emoji } from '@/types/mastodon';
 
 interface StatusContentProps {
   html: string;
+  emojis?: Emoji[];
   style?: React.CSSProperties;
 }
 
 /**
  * Renders Mastodon status content HTML with:
  * - Highlighted mentions and hashtags
+ * - Custom emoji rendering
  * - Internal navigation for mentions and hashtags (no external redirects)
  */
-export function StatusContent({ html, style }: StatusContentProps) {
+export function StatusContent({ html, emojis = [], style }: StatusContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  // Process HTML to replace emoji shortcodes with img tags
+  const processedHtml = useMemo(() => {
+    if (!emojis || emojis.length === 0) {
+      return html;
+    }
+
+    // Create a map of shortcode to emoji URL
+    const emojiMap = new Map(emojis.map(e => [e.shortcode, e.url]));
+
+    // Replace :shortcode: with <img> tags
+    let processed = html;
+    emojis.forEach(emoji => {
+      const shortcodePattern = new RegExp(`:${emoji.shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:`, 'g');
+      const imgTag = `<img src="${emoji.url}" alt=":${emoji.shortcode}:" title=":${emoji.shortcode}:" class="custom-emoji" style="height: 1.2em; width: 1.2em; vertical-align: middle; object-fit: contain; display: inline-block; margin: 0 0.1em;" />`;
+      processed = processed.replace(shortcodePattern, imgTag);
+    });
+
+    return processed;
+  }, [html, emojis]);
 
   useEffect(() => {
     if (!contentRef.current) return;
@@ -37,6 +60,18 @@ export function StatusContent({ html, style }: StatusContentProps) {
       anchor.style.color = 'var(--indigo-6)';
       anchor.style.fontWeight = 'var(--font-weight-6)';
       anchor.style.textDecoration = 'none';
+    });
+
+    // Style custom emoji images
+    const customEmojis = container.querySelectorAll('img.custom-emoji, img[data-emoji]');
+    customEmojis.forEach((img) => {
+      const emojiImg = img as HTMLImageElement;
+      emojiImg.style.height = '1.2em';
+      emojiImg.style.width = '1.2em';
+      emojiImg.style.verticalAlign = 'middle';
+      emojiImg.style.objectFit = 'contain';
+      emojiImg.style.display = 'inline-block';
+      emojiImg.style.margin = '0 0.1em';
     });
 
     // Style regular links (not mentions or hashtags)
@@ -111,7 +146,7 @@ export function StatusContent({ html, style }: StatusContentProps) {
     return () => {
       container.removeEventListener('click', handleClick);
     };
-  }, [html, router]);
+  }, [processedHtml, router]);
 
   return (
     <div
@@ -122,7 +157,7 @@ export function StatusContent({ html, style }: StatusContentProps) {
         lineHeight: '1.5',
         wordBreak: 'break-word',
       }}
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: processedHtml }}
     />
   );
 }

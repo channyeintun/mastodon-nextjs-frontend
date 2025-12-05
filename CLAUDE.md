@@ -260,20 +260,32 @@ Components are organized by complexity:
 6. Token and instance URL stored in MobX authStore (persisted to localStorage)
 7. All API requests include `Authorization: Bearer {token}` header
 
-## Tiptap Rich Text Editor
+## Content Rendering Architecture
 
-The application uses Tiptap as a unified rich text editing solution for both composing posts and displaying content. This provides a consistent rendering experience with interactive elements.
+The application uses two complementary approaches for rendering post content:
 
-### Architecture
+### Composing Posts: Tiptap Rich Text Editor
 
 **TiptapEditor Component** (`src/components/atoms/TiptapEditor.tsx`):
-- Reusable component that works in both editable and read-only modes
-- Accepts HTML content from Mastodon API
+- Used for composing new posts in editable mode
+- WYSIWYG rich text editing experience
 - Supports custom emojis, mentions, hashtags, and links
-- Provides live preview while editing
-- Handles click navigation for mentions and hashtags in read-only mode
+- Provides live preview while editing with interactive elements
+- Integrates with mention autocomplete system
 
-### Custom Extensions
+### Displaying Posts: StatusContent Component
+
+**StatusContent Component** (`src/components/molecules/StatusContent.tsx`):
+- Used for displaying post content in read-only mode (PostCard, ThreadView, etc.)
+- Renders Mastodon HTML directly with `dangerouslySetInnerHTML`
+- Applies styling and click handlers to interactive elements:
+  - **Mentions**: Blue color, click navigates to user profile
+  - **Hashtags**: Indigo color, click navigates to hashtag feed
+  - **Custom Emojis**: Properly sized inline images (1.2em)
+  - **External Links**: Cyan color, opens in new tab
+- Lightweight and performant for displaying content
+
+### Tiptap Custom Extensions
 
 **1. MentionWithClick** (`src/lib/tiptap/extensions/MentionWithClick.ts`):
 - Extends `@tiptap/extension-mention`
@@ -321,7 +333,7 @@ The application uses Tiptap as a unified rich text editing solution for both com
 
 ### Usage
 
-**Editable Mode (ComposerPanel)**:
+**Composing Posts (ComposerPanel)**:
 ```tsx
 <TiptapEditor
   content={htmlContent}
@@ -336,24 +348,24 @@ The application uses Tiptap as a unified rich text editing solution for both com
 />
 ```
 
-**Read-only Mode (PostCard)**:
+**Displaying Posts (PostCard, ThreadView)**:
 ```tsx
-<TiptapEditor
-  content={status.content}
-  editable={false}
-  emojis={status.emojis}
+<StatusContent
+  html={status.content}
+  style={{ marginTop: 'var(--size-3)' }}
 />
 ```
 
 ### Benefits
 
-1. **Unified Rendering**: Same logic for composing and displaying content
-2. **WYSIWYG Experience**: Live preview of formatting while typing
-3. **Interactive Elements**: Click navigation for mentions, hashtags, and links
-4. **Custom Emoji Support**: Renders Mastodon custom emojis inline
-5. **Mention Autocomplete**: Built-in @ mention suggestions with API integration
+1. **Separation of Concerns**: Dedicated components for composing vs. displaying content
+2. **WYSIWYG Experience**: Live preview of formatting while typing in composer
+3. **Interactive Elements**: Click navigation for mentions, hashtags, and links in both modes
+4. **Custom Emoji Support**: Renders Mastodon custom emojis inline in both modes
+5. **Mention Autocomplete**: Built-in @ mention suggestions with API integration in composer
 6. **Consistent Styling**: All interactive elements styled with Open Props tokens
-7. **Type Safety**: Full TypeScript support with Mastodon types
+7. **Performance**: Lightweight StatusContent for fast rendering in timelines
+8. **Type Safety**: Full TypeScript support with Mastodon types
 
 ## Features Status
 
@@ -371,7 +383,7 @@ The application uses Tiptap as a unified rich text editing solution for both com
 - [x] Authentication flow (OAuth) with Next.js
 - [x] Next.js proxy for route protection
 - [x] UI atoms (Button, Input, Avatar, Card, IconButton, Spinner, TextArea, Badge, EmojiText, TiptapEditor)
-- [x] UI molecules (PostCard with Tiptap, UserCard, MentionSuggestions)
+- [x] UI molecules (PostCard with StatusContent, UserCard, MentionSuggestions, StatusContent)
 - [x] UI organisms (ComposerPanel with Tiptap, EmojiPicker with emoji-mart, Header, AuthGuard)
 - [x] Timeline page with infinite scroll (TanStack Virtual + deduplication)
 - [x] Status detail page with full thread context
@@ -392,11 +404,12 @@ The application uses Tiptap as a unified rich text editing solution for both com
 - [x] Clickable mentions and hashtags with internal navigation (no external redirects)
 - [x] Highlighted mentions (blue) and hashtags (indigo) in post content
 - [x] Dedicated hashtag feed page with infinite scroll (`/tags/[tag]`)
-- [x] Tiptap rich text editor for unified content rendering (compose + display)
+- [x] Tiptap rich text editor for composing posts with WYSIWYG editing
+- [x] StatusContent component for displaying post content (mentions, hashtags, custom emojis)
 - [x] Custom Tiptap extensions (Mention, Hashtag, CustomEmoji, ExternalLink)
 - [x] Tiptap mention autocomplete with Mastodon API integration
 - [x] Live WYSIWYG preview in composer with Tiptap
-- [x] Click navigation in read-only Tiptap for mentions and hashtags
+- [x] Click navigation for mentions and hashtags in displayed content
 - [x] Trending timeline for non-authenticated users (from mastodon.social)
 - [x] Authentication checks in PostCard CTAs (redirect to sign-in when not authenticated)
 
@@ -445,16 +458,18 @@ The application uses Tiptap as a unified rich text editing solution for both com
   - Regex-based shortcode detection (`:emoji_name:`)
   - Replaces with `<img>` tags from emoji.url
 
-### Tiptap Content Rendering
-- **Unified approach**: Both ComposerPanel and PostCard use TiptapEditor component
-- **Compose mode**: Live WYSIWYG preview with interactive elements
-- **Display mode**: Read-only rendering with click navigation
-- **Parsing**: Converts Mastodon HTML to Tiptap document structure
-- **Extensions**: Custom extensions for Mention, Hashtag, CustomEmoji, and ExternalLink
-- **Mention autocomplete**: Integrated with Tiptap's suggestion system using MentionSuggestion component
+### Content Rendering
+- **Dual approach**: TiptapEditor for composing, StatusContent for displaying
+- **Compose mode (TiptapEditor)**: Live WYSIWYG preview with interactive elements
+  - Custom extensions for Mention, Hashtag, CustomEmoji, and ExternalLink
+  - Mention autocomplete: Integrated with Tiptap's suggestion system using MentionSuggestion component
   - Detects `@` in composer and searches Mastodon API
   - Keyboard navigation (↑/↓, Enter, Esc)
   - Positioned with tippy.js for accurate placement
+- **Display mode (StatusContent)**: Lightweight read-only rendering with click navigation
+  - Renders Mastodon HTML directly with `dangerouslySetInnerHTML`
+  - Applies styling and click handlers for mentions, hashtags, custom emojis, and links
+  - Performant for timelines with many posts
 
 ### Media Upload
 - MediaUpload component in ComposerPanel

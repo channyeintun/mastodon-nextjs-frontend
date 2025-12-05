@@ -18,7 +18,7 @@ import { Card } from '../atoms/Card';
 import { IconButton } from '../atoms/IconButton';
 import { Button } from '../atoms/Button';
 import { EmojiText } from '../atoms/EmojiText';
-import { TiptapEditor } from '../atoms/TiptapEditor';
+import { StatusContent } from './StatusContent';
 import { LinkPreview } from './LinkPreview';
 import type { Status } from '@/types/mastodon';
 import {
@@ -451,9 +451,8 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
 
           {/* Post content - hidden if CW active and not revealed */}
           {(!hasContentWarning || showCWContent) && displayStatus.content && (
-            <TiptapEditor
-              content={displayStatus.content}
-              editable={false}
+            <StatusContent
+              html={displayStatus.content}
               emojis={displayStatus.emojis}
               style={{
                 marginTop: 'var(--size-3)',

@@ -325,7 +325,6 @@ export function ComposerPanel({
         >
           <TiptapEditor
             content={content}
-            editable={true}
             placeholder="What's on your mind?"
             emojis={customEmojis || []}
             onUpdate={(html, text) => {

@@ -3,18 +3,15 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { MentionWithClick } from '@/lib/tiptap/extensions/MentionWithClick';
 import { Hashtag } from '@/lib/tiptap/extensions/Hashtag';
 import { CustomEmoji } from '@/lib/tiptap/extensions/CustomEmoji';
-import { ExternalLink } from '@/lib/tiptap/extensions/ExternalLink';
 import type { Emoji } from '@/types/mastodon';
 import type { SuggestionOptions } from '@tiptap/suggestion';
 
 interface TiptapEditorProps {
   content?: string;
-  editable?: boolean;
   placeholder?: string;
   emojis?: Emoji[];
   onUpdate?: (html: string, text: string) => void;
@@ -24,9 +21,14 @@ interface TiptapEditorProps {
   style?: React.CSSProperties;
 }
 
+/**
+ * Rich text editor for composing posts
+ * - WYSIWYG editing with live preview
+ * - Mention autocomplete with @ detection
+ * - Hashtag and custom emoji support
+ */
 export function TiptapEditor({
   content = '',
-  editable = true,
   placeholder = "What's on your mind?",
   emojis = [],
   onUpdate,
@@ -35,8 +37,6 @@ export function TiptapEditor({
   className,
   style,
 }: TiptapEditorProps) {
-  const router = useRouter();
-  const editorRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -47,7 +47,7 @@ export function TiptapEditor({
         // Keep paragraph, bold, italic, etc.
       }),
       Placeholder.configure({
-        placeholder: editable ? placeholder : '',
+        placeholder,
       }),
       MentionWithClick.configure({
         HTMLAttributes: {
@@ -59,18 +59,12 @@ export function TiptapEditor({
       CustomEmoji.configure({
         emojis,
       }),
-      ExternalLink.configure({
-        openOnClick: !editable, // Only auto-open in read mode
-        HTMLAttributes: {
-          class: 'external-link',
-        },
-      }),
     ],
     content,
-    editable,
+    editable: true,
     editorProps: {
       attributes: {
-        class: editable ? 'tiptap-editor-editable' : 'tiptap-editor-readonly',
+        class: 'tiptap-editor-editable',
         style: 'outline: none;',
       },
     },
@@ -97,66 +91,12 @@ export function TiptapEditor({
     }
   }, [content, editor]);
 
-  // Update editable state when prop changes
-  useEffect(() => {
-    if (editor) {
-      editor.setEditable(editable);
-    }
-  }, [editable, editor]);
-
-  // Handle clicks on mentions and hashtags in read-only mode
-  useEffect(() => {
-    if (!editor || editable) return;
-
-    const handleClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-
-      // Check for hashtags FIRST (before mentions) to prevent conflicts
-      if (target.classList.contains('hashtag') || target.closest('.hashtag')) {
-        const hashtagElement = target.classList.contains('hashtag') ? target : target.closest('.hashtag');
-        if (hashtagElement) {
-          const hashtag = hashtagElement.getAttribute('data-hashtag') || hashtagElement.textContent?.replace('#', '').trim();
-          if (hashtag) {
-            event.preventDefault();
-            event.stopPropagation();
-            router.push(`/tags/${hashtag}`);
-          }
-        }
-        return;
-      }
-
-      // Handle mention clicks (check this AFTER hashtags)
-      if (target.classList.contains('mention') || target.closest('.mention')) {
-        const mentionElement = target.classList.contains('mention') ? target : target.closest('.mention');
-        if (mentionElement) {
-          const acct = mentionElement.getAttribute('data-id') || mentionElement.textContent?.replace('@', '').trim();
-          if (acct && !acct.startsWith('#')) { // Extra safety: don't treat hashtags as mentions
-            event.preventDefault();
-            event.stopPropagation();
-            router.push(`/@${acct}`);
-          }
-        }
-        return;
-      }
-
-      // External links are handled by the extension itself
-    };
-
-    const editorElement = editorRef.current;
-    if (editorElement) {
-      editorElement.addEventListener('click', handleClick);
-      return () => {
-        editorElement.removeEventListener('click', handleClick);
-      };
-    }
-  }, [editor, editable, router]);
-
   if (!editor) {
     return null;
   }
 
   return (
-    <div ref={editorRef} className={className} style={style}>
+    <div className={className} style={style}>
       <EditorContent editor={editor} />
     </div>
   );
