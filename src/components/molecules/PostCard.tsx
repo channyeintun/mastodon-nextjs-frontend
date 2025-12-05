@@ -125,6 +125,61 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
     router.push(`/status/${displayStatus.id}/edit`);
   };
 
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const shareData = {
+      title: `Post by ${displayStatus.account.display_name || displayStatus.account.username}`,
+      text: displayStatus.text || displayStatus.content.replace(/<[^>]*>/g, ''), // Strip HTML tags
+      url: displayStatus.url || `${window.location.origin}/status/${displayStatus.id}`,
+    };
+
+    // Check if Web Share API is available
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        // User cancelled or share failed - ignore
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error);
+        }
+      }
+    } else {
+      // Fallback: copy link to clipboard
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        // Could show a toast notification here
+        alert('Link copied to clipboard!');
+      } catch (error) {
+        console.error('Failed to copy link:', error);
+      }
+    }
+  };
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't navigate if clicking on interactive elements
+    const target = e.target as HTMLElement;
+
+    // Check if clicked element or its parent is a button, link, or input
+    if (
+      target.closest('button') ||
+      target.closest('a') ||
+      target.closest('input') ||
+      target.closest('video')
+    ) {
+      return;
+    }
+
+    // Don't navigate if we're already on the status detail page
+    if (window.location.pathname === `/status/${displayStatus.id}`) {
+      return;
+    }
+
+    // Navigate to status detail page
+    router.push(`/status/${displayStatus.id}`);
+  };
+
   const handlePollChoiceToggle = (index: number) => {
     if (!displayStatus.poll) return;
 
@@ -154,7 +209,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   };
 
   return (
-    <Card padding="medium" style={style}>
+    <Card padding="medium" style={style} onClick={handleCardClick}>
       {/* Reblog indicator */}
       {isReblog && (
         <div style={{
@@ -754,11 +809,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
 
               <IconButton
                 size="small"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  // TODO: Open share menu
-                }}
+                onClick={handleShare}
                 title="Share"
               >
                 <Share size={16} />

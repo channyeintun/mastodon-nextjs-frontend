@@ -5,7 +5,7 @@ interface CardProps {
   padding?: 'none' | 'small' | 'medium' | 'large';
   hoverable?: boolean;
   style?: CSSProperties;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
