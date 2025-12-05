@@ -18,6 +18,7 @@ interface TiptapEditorProps {
   placeholder?: string;
   emojis?: Emoji[];
   onUpdate?: (html: string, text: string) => void;
+  onEditorReady?: (editor: any) => void;
   mentionSuggestion?: Omit<SuggestionOptions, 'editor'>;
   className?: string;
   style?: React.CSSProperties;
@@ -29,6 +30,7 @@ export function TiptapEditor({
   placeholder = "What's on your mind?",
   emojis = [],
   onUpdate,
+  onEditorReady,
   mentionSuggestion,
   className,
   style,
@@ -56,9 +58,6 @@ export function TiptapEditor({
       Hashtag,
       CustomEmoji.configure({
         emojis,
-        HTMLAttributes: {
-          class: 'custom-emoji',
-        },
       }),
       ExternalLink.configure({
         openOnClick: !editable, // Only auto-open in read mode
@@ -83,6 +82,13 @@ export function TiptapEditor({
       }
     },
   });
+
+  // Notify parent when editor is ready
+  useEffect(() => {
+    if (editor && onEditorReady) {
+      onEditorReady(editor);
+    }
+  }, [editor, onEditorReady]);
 
   // Update content when prop changes
   useEffect(() => {

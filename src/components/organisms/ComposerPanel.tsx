@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../atoms/Button';
 import { Card } from '../atoms/Card';
-import { useCurrentAccount } from '@/api/queries';
+import { useCurrentAccount, useCustomEmojis } from '@/api/queries';
 import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
 import { Avatar } from '../atoms/Avatar';
 import { EmojiText } from '../atoms/EmojiText';
@@ -47,8 +47,10 @@ export function ComposerPanel({
 }: ComposerPanelProps) {
   const router = useRouter();
   const { data: currentAccount } = useCurrentAccount();
+  const { data: customEmojis } = useCustomEmojis();
   const createStatusMutation = useCreateStatus();
   const updateStatusMutation = useUpdateStatus();
+  const editorRef = useRef<any>(null);
 
   const [content, setContent] = useState(initialContent);
   const [textContent, setTextContent] = useState('');
@@ -99,9 +101,10 @@ export function ComposerPanel({
   };
 
   const handleEmojiSelect = (emoji: string) => {
-    // Emoji will be inserted at cursor position in Tiptap editor
-    // For now, just append to content - Tiptap will handle cursor position
-    setContent((prev) => prev + emoji);
+    if (editorRef.current) {
+      // Insert emoji at cursor position using Tiptap commands
+      editorRef.current.chain().focus().insertContent(emoji).run();
+    }
   };
 
   const handlePost = async () => {
@@ -324,10 +327,13 @@ export function ComposerPanel({
             content={content}
             editable={true}
             placeholder="What's on your mind?"
-            emojis={currentAccount?.emojis || []}
+            emojis={customEmojis || []}
             onUpdate={(html, text) => {
               setContent(html);
               setTextContent(text);
+            }}
+            onEditorReady={(editor) => {
+              editorRef.current = editor;
             }}
             mentionSuggestion={mentionSuggestion}
           />

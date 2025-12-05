@@ -1,118 +1,85 @@
-import { Node, mergeAttributes } from '@tiptap/core';
+import { Extension } from '@tiptap/core';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import type { Emoji } from '@/types/mastodon';
 
 export interface CustomEmojiOptions {
-  HTMLAttributes: Record<string, any>;
   emojis: Emoji[];
 }
 
-declare module '@tiptap/core' {
-  interface Commands<ReturnType> {
-    customEmoji: {
-      /**
-       * Insert a custom emoji
-       */
-      insertCustomEmoji: (shortcode: string, url: string) => ReturnType;
-    };
-  }
-}
-
-export const CustomEmoji = Node.create<CustomEmojiOptions>({
+export const CustomEmoji = Extension.create<CustomEmojiOptions>({
   name: 'customEmoji',
-
-  group: 'inline',
-
-  inline: true,
-
-  atom: true,
 
   addOptions() {
     return {
-      HTMLAttributes: {},
       emojis: [],
     };
   },
 
-  addAttributes() {
-    return {
-      shortcode: {
-        default: null,
-        parseHTML: (element) => element.getAttribute('data-shortcode') || element.getAttribute('title'),
-        renderHTML: (attributes) => {
-          if (!attributes.shortcode) {
-            return {};
-          }
-
-          return {
-            'data-shortcode': attributes.shortcode,
-            title: `:${attributes.shortcode}:`,
-          };
-        },
-      },
-      url: {
-        default: null,
-        parseHTML: (element) => element.getAttribute('src'),
-        renderHTML: (attributes) => {
-          if (!attributes.url) {
-            return {};
-          }
-
-          return {
-            src: attributes.url,
-          };
-        },
-      },
-    };
-  },
-
-  parseHTML() {
+  addProseMirrorPlugins() {
     return [
-      {
-        tag: 'img.custom-emoji',
-        getAttrs: (node) => {
-          if (typeof node === 'string') return false;
-          const element = node as HTMLElement;
-          const shortcode = element.getAttribute('data-shortcode') || element.getAttribute('title')?.replace(/:/g, '');
-          const url = element.getAttribute('src');
+      new Plugin({
+        key: new PluginKey('customEmoji'),
+        props: {
+          decorations: (state) => {
+            // Only render in read-only mode
+            if (this.editor.isEditable) {
+              return DecorationSet.empty;
+            }
 
-          return shortcode && url ? { shortcode, url } : false;
+            const { doc } = state;
+            const decorations: Decoration[] = [];
+
+            // Pattern to match :emoji: syntax
+            const emojiPattern = /:([a-zA-Z0-9_]+):/g;
+
+            // Process all text nodes
+            doc.descendants((node, pos) => {
+              if (node.isText) {
+                const text = node.text || '';
+                let match;
+
+                while ((match = emojiPattern.exec(text)) !== null) {
+                  const [fullMatch, shortcode] = match;
+                  const from = pos + match.index;
+                  const to = from + fullMatch.length;
+
+                  // Find matching custom emoji - read from this.options dynamically
+                  const emoji = this.options.emojis.find((e: Emoji) => e.shortcode === shortcode);
+
+                  if (emoji) {
+                    // Create widget to show image
+                    const decoration = Decoration.widget(from, () => {
+                      const img = document.createElement('img');
+                      img.src = emoji.url;
+                      img.alt = `:${shortcode}:`;
+                      img.title = `:${shortcode}:`;
+                      img.className = 'custom-emoji';
+                      img.style.width = '1.2em';
+                      img.style.height = '1.2em';
+                      img.style.verticalAlign = 'middle';
+                      img.style.objectFit = 'contain';
+                      img.style.display = 'inline-block';
+                      return img;
+                    }, { side: -1 });
+
+                    // Hide original text
+                    const hideDecoration = Decoration.inline(from, to, {
+                      style: 'display: none',
+                    });
+
+                    decorations.push(decoration, hideDecoration);
+                  }
+                }
+              }
+
+              return true;
+            });
+
+            return DecorationSet.create(doc, decorations);
+          },
         },
-      },
+      }),
     ];
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    return [
-      'img',
-      mergeAttributes(
-        {
-          class: 'custom-emoji',
-          style: 'width: 1.2em; height: 1.2em; vertical-align: middle; object-fit: contain;',
-          alt: `:${HTMLAttributes.shortcode}:`,
-        },
-        this.options.HTMLAttributes,
-        HTMLAttributes
-      ),
-    ];
-  },
-
-  addCommands() {
-    return {
-      insertCustomEmoji:
-        (shortcode: string, url: string) =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs: {
-              shortcode,
-              url,
-            },
-          });
-        },
-    };
-  },
-
-  renderText({ node }) {
-    return `:${node.attrs.shortcode}:`;
   },
 });
