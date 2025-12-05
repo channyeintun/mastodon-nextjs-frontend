@@ -31,8 +31,8 @@ export function AccountProfileSkeleton() {
           {/* Avatar skeleton */}
           <div
             style={{
-              width: '96px',
-              height: '96px',
+              width: 'var(--size-12)',
+              height: 'var(--size-12)',
               borderRadius: '50%',
               background: 'var(--surface-3)',
               border: '4px solid var(--surface-1)',

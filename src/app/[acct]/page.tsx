@@ -196,15 +196,15 @@ export default function AccountPage({
       </div>
 
       {/* Profile Header Image */}
-      {account.header && (
-        <div style={{
-          width: '100%',
-          height: '200px',
-          background: `url(${account.header}) center/cover`,
-          borderRadius: 'var(--radius-3)',
-          marginBottom: 'calc(-1 * var(--size-8))',
-        }} />
-      )}
+      <div style={{
+        width: '100%',
+        height: '200px',
+        background: account.header
+          ? `url(${account.header}) center/cover`
+          : 'linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%)',
+        borderRadius: 'var(--radius-3)',
+        marginBottom: 'calc(-1 * var(--size-8))',
+      }} />
 
       {/* Profile Info */}
       <div style={{ padding: 'var(--size-4)', paddingTop: 'var(--size-2)' }}>
