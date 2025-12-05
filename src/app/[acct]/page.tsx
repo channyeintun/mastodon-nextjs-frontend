@@ -4,7 +4,7 @@ import { use, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
-import { useAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount } from '@/api/queries';
+import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount } from '@/api/queries';
 import { useFollowAccount, useUnfollowAccount } from '@/api/mutations';
 import { PostCard } from '@/components/molecules/PostCard';
 import { Avatar } from '@/components/atoms/Avatar';
@@ -16,15 +16,30 @@ import { EmojiText } from '@/components/atoms/EmojiText';
 export default function AccountPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ acct: string }>;
 }) {
-  const { id } = use(params);
+  const { acct: acctParam } = use(params);
 
+  // Decode URL parameter (@ becomes %40 in URLs)
+  const decodedAcct = decodeURIComponent(acctParam);
+
+  // Check if acct starts with @, if not show 404
+  if (!decodedAcct.startsWith('@')) {
+    throw new Error('Not Found');
+  }
+
+  // Remove @ prefix to get the acct handle
+  const acct = decodedAcct.slice(1);
+
+  // Lookup account by handle (acct)
   const {
     data: account,
     isLoading: accountLoading,
     isError: accountError,
-  } = useAccount(id);
+  } = useLookupAccount(acct);
+
+  // Use account.id for other queries that require IDs
+  const accountId = account?.id;
 
   const {
     data: statusPages,
@@ -32,13 +47,13 @@ export default function AccountPage({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteAccountStatuses(id);
+  } = useInfiniteAccountStatuses(accountId || '');
 
-  const { data: relationships } = useRelationships([id]);
+  const { data: relationships } = useRelationships(accountId ? [accountId] : []);
   const relationship = relationships?.[0];
 
   const { data: currentAccount } = useCurrentAccount();
-  const isOwnProfile = currentAccount?.id === id;
+  const isOwnProfile = currentAccount?.id === accountId;
 
   const followMutation = useFollowAccount();
   const unfollowMutation = useUnfollowAccount();
@@ -82,10 +97,11 @@ export default function AccountPage({
   }, [hasNextPage, fetchNextPage, uniqueStatuses.length, isFetchingNextPage, virtualItems]);
 
   const handleFollowToggle = () => {
+    if (!accountId) return;
     if (relationship?.following) {
-      unfollowMutation.mutate(id);
+      unfollowMutation.mutate(accountId);
     } else {
-      followMutation.mutate(id);
+      followMutation.mutate(accountId);
     }
   };
 

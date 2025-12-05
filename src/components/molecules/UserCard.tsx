@@ -43,7 +43,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   return (
     <Card padding="medium" hoverable style={style}>
       <Link
-        href={`/accounts/${account.id}`}
+        href={`/@${account.acct}`}
         style={{ textDecoration: 'none', display: 'block' }}
       >
         <div style={{ display: 'flex', gap: 'var(--size-3)' }}>

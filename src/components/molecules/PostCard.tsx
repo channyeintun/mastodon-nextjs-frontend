@@ -55,6 +55,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCWContent, setShowCWContent] = useState(false);
+  const [showCWMedia, setShowCWMedia] = useState(false);
   const [selectedPollChoices, setSelectedPollChoices] = useState<number[]>([]);
 
   const { data: currentAccount } = useCurrentAccount();
@@ -177,7 +178,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
       {/* Post header */}
       <div style={{ display: 'flex', gap: 'var(--size-3)', marginBottom: 'var(--size-3)' }}>
         <Link
-          href={`/accounts/${displayStatus.account.id}`}
+          href={`/@${displayStatus.account.acct}`}
           style={{ textDecoration: 'none', flexShrink: 0 }}
         >
           <Avatar
@@ -191,7 +192,7 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
             <div style={{ minWidth: 0 }}>
               <Link
-                href={`/accounts/${displayStatus.account.id}`}
+                href={`/@${displayStatus.account.acct}`}
                 style={{ textDecoration: 'none' }}
               >
                 <div style={{
@@ -392,64 +393,121 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
             />
           )}
 
-          {/* Media attachments - hidden if CW active and not revealed */}
+          {/* Media attachments - hidden initially, then shown blurred, then unblurred */}
           {(!hasContentWarning || showCWContent) && displayStatus.media_attachments.length > 0 && (
             <div style={{
               marginTop: 'var(--size-3)',
-              display: 'grid',
-              gridTemplateColumns: displayStatus.media_attachments.length === 1
-                ? '1fr'
-                : 'repeat(2, 1fr)',
-              gap: 'var(--size-2)',
-              borderRadius: 'var(--radius-2)',
-              overflow: 'hidden',
+              position: 'relative',
             }}>
-              {displayStatus.media_attachments.map((media) => (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: displayStatus.media_attachments.length === 1
+                  ? '1fr'
+                  : 'repeat(2, 1fr)',
+                gap: 'var(--size-2)',
+                borderRadius: 'var(--radius-2)',
+                overflow: 'hidden',
+                filter: hasContentWarning && !showCWMedia ? 'blur(32px)' : 'none',
+                transition: 'filter 0.2s ease',
+              }}>
+                {displayStatus.media_attachments.map((media) => (
+                  <div
+                    key={media.id}
+                    style={{
+                      position: 'relative',
+                      aspectRatio: '16/9',
+                      background: 'var(--surface-3)',
+                    }}
+                  >
+                    {media.type === 'image' && media.preview_url && (
+                      <img
+                        src={media.preview_url}
+                        alt={media.description || ''}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    )}
+                    {media.type === 'video' && media.url && (
+                      <video
+                        src={media.url}
+                        controls
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    )}
+                    {media.type === 'gifv' && media.url && (
+                      <video
+                        src={media.url}
+                        autoPlay
+                        loop
+                        muted
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Sensitive content overlay - shown after first click */}
+              {hasContentWarning && !showCWMedia && (
                 <div
-                  key={media.id}
                   style={{
-                    position: 'relative',
-                    aspectRatio: '16/9',
-                    background: 'var(--surface-3)',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    borderRadius: 'var(--radius-2)',
                   }}
                 >
-                  {media.type === 'image' && media.preview_url && (
-                    <img
-                      src={media.preview_url}
-                      alt={media.description || ''}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
-                    />
-                  )}
-                  {media.type === 'video' && media.url && (
-                    <video
-                      src={media.url}
-                      controls
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
-                    />
-                  )}
-                  {media.type === 'gifv' && media.url && (
-                    <video
-                      src={media.url}
-                      autoPlay
-                      loop
-                      muted
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
-                    />
-                  )}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowCWMedia(true);
+                    }}
+                    style={{
+                      padding: 'var(--size-3) var(--size-4)',
+                      background: 'var(--surface-2)',
+                      border: '2px solid var(--surface-4)',
+                      borderRadius: 'var(--radius-2)',
+                      color: 'var(--text-1)',
+                      fontSize: 'var(--font-size-1)',
+                      fontWeight: 'var(--font-weight-6)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--size-2)',
+                      boxShadow: 'var(--shadow-3)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'var(--surface-3)';
+                      e.currentTarget.style.borderColor = 'var(--blue-6)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'var(--surface-2)';
+                      e.currentTarget.style.borderColor = 'var(--surface-4)';
+                    }}
+                  >
+                    👁️ Click to view sensitive content
+                  </button>
                 </div>
-              ))}
+              )}
             </div>
           )}
 

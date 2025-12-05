@@ -26,6 +26,7 @@ export const queryKeys = {
   accounts: {
     all: ['accounts'] as const,
     detail: (id: string) => ['accounts', id] as const,
+    lookup: (acct: string) => ['accounts', 'lookup', acct] as const,
     statuses: (id: string, params?: object) =>
       ['accounts', id, 'statuses', params] as const,
     followers: (id: string) => ['accounts', id, 'followers'] as const,

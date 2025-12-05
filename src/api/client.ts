@@ -178,6 +178,10 @@ export class MastodonClient {
     return this.request<Account>(`/api/v1/accounts/${id}`)
   }
 
+  async lookupAccount(acct: string): Promise<Account> {
+    return this.request<Account>(`/api/v1/accounts/lookup?acct=${encodeURIComponent(acct)}`)
+  }
+
   async verifyCredentials(): Promise<Account> {
     return this.request<Account>('/api/v1/accounts/verify_credentials')
   }

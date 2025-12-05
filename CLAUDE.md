@@ -13,7 +13,7 @@ mastodon-nextjs-client/
 │   └── window.svg
 ├── src/
 │   ├── app/                   # Next.js App Router
-│   │   ├── accounts/[id]/    # Account detail pages
+│   │   ├── [acct]/           # Account detail pages (/@username or /@username@domain)
 │   │   │   └── page.tsx
 │   │   ├── auth/             # Authentication routes
 │   │   │   ├── callback/     # OAuth callback handler
@@ -89,7 +89,7 @@ Next.js App Router with file-based routing. Each folder with a `page.tsx` become
 - **`/compose`**: Create new post page
 - **`/status/[id]`**: Status detail with thread context
 - **`/bookmarks`**: Bookmarked posts
-- **`/accounts/[id]`**: User profile and posts
+- **`/[acct]`**: User profile and posts (accessed via `/@username` or `/@username@domain`, requires @ prefix)
 - **`/search`**: Search functionality
 - **`/settings`**: Account settings
 - **`/auth/signin`**: OAuth sign in
@@ -289,9 +289,22 @@ Components are organized by complexity:
 
 ### Content Warning (Spoiler Text)
 - PostCard checks for `spoiler_text` presence and trims whitespace
-- Content, media, and polls are hidden by default when CW is active
-- User can toggle visibility with "Show content" / "Hide content" button
-- Preserves user's choice during session
+- **Two-step reveal process for sensitive content**:
+
+  **Step 1 - Show Content Button**:
+  - Initial state: Content warning banner displayed, text/polls/media all hidden
+  - User clicks "Show content" button → reveals text content and polls
+  - Media appears but heavily blurred (32px blur)
+
+  **Step 2 - Media Unblur Button**:
+  - After Step 1, blurred media shown with semi-transparent overlay
+  - Overlay displays "👁️ Click to view sensitive content" button
+  - User clicks button → media unblurs with smooth transition (0.2s ease)
+
+- **Separate state management**:
+  - `showCWContent` controls text/polls visibility and media visibility
+  - `showCWMedia` controls media blur state
+- Preserves user's choices during session
 
 ### Poll Functionality
 - **Two modes in PostCard**:
@@ -338,6 +351,23 @@ const uniqueStatuses = Array.from(
 - Replaced with CSS transitions and keyframe animations
 - Fixed RefObject nullable types in hooks
 - Added null assertion for poll rendering (IIFE pattern for type narrowing)
+
+### Account Routing by Handle
+- **Route**: `/[acct]/page.tsx` - dynamic route for account profiles
+- **URL Pattern**: `/@username` or `/@username@domain.com` (requires @ prefix)
+- **Implementation**:
+  - Route folder: `/app/[acct]`
+  - Parameter validation: Checks if `acct` starts with `@`, throws error if not (shows 404)
+  - Handle extraction: Strips @ prefix, uses result for API lookup
+  - API: `lookupAccount(acct)` endpoint (`/api/v1/accounts/lookup?acct=username`)
+- **Links**: All account links use `/@${account.acct}` format
+  - PostCard: User avatar and display name
+  - UserCard: Entire card wrapper
+  - Settings: Back button navigation
+- **Benefits**:
+  - Cleaner URLs (no `/accounts` prefix)
+  - Consistent with social media conventions
+  - Supports both local (`/@user`) and remote (`/@user@instance`) handles
 
 ## Development Workflow
 

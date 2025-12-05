@@ -93,7 +93,7 @@ export default function SettingsPage() {
 
     try {
       await updateAccountMutation.mutateAsync(params);
-      router.push(`/accounts/${currentAccount?.id}`);
+      router.push(`/@${currentAccount?.acct}`);
     } catch (error) {
       console.error('Failed to update account:', error);
     }
@@ -129,7 +129,7 @@ export default function SettingsPage() {
         gap: 'var(--size-3)',
         marginBottom: 'var(--size-5)',
       }}>
-        <Link href={`/accounts/${currentAccount.id}`}>
+        <Link href={`/@${currentAccount.acct}`}>
           <IconButton>
             <ArrowLeft size={20} />
           </IconButton>

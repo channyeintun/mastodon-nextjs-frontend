@@ -64,6 +64,14 @@ export function useAccount(id: string) {
   })
 }
 
+export function useLookupAccount(acct: string) {
+  return useQuery({
+    queryKey: queryKeys.accounts.lookup(acct),
+    queryFn: () => getMastodonClient().lookupAccount(acct),
+    enabled: !!acct,
+  })
+}
+
 export function useCurrentAccount() {
   return useQuery({
     queryKey: queryKeys.accounts.current(),
