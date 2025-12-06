@@ -25,8 +25,6 @@ export default function SignInPage() {
     try {
       // Normalize instance URL
       const normalizedURL = normalizeInstanceURL(instanceURL);
-      authStore.setInstance(normalizedURL);
-
       // Create axios client for this specific instance
       const instanceClient = axios.create({
         baseURL: normalizedURL.replace(/\/$/, ''),
@@ -43,7 +41,8 @@ export default function SignInPage() {
         website: typeof window !== 'undefined' ? window.location.origin : undefined,
       });
 
-      // Store client credentials
+      // Store instance URL and client credentials only after success
+      authStore.setInstance(normalizedURL);
       authStore.setClientCredentials(app.client_id, app.client_secret);
 
       // Generate authorization URL and redirect

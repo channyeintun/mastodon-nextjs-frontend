@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Bookmark, Search, Settings } from 'lucide-react';
+import { Home, PenSquare, Bookmark, Search, Settings, Coffee } from 'lucide-react';
 
 interface NavigationProps {
   isAuthenticated: boolean;
@@ -63,6 +63,18 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
               Sign In
             </Link>
           )}
+
+          <a
+            href="https://buymeacoffee.com/channyeintun"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="navigation-sidebar-link"
+          >
+            <div className="navigation-link-icon">
+              <Coffee size={24} />
+            </div>
+            <span className="navigation-link-label">Buy me a coffee</span>
+          </a>
         </div>
       </aside>
 
