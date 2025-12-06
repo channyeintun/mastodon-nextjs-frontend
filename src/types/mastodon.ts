@@ -237,6 +237,7 @@ export interface CreateStatusParams {
   visibility?: 'public' | 'unlisted' | 'private' | 'direct'
   quote_approval_policy?: 'public' | 'followers' | 'nobody'
   language?: string
+  quoted_status_id?: string
 }
 
 export interface CreateAppParams {

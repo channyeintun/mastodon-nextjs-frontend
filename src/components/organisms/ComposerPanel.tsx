@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect, Activity } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCurrentAccount, useCustomEmojis } from '@/api/queries';
+import { useCurrentAccount, useCustomEmojis, useStatus } from '@/api/queries';
 import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
+import { PostCard } from '../molecules/PostCard';
 import { Avatar } from '../atoms/Avatar';
 import { EmojiText } from '../atoms/EmojiText';
 import { MediaUpload } from '../molecules/MediaUpload';
@@ -40,6 +41,7 @@ interface ComposerPanelProps {
   initialSensitive?: boolean;
   inReplyToId?: string;
   isReply?: boolean;
+  quotedStatusId?: string;
 }
 
 export function ComposerPanel({
@@ -51,6 +53,7 @@ export function ComposerPanel({
   initialSensitive = false,
   inReplyToId,
   isReply = false,
+  quotedStatusId,
 }: ComposerPanelProps) {
   const router = useRouter();
   const { data: currentAccount } = useCurrentAccount();
@@ -68,6 +71,8 @@ export function ComposerPanel({
   // Initialize from props, or default to public. We'll update from account preferences below.
   const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>('public');
   const [hasInitializedQuotePolicy, setHasInitializedQuotePolicy] = useState(false);
+
+  const { data: quotedStatus } = useStatus(quotedStatusId || '');
 
   // Quote policy is forced to 'nobody' if visibility is private or direct, OR if this is a reply (per user request)
   const isQuotePolicyDisabled = visibility === 'private' || visibility === 'direct' || isReply;
@@ -156,6 +161,7 @@ export function ComposerPanel({
       visibility,
       quote_approval_policy: quoteVisibility, // Pass valid API value
       in_reply_to_id: inReplyToId,
+      quoted_status_id: quotedStatusId,
     };
 
     if (showCWInput && contentWarning.trim()) {
@@ -452,6 +458,18 @@ export function ComposerPanel({
           </div>
         </div>
       </div>
+
+      {/* Quote Preview - Below Compose Panel */}
+      {quotedStatus && (
+        <div style={{
+          marginTop: 'var(--size-4)',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          opacity: 0.8
+        }}>
+          <PostCard status={quotedStatus} hideActions />
+        </div>
+      )}
     </div>
   );
 }

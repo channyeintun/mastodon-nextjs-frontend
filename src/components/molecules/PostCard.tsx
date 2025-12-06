@@ -45,6 +45,7 @@ interface PostCardProps {
   status: Status;
   showThread?: boolean;
   style?: CSSProperties;
+  hideActions?: boolean;
 }
 
 function formatRelativeTime(dateString: string): string {
@@ -67,10 +68,11 @@ const VISIBILITY_ICONS = {
   direct: <Mail size={14} />,
 };
 
-export function PostCard({ status, showThread = false, style }: PostCardProps) {
+export function PostCard({ status, showThread = false, style, hideActions = false }: PostCardProps) {
   const router = useRouter();
   const authStore = useAuthStore();
   const [showMenu, setShowMenu] = useState(false);
+  const [showBoostMenu, setShowBoostMenu] = useState(false);
   const [showCWContent, setShowCWContent] = useState(false);
   const [showCWMedia, setShowCWMedia] = useState(false);
   const [selectedPollChoices, setSelectedPollChoices] = useState<number[]>([]);
@@ -109,12 +111,27 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const handleReblog = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setShowBoostMenu(!showBoostMenu);
+  };
+
+  const confirmReblog = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowBoostMenu(false);
 
     if (displayStatus.reblogged) {
       unreblogMutation.mutate(displayStatus.id);
     } else {
       reblogMutation.mutate(displayStatus.id);
     }
+  };
+
+  const handleQuote = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowBoostMenu(false);
+
+    router.push(`/compose?quoted_status_id=${displayStatus.id}`);
   };
 
   const handleBookmark = (e: React.MouseEvent) => {
@@ -811,72 +828,166 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
           })()}
 
           {/* Action bar */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-1)',
-            marginTop: 'var(--size-3)',
-          }}>
-            <IconButton
-              size="small"
-              onClick={handleReply}
-              title="Reply"
-            >
-              <MessageCircle size={16} />
-            </IconButton>
-            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-              {displayStatus.replies_count}
-            </span>
-
-            <IconButton
-              size="small"
-              onClick={handleReblog}
-              style={{
-                color: displayStatus.reblogged ? 'var(--green-6)' : undefined
-              }}
-              title={displayStatus.reblogged ? 'Undo boost' : 'Boost'}
-            >
-              <Repeat2 size={16} />
-            </IconButton>
-            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-              {displayStatus.reblogs_count}
-            </span>
-
-            <IconButton
-              size="small"
-              onClick={handleFavourite}
-              style={{
-                color: displayStatus.favourited ? 'var(--red-6)' : undefined
-              }}
-              title={displayStatus.favourited ? 'Unfavourite' : 'Favourite'}
-            >
-              <Heart size={16} fill={displayStatus.favourited ? 'currentColor' : 'none'} />
-            </IconButton>
-            <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-              {displayStatus.favourites_count}
-            </span>
-
-            <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--size-1)' }}>
+          {!hideActions && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--size-1)',
+              marginTop: 'var(--size-3)',
+            }}>
               <IconButton
                 size="small"
-                onClick={handleBookmark}
+                onClick={handleReply}
+                title="Reply"
+              >
+                <MessageCircle size={16} />
+              </IconButton>
+              <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
+                {displayStatus.replies_count}
+              </span>
+
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <IconButton
+                  size="small"
+                  onClick={handleReblog}
+                  style={{
+                    color: displayStatus.reblogged ? 'var(--green-6)' : undefined
+                  }}
+                  title={displayStatus.reblogged ? 'Undo boost' : 'Boost'}
+                >
+                  <Repeat2 size={16} />
+                </IconButton>
+                {showBoostMenu && (
+                  <>
+                    <div
+                      style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        zIndex: 40,
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowBoostMenu(false);
+                      }}
+                    />
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        marginBottom: 'var(--size-2)',
+                        background: 'var(--surface-2)',
+                        borderRadius: 'var(--radius-2)',
+                        boxShadow: 'var(--shadow-4)',
+                        padding: 'var(--size-2)',
+                        minWidth: '150px',
+                        zIndex: 50,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 'var(--size-1)',
+                      }}
+                    >
+                      <button
+                        onClick={confirmReblog}
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 'var(--size-2)',
+                          padding: 'var(--size-2)',
+                          border: 'none',
+                          background: 'transparent',
+                          borderRadius: 'var(--radius-2)',
+                          cursor: 'pointer',
+                          color: displayStatus.reblogged ? 'var(--green-6)' : 'var(--text-1)',
+                          fontSize: 'var(--font-size-1)',
+                          whiteSpace: 'nowrap',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'var(--surface-3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                        }}
+                      >
+                        <Repeat2 size={16} />
+                        <span>{displayStatus.reblogged ? 'Undo Boost' : 'Boost'}</span>
+                      </button>
+                      <button
+                        onClick={handleQuote}
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 'var(--size-2)',
+                          padding: 'var(--size-2)',
+                          border: 'none',
+                          background: 'transparent',
+                          borderRadius: 'var(--radius-2)',
+                          cursor: 'pointer',
+                          color: 'var(--text-1)',
+                          fontSize: 'var(--font-size-1)',
+                          whiteSpace: 'nowrap',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'var(--surface-3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                        }}
+                      >
+                        <MessageSquareQuote size={16} />
+                        <span>Quote</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+              <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
+                {displayStatus.reblogs_count}
+              </span>
+
+              <IconButton
+                size="small"
+                onClick={handleFavourite}
                 style={{
-                  color: displayStatus.bookmarked ? 'var(--blue-6)' : undefined
+                  color: displayStatus.favourited ? 'var(--red-6)' : undefined
                 }}
-                title={displayStatus.bookmarked ? 'Remove bookmark' : 'Bookmark'}
+                title={displayStatus.favourited ? 'Unfavourite' : 'Favourite'}
               >
-                <Bookmark size={16} fill={displayStatus.bookmarked ? 'currentColor' : 'none'} />
+                <Heart size={16} fill={displayStatus.favourited ? 'currentColor' : 'none'} />
               </IconButton>
+              <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
+                {displayStatus.favourites_count}
+              </span>
 
-              <IconButton
-                size="small"
-                onClick={handleShare}
-                title="Share"
-              >
-                <Share size={16} />
-              </IconButton>
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--size-1)' }}>
+                <IconButton
+                  size="small"
+                  onClick={handleBookmark}
+                  style={{
+                    color: displayStatus.bookmarked ? 'var(--blue-6)' : undefined
+                  }}
+                  title={displayStatus.bookmarked ? 'Remove bookmark' : 'Bookmark'}
+                >
+                  <Bookmark size={16} fill={displayStatus.bookmarked ? 'currentColor' : 'none'} />
+                </IconButton>
+
+                <IconButton
+                  size="small"
+                  onClick={handleShare}
+                  title="Share"
+                >
+                  <Share size={16} />
+                </IconButton>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
