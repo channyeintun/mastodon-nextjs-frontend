@@ -7,6 +7,7 @@ import { useInfiniteHomeTimeline, useInfiniteTrendingStatuses, useCurrentAccount
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
+import { EmojiText } from '@/components/atoms/EmojiText';
 import { Button } from '@/components/atoms/Button';
 import { Plus, TrendingUp } from 'lucide-react';
 import type { Status } from '@/types/mastodon';
@@ -74,7 +75,9 @@ const TimelinePage = observer(() => {
                   alt={user.display_name}
                   className="profile-pill-avatar"
                 />
-                <span className="profile-pill-name">{user.display_name}</span>
+                <span className="profile-pill-name">
+                  <EmojiText text={user.display_name} emojis={user.emojis} />
+                </span>
               </>
             ) : (
               <>
@@ -154,7 +157,9 @@ const TimelinePage = observer(() => {
                 alt={user.display_name}
                 className="profile-pill-avatar"
               />
-              <span className="profile-pill-name">{user.display_name}</span>
+              <span className="profile-pill-name">
+                <EmojiText text={user.display_name} emojis={user.emojis} />
+              </span>
             </>
           ) : (
             <>
