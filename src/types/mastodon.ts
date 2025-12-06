@@ -84,6 +84,21 @@ export interface Account {
   discoverable?: boolean
   suspended?: boolean
   limited?: boolean
+
+  // Source
+  source?: {
+    privacy: 'public' | 'unlisted' | 'private' | 'direct'
+    sensitive: boolean
+    language: string | null
+    note: string
+    fields: Field[]
+    follow_requests_count?: number
+    hide_collections?: boolean
+    discoverable?: boolean
+    indexable?: boolean
+    attribution_domains?: string[]
+    quote_policy?: 'public' | 'followers' | 'nobody'
+  }
 }
 
 export interface Context {
@@ -220,6 +235,7 @@ export interface CreateStatusParams {
   sensitive?: boolean
   spoiler_text?: string
   visibility?: 'public' | 'unlisted' | 'private' | 'direct'
+  quote_approval_policy?: 'public' | 'followers' | 'nobody'
   language?: string
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, Activity } from 'react';
+import { useState, useRef, useEffect, Activity } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis } from '@/api/queries';
 import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
@@ -12,7 +12,7 @@ import { EmojiPicker } from './EmojiPicker';
 import { TiptapEditor } from '../atoms/TiptapEditor';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
-import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2 } from 'lucide-react';
+import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2, MessageSquareQuote } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types/mastodon';
 
 const MAX_CHAR_COUNT = 500;
@@ -24,6 +24,14 @@ const visibilityOptions: Array<{ value: Visibility; label: string; icon: typeof 
   { value: 'unlisted', label: 'Unlisted', icon: Lock, description: 'Not shown in public timelines' },
   { value: 'private', label: 'Followers only', icon: Users, description: 'Only visible to followers' },
   { value: 'direct', label: 'Direct', icon: Mail, description: 'Only mentioned users' },
+];
+
+type QuoteVisibility = 'public' | 'followers' | 'nobody';
+
+const quoteVisibilityOptions: Array<{ value: QuoteVisibility; label: string; icon: typeof MessageSquareQuote; description: string }> = [
+  { value: 'public', label: 'Everyone can quote', icon: Globe, description: 'Visible to everyone' },
+  { value: 'followers', label: 'Followers only', icon: Users, description: 'Only visible to followers' },
+  { value: 'nobody', label: 'No quotes', icon: Lock, description: 'No one can quote' },
 ];
 
 interface ComposerPanelProps {
@@ -54,6 +62,24 @@ export function ComposerPanel({
   const [textContent, setTextContent] = useState('');
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
   const [showVisibilityMenu, setShowVisibilityMenu] = useState(false);
+  // Initialize from props, or default to public. We'll update from account preferences below.
+  const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>('public');
+  const [showQuoteVisibilityMenu, setShowQuoteVisibilityMenu] = useState(false);
+  const [hasInitializedQuotePolicy, setHasInitializedQuotePolicy] = useState(false);
+
+  // Quote policy is forced to 'nobody' if visibility is private or direct
+  const isQuotePolicyDisabled = visibility === 'private' || visibility === 'direct';
+
+  useEffect(() => {
+    if (isQuotePolicyDisabled) {
+      setQuoteVisibility('nobody');
+      setShowQuoteVisibilityMenu(false); // Close menu if open
+    } else if (!hasInitializedQuotePolicy && currentAccount?.source?.quote_policy) {
+      // Initialize from account settings if not disabled and not yet initialized
+      setQuoteVisibility(currentAccount.source.quote_policy);
+      setHasInitializedQuotePolicy(true);
+    }
+  }, [visibility, isQuotePolicyDisabled, currentAccount, hasInitializedQuotePolicy]);
   const [contentWarning, setContentWarning] = useState(initialSpoilerText);
   const [showCWInput, setShowCWInput] = useState(!!initialSpoilerText);
   const [sensitive, setSensitive] = useState(initialSensitive);
@@ -70,6 +96,9 @@ export function ComposerPanel({
 
   const currentVisibility = visibilityOptions.find((v) => v.value === visibility);
   const VisibilityIcon = currentVisibility?.icon || Globe;
+
+  const currentQuoteVisibility = quoteVisibilityOptions.find((v) => v.value === quoteVisibility);
+  const QuoteVisibilityIcon = MessageSquareQuote;
 
   // Create mention suggestion config for Tiptap
   const mentionSuggestion = createMentionSuggestion();
@@ -124,6 +153,7 @@ export function ComposerPanel({
     const params: CreateStatusParams = {
       status: textContent,
       visibility,
+      quote_approval_policy: quoteVisibility, // Pass valid API value
     };
 
     if (showCWInput && contentWarning.trim()) {
@@ -274,6 +304,92 @@ export function ComposerPanel({
                 </>
               )}
             </div>
+
+            {/* Quote visibility selector */}
+            <div style={{ position: 'relative', marginLeft: 'var(--size-3)' }}>
+              <button
+                className="compose-visibility-selector"
+                onClick={() => !isQuotePolicyDisabled && setShowQuoteVisibilityMenu(!showQuoteVisibilityMenu)}
+                title={isQuotePolicyDisabled ? "Quotes disabled for private/direct posts" : "Who can quote"}
+                type="button"
+                disabled={isQuotePolicyDisabled}
+                style={{
+                  padding: 0,
+                  background: 'transparent',
+                  color: isQuotePolicyDisabled ? 'var(--text-3)' : 'var(--text-2)',
+                  fontSize: 'var(--font-size-1)',
+                  marginTop: '2px',
+                  cursor: isQuotePolicyDisabled ? 'not-allowed' : 'pointer',
+                  opacity: isQuotePolicyDisabled ? 0.6 : 1,
+                }}
+              >
+                <QuoteVisibilityIcon size={14} />
+                <span>{currentQuoteVisibility?.label}</span>
+              </button>
+
+              {showQuoteVisibilityMenu && (
+                <>
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 40,
+                    }}
+                    onClick={() => setShowQuoteVisibilityMenu(false)}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      marginTop: 'var(--size-2)',
+                      background: 'var(--surface-2)',
+                      borderRadius: 'var(--radius-3)',
+                      boxShadow: 'var(--shadow-4)',
+                      padding: 'var(--size-2)',
+                      minWidth: '220px',
+                      zIndex: 50,
+                      border: '1px solid var(--surface-3)',
+                    }}
+                  >
+                    {quoteVisibilityOptions.map((option) => {
+                      const Icon = option.icon;
+                      return (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            setQuoteVisibility(option.value);
+                            setShowQuoteVisibilityMenu(false);
+                          }}
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 'var(--size-3)',
+                            padding: 'var(--size-2) var(--size-3)',
+                            border: 'none',
+                            background: quoteVisibility === option.value ? 'var(--surface-3)' : 'transparent',
+                            borderRadius: 'var(--radius-2)',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                          }}
+                        >
+                          <Icon size={18} style={{ color: quoteVisibility === option.value ? 'var(--blue-6)' : 'var(--text-2)' }} />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)', fontSize: 'var(--font-size-1)' }}>
+                              {option.label}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -391,7 +507,7 @@ export function ComposerPanel({
                 />
               </Activity>}
             </div>
-            
+
             {/* Media Button */}
             <button
               className="compose-tool-btn"
