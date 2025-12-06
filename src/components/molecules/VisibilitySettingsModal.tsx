@@ -8,6 +8,7 @@ export type QuoteVisibility = 'public' | 'followers' | 'nobody';
 interface VisibilitySettingsModalProps {
     initialVisibility: Visibility;
     initialQuoteVisibility: QuoteVisibility;
+    isReply?: boolean;
     onSave: (visibility: Visibility, quoteVisibility: QuoteVisibility) => void;
     onClose: () => void;
 }
@@ -131,6 +132,7 @@ const CustomSingleValue = (props: SingleValueProps<OptionType, false>) => {
 export function VisibilitySettingsModal({
     initialVisibility,
     initialQuoteVisibility,
+    isReply = false,
     onSave,
     onClose,
 }: VisibilitySettingsModalProps) {
@@ -139,10 +141,10 @@ export function VisibilitySettingsModal({
 
     // Auto-update quote visibility constraints
     useEffect(() => {
-        if (visibility === 'private' || visibility === 'direct') {
+        if (visibility === 'private' || visibility === 'direct' || isReply) {
             setQuoteVisibility('nobody');
         }
-    }, [visibility]);
+    }, [visibility, isReply]);
 
     const visibilityOptions: OptionType[] = [
         { value: 'public', label: 'Public', description: 'Anyone on and off Mastodon', icon: Globe },
@@ -157,7 +159,7 @@ export function VisibilitySettingsModal({
         { value: 'nobody', label: 'Just me', description: 'No one else can quote', icon: Lock },
     ];
 
-    const isQuoteDisabled = visibility === 'private' || visibility === 'direct';
+    const isQuoteDisabled = visibility === 'private' || visibility === 'direct' || isReply;
 
     return (
         <div style={{

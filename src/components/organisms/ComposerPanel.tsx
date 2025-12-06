@@ -38,6 +38,8 @@ interface ComposerPanelProps {
   initialSpoilerText?: string;
   initialVisibility?: Visibility;
   initialSensitive?: boolean;
+  inReplyToId?: string;
+  isReply?: boolean;
 }
 
 export function ComposerPanel({
@@ -47,6 +49,8 @@ export function ComposerPanel({
   initialSpoilerText = '',
   initialVisibility = 'public',
   initialSensitive = false,
+  inReplyToId,
+  isReply = false,
 }: ComposerPanelProps) {
   const router = useRouter();
   const { data: currentAccount } = useCurrentAccount();
@@ -65,8 +69,8 @@ export function ComposerPanel({
   const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>('public');
   const [hasInitializedQuotePolicy, setHasInitializedQuotePolicy] = useState(false);
 
-  // Quote policy is forced to 'nobody' if visibility is private or direct
-  const isQuotePolicyDisabled = visibility === 'private' || visibility === 'direct';
+  // Quote policy is forced to 'nobody' if visibility is private or direct, OR if this is a reply (per user request)
+  const isQuotePolicyDisabled = visibility === 'private' || visibility === 'direct' || isReply;
 
   useEffect(() => {
     if (isQuotePolicyDisabled) {
@@ -151,6 +155,7 @@ export function ComposerPanel({
       status: textContent,
       visibility,
       quote_approval_policy: quoteVisibility, // Pass valid API value
+      in_reply_to_id: inReplyToId,
     };
 
     if (showCWInput && contentWarning.trim()) {
@@ -203,61 +208,65 @@ export function ComposerPanel({
 
   return (
     <div>
-      {/* Header with avatar and visibility */}
-      <div className="compose-header">
-        <Avatar
-          src={currentAccount.avatar}
-          alt={currentAccount.display_name || currentAccount.username}
-          size="medium"
-        />
-        <div className="compose-user-info">
-          <div className="compose-user-details">
-            <div style={{ fontWeight: 'var(--font-weight-7)', fontSize: 'var(--font-size-2)' }}>
-              <EmojiText
-                text={currentAccount.display_name || currentAccount.username}
-                emojis={currentAccount.emojis}
-              />
-            </div>
+      {/* Header with avatar and visibility - Only show if not a reply */}
+      {!isReply && (
+        <div className="compose-header">
+          <Avatar
+            src={currentAccount.avatar}
+            alt={currentAccount.display_name || currentAccount.username}
+            size="medium"
+          />
+          <div className="compose-user-info">
+            <div className="compose-user-details">
+              <div style={{ fontWeight: 'var(--font-weight-7)', fontSize: 'var(--font-size-2)' }}>
+                <EmojiText
+                  text={currentAccount.display_name || currentAccount.username}
+                  emojis={currentAccount.emojis}
+                />
+              </div>
 
-            {/* Visibility Settings Trigger Button */}
-            <div style={{ marginTop: '4px' }}>
-              <button
-                className="compose-visibility-selector"
-                onClick={() => setShowVisibilitySettingsModal(true)}
-                title="Adjust visibility and interaction"
-                type="button"
-                style={{
-                  padding: 0,
-                  background: 'transparent',
-                  color: 'var(--text-2)',
-                  fontSize: 'var(--font-size-1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  cursor: 'pointer',
-                  border: 'none',
-                }}
-              >
-                <VisibilityIcon size={16} />
-                <span style={{ fontWeight: 500 }}>{currentVisibility?.label}</span>
-              </button>
+              {/* Visibility Settings Trigger Button */}
+              <div style={{ marginTop: '4px' }}>
+                <button
+                  className="compose-visibility-selector"
+                  onClick={() => setShowVisibilitySettingsModal(true)}
+                  title="Adjust visibility and interaction"
+                  type="button"
+                  style={{
+                    padding: 0,
+                    background: 'transparent',
+                    color: 'var(--text-2)',
+                    fontSize: 'var(--font-size-1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    border: 'none',
+                  }}
+                >
+                  <VisibilityIcon size={16} />
+                  <span style={{ fontWeight: 500 }}>{currentVisibility?.label}</span>
+                </button>
+              </div>
             </div>
-
-            <Activity mode={showVisibilitySettingsModal ? 'visible' : 'hidden'}>
-              <VisibilitySettingsModal
-                initialVisibility={visibility}
-                initialQuoteVisibility={quoteVisibility}
-                onClose={() => setShowVisibilitySettingsModal(false)}
-                onSave={(newVisibility, newQuoteVisibility) => {
-                  setVisibility(newVisibility);
-                  setQuoteVisibility(newQuoteVisibility);
-                  setShowVisibilitySettingsModal(false);
-                }}
-              />
-            </Activity>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Visibility Modal - Render independent of header */}
+      <Activity mode={showVisibilitySettingsModal ? 'visible' : 'hidden'}>
+        <VisibilitySettingsModal
+          initialVisibility={visibility}
+          initialQuoteVisibility={quoteVisibility}
+          isReply={isReply}
+          onClose={() => setShowVisibilitySettingsModal(false)}
+          onSave={(newVisibility, newQuoteVisibility) => {
+            setVisibility(newVisibility);
+            setQuoteVisibility(newQuoteVisibility);
+            setShowVisibilitySettingsModal(false);
+          }}
+        />
+      </Activity>
 
       {/* Content Warning */}
       {showCWInput && (
@@ -308,8 +317,9 @@ export function ComposerPanel({
       {/* Editor - Minimalist */}
       <div className="compose-editor-area">
         <TiptapEditor
+          className={isReply ? "tiptap-editor-compact" : ""}
           content={content}
-          placeholder="What's on your mind?"
+          placeholder={isReply ? "Post your reply" : "What's on your mind?"}
           emojis={customEmojis || []}
           onUpdate={(html, text) => {
             setContent(html);
@@ -408,6 +418,18 @@ export function ComposerPanel({
             >
               <span style={{ fontSize: '14px' }}>CW</span>
             </button>
+
+            {/* Visibility Button (Only shown in toolbar if it's a reply) */}
+            {isReply && (
+              <button
+                className="compose-tool-btn"
+                type="button"
+                onClick={() => setShowVisibilitySettingsModal(true)}
+                title={`Visibility: ${currentVisibility?.label}`}
+              >
+                <VisibilityIcon size={22} />
+              </button>
+            )}
           </div>
 
           <div className="compose-action-row" style={{ gap: 'var(--size-3)' }}>
@@ -425,7 +447,7 @@ export function ComposerPanel({
               onClick={handlePost}
               disabled={!canPost}
             >
-              {editMode ? 'Update' : 'Publish'}
+              {editMode ? 'Update' : (isReply ? 'Reply' : 'Publish')}
             </button>
           </div>
         </div>

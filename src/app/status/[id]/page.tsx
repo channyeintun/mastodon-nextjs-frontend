@@ -8,6 +8,7 @@ import { PostCard } from '@/components/molecules/PostCard';
 import { PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
+import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 
 export default function StatusPage({
   params,
@@ -176,9 +177,26 @@ export default function StatusPage({
           border: '2px solid var(--blue-6)',
           borderRadius: 'var(--radius-3)',
           overflow: 'hidden',
-          marginBottom: 'var(--size-4)',
+          marginBottom: 'var(--size-3)', // Reduced margin here as reply box follows
         }}>
           <PostCard status={status} />
+        </div>
+
+        {/* Reply Composer - Comment Box Style */}
+        <div style={{
+          marginBottom: 'var(--size-4)',
+          border: '1px solid var(--surface-3)',
+          borderRadius: 'var(--radius-3)',
+          background: 'var(--surface-2)', // Slightly different bg for contrast
+          padding: 'var(--size-3)',
+        }}>
+          <ComposerPanel
+            key={`reply-${status.id}`}
+            initialVisibility={status.visibility}
+            initialContent={`<span data-type="mention" class="mention" data-id="${status.account.acct}" data-label="${status.account.acct}">@${status.account.acct}</span> `}
+            inReplyToId={status.id}
+            isReply={true}
+          />
         </div>
 
         {/* Descendants (replies) */}

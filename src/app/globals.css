@@ -146,6 +146,11 @@ a {
   padding: var(--size-3);
 }
 
+.tiptap-editor-compact .tiptap-editor-editable {
+  min-height: 60px;
+  padding: var(--size-2) 0;
+}
+
 .tiptap-editor-readonly {
   padding: 0;
 }
@@ -588,6 +593,14 @@ body {
   /* Larger, more readable */
   line-height: var(--font-lineheight-3);
   outline: none;
+}
+
+/* Compact mode for reply box */
+.compose-editor-area .tiptap-editor-compact .ProseMirror,
+.compose-editor-area .tiptap-editor-compact .tiptap-editor-editable {
+  min-height: 60px !important;
+  /* Force override of the 200px rule above */
+  padding: var(--size-2) 0;
 }
 
 .compose-editor-area .ProseMirror p.is-editor-empty:first-child::before {

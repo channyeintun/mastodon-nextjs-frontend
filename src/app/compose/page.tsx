@@ -3,10 +3,14 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import AuthGuard from '@/components/organisms/AuthGuard';
+import { useSearchParams } from 'next/navigation';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 import { IconButton } from '@/components/atoms/IconButton';
 
 export default function ComposePage() {
+  const searchParams = useSearchParams();
+  const initialText = searchParams.get('text') || '';
+
   return (
     <AuthGuard>
       <div className="compose-page-container">
@@ -27,7 +31,7 @@ export default function ComposePage() {
           </div>
 
           {/* Composer */}
-          <ComposerPanel />
+          <ComposerPanel initialContent={initialText} />
         </div>
       </div>
     </AuthGuard>
