@@ -104,7 +104,7 @@ export default function BookmarksPage() {
         </div>
 
         {/* Empty state */}
-        <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+        <div style={{ display: 'grid', placeItems: 'center', marginTop: 'var(--size-8)' }}>
           <BookmarkIcon size={48} style={{ color: 'var(--text-3)', marginBottom: 'var(--size-4)' }} />
           <h2 style={{ marginBottom: 'var(--size-3)' }}>No Bookmarks Yet</h2>
           <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>
