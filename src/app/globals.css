@@ -675,3 +675,11 @@ body {
   background: var(--surface-3);
   color: var(--text-1);
 }
+
+.emoji-picker {
+  position: absolute;
+  position-anchor: --emoji-anchor;
+  position-area: top;
+  position-try-fallbacks: flip-block;
+  translate: -40% 0;
+}

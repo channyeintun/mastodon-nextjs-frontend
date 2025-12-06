@@ -44,29 +44,10 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 40,
-        }}
-        onClick={onClose}
-      />
-
       {/* Picker */}
       <div
-        style={{
-          position: 'absolute',
-          bottom: '100%',
-          left: 0,
-          marginBottom: 'var(--size-2)',
-          zIndex: 50,
-        }}
-        onClick={(e) => e.stopPropagation()}
+        className='emoji-picker'
+        onClick={onClose}
       >
         <EmojiPickerReact
           onEmojiClick={handleEmojiClick}

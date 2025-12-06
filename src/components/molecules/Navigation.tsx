@@ -14,7 +14,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/compose', label: 'Compose', icon: PenSquare },
+    { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/bookmarks', label: 'Bookmarks', icon: Bookmark },
     { href: '/search', label: 'Search', icon: Search },
     { href: '/settings', label: 'Settings', icon: Settings },

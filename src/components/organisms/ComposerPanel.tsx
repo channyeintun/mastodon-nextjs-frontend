@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, Activity } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis } from '@/api/queries';
 import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
@@ -397,18 +397,21 @@ export function ComposerPanel({
             <div style={{ position: 'relative' }}>
               <button
                 className="compose-tool-btn"
+                style={{
+                  anchorName: '--emoji-anchor'
+                }}
                 type="button"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                 title="Add emoji"
               >
                 <Smile size={22} />
               </button>
-              {showEmojiPicker && (
+              {<Activity mode={showEmojiPicker ? 'visible' : 'hidden'} >
                 <EmojiPicker
                   onEmojiSelect={handleEmojiSelect}
                   onClose={() => setShowEmojiPicker(false)}
                 />
-              )}
+              </Activity>}
             </div>
 
             {/* Content Warning toggle */}
