@@ -216,6 +216,8 @@ export default function StatusPage({
             textAlign: 'center',
             padding: 'var(--size-8) var(--size-4)',
             color: 'var(--text-2)',
+            display: 'grid',
+            justifyContent: 'center',
           }}>
             <p>No replies yet.</p>
             <p style={{ fontSize: 'var(--font-size-0)', marginTop: 'var(--size-2)' }}>
