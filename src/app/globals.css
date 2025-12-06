@@ -6,6 +6,7 @@
 @import "open-props/open-props.min.css";
 @import "open-props/normalize.min.css";
 @import "open-props/buttons.min.css";
+@import "open-props/animations.min.css";
 
 :root {
   --app-max-width: 1200px;
@@ -171,7 +172,7 @@ a {
   bottom: 0;
   width: var(--app-sidebar-width);
   background: var(--surface-1);
-  border-right: 1px solid var(--gray-3);
+  border-right: 1px solid var(--surface-2);
   z-index: 30;
   overflow-y: auto;
   flex-direction: column;
@@ -179,8 +180,8 @@ a {
 
 /* Sidebar Header (Logo) */
 .navigation-sidebar-header {
-  padding: var(--size-5);
-  border-bottom: 1px solid var(--gray-3);
+  padding: var(--size-6) var(--size-5);
+  border-bottom: 1px solid transparent;
 }
 
 .navigation-sidebar-logo {
@@ -200,14 +201,14 @@ a {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--size-2);
-  padding: var(--size-5);
+  gap: var(--size-1);
+  padding: var(--size-3) var(--size-4);
 }
 
 /* Sidebar Footer (User Info / Auth) */
 .navigation-sidebar-footer {
   padding: var(--size-5);
-  border-top: 1px solid var(--gray-3);
+  border-top: 1px solid var(--surface-2);
   display: flex;
   flex-direction: column;
   gap: var(--size-3);
@@ -257,17 +258,17 @@ a {
 
 .navigation-sidebar-link:hover {
   color: var(--text-1);
-  background: var(--surface-3);
+  background: var(--surface-2);
 }
 
 .navigation-sidebar-link.active {
   color: var(--blue-6);
-  background: var(--blue-2);
+  background: var(--blue-0);
+  font-weight: var(--font-weight-7);
 }
 
 .navigation-sidebar-link.pending {
-  opacity: 0.6;
-  pointer-events: none;
+  animation: var(--animation-blink);
 }
 
 /* Bottom Navigation (Mobile) */
@@ -319,9 +320,12 @@ a {
   color: var(--blue-6);
 }
 
+.navigation-sidebar-link:has(.pending){
+  animation: var(--animation-pulse);
+}
+
 .navigation-bottom-link.pending {
   opacity: 0.6;
-  pointer-events: none;
 }
 
 /* Navigation link icon container */
@@ -341,25 +345,6 @@ a {
   font-size: var(--font-size-2);
 }
 
-/* Navigation link spinner (shown during pending state) */
-.navigation-link-spinner {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--surface-3);
-  border-top-color: var(--blue-6);
-  border-radius: 50%;
-  animation: navigation-spin 0.6s linear infinite;
-}
-
-@keyframes navigation-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 /* ====================================
    Responsive Breakpoints
