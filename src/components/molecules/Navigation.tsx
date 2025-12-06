@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Bookmark, Search, Settings, Coffee } from 'lucide-react';
+import { Home, PenSquare, Bookmark, Search, Settings, Coffee, Github } from 'lucide-react';
 
 interface NavigationProps {
   isAuthenticated: boolean;
@@ -74,6 +74,18 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
               <Coffee size={24} />
             </div>
             <span className="navigation-link-label">Buy me a coffee</span>
+          </a>
+
+          <a
+            href="https://github.com/channyeintun/mastodon-nextjs-frontend"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="navigation-sidebar-link"
+          >
+            <div className="navigation-link-icon">
+              <Github size={24} />
+            </div>
+            <span className="navigation-link-label">Source Code</span>
           </a>
         </div>
       </aside>
