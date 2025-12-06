@@ -682,3 +682,70 @@ body {
   position-area: top;
   position-try-fallbacks: bottom;
 }
+
+/* ====================================
+   Profile Pill (Compact Top-Right)
+   ==================================== */
+.profile-pill {
+  position: fixed;
+  top: var(--size-3);
+  right: var(--size-4);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-1) var(--size-3) var(--size-1) var(--size-1);
+  background: var(--surface-2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--surface-3);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-2);
+}
+
+.profile-pill-static {
+  position: static !important;
+  margin: 0 !important;
+}
+
+.profile-pill:hover {
+  background: var(--surface-3);
+  transform: translateY(1px);
+  box-shadow: var(--shadow-3);
+}
+
+.profile-pill-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-pill-name {
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .profile-pill {
+    top: var(--size-2);
+    right: var(--size-2);
+  }
+
+  .profile-pill-name {
+    display: none;
+    /* Only avatar on mobile */
+  }
+
+  .profile-pill {
+    padding: var(--size-1);
+  }
+}

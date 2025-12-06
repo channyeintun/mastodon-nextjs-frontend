@@ -3,7 +3,7 @@
 import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
 import { useAuthStore } from '@/hooks/useStores';
-import { useInfiniteHomeTimeline, useInfiniteTrendingStatuses } from '@/api/queries';
+import { useInfiniteHomeTimeline, useInfiniteTrendingStatuses, useCurrentAccount } from '@/api/queries';
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
@@ -23,6 +23,7 @@ const HomePage = observer(() => {
 
 const TimelinePage = observer(() => {
   const authStore = useAuthStore();
+  const { data: user } = useCurrentAccount();
   const {
     data,
     isLoading,
@@ -65,11 +66,22 @@ const TimelinePage = observer(() => {
               {authStore.instanceURL?.replace('https://', '')}
             </p>
           </div>
-          <Link href="/compose">
-            <Button>
-              <Plus size={18} />
-              New Post
-            </Button>
+          <Link href={user ? `/@${user.acct}` : '#'} className={`profile-pill profile-pill-static ${!user ? 'skeleton-loading' : ''}`}>
+            {user ? (
+              <>
+                <img
+                  src={user.avatar}
+                  alt={user.display_name}
+                  className="profile-pill-avatar"
+                />
+                <span className="profile-pill-name">{user.display_name}</span>
+              </>
+            ) : (
+              <>
+                <div className="profile-pill-avatar" style={{ background: 'var(--surface-3)' }} />
+                <div className="profile-pill-name" style={{ width: '80px', height: '1em', background: 'var(--surface-3)', borderRadius: 'var(--radius-1)' }} />
+              </>
+            )}
           </Link>
         </div>
 
@@ -134,11 +146,22 @@ const TimelinePage = observer(() => {
             {authStore.instanceURL?.replace('https://', '')}
           </p>
         </div>
-        <Link href="/compose">
-          <Button>
-            <Plus size={18} />
-            New Post
-          </Button>
+        <Link href={user ? `/@${user.acct}` : '#'} className={`profile-pill profile-pill-static ${!user ? 'skeleton-loading' : ''}`}>
+          {user ? (
+            <>
+              <img
+                src={user.avatar}
+                alt={user.display_name}
+                className="profile-pill-avatar"
+              />
+              <span className="profile-pill-name">{user.display_name}</span>
+            </>
+          ) : (
+            <>
+              <div className="profile-pill-avatar" style={{ background: 'var(--surface-3)' }} />
+              <div className="profile-pill-name" style={{ width: '80px', height: '1em', background: 'var(--surface-3)', borderRadius: 'var(--radius-1)' }} />
+            </>
+          )}
         </Link>
       </div>
 

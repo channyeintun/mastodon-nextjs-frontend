@@ -2,14 +2,16 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Bookmark, Search, Settings, Coffee, Github } from 'lucide-react';
+import { Home, PenSquare, Bookmark, Search, Settings, Coffee, Github, LogOut } from 'lucide-react';
+import type { Account } from '@/types/mastodon';
 
 interface NavigationProps {
   isAuthenticated: boolean;
   instanceURL?: string | null;
+  user?: Account | null;
 }
 
-export default function Navigation({ isAuthenticated, instanceURL }: NavigationProps) {
+export default function Navigation({ isAuthenticated, instanceURL, user }: NavigationProps) {
   const pathname = usePathname();
 
   const navLinks = [
