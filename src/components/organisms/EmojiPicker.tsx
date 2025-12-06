@@ -44,9 +44,19 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
 
   return (
     <>
+        <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 40,
+        }}
+        onClick={onClose}
+      />
       {/* Picker */}
       <div
+        style={{ zIndex: 50 }}
         className='emoji-picker'
+        onClick={(e) => e.stopPropagation()}
       >
         <EmojiPickerReact
           onEmojiClick={handleEmojiClick}

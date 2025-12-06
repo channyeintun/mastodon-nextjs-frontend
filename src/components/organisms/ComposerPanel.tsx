@@ -371,6 +371,27 @@ export function ComposerPanel({
       <div className="compose-toolbar-area">
         <div className="compose-toolbar-row">
           <div className="compose-tools">
+            {/* Emoji picker */}
+            <div style={{ position: 'relative' }}>
+              <button
+                className="compose-tool-btn"
+                style={{
+                  anchorName: '--emoji-anchor'
+                }}
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                title="Add emoji"
+              >
+                <Smile size={22} />
+              </button>
+              {<Activity mode={showEmojiPicker ? 'visible' : 'hidden'} >
+                <EmojiPicker
+                  onEmojiSelect={handleEmojiSelect}
+                  onClose={() => setShowEmojiPicker(false)}
+                />
+              </Activity>}
+            </div>
+            
             {/* Media Button */}
             <button
               className="compose-tool-btn"
@@ -392,27 +413,6 @@ export function ComposerPanel({
             >
               <BarChart2 size={22} />
             </button>
-
-            {/* Emoji picker */}
-            <div style={{ position: 'relative' }}>
-              <button
-                className="compose-tool-btn"
-                style={{
-                  anchorName: '--emoji-anchor'
-                }}
-                type="button"
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                title="Add emoji"
-              >
-                <Smile size={22} />
-              </button>
-              {<Activity mode={showEmojiPicker ? 'visible' : 'hidden'} >
-                <EmojiPicker
-                  onEmojiSelect={handleEmojiSelect}
-                  onClose={() => setShowEmojiPicker(false)}
-                />
-              </Activity>}
-            </div>
 
             {/* Content Warning toggle */}
             <button

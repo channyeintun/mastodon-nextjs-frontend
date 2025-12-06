@@ -680,6 +680,5 @@ body {
   position: absolute;
   position-anchor: --emoji-anchor;
   position-area: top;
-  position-try-fallbacks: flip-block;
-  translate: -40% 0;
+  position-try-fallbacks: bottom;
 }
