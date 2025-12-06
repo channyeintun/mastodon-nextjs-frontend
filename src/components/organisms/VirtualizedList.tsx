@@ -194,6 +194,7 @@ export function VirtualizedList<T>({
                 key={virtualItem.key}
                 data-index={virtualItem.index}
                 ref={virtualizer.measureElement}
+                className='virtualized-list-item'
                 style={{
                   position: 'absolute',
                   top: 0,

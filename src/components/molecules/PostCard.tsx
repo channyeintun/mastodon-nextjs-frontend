@@ -1,6 +1,5 @@
 'use client';
 
-import { type CSSProperties, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -40,6 +39,7 @@ import { useCurrentAccount } from '@/api/queries';
 import { useAuthStore } from '@/hooks/useStores';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { DeletePostModal } from './DeletePostModal';
+import { CSSProperties, useState } from 'react';
 
 interface PostCardProps {
   status: Status;
@@ -875,12 +875,13 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                       }}
                     />
                     <div
+                      className="boost-popover"
                       style={{
                         position: 'absolute',
-                        bottom: '100%',
+                        top: '100%',
                         left: '50%',
                         transform: 'translateX(-50%)',
-                        marginBottom: 'var(--size-2)',
+                        marginTop: 'var(--size-2)',
                         background: 'var(--surface-2)',
                         borderRadius: 'var(--radius-2)',
                         boxShadow: 'var(--shadow-4)',

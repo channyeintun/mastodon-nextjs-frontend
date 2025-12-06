@@ -176,7 +176,6 @@ export default function StatusPage({
         <div style={{
           border: '2px solid var(--blue-6)',
           borderRadius: 'var(--radius-3)',
-          overflow: 'hidden',
           marginBottom: 'var(--size-3)', // Reduced margin here as reply box follows
         }}>
           <PostCard status={status} />

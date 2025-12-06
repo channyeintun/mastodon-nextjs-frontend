@@ -834,3 +834,7 @@ body {
     padding: var(--size-1);
   }
 }
+
+.virtualized-list-item:has(* .boost-popover) {
+  z-index: 1;
+}
