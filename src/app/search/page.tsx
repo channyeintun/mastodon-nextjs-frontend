@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ArrowLeft, Search as SearchIcon, Hash } from 'lucide-react';
+import { ArrowLeft, Search as SearchIcon, Hash, X, Clock } from 'lucide-react';
 import { useSearch } from '@/api/queries';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { PostCard } from '@/components/molecules/PostCard';
 import { UserCard } from '@/components/molecules/UserCard';
 import { Input } from '@/components/atoms/Input';
@@ -24,11 +25,14 @@ export default function SearchPage() {
     urlQuery.startsWith('#') ? 'hashtags' : 'all'
   );
 
+  const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
+
   // Update query when URL changes
   useEffect(() => {
     if (urlQuery && urlQuery !== query) {
       setQuery(urlQuery);
       setDebouncedQuery(urlQuery);
+      addToHistory(urlQuery);
       if (urlQuery.startsWith('#')) {
         setActiveTab('hashtags');
       }
@@ -106,6 +110,11 @@ export default function SearchPage() {
             placeholder="Search for people, posts, or hashtags..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                addToHistory(query);
+              }
+            }}
             style={{
               paddingLeft: 'var(--size-8)',
               width: '100%',
@@ -149,9 +158,86 @@ export default function SearchPage() {
       {/* Content */}
       <div>
         {!hasQuery && (
-          <div style={{ textAlign: 'center', marginTop: 'var(--size-8)', color: 'var(--text-2)' }}>
-            <SearchIcon size={48} style={{ marginBottom: 'var(--size-4)' }} />
-            <p>Search for people, posts, or hashtags</p>
+          <div>
+            {history.length > 0 ? (
+              <div>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 'var(--size-3)',
+                  padding: '0 var(--size-2)'
+                }}>
+                  <h3 style={{
+                    fontSize: 'var(--font-size-2)',
+                    fontWeight: 'var(--font-weight-6)',
+                    color: 'var(--text-2)'
+                  }}>Recent</h3>
+                  <button
+                    onClick={clearHistory}
+                    style={{
+                      border: 'none',
+                      background: 'none',
+                      color: 'var(--blue-6)',
+                      fontSize: 'var(--font-size-1)',
+                      fontWeight: 'var(--font-weight-6)',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Clear all
+                  </button>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+                  {history.map((term, index) => (
+                    <div
+                      key={term + index}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: 'var(--size-3)',
+                        borderRadius: 'var(--radius-2)',
+                        background: 'var(--surface-2)',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s ease'
+                      }}
+                      className="recent-search-item"
+                      onClick={() => setQuery(term)}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
+                        <Clock size={16} style={{ color: 'var(--text-3)' }} />
+                        <span style={{ color: 'var(--text-1)' }}>{term}</span>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFromHistory(term);
+                        }}
+                        style={{
+                          border: 'none',
+                          background: 'none',
+                          color: 'var(--text-3)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: 'var(--size-1)',
+                          borderRadius: '50%'
+                        }}
+                        className="recent-search-remove"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', marginTop: 'var(--size-8)', color: 'var(--text-2)' }}>
+                <SearchIcon size={48} style={{ marginBottom: 'var(--size-4)' }} />
+                <p>Search for people, posts, or hashtags</p>
+              </div>
+            )}
           </div>
         )}
 
