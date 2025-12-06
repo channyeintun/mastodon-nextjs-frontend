@@ -237,7 +237,10 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
     e.preventDefault();
     e.stopPropagation();
 
-    // TODO: Open reply modal
+    // Navigate to status detail page if not already there
+    if (window.location.pathname !== `/status/${displayStatus.id}`) {
+      router.push(`/status/${displayStatus.id}`);
+    }
   };
 
   return (

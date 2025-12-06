@@ -174,9 +174,14 @@ export function useCreateStatus() {
 
   return useMutation({
     mutationFn: (params: CreateStatusParams) => createStatus(params),
-    onSuccess: () => {
+    onSuccess: (_data, params) => {
       // Invalidate home timeline to fetch new post
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.home() })
+
+      // If this is a reply, invalidate the status context to show the new reply
+      if (params.in_reply_to_id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.context(params.in_reply_to_id) })
+      }
     },
   })
 }
