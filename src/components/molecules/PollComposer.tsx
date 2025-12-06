@@ -77,18 +77,7 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
   };
 
   if (!poll) {
-    return (
-      <Button
-        type="button"
-        variant="ghost"
-        size="small"
-        onClick={() => onPollChange({ options: ['', ''], expiresIn: 86400, multiple: false })}
-        title="Add poll"
-      >
-        <Plus size={18} />
-        Add Poll
-      </Button>
-    );
+    return null;
   }
 
   return (

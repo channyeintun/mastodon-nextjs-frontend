@@ -1,7 +1,6 @@
 'use client';
 
-import data from '@emoji-mart/data';
-import Picker from '@emoji-mart/react';
+import EmojiPickerReact, { Theme } from 'emoji-picker-react';
 import { useCustomEmojis } from '@/api/queries';
 import type { Emoji } from '@/types/mastodon';
 
@@ -10,69 +9,38 @@ interface EmojiPickerProps {
   onClose: () => void;
 }
 
-interface EmojiMartEmoji {
-  id: string;
-  name: string;
-  keywords: string[];
-  skins: { src: string }[];
-}
-
-interface EmojiMartCategory {
-  id: string;
-  name: string;
-  emojis: EmojiMartEmoji[];
-}
-
-type CustomEmojis = EmojiMartCategory[];
-
-const convertToEmojiMartCustomWithCategories = (
-  mastodonEmojis: Emoji[]
-): CustomEmojis => {
+const formatCustomEmojis = (mastodonEmojis: Emoji[]) => {
   if (!Array.isArray(mastodonEmojis)) {
     return [];
   }
 
-  const categoryMap: { [key: string]: EmojiMartEmoji[] } = {};
-
-  mastodonEmojis
+  return mastodonEmojis
     .filter((emoji) => emoji.visible_in_picker && emoji.url)
-    .forEach((emoji) => {
-      const category = 'Custom';
-      if (!categoryMap[category]) {
-        categoryMap[category] = [];
-      }
-      categoryMap[category].push({
-        id: emoji.shortcode,
-        name: emoji.shortcode,
-        keywords: [emoji.shortcode],
-        skins: [{ src: emoji.url }],
-      });
-    });
-
-  return Object.entries(categoryMap).map(([id, emojis]) => ({
-    id,
-    name: id,
-    emojis,
-  }));
+    .map((emoji) => ({
+      id: emoji.shortcode,
+      names: [emoji.shortcode],
+      imgUrl: emoji.url,
+    }));
 };
 
 export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
   const { data: customEmojis } = useCustomEmojis();
 
-  const handleEmojiSelect = (emoji: any) => {
-    // Handle standard emoji (has native property)
-    if (emoji.native) {
-      onEmojiSelect(emoji.native);
+  const formattedCustomEmojis = customEmojis
+    ? formatCustomEmojis(customEmojis)
+    : [];
+
+  const handleEmojiClick = (emojiData: any) => {
+    // If it's a custom emoji, emoji-picker-react usually provides the id/names we passed
+    // We want to insert :shortcode:
+    if (emojiData.isCustom) {
+      const shortcode = emojiData.id || emojiData.names[0];
+      onEmojiSelect(`:${shortcode}:`);
     } else {
-      // Handle custom emoji (has id which is the shortcode)
-      onEmojiSelect(`:${emoji.id}:`);
+      onEmojiSelect(emojiData.emoji);
     }
     onClose();
   };
-
-  const customEmojiCategories: CustomEmojis = customEmojis
-    ? convertToEmojiMartCustomWithCategories(customEmojis)
-    : [];
 
   return (
     <>
@@ -100,14 +68,16 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <Picker
-          data={data}
-          custom={customEmojiCategories}
-          onEmojiSelect={handleEmojiSelect}
-          theme="auto"
-          previewPosition="none"
-          skinTonePosition="search"
-          maxFrequentRows={2}
+        <EmojiPickerReact
+          onEmojiClick={handleEmojiClick}
+          theme={Theme.AUTO}
+          customEmojis={formattedCustomEmojis}
+          previewConfig={{
+            showPreview: false,
+          }}
+          skinTonesDisabled
+          height={350}
+          width="100%"
         />
       </div>
     </>

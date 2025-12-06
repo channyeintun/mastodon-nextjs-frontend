@@ -14,7 +14,7 @@ import { EmojiPicker } from './EmojiPicker';
 import { TiptapEditor } from '../atoms/TiptapEditor';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
-import { Globe, Lock, Users, Mail, X, Smile } from 'lucide-react';
+import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2 } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types/mastodon';
 
 const MAX_CHAR_COUNT = 500;
@@ -63,6 +63,7 @@ export function ComposerPanel({
   const [poll, setPoll] = useState<PollData | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const charCount = textContent.length;
   const isOverLimit = charCount > MAX_CHAR_COUNT;
@@ -84,6 +85,18 @@ export function ComposerPanel({
       console.error('Failed to upload media:', error);
     } finally {
       setIsUploadingMedia(false);
+    }
+  };
+
+  const onFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    for (let i = 0; i < files.length; i++) {
+      await handleMediaAdd(files[i]);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -339,7 +352,7 @@ export function ComposerPanel({
         </div>
 
         {/* Media Upload */}
-        {poll === null && (
+        {(media.length > 0 || isUploadingMedia) && (
           <MediaUpload
             media={media}
             onMediaAdd={handleMediaAdd}
@@ -350,9 +363,19 @@ export function ComposerPanel({
         )}
 
         {/* Poll Composer */}
-        {media.length === 0 && (
+        {poll !== null && (
           <PollComposer poll={poll} onPollChange={setPoll} />
         )}
+
+        {/* Hidden File Input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,video/*"
+          multiple
+          onChange={onFileInputChange}
+          style={{ display: 'none' }}
+        />
 
         {/* Bottom toolbar */}
         <div style={{
@@ -361,6 +384,30 @@ export function ComposerPanel({
           alignItems: 'center',
         }}>
           <div style={{ display: 'flex', gap: 'var(--size-2)', position: 'relative' }}>
+            {/* Media Button */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="small"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={poll !== null || media.length >= 4}
+              title="Add media"
+            >
+              <ImageIcon size={18} />
+            </Button>
+
+            {/* Poll Button */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="small"
+              onClick={() => setPoll({ options: ['', ''], expiresIn: 86400, multiple: false })}
+              disabled={media.length > 0 || poll !== null}
+              title="Add poll"
+            >
+              <BarChart2 size={18} />
+            </Button>
+
             {/* Emoji picker */}
             <Button
               type="button"

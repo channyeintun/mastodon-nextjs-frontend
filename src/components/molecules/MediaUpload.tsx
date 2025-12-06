@@ -55,28 +55,7 @@ export function MediaUpload({
   };
 
   if (media.length === 0 && !isUploading) {
-    return (
-      <div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*,video/*"
-          multiple
-          onChange={handleFileChange}
-          style={{ display: 'none' }}
-        />
-        <Button
-          type="button"
-          variant="ghost"
-          size="small"
-          onClick={() => fileInputRef.current?.click()}
-          title="Add media"
-        >
-          <ImageIcon size={18} />
-          Add Media
-        </Button>
-      </div>
-    );
+    return null;
   }
 
   return (
