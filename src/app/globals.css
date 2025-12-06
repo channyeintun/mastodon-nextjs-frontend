@@ -170,8 +170,8 @@ a {
   top: 0;
   bottom: 0;
   width: var(--app-sidebar-width);
-  background: var(--surface-2);
-  border-right: 1px solid var(--surface-3);
+  background: var(--surface-1);
+  border-right: 1px solid var(--gray-3);
   z-index: 30;
   overflow-y: auto;
   flex-direction: column;
@@ -180,7 +180,7 @@ a {
 /* Sidebar Header (Logo) */
 .navigation-sidebar-header {
   padding: var(--size-5);
-  border-bottom: 1px solid var(--surface-3);
+  border-bottom: 1px solid var(--gray-3);
 }
 
 .navigation-sidebar-logo {
@@ -207,7 +207,7 @@ a {
 /* Sidebar Footer (User Info / Auth) */
 .navigation-sidebar-footer {
   padding: var(--size-5);
-  border-top: 1px solid var(--surface-3);
+  border-top: 1px solid var(--gray-3);
   display: flex;
   flex-direction: column;
   gap: var(--size-3);
@@ -278,13 +278,13 @@ a {
   left: 0;
   right: 0;
   height: var(--app-bottom-nav-height);
-  background: var(--surface-2);
-  border-top: 1px solid var(--surface-3);
+  background: var(--surface-1);
+  border-top: 1px solid var(--gray-3);
   z-index: 40;
   justify-content: space-around;
   align-items: center;
   padding: var(--size-2) var(--size-3);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-2);
 }
 
 .navigation-bottom-link {
