@@ -11,7 +11,11 @@ import {
   MoreHorizontal,
   Share,
   Trash2,
-  Edit2
+  Edit2,
+  Globe,
+  Lock,
+  Users,
+  Mail
 } from 'lucide-react';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
@@ -54,6 +58,13 @@ function formatRelativeTime(dateString: string): string {
 
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
+
+const VISIBILITY_ICONS = {
+  public: <Globe size={14} />,
+  unlisted: <Lock size={14} />,
+  private: <Users size={14} />,
+  direct: <Mail size={14} />,
+};
 
 export function PostCard({ status, showThread = false, style }: PostCardProps) {
   const router = useRouter();
@@ -297,6 +308,9 @@ export function PostCard({ status, showThread = false, style }: PostCardProps) {
               >
                 {formatRelativeTime(displayStatus.created_at)}
               </Link>
+              <div style={{ color: 'var(--text-3)', display: 'flex', alignItems: 'center' }} title={displayStatus.visibility}>
+                {VISIBILITY_ICONS[displayStatus.visibility as keyof typeof VISIBILITY_ICONS]}
+              </div>
               {isOwnPost && (
                 <div style={{ position: 'relative' }}>
                   <IconButton
