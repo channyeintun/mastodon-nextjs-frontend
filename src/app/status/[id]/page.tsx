@@ -83,7 +83,7 @@ export default function StatusPage({
                 height: '20px',
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
           </h2>

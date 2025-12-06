@@ -78,19 +78,6 @@ a {
   }
 }
 
-/* Skeleton loading pulse animation */
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
-}
-
 /* Tiptap Editor Styles */
 .tiptap-editor-editable,
 .tiptap-editor-readonly {
@@ -341,7 +328,7 @@ a {
 }
 
 .navigation-sidebar-link:has(.pending) {
-  animation: var(--animation-pulse);
+  animation: var(--animation-blink);
 }
 
 .navigation-bottom-link.pending {

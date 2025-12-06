@@ -21,7 +21,7 @@ export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
             borderRadius: '50%',
             background: 'var(--surface-3)',
             flexShrink: 0,
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animation: 'var(--animation-blink)',
           }}
         />
 
@@ -36,7 +36,7 @@ export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
                 marginBottom: 'var(--size-1)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
             {/* Username */}
@@ -46,7 +46,7 @@ export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
                 height: '16px',
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
           </div>
@@ -60,7 +60,7 @@ export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
                 marginBottom: 'var(--size-2)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
             <div
@@ -70,7 +70,7 @@ export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
                 marginBottom: 'var(--size-2)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
             <div
@@ -79,7 +79,7 @@ export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
                 height: '16px',
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
           </div>
@@ -94,7 +94,7 @@ export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
                   height: '24px',
                   background: 'var(--surface-3)',
                   borderRadius: 'var(--radius-1)',
-                  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                  animation: 'var(--animation-blink)',
                 }}
               />
             ))}

@@ -14,7 +14,7 @@ export function AccountProfileSkeleton() {
           background: 'var(--surface-3)',
           borderRadius: 'var(--radius-3)',
           marginBottom: 'calc(-1 * var(--size-8))',
-          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          animation: 'var(--animation-blink)',
         }}
       />
 
@@ -36,7 +36,7 @@ export function AccountProfileSkeleton() {
               borderRadius: '50%',
               background: 'var(--surface-3)',
               border: '4px solid var(--surface-1)',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              animation: 'var(--animation-blink)',
             }}
           />
 
@@ -47,7 +47,7 @@ export function AccountProfileSkeleton() {
               height: '36px',
               background: 'var(--surface-3)',
               borderRadius: 'var(--radius-2)',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              animation: 'var(--animation-blink)',
             }}
           />
         </div>
@@ -61,7 +61,7 @@ export function AccountProfileSkeleton() {
               background: 'var(--surface-3)',
               borderRadius: 'var(--radius-1)',
               marginBottom: 'var(--size-2)',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              animation: 'var(--animation-blink)',
             }}
           />
           <div
@@ -70,7 +70,7 @@ export function AccountProfileSkeleton() {
               height: '20px',
               background: 'var(--surface-3)',
               borderRadius: 'var(--radius-1)',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              animation: 'var(--animation-blink)',
             }}
           />
         </div>
@@ -84,7 +84,7 @@ export function AccountProfileSkeleton() {
               background: 'var(--surface-3)',
               borderRadius: 'var(--radius-1)',
               marginBottom: 'var(--size-2)',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              animation: 'var(--animation-blink)',
             }}
           />
           <div
@@ -94,7 +94,7 @@ export function AccountProfileSkeleton() {
               background: 'var(--surface-3)',
               borderRadius: 'var(--radius-1)',
               marginBottom: 'var(--size-2)',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              animation: 'var(--animation-blink)',
             }}
           />
           <div
@@ -103,7 +103,7 @@ export function AccountProfileSkeleton() {
               height: '16px',
               background: 'var(--surface-3)',
               borderRadius: 'var(--radius-1)',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              animation: 'var(--animation-blink)',
             }}
           />
         </div>
@@ -128,7 +128,7 @@ export function AccountProfileSkeleton() {
                   height: '16px',
                   background: 'var(--surface-3)',
                   borderRadius: 'var(--radius-1)',
-                  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                  animation: 'var(--animation-blink)',
                 }}
               />
               <div
@@ -137,7 +137,7 @@ export function AccountProfileSkeleton() {
                   height: '16px',
                   background: 'var(--surface-3)',
                   borderRadius: 'var(--radius-1)',
-                  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                  animation: 'var(--animation-blink)',
                 }}
               />
             </div>
@@ -152,7 +152,7 @@ export function AccountProfileSkeleton() {
             background: 'var(--surface-3)',
             borderRadius: 'var(--radius-1)',
             marginBottom: 'var(--size-3)',
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animation: 'var(--animation-blink)',
           }}
         />
 
@@ -172,7 +172,7 @@ export function AccountProfileSkeleton() {
                 height: '20px',
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
           ))}
@@ -185,7 +185,7 @@ export function AccountProfileSkeleton() {
             height: '16px',
             background: 'var(--surface-3)',
             borderRadius: 'var(--radius-1)',
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            animation: 'var(--animation-blink)',
           }}
         />
       </div>

@@ -105,7 +105,7 @@ export default function AccountPage({
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
                 marginBottom: 'var(--size-1)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
             <div
@@ -114,7 +114,7 @@ export default function AccountPage({
                 height: '16px',
                 background: 'var(--surface-3)',
                 borderRadius: 'var(--radius-1)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animation: 'var(--animation-blink)',
               }}
             />
           </div>
@@ -388,8 +388,7 @@ export default function AccountPage({
             isLoadingMore={isFetchingNextPage}
             hasMore={hasNextPage}
             loadMoreThreshold={1}
-            height="auto"
-            style={{ flex: 1, minHeight: 0 }}
+            height="500px"
             scrollRestorationKey={`account-${acct}`}
             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
             endIndicator="No more posts"
