@@ -242,7 +242,7 @@ export default function SearchPage() {
         )}
 
         {hasQuery && isLoading && (
-          <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+          <div style={{ display: 'grid', placeItems: 'center', marginTop: 'var(--size-8)' }}>
             <Spinner />
             <p style={{ marginTop: 'var(--size-4)', color: 'var(--text-2)' }}>
               Searching...
