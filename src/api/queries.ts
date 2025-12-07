@@ -17,6 +17,8 @@ import {
   getFollowing,
   getRelationships,
   getFollowRequests,
+  getBlockedAccounts,
+  getMutedAccounts,
   getBookmarks,
   search,
   getCustomEmojis,
@@ -26,9 +28,10 @@ import {
   getNotifications,
   getNotification,
   getUnreadNotificationCount,
+  getPreferences,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, Account } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, Account, Preferences } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 // Timelines
@@ -350,5 +353,57 @@ export function useUnreadNotificationCount() {
     queryFn: () => getUnreadNotificationCount(),
     enabled: authStore.isAuthenticated,
     refetchInterval: 60000, // Refetch every minute
+  })
+}
+
+// Blocked Accounts
+export function useBlockedAccounts() {
+  const authStore = useAuthStore()
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.blocks.list(),
+    queryFn: ({ pageParam }) => {
+      const params: { max_id?: string; limit: number } = { limit: 40 }
+      if (pageParam) params.max_id = pageParam
+      return getBlockedAccounts(params)
+    },
+    getNextPageParam: (lastPage: Account[]) => {
+      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Muted Accounts
+export function useMutedAccounts() {
+  const authStore = useAuthStore()
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.mutes.list(),
+    queryFn: ({ pageParam }) => {
+      const params: { max_id?: string; limit: number } = { limit: 40 }
+      if (pageParam) params.max_id = pageParam
+      return getMutedAccounts(params)
+    },
+    getNextPageParam: (lastPage: Account[]) => {
+      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Preferences
+export function usePreferences() {
+  const authStore = useAuthStore()
+
+  return useQuery({
+    queryKey: queryKeys.preferences.all(),
+    queryFn: () => getPreferences(),
+    enabled: authStore.isAuthenticated,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   })
 }

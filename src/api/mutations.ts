@@ -16,6 +16,10 @@ import {
   unbookmarkStatus,
   followAccount,
   unfollowAccount,
+  blockAccount,
+  unblockAccount,
+  muteAccount,
+  unmuteAccount,
   updateCredentials,
   votePoll,
   dismissNotification,
@@ -25,7 +29,7 @@ import {
   rejectFollowRequest,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams } from '../types/mastodon'
 
 // Helper function to update status in all infinite query caches
 function updateStatusInCaches(
@@ -608,6 +612,78 @@ export function useRejectFollowRequest() {
     onSuccess: () => {
       // Invalidate follow requests list
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.followRequests() })
+    },
+  })
+}
+
+// Block/Unblock Account mutations
+export function useBlockAccount() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => blockAccount(id),
+    onSuccess: (_data, id) => {
+      // Invalidate account detail
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
+      // Invalidate relationships
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      // Invalidate blocks list
+      queryClient.invalidateQueries({ queryKey: queryKeys.blocks.all() })
+      // Invalidate timelines (blocked users' posts should disappear)
+      queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+    },
+  })
+}
+
+export function useUnblockAccount() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => unblockAccount(id),
+    onSuccess: (_data, id) => {
+      // Invalidate account detail
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
+      // Invalidate relationships
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      // Invalidate blocks list
+      queryClient.invalidateQueries({ queryKey: queryKeys.blocks.all() })
+    },
+  })
+}
+
+// Mute/Unmute Account mutations
+export function useMuteAccount() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, params }: { id: string; params?: MuteAccountParams }) => muteAccount(id, params),
+    onSuccess: (_data, { id }) => {
+      // Invalidate account detail
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
+      // Invalidate relationships
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      // Invalidate mutes list
+      queryClient.invalidateQueries({ queryKey: queryKeys.mutes.all() })
+      // Invalidate timelines (muted users' posts should disappear)
+      queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
+      // Invalidate notifications if muting notifications
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+    },
+  })
+}
+
+export function useUnmuteAccount() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => unmuteAccount(id),
+    onSuccess: (_data, id) => {
+      // Invalidate account detail
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
+      // Invalidate relationships
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      // Invalidate mutes list
+      queryClient.invalidateQueries({ queryKey: queryKeys.mutes.all() })
     },
   })
 }

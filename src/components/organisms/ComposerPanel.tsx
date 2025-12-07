@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, Activity } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCurrentAccount, useCustomEmojis, useStatus } from '@/api/queries';
+import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences } from '@/api/queries';
 import { useCreateStatus, useUpdateStatus } from '@/api/mutations';
 import { PostCard } from '../molecules/PostCard';
 import { Avatar } from '../atoms/Avatar';
@@ -58,12 +58,18 @@ export function ComposerPanel({
   const router = useRouter();
   const { data: currentAccount } = useCurrentAccount();
   const { data: customEmojis } = useCustomEmojis();
+  const { data: preferences } = usePreferences();
   const createStatusMutation = useCreateStatus();
   const updateStatusMutation = useUpdateStatus();
   const editorRef = useRef<any>(null);
 
   const [content, setContent] = useState(initialContent);
   const [textContent, setTextContent] = useState('');
+
+  // Track whether we've initialized from preferences
+  const [hasInitializedFromPreferences, setHasInitializedFromPreferences] = useState(false);
+
+  // Initialize visibility - use props if in edit mode, otherwise start with initial and update from preferences
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
   // Remove individual menu states
   const [showVisibilitySettingsModal, setShowVisibilitySettingsModal] = useState(false);
@@ -76,6 +82,21 @@ export function ComposerPanel({
 
   // Quote policy is forced to 'nobody' if visibility is private or direct, OR if this is a reply (per user request)
   const isQuotePolicyDisabled = visibility === 'private' || visibility === 'direct' || isReply;
+
+  // Initialize visibility and sensitive from user preferences (only when not in edit mode)
+  useEffect(() => {
+    if (!editMode && !hasInitializedFromPreferences && preferences) {
+      // Set default visibility from preferences
+      if (preferences['posting:default:visibility']) {
+        setVisibility(preferences['posting:default:visibility']);
+      }
+      // Set default sensitive from preferences
+      if (preferences['posting:default:sensitive']) {
+        setSensitive(preferences['posting:default:sensitive']);
+      }
+      setHasInitializedFromPreferences(true);
+    }
+  }, [editMode, hasInitializedFromPreferences, preferences]);
 
   useEffect(() => {
     if (isQuotePolicyDisabled) {

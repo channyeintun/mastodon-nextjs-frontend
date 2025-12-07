@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Check, X } from 'lucide-react';
+import { Check, X, Ban, VolumeX } from 'lucide-react';
 import { Avatar } from '@/components/atoms/Avatar';
 import { Button } from '@/components/atoms/Button';
 import { EmojiText } from '@/components/atoms/EmojiText';
-import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest } from '@/api/mutations';
+import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest, useUnblockAccount, useUnmuteAccount } from '@/api/mutations';
 import { useRelationships, useCurrentAccount } from '@/api/queries';
 import type { Account } from '@/types/mastodon';
 
@@ -13,6 +13,8 @@ interface AccountCardProps {
     account: Account;
     showFollowButton?: boolean;
     showFollowRequestActions?: boolean;
+    showUnblockButton?: boolean;
+    showUnmuteButton?: boolean;
     style?: React.CSSProperties;
 }
 
@@ -20,6 +22,8 @@ export function AccountCard({
     account,
     showFollowButton = true,
     showFollowRequestActions = false,
+    showUnblockButton = false,
+    showUnmuteButton = false,
     style,
 }: AccountCardProps) {
     const { data: currentAccount } = useCurrentAccount();
@@ -30,11 +34,15 @@ export function AccountCard({
     const unfollowMutation = useUnfollowAccount();
     const acceptMutation = useAcceptFollowRequest();
     const rejectMutation = useRejectFollowRequest();
+    const unblockMutation = useUnblockAccount();
+    const unmuteMutation = useUnmuteAccount();
 
     const isOwnProfile = currentAccount?.id === account.id;
     const isFollowing = relationship?.following || false;
     const isLoading = followMutation.isPending || unfollowMutation.isPending;
     const isRequestLoading = acceptMutation.isPending || rejectMutation.isPending;
+    const isUnblockLoading = unblockMutation.isPending;
+    const isUnmuteLoading = unmuteMutation.isPending;
 
     const handleFollowToggle = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -56,6 +64,97 @@ export function AccountCard({
         e.preventDefault();
         e.stopPropagation();
         rejectMutation.mutate(account.id);
+    };
+
+    const handleUnblock = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        unblockMutation.mutate(account.id);
+    };
+
+    const handleUnmute = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        unmuteMutation.mutate(account.id);
+    };
+
+    const renderActions = () => {
+        if (showUnblockButton) {
+            return (
+                <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={handleUnblock}
+                    disabled={isUnblockLoading}
+                    isLoading={isUnblockLoading}
+                    style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
+                >
+                    <Ban size={16} />
+                    Unblock
+                </Button>
+            );
+        }
+
+        if (showUnmuteButton) {
+            return (
+                <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={handleUnmute}
+                    disabled={isUnmuteLoading}
+                    isLoading={isUnmuteLoading}
+                    style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
+                >
+                    <VolumeX size={16} />
+                    Unmute
+                </Button>
+            );
+        }
+
+        if (showFollowRequestActions) {
+            return (
+                <>
+                    <Button
+                        variant="primary"
+                        size="small"
+                        onClick={handleAccept}
+                        disabled={isRequestLoading}
+                        isLoading={acceptMutation.isPending}
+                        style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
+                    >
+                        <Check size={16} />
+                        Accept
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="small"
+                        onClick={handleReject}
+                        disabled={isRequestLoading}
+                        isLoading={rejectMutation.isPending}
+                        style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
+                    >
+                        <X size={16} />
+                        Reject
+                    </Button>
+                </>
+            );
+        }
+
+        if (showFollowButton && !isOwnProfile) {
+            return (
+                <Button
+                    variant={isFollowing ? 'secondary' : 'primary'}
+                    size="small"
+                    onClick={handleFollowToggle}
+                    disabled={isLoading}
+                    isLoading={isLoading}
+                >
+                    {isFollowing ? 'Following' : 'Follow'}
+                </Button>
+            );
+        }
+
+        return null;
     };
 
     return (
@@ -84,42 +183,7 @@ export function AccountCard({
             </div>
 
             <div className="account-card-actions">
-                {showFollowRequestActions ? (
-                    <>
-                        <Button
-                            variant="primary"
-                            size="small"
-                            onClick={handleAccept}
-                            disabled={isRequestLoading}
-                            isLoading={acceptMutation.isPending}
-                            style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
-                        >
-                            <Check size={16} />
-                            Accept
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="small"
-                            onClick={handleReject}
-                            disabled={isRequestLoading}
-                            isLoading={rejectMutation.isPending}
-                            style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
-                        >
-                            <X size={16} />
-                            Reject
-                        </Button>
-                    </>
-                ) : showFollowButton && !isOwnProfile && (
-                    <Button
-                        variant={isFollowing ? 'secondary' : 'primary'}
-                        size="small"
-                        onClick={handleFollowToggle}
-                        disabled={isLoading}
-                        isLoading={isLoading}
-                    >
-                        {isFollowing ? 'Following' : 'Follow'}
-                    </Button>
-                )}
+                {renderActions()}
             </div>
         </Link>
     );
@@ -139,3 +203,4 @@ export function AccountCardSkeleton({ style }: { style?: React.CSSProperties }) 
         </div>
     );
 }
+

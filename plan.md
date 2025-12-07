@@ -6,7 +6,7 @@ This document outlines API features from the Mastodon documentation that are not
 
 ## 1. Preferences API
 
-**Status: ❌ Not Implemented**
+**Status: ✅ Implemented**
 
 ### API Endpoint
 ```
@@ -28,12 +28,12 @@ Fetch user preferences (e.g., default visibility, sensitive media settings, lang
 }
 ```
 
-### Implementation Plan
-1. **Types**: Add `Preferences` interface to `src/types/mastodon.ts`
-2. **API Client**: Add `getPreferences()` function to `src/api/client.ts`
-3. **Query Key**: Add `preferences` key to `src/api/queryKeys.ts`
-4. **Query Hook**: Add `usePreferences()` hook to `src/api/queries.ts`
-5. **Integration**: Use preferences to set defaults in ComposerPanel (visibility, sensitive, language)
+### Implementation:
+- ✅ **Types**: Added `Preferences` interface to `src/types/mastodon.ts`
+- ✅ **API Client**: Added `getPreferences()` function to `src/api/client.ts`
+- ✅ **Query Key**: Added `preferences` key to `src/api/queryKeys.ts`
+- ✅ **Query Hook**: Added `usePreferences()` hook to `src/api/queries.ts`
+- ✅ **Integration**: Using preferences to set defaults in ComposerPanel (visibility, sensitive)
 
 ### Priority: **Medium** ⭐⭐
 Useful for pre-populating composer settings with user's defaults.
@@ -111,7 +111,7 @@ Optimization feature; single account fetch works fine.
 ---
 
 ### 3.3 Block Account
-**Status: ❌ Not Implemented**
+**Status: ✅ Implemented**
 
 ```
 POST /api/v1/accounts/:id/block
@@ -120,11 +120,11 @@ POST /api/v1/accounts/:id/unblock
 
 Block/unblock a user from seeing your content.
 
-#### Implementation Plan
-1. **API Client**: Add `blockAccount(id)` and `unblockAccount(id)` functions
-2. **Mutation Hooks**: Add `useBlockAccount()` and `useUnblockAccount()` hooks
-3. **UI**: Add "Block" option to account action menu (AccountCard, profile page)
-4. **Page**: Create `/settings/blocks` page to view blocked accounts
+#### Implementation:
+- ✅ **API Client**: Added `blockAccount(id)` and `unblockAccount(id)` functions to `src/api/client.ts`
+- ✅ **Mutation Hooks**: Added `useBlockAccount()` and `useUnblockAccount()` hooks to `src/api/mutations.ts`
+- ✅ **UI**: Added "Block" option to account action menu on profile page
+- ✅ **Page**: Created `/settings/blocks` page to view blocked accounts
 
 #### Priority: **High** ⭐⭐⭐
 Essential moderation feature.
@@ -132,7 +132,7 @@ Essential moderation feature.
 ---
 
 ### 3.4 Mute Account
-**Status: ❌ Not Implemented**
+**Status: ✅ Implemented**
 
 ```
 POST /api/v1/accounts/:id/mute
@@ -145,12 +145,12 @@ Mute a user (hide their posts and optionally notifications).
 - `notifications` (boolean) - Also mute notifications
 - `duration` (number) - Seconds until mute expires (0 = indefinite)
 
-#### Implementation Plan
-1. **Types**: Add `MuteAccountParams` interface
-2. **API Client**: Add `muteAccount(id, params?)` and `unmuteAccount(id)` functions
-3. **Mutation Hooks**: Add `useMuteAccount()` and `useUnmuteAccount()` hooks
-4. **UI**: Add "Mute" option with duration selector to account action menu
-5. **Page**: Create `/settings/mutes` page to view muted accounts
+#### Implementation:
+- ✅ **Types**: Added `MuteAccountParams` interface to `src/types/mastodon.ts`
+- ✅ **API Client**: Added `muteAccount(id, params?)` and `unmuteAccount(id)` functions to `src/api/client.ts`
+- ✅ **Mutation Hooks**: Added `useMuteAccount()` and `useUnmuteAccount()` hooks to `src/api/mutations.ts`
+- ✅ **UI**: Added "Mute" option to account action menu on profile page
+- ✅ **Page**: Created `/settings/mutes` page to view muted accounts
 
 #### Priority: **High** ⭐⭐⭐
 Essential moderation feature.
@@ -292,31 +292,31 @@ Useful moderation tool.
 
 ## Summary by Priority
 
-### High Priority ⭐⭐⭐ (Essential)
-| Feature | API Endpoint |
-|---------|-------------|
-| Block Account | `POST /api/v1/accounts/:id/block` |
-| Unblock Account | `POST /api/v1/accounts/:id/unblock` |
-| Mute Account | `POST /api/v1/accounts/:id/mute` |
-| Unmute Account | `POST /api/v1/accounts/:id/unmute` |
+### High Priority ⭐⭐⭐ (Essential) - ✅ ALL COMPLETED
+| Feature | API Endpoint | Status |
+|---------|-------------|--------|
+| Block Account | `POST /api/v1/accounts/:id/block` | ✅ Done |
+| Unblock Account | `POST /api/v1/accounts/:id/unblock` | ✅ Done |
+| Mute Account | `POST /api/v1/accounts/:id/mute` | ✅ Done |
+| Unmute Account | `POST /api/v1/accounts/:id/unmute` | ✅ Done |
 
 ### Medium Priority ⭐⭐ (Recommended)
-| Feature | API Endpoint |
-|---------|-------------|
-| Preferences | `GET /api/v1/preferences` |
-| Register Account | `POST /api/v1/accounts` |
-| Private Note | `POST /api/v1/accounts/:id/note` |
-| Familiar Followers | `GET /api/v1/accounts/familiar_followers` |
-| Remove Follower | `POST /api/v1/accounts/:id/remove_from_followers` |
+| Feature | API Endpoint | Status |
+|---------|-------------|--------|
+| Preferences | `GET /api/v1/preferences` | ✅ Done (API only) |
+| Register Account | `POST /api/v1/accounts` | ❌ Not Started |
+| Private Note | `POST /api/v1/accounts/:id/note` | ❌ Not Started |
+| Familiar Followers | `GET /api/v1/accounts/familiar_followers` | ❌ Not Started |
+| Remove Follower | `POST /api/v1/accounts/:id/remove_from_followers` | ❌ Not Started |
 
 ### Low Priority ⭐ (Nice-to-have)
-| Feature | API Endpoint |
-|---------|-------------|
-| Resend Confirmation | `POST /api/v1/emails/confirmations` |
-| Get Multiple Accounts | `GET /api/v1/accounts` |
-| Endorse Account | `POST /api/v1/accounts/:id/endorse` |
-| Get Account Lists | `GET /api/v1/accounts/:id/lists` |
-| Featured Tags | `GET /api/v1/accounts/:id/featured_tags` |
+| Feature | API Endpoint | Status |
+|---------|-------------|--------|
+| Resend Confirmation | `POST /api/v1/emails/confirmations` | ❌ Not Started |
+| Get Multiple Accounts | `GET /api/v1/accounts` | ❌ Not Started |
+| Endorse Account | `POST /api/v1/accounts/:id/endorse` | ❌ Not Started |
+| Get Account Lists | `GET /api/v1/accounts/:id/lists` | ❌ Not Started |
+| Featured Tags | `GET /api/v1/accounts/:id/featured_tags` | ❌ Not Started |
 
 ---
 

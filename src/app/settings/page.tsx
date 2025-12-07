@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, LogOut, User, Bookmark, UserPlus } from 'lucide-react';
+import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX } from 'lucide-react';
 import { useCurrentAccount } from '@/api/queries';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
@@ -116,6 +116,30 @@ export default function SettingsPage() {
               Follow Requests
             </Link>
           )}
+        </div>
+      </Card>
+
+      {/* Moderation */}
+      <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+        <h2 style={{
+          fontSize: 'var(--font-size-2)',
+          fontWeight: 'var(--font-weight-6)',
+          marginBottom: 'var(--size-3)',
+          color: 'var(--text-2)',
+        }}>
+          Moderation
+        </h2>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+          <Link href="/settings/blocks" className="settings-link">
+            <Ban size={20} className="settings-link-icon" />
+            Blocked Accounts
+          </Link>
+
+          <Link href="/settings/mutes" className="settings-link">
+            <VolumeX size={20} className="settings-link-icon" />
+            Muted Accounts
+          </Link>
         </div>
       </Card>
 

@@ -14,9 +14,11 @@ import type {
   Emoji,
   Instance,
   MediaAttachment,
+  MuteAccountParams,
   Notification,
   NotificationParams,
   Poll,
+  Preferences,
   Relationship,
   SearchParams,
   SearchResults,
@@ -301,6 +303,38 @@ export async function rejectFollowRequest(id: string): Promise<void> {
   await api.post(`/api/v1/follow_requests/${id}/reject`)
 }
 
+// Block/Unblock Accounts
+export async function blockAccount(id: string): Promise<Relationship> {
+  const { data } = await api.post<Relationship>(`/api/v1/accounts/${id}/block`)
+  return data
+}
+
+export async function unblockAccount(id: string): Promise<Relationship> {
+  const { data } = await api.post<Relationship>(`/api/v1/accounts/${id}/unblock`)
+  return data
+}
+
+export async function getBlockedAccounts(params?: { max_id?: string; limit?: number }): Promise<Account[]> {
+  const { data } = await api.get<Account[]>('/api/v1/blocks', { params })
+  return data
+}
+
+// Mute/Unmute Accounts
+export async function muteAccount(id: string, params?: MuteAccountParams): Promise<Relationship> {
+  const { data } = await api.post<Relationship>(`/api/v1/accounts/${id}/mute`, params)
+  return data
+}
+
+export async function unmuteAccount(id: string): Promise<Relationship> {
+  const { data } = await api.post<Relationship>(`/api/v1/accounts/${id}/unmute`)
+  return data
+}
+
+export async function getMutedAccounts(params?: { max_id?: string; limit?: number }): Promise<Account[]> {
+  const { data } = await api.get<Account[]>('/api/v1/mutes', { params })
+  return data
+}
+
 // Bookmarks
 export async function getBookmarks(params?: TimelineParams): Promise<Status[]> {
   const { data } = await api.get<Status[]>('/api/v1/bookmarks', { params })
@@ -418,6 +452,12 @@ export async function updateMarkers(params: {
   notifications?: { last_read_id: string }
 }): Promise<MarkersResponse> {
   const { data } = await api.post<MarkersResponse>('/api/v1/markers', params)
+  return data
+}
+
+// Preferences
+export async function getPreferences(): Promise<Preferences> {
+  const { data } = await api.get<Preferences>('/api/v1/preferences')
   return data
 }
 

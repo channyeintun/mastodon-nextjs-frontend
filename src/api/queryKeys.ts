@@ -63,4 +63,21 @@ export const queryKeys = {
   instance: {
     default: ['instance'] as const,
   },
+
+  // Blocks
+  blocks: {
+    all: () => ['blocks'] as const,
+    list: (params?: object) => ['blocks', 'list', params] as const,
+  },
+
+  // Mutes
+  mutes: {
+    all: () => ['mutes'] as const,
+    list: (params?: object) => ['mutes', 'list', params] as const,
+  },
+
+  // Preferences
+  preferences: {
+    all: () => ['preferences'] as const,
+  },
 }

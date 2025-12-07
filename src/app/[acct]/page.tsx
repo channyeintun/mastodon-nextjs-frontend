@@ -1,10 +1,10 @@
 'use client';
 
-import { use } from 'react';
+import { use, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Calendar, ExternalLink, MoreHorizontal, Ban, VolumeX, Volume2 } from 'lucide-react';
 import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount } from '@/api/queries';
-import { useFollowAccount, useUnfollowAccount } from '@/api/mutations';
+import { useFollowAccount, useUnfollowAccount, useBlockAccount, useUnblockAccount, useMuteAccount, useUnmuteAccount } from '@/api/mutations';
 import { PostCard } from '@/components/molecules/PostCard';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
@@ -59,6 +59,29 @@ export default function AccountPage({
 
   const followMutation = useFollowAccount();
   const unfollowMutation = useUnfollowAccount();
+  const blockMutation = useBlockAccount();
+  const unblockMutation = useUnblockAccount();
+  const muteMutation = useMuteAccount();
+  const unmuteMutation = useUnmuteAccount();
+
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMenu]);
 
   const allStatuses = statusPages?.pages.flatMap((page) => page) ?? [];
 
@@ -75,6 +98,33 @@ export default function AccountPage({
       followMutation.mutate(accountId);
     }
   };
+
+  const handleBlock = () => {
+    if (!accountId) return;
+    blockMutation.mutate(accountId);
+    setShowMenu(false);
+  };
+
+  const handleUnblock = () => {
+    if (!accountId) return;
+    unblockMutation.mutate(accountId);
+    setShowMenu(false);
+  };
+
+  const handleMute = () => {
+    if (!accountId) return;
+    muteMutation.mutate({ id: accountId });
+    setShowMenu(false);
+  };
+
+  const handleUnmute = () => {
+    if (!accountId) return;
+    unmuteMutation.mutate(accountId);
+    setShowMenu(false);
+  };
+
+  const isBlocking = relationship?.blocking || false;
+  const isMuting = relationship?.muting || false;
 
   if (accountLoading) {
     return (
@@ -218,21 +268,113 @@ export default function AccountPage({
               background: 'var(--surface-1)',
             }}
           />
-          {isOwnProfile ? (
-            <Link href="/profile/edit">
-              <Button variant="secondary">
-                Edit Profile
-              </Button>
-            </Link>
-          ) : (
-            <Button
-              variant={isFollowing ? 'secondary' : 'primary'}
-              onClick={handleFollowToggle}
-              isLoading={isLoading}
-            >
-              {isFollowing ? 'Following' : 'Follow'}
-            </Button>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+            {isOwnProfile ? (
+              <Link href="/profile/edit">
+                <Button variant="secondary">
+                  Edit Profile
+                </Button>
+              </Link>
+            ) : (
+              <>
+                {!isBlocking && (
+                  <Button
+                    variant={isFollowing ? 'secondary' : 'primary'}
+                    onClick={handleFollowToggle}
+                    isLoading={isLoading}
+                  >
+                    {isFollowing ? 'Following' : 'Follow'}
+                  </Button>
+                )}
+
+                {/* More actions menu */}
+                <div ref={menuRef} style={{ position: 'relative' }}>
+                  <IconButton
+                    onClick={() => setShowMenu(!showMenu)}
+                    style={{
+                      border: '1px solid var(--surface-3)',
+                      borderRadius: 'var(--radius-round)',
+                    }}
+                  >
+                    <MoreHorizontal size={20} />
+                  </IconButton>
+
+                  {showMenu && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      right: 0,
+                      marginTop: 'var(--size-2)',
+                      background: 'var(--surface-2)',
+                      borderRadius: 'var(--radius-2)',
+                      boxShadow: 'var(--shadow-3)',
+                      overflow: 'hidden',
+                      zIndex: 50,
+                      minWidth: '180px',
+                      border: '1px solid var(--surface-3)',
+                    }}>
+                      {/* Mute option */}
+                      <button
+                        onClick={isMuting ? handleUnmute : handleMute}
+                        disabled={muteMutation.isPending || unmuteMutation.isPending}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 'var(--size-2)',
+                          width: '100%',
+                          padding: 'var(--size-3)',
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'var(--text-1)',
+                          cursor: 'pointer',
+                          fontSize: 'var(--font-size-1)',
+                          textAlign: 'left',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-3)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        {isMuting ? (
+                          <>
+                            <Volume2 size={18} />
+                            Unmute @{account.acct}
+                          </>
+                        ) : (
+                          <>
+                            <VolumeX size={18} />
+                            Mute @{account.acct}
+                          </>
+                        )}
+                      </button>
+
+                      {/* Block option */}
+                      <button
+                        onClick={isBlocking ? handleUnblock : handleBlock}
+                        disabled={blockMutation.isPending || unblockMutation.isPending}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 'var(--size-2)',
+                          width: '100%',
+                          padding: 'var(--size-3)',
+                          background: 'transparent',
+                          border: 'none',
+                          color: isBlocking ? 'var(--text-1)' : 'var(--red-6)',
+                          cursor: 'pointer',
+                          fontSize: 'var(--font-size-1)',
+                          textAlign: 'left',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-3)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <Ban size={18} />
+                        {isBlocking ? `Unblock @${account.acct}` : `Block @${account.acct}`}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         <div style={{ marginBottom: 'var(--size-3)' }}>
