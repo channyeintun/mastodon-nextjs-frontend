@@ -4,6 +4,7 @@ import { use } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api/queries';
+import { useAuthStore } from '@/hooks/useStores';
 import { PostCard } from '@/components/molecules/PostCard';
 import { PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
 import { Button } from '@/components/atoms/Button';
@@ -29,6 +30,8 @@ export default function StatusPage({
     isLoading: contextLoading,
     isError: contextError,
   } = useStatusContext(id);
+
+  const authStore = useAuthStore();
 
   const isLoading = statusLoading || contextLoading;
   const isError = statusError || contextError;
@@ -182,21 +185,23 @@ export default function StatusPage({
         </div>
 
         {/* Reply Composer - Comment Box Style */}
-        <div style={{
-          marginBottom: 'var(--size-4)',
-          border: '1px solid var(--surface-3)',
-          borderRadius: 'var(--radius-3)',
-          background: 'var(--surface-2)', // Slightly different bg for contrast
-          padding: 'var(--size-3)',
-        }}>
-          <ComposerPanel
-            key={`reply-${status.id}`}
-            initialVisibility={status.visibility}
-            initialContent={`<span data-type="mention" class="mention" data-id="${status.account.acct}" data-label="${status.account.acct}">@${status.account.acct}</span> `}
-            inReplyToId={status.id}
-            isReply={true}
-          />
-        </div>
+        {authStore.isAuthenticated && (
+          <div style={{
+            marginBottom: 'var(--size-4)',
+            border: '1px solid var(--surface-3)',
+            borderRadius: 'var(--radius-3)',
+            background: 'var(--surface-2)', // Slightly different bg for contrast
+            padding: 'var(--size-3)',
+          }}>
+            <ComposerPanel
+              key={`reply-${status.id}`}
+              initialVisibility={status.visibility}
+              initialContent={`<span data-type="mention" class="mention" data-id="${status.account.acct}" data-label="${status.account.acct}">@${status.account.acct}</span> `}
+              inReplyToId={status.id}
+              isReply={true}
+            />
+          </div>
+        )}
 
         {/* Descendants (replies) */}
         {descendants.length > 0 && (
