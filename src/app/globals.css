@@ -896,13 +896,95 @@ body {
   .notifications-page {
     padding: var(--size-2);
   }
-  
+
   .notifications-header {
     gap: var(--size-2);
   }
-  
+
   /* Hide button text labels on small screens, show only icons */
   .notifications-action-label {
     display: none;
   }
+}
+
+/* ====================================
+   Account Card Component
+   ==================================== */
+.account-card {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-4);
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--surface-3);
+  text-decoration: none;
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.account-card:hover {
+  background: var(--surface-2);
+}
+
+.account-card-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.account-card-name {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+}
+
+.account-card-badge {
+  font-size: var(--font-size-0);
+  padding: 1px var(--size-1);
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+  font-weight: var(--font-weight-5);
+  color: var(--text-2);
+}
+
+.account-card-handle {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-card-actions {
+  display: flex;
+  gap: var(--size-2);
+  flex-shrink: 0;
+}
+
+/* Settings page links */
+.settings-link {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-3) var(--size-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  text-decoration: none;
+  color: var(--text-1);
+  font-weight: var(--font-weight-5);
+  transition: background 0.15s ease;
+}
+
+.settings-link:hover {
+  background: var(--surface-3);
+}
+
+.settings-link-icon {
+  color: var(--text-2);
 }

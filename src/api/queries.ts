@@ -16,6 +16,7 @@ import {
   getFollowers,
   getFollowing,
   getRelationships,
+  getFollowRequests,
   getBookmarks,
   search,
   getCustomEmojis,
@@ -27,7 +28,7 @@ import {
   getUnreadNotificationCount,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, Account } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 // Timelines
@@ -158,11 +159,64 @@ export function useFollowers(id: string) {
   })
 }
 
+export function useInfiniteFollowers(id: string) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.accounts.followers(id),
+    queryFn: ({ pageParam }) => {
+      const params: { max_id?: string; limit: number } = { limit: 40 }
+      if (pageParam) params.max_id = pageParam
+      return getFollowers(id, params)
+    },
+    getNextPageParam: (lastPage: Account[]) => {
+      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: !!id,
+  })
+}
+
 export function useFollowing(id: string) {
   return useQuery({
     queryKey: queryKeys.accounts.following(id),
     queryFn: () => getFollowing(id),
     enabled: !!id,
+  })
+}
+
+export function useInfiniteFollowing(id: string) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.accounts.following(id),
+    queryFn: ({ pageParam }) => {
+      const params: { max_id?: string; limit: number } = { limit: 40 }
+      if (pageParam) params.max_id = pageParam
+      return getFollowing(id, params)
+    },
+    getNextPageParam: (lastPage: Account[]) => {
+      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: !!id,
+  })
+}
+
+export function useFollowRequests() {
+  const authStore = useAuthStore()
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.accounts.followRequests(),
+    queryFn: ({ pageParam }) => {
+      const params: { max_id?: string; limit: number } = { limit: 40 }
+      if (pageParam) params.max_id = pageParam
+      return getFollowRequests(params)
+    },
+    getNextPageParam: (lastPage: Account[]) => {
+      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    enabled: authStore.isAuthenticated,
   })
 }
 

@@ -9,7 +9,8 @@ import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
 import { EmojiText } from '@/components/atoms/EmojiText';
 import { Button } from '@/components/atoms/Button';
-import { Plus, TrendingUp } from 'lucide-react';
+import { IconButton } from '@/components/atoms/IconButton';
+import { Plus, TrendingUp, Search } from 'lucide-react';
 import type { Status } from '@/types/mastodon';
 
 const HomePage = observer(() => {
@@ -149,25 +150,32 @@ const TimelinePage = observer(() => {
             {authStore.instanceURL?.replace('https://', '')}
           </p>
         </div>
-        <Link href={user ? `/@${user.acct}` : '#'} className={`profile-pill profile-pill-static ${!user ? 'skeleton-loading' : ''}`}>
-          {user ? (
-            <>
-              <img
-                src={user.avatar}
-                alt={user.display_name}
-                className="profile-pill-avatar"
-              />
-              <span className="profile-pill-name">
-                <EmojiText text={user.display_name} emojis={user.emojis} />
-              </span>
-            </>
-          ) : (
-            <>
-              <div className="profile-pill-avatar" style={{ background: 'var(--surface-3)' }} />
-              <div className="profile-pill-name" style={{ width: '80px', height: '1em', background: 'var(--surface-3)', borderRadius: 'var(--radius-1)' }} />
-            </>
-          )}
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+          <Link href="/search">
+            <IconButton>
+              <Search size={20} />
+            </IconButton>
+          </Link>
+          <Link href={user ? `/@${user.acct}` : '#'} className={`profile-pill profile-pill-static ${!user ? 'skeleton-loading' : ''}`}>
+            {user ? (
+              <>
+                <img
+                  src={user.avatar}
+                  alt={user.display_name}
+                  className="profile-pill-avatar"
+                />
+                <span className="profile-pill-name">
+                  <EmojiText text={user.display_name} emojis={user.emojis} />
+                </span>
+              </>
+            ) : (
+              <>
+                <div className="profile-pill-avatar" style={{ background: 'var(--surface-3)' }} />
+                <div className="profile-pill-name" style={{ width: '80px', height: '1em', background: 'var(--surface-3)', borderRadius: 'var(--radius-1)' }} />
+              </>
+            )}
+          </Link>
+        </div>
       </div>
 
       {/* Virtual scrolling container with scroll restoration */}

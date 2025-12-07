@@ -198,7 +198,7 @@ export default function AccountPage({
       <div style={{
         width: '100%',
         height: '200px',
-        flexShrink: 0, 
+        flexShrink: 0,
         background: account.header
           ? `url(${account.header}) center/cover`
           : 'linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%)',
@@ -219,7 +219,7 @@ export default function AccountPage({
             }}
           />
           {isOwnProfile ? (
-            <Link href="/settings">
+            <Link href="/profile/edit">
               <Button variant="secondary">
                 Edit Profile
               </Button>
@@ -318,18 +318,18 @@ export default function AccountPage({
           fontSize: 'var(--font-size-1)',
           marginBottom: 'var(--size-4)',
         }}>
-          <div>
+          <Link href={`/@${account.acct}/following`} style={{ textDecoration: 'none' }}>
             <strong style={{ color: 'var(--text-1)' }}>
               {account.following_count.toLocaleString()}
             </strong>{' '}
             <span style={{ color: 'var(--text-2)' }}>Following</span>
-          </div>
-          <div>
+          </Link>
+          <Link href={`/@${account.acct}/followers`} style={{ textDecoration: 'none' }}>
             <strong style={{ color: 'var(--text-1)' }}>
               {account.followers_count.toLocaleString()}
             </strong>{' '}
             <span style={{ color: 'var(--text-2)' }}>Followers</span>
-          </div>
+          </Link>
         </div>
 
         {/* External link */}
@@ -359,7 +359,7 @@ export default function AccountPage({
         marginTop: 'var(--size-4)',
         display: 'flex',
         flexDirection: 'column',
-        height:'100%'
+        height: '100%'
       }}>
         <h3 style={{
           fontSize: 'var(--font-size-3)',

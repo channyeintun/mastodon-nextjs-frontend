@@ -256,13 +256,13 @@ export async function getAccountStatuses(
   return data
 }
 
-export async function getFollowers(id: string): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/followers`)
+export async function getFollowers(id: string, params?: { max_id?: string; limit?: number }): Promise<Account[]> {
+  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/followers`, { params })
   return data
 }
 
-export async function getFollowing(id: string): Promise<Account[]> {
-  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/following`)
+export async function getFollowing(id: string, params?: { max_id?: string; limit?: number }): Promise<Account[]> {
+  const { data } = await api.get<Account[]>(`/api/v1/accounts/${id}/following`, { params })
   return data
 }
 
@@ -284,6 +284,21 @@ export async function getRelationships(ids: string[]): Promise<Relationship[]> {
     },
   })
   return data
+}
+
+// Follow Requests
+export async function getFollowRequests(params?: { max_id?: string; limit?: number }): Promise<Account[]> {
+  const { data } = await api.get<Account[]>('/api/v1/follow_requests', { params })
+  return data
+}
+
+export async function acceptFollowRequest(id: string): Promise<Relationship> {
+  const { data } = await api.post<Relationship>(`/api/v1/follow_requests/${id}/authorize`)
+  return data
+}
+
+export async function rejectFollowRequest(id: string): Promise<void> {
+  await api.post(`/api/v1/follow_requests/${id}/reject`)
 }
 
 // Bookmarks

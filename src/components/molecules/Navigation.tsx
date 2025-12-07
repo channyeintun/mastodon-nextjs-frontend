@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Bookmark, Search, Settings, Coffee, Github, LogOut, Loader2, Bell } from 'lucide-react';
+import { Home, PenSquare, Search, Settings, Coffee, Github, Bell } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount } from '@/api/queries';
 import type { Account } from '@/types/mastodon';
 
@@ -17,11 +17,20 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
   const { data: instance, isLoading: isLoadingInstance } = useInstance();
   const { data: unreadCount } = useUnreadNotificationCount();
 
-  const navLinks = [
+  // Desktop sidebar includes all links
+  const sidebarNavLinks = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
     { href: '/compose', label: 'Create', icon: PenSquare },
-    { href: '/bookmarks', label: 'Bookmarks', icon: Bookmark },
+    { href: '/search', label: 'Search', icon: Search },
+    { href: '/settings', label: 'Settings', icon: Settings },
+  ];
+
+  // Mobile bottom nav is simplified - no bookmarks (accessible via Settings)
+  const bottomNavLinks = [
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
+    { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/search', label: 'Search', icon: Search },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
@@ -77,7 +86,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
         {/* Navigation Links */}
         {isAuthenticated && (
           <nav className="navigation-sidebar-nav">
-            {navLinks.map((link) => {
+            {sidebarNavLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;
 
@@ -133,7 +142,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
       {/* Mobile Bottom Navigation */}
       {isAuthenticated && (
         <nav className="navigation-bottom">
-          {navLinks.map((link) => {
+          {bottomNavLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
 

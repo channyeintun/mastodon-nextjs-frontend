@@ -21,6 +21,8 @@ import {
   dismissNotification,
   clearNotifications,
   updateMarkers,
+  acceptFollowRequest,
+  rejectFollowRequest,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll } from '../types/mastodon'
@@ -577,6 +579,35 @@ export function useMarkNotificationsAsRead() {
     onSuccess: () => {
       // Reset unread count after marking as read
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() })
+    },
+  })
+}
+
+// Follow Request mutations
+export function useAcceptFollowRequest() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => acceptFollowRequest(id),
+    onSuccess: (_data, id) => {
+      // Invalidate follow requests list
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.followRequests() })
+      // Invalidate relationships for the accepted user
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      // Invalidate current user's followers count
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.current() })
+    },
+  })
+}
+
+export function useRejectFollowRequest() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => rejectFollowRequest(id),
+    onSuccess: () => {
+      // Invalidate follow requests list
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.followRequests() })
     },
   })
 }

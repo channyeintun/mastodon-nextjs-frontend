@@ -1,0 +1,137 @@
+'use client';
+
+import { use } from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { useLookupAccount, useInfiniteFollowing } from '@/api/queries';
+import { AccountCard, AccountCardSkeleton } from '@/components/molecules/AccountCard';
+import { VirtualizedList } from '@/components/organisms/VirtualizedList';
+import { IconButton } from '@/components/atoms/IconButton';
+import { EmojiText } from '@/components/atoms/EmojiText';
+import { Button } from '@/components/atoms/Button';
+import type { Account } from '@/types/mastodon';
+
+export default function FollowingPage({
+    params,
+}: {
+    params: Promise<{ acct: string }>;
+}) {
+    const { acct: acctParam } = use(params);
+    const decodedAcct = decodeURIComponent(acctParam);
+
+    if (!decodedAcct.startsWith('@')) {
+        throw new Error('Not Found');
+    }
+
+    const acct = decodedAcct.slice(1);
+
+    const {
+        data: account,
+        isLoading: accountLoading,
+        isError: accountError,
+    } = useLookupAccount(acct);
+
+    const {
+        data: followingPages,
+        isLoading: followingLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteFollowing(account?.id || '');
+
+    const following = followingPages?.pages.flatMap((page) => page) ?? [];
+
+    if (accountLoading || followingLoading) {
+        return (
+            <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--size-3)',
+                    padding: 'var(--size-4)',
+                    borderBottom: '1px solid var(--surface-3)',
+                }}>
+                    <div className="skeleton" style={{ width: 32, height: 32, borderRadius: '50%' }} />
+                    <div>
+                        <div className="skeleton" style={{ width: 120, height: 20, marginBottom: 4 }} />
+                        <div className="skeleton" style={{ width: 80, height: 14 }} />
+                    </div>
+                </div>
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <AccountCardSkeleton key={i} />
+                ))}
+            </div>
+        );
+    }
+
+    if (accountError || !account) {
+        return (
+            <div className="container" style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
+                <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
+                    Profile Not Found
+                </h2>
+                <Link href="/">
+                    <Button>Back to Timeline</Button>
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            {/* Header */}
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--size-3)',
+                padding: 'var(--size-4)',
+                borderBottom: '1px solid var(--surface-3)',
+                background: 'var(--surface-1)',
+                zIndex: 10,
+                flexShrink: 0,
+            }}>
+                <Link href={`/@${acct}`}>
+                    <IconButton>
+                        <ArrowLeft size={20} />
+                    </IconButton>
+                </Link>
+                <div>
+                    <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
+                        Following
+                    </h1>
+                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
+                        <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
+                    </p>
+                </div>
+            </div>
+
+            {/* Following List with VirtualizedList */}
+            <VirtualizedList<Account>
+                items={following}
+                renderItem={(followedAccount) => (
+                    <AccountCard
+                        account={followedAccount}
+                        showFollowButton={true}
+                    />
+                )}
+                getItemKey={(followedAccount) => followedAccount.id}
+                estimateSize={72}
+                overscan={5}
+                onLoadMore={fetchNextPage}
+                isLoadingMore={isFetchingNextPage}
+                hasMore={hasNextPage}
+                loadMoreThreshold={3}
+                height="auto"
+                style={{ flex: 1, minHeight: 0 }}
+                scrollRestorationKey={`following-${acct}`}
+                loadingIndicator={<AccountCardSkeleton />}
+                endIndicator="No more accounts"
+                emptyState={
+                    <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
+                        Not following anyone yet
+                    </div>
+                }
+            />
+        </div>
+    );
+}
