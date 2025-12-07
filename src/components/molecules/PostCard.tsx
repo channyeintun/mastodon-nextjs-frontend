@@ -435,38 +435,6 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
                             <Trash2 size={16} />
                             <span>Delete</span>
                           </button>
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setShowMenu(false);
-                              // Navigate to compose page with quote content
-                              const quoteUrl = displayStatus.url || `${window.location.origin}/status/${displayStatus.id}`;
-                              router.push(`/compose?text=${encodeURIComponent(quoteUrl)}`);
-                            }}
-                            style={{
-                              width: '100%',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 'var(--size-2)',
-                              padding: 'var(--size-2)',
-                              border: 'none',
-                              background: 'transparent',
-                              borderRadius: 'var(--radius-2)',
-                              cursor: 'pointer',
-                              color: 'var(--text-1)',
-                              fontSize: 'var(--font-size-1)',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = 'var(--surface-3)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'transparent';
-                            }}
-                          >
-                            <MessageSquareQuote size={16} />
-                            <span>Quote</span>
-                          </button>
                         </div>
                       </>
                     )}
