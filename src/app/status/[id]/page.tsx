@@ -1,7 +1,7 @@
 'use client';
 
 import { use } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api/queries';
 import { useAuthStore } from '@/hooks/useStores';
@@ -32,6 +32,7 @@ export default function StatusPage({
   } = useStatusContext(id);
 
   const authStore = useAuthStore();
+  const router = useRouter();
 
   const isLoading = statusLoading || contextLoading;
   const isError = statusError || contextError;
@@ -52,11 +53,9 @@ export default function StatusPage({
           alignItems: 'center',
           gap: 'var(--size-3)',
         }}>
-          <Link href="/">
-            <IconButton>
-              <ArrowLeft size={20} />
-            </IconButton>
-          </Link>
+          <IconButton onClick={() => router.back()}>
+            <ArrowLeft size={20} />
+          </IconButton>
           <h1 style={{ fontSize: 'var(--font-size-4)' }}>
             Post
           </h1>
@@ -109,9 +108,7 @@ export default function StatusPage({
             ? statusErrorData.message
             : 'This post could not be found or loaded.'}
         </p>
-        <Link href="/">
-          <Button>Back to Timeline</Button>
-        </Link>
+        <Button onClick={() => router.back()}>Go Back</Button>
       </div>
     );
   }
@@ -134,11 +131,9 @@ export default function StatusPage({
         alignItems: 'center',
         gap: 'var(--size-3)',
       }}>
-        <Link href="/">
-          <IconButton>
-            <ArrowLeft size={20} />
-          </IconButton>
-        </Link>
+        <IconButton onClick={() => router.back()}>
+          <ArrowLeft size={20} />
+        </IconButton>
         <h1 style={{ fontSize: 'var(--font-size-4)' }}>
           Post
         </h1>
