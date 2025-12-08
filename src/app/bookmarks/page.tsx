@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Bookmark as BookmarkIcon } from 'lucide-react';
 import { useInfiniteBookmarks } from '@/api/queries';
@@ -11,6 +12,7 @@ import { IconButton } from '@/components/atoms/IconButton';
 import type { Status } from '@/types/mastodon';
 
 export default function BookmarksPage() {
+  const router = useRouter();
   const {
     data,
     isLoading,
@@ -45,11 +47,9 @@ export default function BookmarksPage() {
           alignItems: 'center',
           gap: 'var(--size-3)',
         }}>
-          <Link href="/">
-            <IconButton>
-              <ArrowLeft size={20} />
-            </IconButton>
-          </Link>
+          <IconButton onClick={() => router.back()}>
+            <ArrowLeft size={20} />
+          </IconButton>
           <h1 style={{ fontSize: 'var(--font-size-4)' }}>
             Bookmarks
           </h1>
@@ -93,11 +93,9 @@ export default function BookmarksPage() {
           alignItems: 'center',
           gap: 'var(--size-3)',
         }}>
-          <Link href="/">
-            <IconButton>
-              <ArrowLeft size={20} />
-            </IconButton>
-          </Link>
+          <IconButton onClick={() => router.back()}>
+            <ArrowLeft size={20} />
+          </IconButton>
           <h1 style={{ fontSize: 'var(--font-size-4)' }}>
             Bookmarks
           </h1>
@@ -132,11 +130,9 @@ export default function BookmarksPage() {
         gap: 'var(--size-3)',
         flexShrink: 0,
       }}>
-        <Link href="/">
-          <IconButton>
-            <ArrowLeft size={20} />
-          </IconButton>
-        </Link>
+        <IconButton onClick={() => router.back()}>
+          <ArrowLeft size={20} />
+        </IconButton>
         <div>
           <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
             Bookmarks

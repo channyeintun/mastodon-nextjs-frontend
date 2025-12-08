@@ -1,6 +1,7 @@
 'use client';
 
 import { use } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, List, Users, Settings, Loader2 } from 'lucide-react';
 import { useList, useInfiniteListTimeline } from '@/api/queries';
@@ -11,6 +12,7 @@ import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import type { Status } from '@/types/mastodon';
 
 export default function ListDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const router = useRouter();
     const resolvedParams = use(params);
     const listId = resolvedParams.id;
 
@@ -61,11 +63,9 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                         borderBottom: '1px solid var(--surface-3)',
                     }}
                 >
-                    <Link href="/lists">
-                        <IconButton>
-                            <ArrowLeft size={20} />
-                        </IconButton>
-                    </Link>
+                    <IconButton onClick={() => router.back()}>
+                        <ArrowLeft size={20} />
+                    </IconButton>
                     <h1 style={{ fontSize: 'var(--font-size-4)' }}>List not found</h1>
                 </div>
                 <div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
@@ -101,11 +101,9 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
-                    <Link href="/lists">
-                        <IconButton>
-                            <ArrowLeft size={20} />
-                        </IconButton>
-                    </Link>
+                    <IconButton onClick={() => router.back()}>
+                        <ArrowLeft size={20} />
+                    </IconButton>
                     <div
                         style={{
                             width: 40,

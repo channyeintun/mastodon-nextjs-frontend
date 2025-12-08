@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, ExternalLink, MoreHorizontal, Ban, VolumeX, Volume2, Pin } from 'lucide-react';
 import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount, usePinnedStatuses } from '@/api/queries';
@@ -20,6 +21,7 @@ export default function AccountPage({
 }: {
   params: Promise<{ acct: string }>;
 }) {
+  const router = useRouter();
   const { acct: acctParam } = use(params);
 
   // Decode URL parameter (@ becomes %40 in URLs)
@@ -144,11 +146,9 @@ export default function AccountPage({
           alignItems: 'center',
           gap: 'var(--size-3)',
         }}>
-          <Link href="/">
-            <IconButton>
-              <ArrowLeft size={20} />
-            </IconButton>
-          </Link>
+          <IconButton onClick={() => router.back()}>
+            <ArrowLeft size={20} />
+          </IconButton>
           <div>
             <div
               style={{
@@ -228,11 +228,9 @@ export default function AccountPage({
         gap: 'var(--size-3)',
         flexShrink: 0,
       }}>
-        <Link href="/">
-          <IconButton>
-            <ArrowLeft size={20} />
-          </IconButton>
-        </Link>
+        <IconButton onClick={() => router.back()}>
+          <ArrowLeft size={20} />
+        </IconButton>
         <div>
           <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
             <EmojiText

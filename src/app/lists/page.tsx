@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Plus, List, MoreVertical, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
 import { useLists } from '@/api/queries';
@@ -476,6 +477,7 @@ function ListItemSkeleton() {
 }
 
 export default function ListsPage() {
+    const router = useRouter();
     const { data: lists, isLoading } = useLists();
     const createListMutation = useCreateList();
     const updateListMutation = useUpdateList();
@@ -531,11 +533,9 @@ export default function ListsPage() {
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
-                    <Link href="/">
-                        <IconButton>
-                            <ArrowLeft size={20} />
-                        </IconButton>
-                    </Link>
+                    <IconButton onClick={() => router.back()}>
+                        <ArrowLeft size={20} />
+                    </IconButton>
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-4)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                             <List size={22} />

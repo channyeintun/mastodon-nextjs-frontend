@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, List, UserPlus, UserMinus, Search, X } from 'lucide-react';
 import { useList, useListAccounts, useInfiniteFollowing, useCurrentAccount, useSearch } from '@/api/queries';
@@ -12,6 +13,7 @@ import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import type { Account } from '@/types/mastodon';
 
 export default function ListMembersPage({ params }: { params: Promise<{ id: string }> }) {
+    const router = useRouter();
     const resolvedParams = use(params);
     const listId = resolvedParams.id;
 
@@ -101,11 +103,9 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
                         borderBottom: '1px solid var(--surface-3)',
                     }}
                 >
-                    <Link href="/lists">
-                        <IconButton>
-                            <ArrowLeft size={20} />
-                        </IconButton>
-                    </Link>
+                    <IconButton onClick={() => router.back()}>
+                        <ArrowLeft size={20} />
+                    </IconButton>
                     <h1 style={{ fontSize: 'var(--font-size-4)' }}>List not found</h1>
                 </div>
             </div>
@@ -129,11 +129,9 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
-                    <Link href={`/lists/${listId}`}>
-                        <IconButton>
-                            <ArrowLeft size={20} />
-                        </IconButton>
-                    </Link>
+                    <IconButton onClick={() => router.back()}>
+                        <ArrowLeft size={20} />
+                    </IconButton>
                     <div>
                         <h1 style={{ fontSize: 'var(--font-size-4)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                             <List size={20} />

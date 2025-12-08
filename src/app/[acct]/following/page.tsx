@@ -1,6 +1,7 @@
 'use client';
 
 import { use } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useLookupAccount, useInfiniteFollowing } from '@/api/queries';
@@ -23,6 +24,7 @@ export default function FollowingPage({
         throw new Error('Not Found');
     }
 
+    const router = useRouter();
     const acct = decodedAcct.slice(1);
 
     const {
@@ -90,11 +92,9 @@ export default function FollowingPage({
                 zIndex: 10,
                 flexShrink: 0,
             }}>
-                <Link href={`/@${acct}`}>
-                    <IconButton>
-                        <ArrowLeft size={20} />
-                    </IconButton>
-                </Link>
+                <IconButton onClick={() => router.back()}>
+                    <ArrowLeft size={20} />
+                </IconButton>
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
                         Following

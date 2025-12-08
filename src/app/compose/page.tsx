@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import AuthGuard from '@/components/organisms/AuthGuard';
@@ -8,6 +9,7 @@ import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 import { IconButton } from '@/components/atoms/IconButton';
 
 export default function ComposePage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const quotedStatusId = searchParams.get('quoted_status_id') || undefined;
   const scheduledStatusId = searchParams.get('scheduled_status_id') || undefined;
@@ -21,11 +23,9 @@ export default function ComposePage() {
               Let's keep the back button here but make it cleaner.
            */}
           <div className="compose-header">
-            <Link href="/">
-              <IconButton>
-                <ArrowLeft size={24} />
-              </IconButton>
-            </Link>
+            <IconButton onClick={() => router.back()}>
+              <ArrowLeft size={24} />
+            </IconButton>
             <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)' }}>
               New Post
             </h1>

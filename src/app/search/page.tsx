@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { ArrowLeft, Search as SearchIcon, Hash, X, Clock } from 'lucide-react';
 import { useSearch } from '@/api/queries';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
@@ -16,37 +16,93 @@ import { Card } from '@/components/atoms/Card';
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
 
 export default function SearchPage() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const urlQuery = searchParams.get('q') || '';
+  const urlType = searchParams.get('type') as TabType;
 
   const [query, setQuery] = useState(urlQuery);
   const [debouncedQuery, setDebouncedQuery] = useState(urlQuery);
   const [activeTab, setActiveTab] = useState<TabType>(
-    urlQuery.startsWith('#') ? 'hashtags' : 'all'
+    urlType || (urlQuery.startsWith('#') ? 'hashtags' : 'all')
   );
 
   const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
 
-  // Update query when URL changes
+  // Sync State -> URL
   useEffect(() => {
-    if (urlQuery && urlQuery !== query) {
+    const params = new URLSearchParams(searchParams.toString());
+    let hasChanges = false;
+
+    // Sync Query
+    if (debouncedQuery) {
+      if (params.get('q') !== debouncedQuery) {
+        params.set('q', debouncedQuery);
+        hasChanges = true;
+      }
+    } else {
+      if (params.has('q')) {
+        params.delete('q');
+        hasChanges = true;
+      }
+    }
+
+    // Sync Tab
+    if (activeTab && activeTab !== 'all') {
+      if (params.get('type') !== activeTab) {
+        params.set('type', activeTab);
+        hasChanges = true;
+      }
+    } else {
+      if (params.has('type')) {
+        params.delete('type');
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) {
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+  }, [debouncedQuery, activeTab, pathname, router, searchParams]);
+
+  // Sync URL -> State (Handle Back/Forward/External)
+  useEffect(() => {
+    // Sync Query if different (e.g. Back button)
+    if (urlQuery !== debouncedQuery) {
       setQuery(urlQuery);
       setDebouncedQuery(urlQuery);
-      addToHistory(urlQuery);
-      if (urlQuery.startsWith('#')) {
+      if (urlQuery) addToHistory(urlQuery);
+
+      // Handle auto-switching to hashtags tab for # queries if no type specified
+      if (!urlType && urlQuery.startsWith('#')) {
         setActiveTab('hashtags');
       }
     }
-  }, [urlQuery]);
+
+    // Sync Tab if different
+    if (urlType && urlType !== activeTab) {
+      setActiveTab(urlType);
+    } else if (!urlType && activeTab !== 'all' && !urlQuery.startsWith('#')) {
+      // If URL has no type, and default logic wouldn't set it to hashtags, 
+      // but state is on something else, should we reset?
+      // For now, let's just respect explicit URL type changes.
+      setActiveTab('all');
+    }
+  }, [urlQuery, urlType]); // Minimal deps to avoid loops
 
   // Debounce search query
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [query]);
+    // Only debounce if query is different from debouncedQuery
+    // AND if query is different from urlQuery (typing)
+    // Actually standard debounce is fine, the sync effect handles the rest
+    if (query !== debouncedQuery) {
+      const timer = setTimeout(() => {
+        setDebouncedQuery(query);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [query, debouncedQuery]);
 
   const {
     data: searchResults,
@@ -82,11 +138,9 @@ export default function SearchPage() {
           gap: 'var(--size-3)',
           marginBottom: 'var(--size-4)',
         }}>
-          <Link href="/">
-            <IconButton>
-              <ArrowLeft size={20} />
-            </IconButton>
-          </Link>
+          <IconButton onClick={() => router.back()}>
+            <ArrowLeft size={20} />
+          </IconButton>
           <h1 style={{ fontSize: 'var(--font-size-4)' }}>
             Search
           </h1>

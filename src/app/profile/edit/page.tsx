@@ -129,11 +129,9 @@ export default function ProfileEditPage() {
                 gap: 'var(--size-3)',
                 marginBottom: 'var(--size-5)',
             }}>
-                <Link href={`/@${currentAccount.acct}`}>
-                    <IconButton>
-                        <ArrowLeft size={20} />
-                    </IconButton>
-                </Link>
+                <IconButton onClick={() => router.back()}>
+                    <ArrowLeft size={20} />
+                </IconButton>
                 <h1 style={{
                     fontSize: 'var(--font-size-4)',
                     fontWeight: 'var(--font-weight-6)',

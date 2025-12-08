@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Ban } from 'lucide-react';
 import { useBlockedAccounts } from '@/api/queries';
@@ -10,6 +11,7 @@ import { Spinner } from '@/components/atoms/Spinner';
 import type { Account } from '@/types/mastodon';
 
 export default function BlockedAccountsPage() {
+    const router = useRouter();
     const {
         data: blockedPages,
         isLoading,
@@ -57,11 +59,9 @@ export default function BlockedAccountsPage() {
                 background: 'var(--surface-1)',
                 zIndex: 10,
             }}>
-                <Link href="/settings">
-                    <IconButton>
-                        <ArrowLeft size={20} />
-                    </IconButton>
-                </Link>
+                <IconButton onClick={() => router.back()}>
+                    <ArrowLeft size={20} />
+                </IconButton>
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                         <Ban size={20} />

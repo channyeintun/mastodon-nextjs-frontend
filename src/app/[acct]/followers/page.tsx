@@ -1,6 +1,7 @@
 'use client';
 
 import { use } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useLookupAccount, useInfiniteFollowers } from '@/api/queries';
@@ -18,6 +19,7 @@ export default function FollowersPage({
 }) {
     const { acct: acctParam } = use(params);
     const decodedAcct = decodeURIComponent(acctParam);
+    const router = useRouter();
 
     if (!decodedAcct.startsWith('@')) {
         throw new Error('Not Found');
@@ -90,11 +92,9 @@ export default function FollowersPage({
                 zIndex: 10,
                 flexShrink: 0,
             }}>
-                <Link href={`/@${acct}`}>
-                    <IconButton>
-                        <ArrowLeft size={20} />
-                    </IconButton>
-                </Link>
+                <IconButton onClick={() => router.back()}>
+                    <ArrowLeft size={20} />
+                </IconButton>
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
                         Followers

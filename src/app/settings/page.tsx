@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock } from 'lucide-react';
 import { useCurrentAccount } from '@/api/queries';
@@ -11,6 +12,7 @@ import { EmojiText } from '@/components/atoms/EmojiText';
 import { useAuthStore } from '@/hooks/useStores';
 
 export default function SettingsPage() {
+  const router = useRouter();
   const authStore = useAuthStore();
   const { data: currentAccount, isLoading } = useCurrentAccount();
 
@@ -92,11 +94,9 @@ export default function SettingsPage() {
         gap: 'var(--size-3)',
         marginBottom: 'var(--size-5)',
       }}>
-        <Link href="/">
-          <IconButton>
-            <ArrowLeft size={20} />
-          </IconButton>
-        </Link>
+        <IconButton onClick={() => router.back()}>
+          <ArrowLeft size={20} />
+        </IconButton>
         <h1 style={{
           fontSize: 'var(--font-size-4)',
           fontWeight: 'var(--font-weight-6)',

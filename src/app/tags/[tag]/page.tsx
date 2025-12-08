@@ -1,6 +1,7 @@
 'use client';
 
 import { use } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Hash } from 'lucide-react';
 import { useInfiniteHashtagTimeline } from '@/api/queries';
@@ -16,6 +17,7 @@ export default function HashtagPage({
   params: Promise<{ tag: string }>;
 }) {
   const { tag } = use(params);
+  const router = useRouter();
 
   // Decode URL parameter
   const decodedTag = decodeURIComponent(tag);
@@ -55,11 +57,9 @@ export default function HashtagPage({
             alignItems: 'center',
             gap: 'var(--size-3)',
           }}>
-            <Link href="/">
-              <IconButton>
-                <ArrowLeft size={20} />
-              </IconButton>
-            </Link>
+            <IconButton onClick={() => router.back()}>
+              <ArrowLeft size={20} />
+            </IconButton>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -107,11 +107,9 @@ export default function HashtagPage({
           alignItems: 'center',
           gap: 'var(--size-3)',
         }}>
-          <Link href="/">
-            <IconButton>
-              <ArrowLeft size={20} />
-            </IconButton>
-          </Link>
+          <IconButton onClick={() => router.back()}>
+            <ArrowLeft size={20} />
+          </IconButton>
           <div style={{
             display: 'flex',
             alignItems: 'center',

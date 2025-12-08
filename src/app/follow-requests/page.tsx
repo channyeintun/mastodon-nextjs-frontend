@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, UserPlus } from 'lucide-react';
 import { useFollowRequests } from '@/api/queries';
@@ -9,6 +10,7 @@ import { Button } from '@/components/atoms/Button';
 import type { Account } from '@/types/mastodon';
 
 export default function FollowRequestsPage() {
+    const router = useRouter();
     const {
         data: requestPages,
         isLoading,
@@ -56,11 +58,9 @@ export default function FollowRequestsPage() {
                 background: 'var(--surface-1)',
                 zIndex: 10,
             }}>
-                <Link href="/settings">
-                    <IconButton>
-                        <ArrowLeft size={20} />
-                    </IconButton>
-                </Link>
+                <IconButton onClick={() => router.back()}>
+                    <ArrowLeft size={20} />
+                </IconButton>
                 <div>
                     <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                         <UserPlus size={20} />
