@@ -287,6 +287,33 @@ function updatePollInCaches(
   )
 }
 
+// Helper function to rollback status in all caches (used on error)
+function rollbackStatusInCaches(
+  queryClient: QueryClient,
+  statusId: string,
+  previousStatus: Status | undefined
+) {
+  if (!previousStatus) return
+
+  // Rollback status detail
+  queryClient.setQueryData<Status>(queryKeys.statuses.detail(statusId), previousStatus)
+
+  // Rollback in timeline caches
+  updateStatusInCaches(queryClient, statusId, () => previousStatus)
+}
+
+// Helper function to cancel all relevant queries before optimistic update
+async function cancelStatusQueries(queryClient: QueryClient, statusId: string) {
+  await Promise.all([
+    queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(statusId) }),
+    queryClient.cancelQueries({ queryKey: queryKeys.timelines.all }),
+    queryClient.cancelQueries({ queryKey: queryKeys.bookmarks.all() }),
+    queryClient.cancelQueries({ queryKey: ['accounts'] }),
+    queryClient.cancelQueries({ queryKey: queryKeys.trends.statuses() }),
+    queryClient.cancelQueries({ queryKey: ['search'] }),
+  ])
+}
+
 // Status mutations
 export function useCreateStatus() {
   const queryClient = useQueryClient()
@@ -348,7 +375,8 @@ export function useFavouriteStatus() {
   return useMutation({
     mutationFn: (id: string) => favouriteStatus(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
+      // Cancel all queries that will be updated optimistically
+      await cancelStatusQueries(queryClient, id)
 
       const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
@@ -370,15 +398,15 @@ export function useFavouriteStatus() {
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.id) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
-        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
-        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
-        queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      if (context?.previous && context?.id) {
+        // Rollback to previous state
+        rollbackStatusInCaches(queryClient, context.id, context.previous)
       }
     },
-    onSettled: (_data, _error, id) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
+    onSuccess: (data) => {
+      // Update cache with actual server response
+      queryClient.setQueryData<Status>(queryKeys.statuses.detail(data.id), data)
+      updateStatusInCaches(queryClient, data.id, () => data)
     },
   })
 }
@@ -389,7 +417,8 @@ export function useUnfavouriteStatus() {
   return useMutation({
     mutationFn: (id: string) => unfavouriteStatus(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
+      // Cancel all queries that will be updated optimistically
+      await cancelStatusQueries(queryClient, id)
 
       const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
@@ -410,15 +439,15 @@ export function useUnfavouriteStatus() {
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.id) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
-        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
-        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
-        queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      if (context?.previous && context?.id) {
+        // Rollback to previous state
+        rollbackStatusInCaches(queryClient, context.id, context.previous)
       }
     },
-    onSettled: (_data, _error, id) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
+    onSuccess: (data) => {
+      // Update cache with actual server response
+      queryClient.setQueryData<Status>(queryKeys.statuses.detail(data.id), data)
+      updateStatusInCaches(queryClient, data.id, () => data)
     },
   })
 }
@@ -429,7 +458,8 @@ export function useReblogStatus() {
   return useMutation({
     mutationFn: (id: string) => reblogStatus(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
+      // Cancel all queries that will be updated optimistically
+      await cancelStatusQueries(queryClient, id)
 
       const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
@@ -450,15 +480,15 @@ export function useReblogStatus() {
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.id) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
-        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
-        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
-        queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      if (context?.previous && context?.id) {
+        // Rollback to previous state
+        rollbackStatusInCaches(queryClient, context.id, context.previous)
       }
     },
-    onSettled: (_data, _error, id) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
+    onSuccess: (data) => {
+      // Update cache with actual server response
+      queryClient.setQueryData<Status>(queryKeys.statuses.detail(data.id), data)
+      updateStatusInCaches(queryClient, data.id, () => data)
     },
   })
 }
@@ -469,7 +499,8 @@ export function useUnreblogStatus() {
   return useMutation({
     mutationFn: (id: string) => unreblogStatus(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
+      // Cancel all queries that will be updated optimistically
+      await cancelStatusQueries(queryClient, id)
 
       const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
@@ -490,15 +521,15 @@ export function useUnreblogStatus() {
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.id) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
-        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
-        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
-        queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      if (context?.previous && context?.id) {
+        // Rollback to previous state
+        rollbackStatusInCaches(queryClient, context.id, context.previous)
       }
     },
-    onSettled: (_data, _error, id) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
+    onSuccess: (data) => {
+      // Update cache with actual server response
+      queryClient.setQueryData<Status>(queryKeys.statuses.detail(data.id), data)
+      updateStatusInCaches(queryClient, data.id, () => data)
     },
   })
 }
@@ -509,7 +540,8 @@ export function useBookmarkStatus() {
   return useMutation({
     mutationFn: (id: string) => bookmarkStatus(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
+      // Cancel all queries that will be updated optimistically
+      await cancelStatusQueries(queryClient, id)
 
       const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
@@ -528,16 +560,15 @@ export function useBookmarkStatus() {
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.id) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
-        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
-        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
-        queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      if (context?.previous && context?.id) {
+        // Rollback to previous state
+        rollbackStatusInCaches(queryClient, context.id, context.previous)
       }
     },
-    onSettled: (_data, _error, id) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
-      queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+    onSuccess: (data) => {
+      // Update cache with actual server response
+      queryClient.setQueryData<Status>(queryKeys.statuses.detail(data.id), data)
+      updateStatusInCaches(queryClient, data.id, () => data)
     },
   })
 }
@@ -548,7 +579,8 @@ export function useUnbookmarkStatus() {
   return useMutation({
     mutationFn: (id: string) => unbookmarkStatus(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.statuses.detail(id) })
+      // Cancel all queries that will be updated optimistically
+      await cancelStatusQueries(queryClient, id)
 
       const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
 
@@ -567,16 +599,15 @@ export function useUnbookmarkStatus() {
       return { previous, id }
     },
     onError: (_err, _id, context) => {
-      if (context?.id) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(context.id) })
-        queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
-        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
-        queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      if (context?.previous && context?.id) {
+        // Rollback to previous state
+        rollbackStatusInCaches(queryClient, context.id, context.previous)
       }
     },
-    onSettled: (_data, _error, id) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.detail(id) })
-      queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
+    onSuccess: (data) => {
+      // Update cache with actual server response
+      queryClient.setQueryData<Status>(queryKeys.statuses.detail(data.id), data)
+      updateStatusInCaches(queryClient, data.id, () => data)
     },
   })
 }
