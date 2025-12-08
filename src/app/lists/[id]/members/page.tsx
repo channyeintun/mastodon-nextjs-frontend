@@ -146,7 +146,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
                     onClick={() => setShowAddMembers(!showAddMembers)}
                     aria-label={showAddMembers ? 'Close' : 'Add members'}
                     style={{
-                        background: showAddMembers ? 'var(--brand)' : undefined,
+                        background: showAddMembers ? 'var(--blue-6)' : undefined,
                         color: showAddMembers ? 'white' : undefined,
                     }}
                 >
@@ -247,7 +247,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
                                             alignItems: 'center',
                                             gap: 'var(--size-2)',
                                             padding: 'var(--size-2) var(--size-3)',
-                                            background: 'var(--brand)',
+                                            background: 'var(--blue-6)',
                                             border: 'none',
                                             borderRadius: 'var(--radius-2)',
                                             color: 'white',

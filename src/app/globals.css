@@ -674,11 +674,6 @@ body {
 
 .compose-tool-btn {
   color: var(--text-2);
-  /* Fallback */
-  color: #ffffff;
-  /* Explicitly white for dark theme assumption */
-  /* If Lucide icons usually take color from stroke, we might need to be specific */
-
   transition: all 0.2s ease;
   border-radius: 50%;
   width: 42px;

@@ -172,7 +172,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                         style={{
                             marginTop: 'var(--size-4)',
                             padding: 'var(--size-2) var(--size-4)',
-                            background: 'var(--brand)',
+                            background: 'var(--blue-6)',
                             border: 'none',
                             borderRadius: 'var(--radius-2)',
                             color: 'white',

@@ -2,6 +2,8 @@
 
 import { useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
+import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 
 interface VirtualizedListProps<T> {
   /**
@@ -113,6 +115,9 @@ export function VirtualizedList<T>({
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
 
+  // Scroll direction detection for scroll-to-top button
+  const { showScrollTop, hideScrollTop } = useScrollDirection(parentRef);
+
   // Get saved scroll state if available
   const savedState = scrollRestorationKey
     ? scrollStateCache.get(scrollRestorationKey)
@@ -143,6 +148,12 @@ export function VirtualizedList<T>({
 
   const virtualItems = virtualizer.getVirtualItems();
 
+  // Handle scroll to top
+  const handleScrollToTop = () => {
+    virtualizer.scrollToIndex(0, { behavior: 'smooth' });
+    hideScrollTop();
+  };
+
   // Infinite scroll - fetch next page when near bottom
   useEffect(() => {
     if (!onLoadMore || !hasMore || isLoadingMore) return;
@@ -171,6 +182,7 @@ export function VirtualizedList<T>({
         overflow: 'auto',
         WebkitOverflowScrolling: 'touch',
         contain: 'strict',
+        position: 'relative',
         ...style,
       }}
     >
@@ -225,6 +237,9 @@ export function VirtualizedList<T>({
           {endIndicator}
         </div>
       )}
+
+      {/* Scroll to top button */}
+      <ScrollToTopButton visible={showScrollTop} onClick={handleScrollToTop} />
     </div>
   );
 }

@@ -170,7 +170,7 @@ function ListModal({
                             disabled={!title.trim() || isPending}
                             style={{
                                 padding: 'var(--size-2) var(--size-4)',
-                                background: 'var(--brand)',
+                                background: 'var(--blue-6)',
                                 border: 'none',
                                 borderRadius: 'var(--radius-2)',
                                 color: 'white',
@@ -186,8 +186,8 @@ function ListModal({
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
 
@@ -583,7 +583,7 @@ export default function ListsPage() {
                         style={{
                             marginTop: 'var(--size-4)',
                             padding: 'var(--size-2) var(--size-4)',
-                            background: 'var(--brand)',
+                            background: 'var(--blue-6)',
                             border: 'none',
                             borderRadius: 'var(--radius-2)',
                             color: 'white',
