@@ -280,6 +280,7 @@ export interface SearchParams {
   resolve?: boolean
   following?: boolean
   limit?: number
+  offset?: number
 }
 
 export interface UpdateAccountParams {

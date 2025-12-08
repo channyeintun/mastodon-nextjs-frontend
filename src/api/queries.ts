@@ -279,11 +279,40 @@ export function useInfiniteBookmarks() {
 }
 
 // Search
-export function useSearch(params: SearchParams) {
+export function useSearch(params: SearchParams, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: queryKeys.search.all(params.q, params.type),
     queryFn: () => search(params),
-    enabled: !!params.q && params.q.trim().length > 0,
+    enabled: (options?.enabled ?? true) && !!params.q && params.q.trim().length > 0,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes to support scroll restoration
+  })
+}
+
+export function useInfiniteSearch(params: SearchParams, options?: { enabled?: boolean }) {
+  return useInfiniteQuery({
+    // Use a distinct query key for infinite search to avoid conflicts with useSearch
+    // useSearch expects a single SearchResults object, while useInfiniteQuery expects InfiniteData<SearchResults>
+    queryKey: [...queryKeys.search.all(params.q, params.type), 'infinite'],
+    queryFn: ({ pageParam }) => {
+      const searchParams = { ...params, limit: 20, offset: pageParam }
+      return search(searchParams)
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      // Search API uses offset-based pagination
+      // If we got fewer items than limit, we're done
+
+      const hasResults =
+        lastPage.accounts.length >= 20 ||
+        lastPage.statuses.length >= 20 ||
+        lastPage.hashtags.length >= 20;
+
+      if (!hasResults) return undefined;
+
+      return allPages.length * 20;
+    },
+    initialPageParam: 0,
+    enabled: (options?.enabled ?? true) && !!params.q && params.q.trim().length > 0 && params.type !== undefined,
+    staleTime: 1000 * 60 * 5,
   })
 }
 
