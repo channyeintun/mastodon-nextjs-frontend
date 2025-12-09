@@ -9,10 +9,17 @@ import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/P
 import { TrendingTagCard, TrendingTagCardSkeleton } from '@/components/molecules/TrendingTagCard';
 import { TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules/TrendingLinkCard';
 import { Button } from '@/components/atoms/Button';
+import { Tabs, type TabItem } from '@/components/atoms/Tabs';
 import { Hash, Newspaper, FileText } from 'lucide-react';
 import type { Status, Tag, TrendingLink } from '@/types/mastodon';
 
 type TrendingTab = 'posts' | 'tags' | 'links';
+
+const trendingTabs: TabItem<TrendingTab>[] = [
+    { value: 'posts', label: 'Posts', icon: <FileText size={18} /> },
+    { value: 'tags', label: 'Tags', icon: <Hash size={18} /> },
+    { value: 'links', label: 'News', icon: <Newspaper size={18} /> },
+];
 
 interface TrendingContentProps {
     header: ReactNode;
@@ -75,29 +82,13 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
             {header}
 
             {/* Tab Navigation */}
-            <div className="trending-tabs" style={{ padding: '0 var(--size-4)' }}>
-                <button
-                    className={`trending-tab ${activeTab === 'posts' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('posts')}
-                >
-                    <FileText size={18} />
-                    Posts
-                </button>
-                <button
-                    className={`trending-tab ${activeTab === 'tags' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('tags')}
-                >
-                    <Hash size={18} />
-                    Tags
-                </button>
-                <button
-                    className={`trending-tab ${activeTab === 'links' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('links')}
-                >
-                    <Newspaper size={18} />
-                    News
-                </button>
-            </div>
+            <Tabs
+                tabs={trendingTabs}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                variant="underline"
+                style={{ padding: '0 var(--size-4)' }}
+            />
 
             {/* Tab Content - using Activity for toggling */}
             <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>

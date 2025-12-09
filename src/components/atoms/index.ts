@@ -5,4 +5,5 @@ export { Card } from './Card';
 export { IconButton } from './IconButton';
 export { Input } from './Input';
 export { Spinner } from './Spinner';
+export { Tabs } from './Tabs';
 export { TextArea } from './TextArea';
