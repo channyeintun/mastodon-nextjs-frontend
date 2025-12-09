@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Upload, X } from 'lucide-react';
+import { ArrowLeft, Upload, X, Check, Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCurrentAccount } from '@/api/queries';
 import { useUpdateAccount } from '@/api/mutations';
 import { Button } from '@/components/atoms/Button';
@@ -26,6 +26,15 @@ export default function ProfileEditPage() {
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [headerPreview, setHeaderPreview] = useState<string | null>(null);
 
+    // Profile metadata fields (up to 4)
+    const [fields, setFields] = useState<Array<{ name: string; value: string; verified_at: string | null }>>([
+        { name: '', value: '', verified_at: null },
+        { name: '', value: '', verified_at: null },
+        { name: '', value: '', verified_at: null },
+        { name: '', value: '', verified_at: null },
+    ]);
+    const [showVerificationInfo, setShowVerificationInfo] = useState(false);
+
     const avatarInputRef = useRef<HTMLInputElement>(null);
     const headerInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,6 +46,26 @@ export default function ProfileEditPage() {
             setLocked(currentAccount.locked);
             setBot(currentAccount.bot);
             setDiscoverable(currentAccount.discoverable ?? true);
+
+            // Initialize fields from source (plain text) or fields (HTML)
+            const sourceFields = currentAccount.source?.fields || currentAccount.fields || [];
+            const initialFields: Array<{ name: string; value: string; verified_at: string | null }> = [
+                { name: '', value: '', verified_at: null },
+                { name: '', value: '', verified_at: null },
+                { name: '', value: '', verified_at: null },
+                { name: '', value: '', verified_at: null },
+            ];
+            sourceFields.forEach((field, index) => {
+                if (index < 4) {
+                    initialFields[index] = {
+                        name: field.name || '',
+                        // Use source.fields for plain text value, otherwise strip HTML
+                        value: currentAccount.source?.fields?.[index]?.value || field.value.replace(/<[^>]*>/g, '') || '',
+                        verified_at: currentAccount.fields?.[index]?.verified_at || null,
+                    };
+                }
+            });
+            setFields(initialFields);
         }
     }, [currentAccount]);
 
@@ -67,7 +96,7 @@ export default function ProfileEditPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const params: Record<string, string | File | boolean> = {};
+        const params: Record<string, string | File | boolean | Array<{ name: string; value: string }>> = {};
 
         if (displayName !== currentAccount?.display_name) {
             params.display_name = displayName;
@@ -90,6 +119,12 @@ export default function ProfileEditPage() {
         if (headerFile) {
             params.header = headerFile;
         }
+
+        // Add fields_attributes - filter out empty fields
+        const fieldsToSubmit = fields
+            .filter(f => f.name.trim() || f.value.trim())
+            .map(f => ({ name: f.name, value: f.value }));
+        params.fields_attributes = fieldsToSubmit;
 
         try {
             await updateAccountMutation.mutateAsync(params);
@@ -316,6 +351,169 @@ export default function ProfileEditPage() {
                         }}>
                             {bio.length} / 500
                         </div>
+                    </div>
+                </Card>
+
+                {/* Extra Fields */}
+                <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+                    <h2 style={{
+                        fontSize: 'var(--font-size-3)',
+                        fontWeight: 'var(--font-weight-6)',
+                        marginBottom: 'var(--size-2)',
+                    }}>
+                        Extra Fields
+                    </h2>
+                    <p style={{
+                        fontSize: 'var(--font-size-0)',
+                        color: 'var(--text-2)',
+                        marginBottom: 'var(--size-4)',
+                    }}>
+                        You can have up to 4 items displayed as a table on your profile
+                    </p>
+
+                    {fields.map((field, index) => (
+                        <div
+                            key={index}
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr auto',
+                                gap: 'var(--size-2)',
+                                marginBottom: 'var(--size-3)',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <input
+                                type="text"
+                                placeholder={`Label ${index + 1}`}
+                                value={field.name}
+                                onChange={(e) => {
+                                    const newFields = [...fields];
+                                    newFields[index] = { ...newFields[index], name: e.target.value };
+                                    setFields(newFields);
+                                }}
+                                style={{
+                                    padding: 'var(--size-2)',
+                                    border: '1px solid var(--surface-4)',
+                                    borderRadius: 'var(--radius-2)',
+                                    background: 'var(--surface-1)',
+                                    color: 'var(--text-1)',
+                                    fontSize: 'var(--font-size-1)',
+                                }}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Content"
+                                value={field.value}
+                                onChange={(e) => {
+                                    const newFields = [...fields];
+                                    newFields[index] = { ...newFields[index], value: e.target.value };
+                                    setFields(newFields);
+                                }}
+                                style={{
+                                    padding: 'var(--size-2)',
+                                    border: field.verified_at ? '1px solid var(--green-6)' : '1px solid var(--surface-4)',
+                                    borderRadius: 'var(--radius-2)',
+                                    background: field.verified_at ? 'color-mix(in srgb, var(--green-6) 10%, var(--surface-1))' : 'var(--surface-1)',
+                                    color: 'var(--text-1)',
+                                    fontSize: 'var(--font-size-1)',
+                                }}
+                            />
+                            <div style={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
+                                {field.verified_at && (
+                                    <span title={`Verified on ${new Date(field.verified_at).toLocaleDateString()}`}>
+                                        <Check
+                                            size={18}
+                                            style={{ color: 'var(--green-6)' }}
+                                        />
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Verification Info */}
+                    <div style={{ marginTop: 'var(--size-4)', borderTop: '1px solid var(--surface-3)', paddingTop: 'var(--size-4)' }}>
+                        <button
+                            type="button"
+                            onClick={() => setShowVerificationInfo(!showVerificationInfo)}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--size-2)',
+                                background: 'none',
+                                border: 'none',
+                                color: 'var(--text-1)',
+                                fontSize: 'var(--font-size-1)',
+                                fontWeight: 'var(--font-weight-6)',
+                                cursor: 'pointer',
+                                padding: 0,
+                            }}
+                        >
+                            {showVerificationInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                            Link Verification
+                        </button>
+
+                        {showVerificationInfo && (
+                            <div style={{ marginTop: 'var(--size-3)' }}>
+                                <p style={{
+                                    fontSize: 'var(--font-size-0)',
+                                    color: 'var(--text-2)',
+                                    marginBottom: 'var(--size-3)',
+                                    lineHeight: 1.5,
+                                }}>
+                                    You can verify yourself as the owner of the links in your profile metadata. For this, the linked website must contain a link back to your Mastodon profile. The link back must have a <code style={{ background: 'var(--surface-3)', padding: '2px 4px', borderRadius: '4px' }}>rel=&quot;me&quot;</code> attribute.
+                                </p>
+
+                                <div style={{
+                                    background: 'var(--surface-2)',
+                                    borderRadius: 'var(--radius-2)',
+                                    padding: 'var(--size-3)',
+                                    position: 'relative',
+                                }}>
+                                    <code style={{
+                                        fontSize: 'var(--font-size-0)',
+                                        fontFamily: 'monospace',
+                                        wordBreak: 'break-all',
+                                        display: 'block',
+                                        paddingRight: 'var(--size-6)',
+                                    }}>
+                                        {`<a rel="me" href="${currentAccount?.url || ''}">Mastodon</a>`}
+                                    </code>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(`<a rel="me" href="${currentAccount?.url || ''}">Mastodon</a>`);
+                                        }}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 'var(--size-2)',
+                                            right: 'var(--size-2)',
+                                            background: 'var(--surface-3)',
+                                            border: 'none',
+                                            borderRadius: 'var(--radius-1)',
+                                            padding: 'var(--size-1)',
+                                            cursor: 'pointer',
+                                            color: 'var(--text-2)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                        title="Copy to clipboard"
+                                    >
+                                        <Copy size={14} />
+                                    </button>
+                                </div>
+
+                                <p style={{
+                                    fontSize: 'var(--font-size-0)',
+                                    color: 'var(--text-2)',
+                                    marginTop: 'var(--size-3)',
+                                    lineHeight: 1.5,
+                                }}>
+                                    <strong>Tip:</strong> The link on your website can be invisible. The important part is <code style={{ background: 'var(--surface-3)', padding: '2px 4px', borderRadius: '4px' }}>rel=&quot;me&quot;</code> which prevents impersonation.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </Card>
 
