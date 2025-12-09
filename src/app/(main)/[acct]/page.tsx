@@ -252,7 +252,8 @@ export default function AccountPage({
 
       {/* Profile Info */}
       <div style={{ padding: 'var(--size-4)', paddingTop: 'var(--size-2)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 'var(--size-3)' }}>
+        {/* Avatar and action buttons row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--size-3)' }}>
           <Avatar
             src={account.avatar}
             alt={account.display_name || account.username}
@@ -262,6 +263,8 @@ export default function AccountPage({
               background: 'var(--surface-1)',
             }}
           />
+
+          {/* Action buttons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
             {isOwnProfile ? (
               <Link href="/profile/edit">
@@ -371,6 +374,7 @@ export default function AccountPage({
           </div>
         </div>
 
+        {/* Name section */}
         <div style={{ marginBottom: 'var(--size-3)' }}>
           <h2 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-7)', marginBottom: 'var(--size-1)' }}>
             <EmojiText
