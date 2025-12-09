@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
-import { getCookie, setCookie, deleteCookie, type CookieOptions } from '../../utils/cookies';
+import { setCookie, deleteCookie, type CookieOptions } from '../../utils/cookies';
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -11,6 +11,10 @@ interface ThemeOption {
     label: string;
     icon: React.ReactNode;
     description: string;
+}
+
+interface ThemeSelectorProps {
+    initialTheme?: 'light' | 'dark' | 'auto';
 }
 
 const themeOptions: ThemeOption[] = [
@@ -46,17 +50,9 @@ function getActiveTheme(theme: Theme): 'light' | 'dark' {
     return theme;
 }
 
-export function ThemeSelector() {
-    const [currentTheme, setCurrentTheme] = useState<Theme>('auto');
-
-    useEffect(() => {
-        // Read theme from cookie on mount to set button state
-        const loadTheme = async () => {
-            const savedTheme = await getCookie('theme') as 'light' | 'dark' | undefined;
-            setCurrentTheme((savedTheme ?? 'auto') as Theme);
-        };
-        loadTheme();
-    }, []);
+export function ThemeSelector({ initialTheme = 'auto' }: ThemeSelectorProps) {
+    // Initialize state with server-provided theme, no useEffect needed
+    const [currentTheme, setCurrentTheme] = useState<Theme>(initialTheme);
 
     const handleThemeChange = async (theme: Theme) => {
         // Update state for button highlighting
