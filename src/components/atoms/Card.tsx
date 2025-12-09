@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, forwardRef } from 'react';
+import { type CSSProperties, type ReactNode, forwardRef, type ElementType } from 'react';
 
 interface CardProps {
   children: ReactNode;
@@ -6,10 +6,11 @@ interface CardProps {
   hoverable?: boolean;
   style?: CSSProperties;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  as?: ElementType;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  { children, padding = 'medium', hoverable = false, style, onClick },
+  { children, padding = 'medium', hoverable = false, style, onClick, as: Component = 'div' },
   ref
 ) {
   const paddingMap = {
@@ -30,17 +31,17 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   };
 
   return (
-    <div
+    <Component
       ref={ref}
       style={cardStyle}
       onClick={onClick}
-      onMouseEnter={(e) => {
+      onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
         if (hoverable) {
           e.currentTarget.style.boxShadow = 'var(--shadow-4)';
           e.currentTarget.style.transform = 'translateY(-2px)';
         }
       }}
-      onMouseLeave={(e) => {
+      onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
         if (hoverable) {
           e.currentTarget.style.boxShadow = 'var(--shadow-2)';
           e.currentTarget.style.transform = 'translateY(0)';
@@ -48,6 +49,6 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       }}
     >
       {children}
-    </div>
+    </Component>
   );
 });

@@ -273,7 +273,7 @@ export function PostCard({ status, showThread = false, style, hideActions = fals
   };
 
   return (
-    <Card padding="medium" style={style} onClick={handleCardClick}>
+    <Card as="article" padding="medium" style={style} onClick={handleCardClick}>
       {/* Reblog indicator */}
       {isReblog && (
         <div style={{

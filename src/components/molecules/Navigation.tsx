@@ -40,7 +40,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
   return (
     <>
       {/* Desktop Sidebar Navigation */}
-      <aside className="navigation-sidebar">
+      <aside className="navigation-sidebar" aria-label="Site navigation">
         {/* Logo */}
         <div className="navigation-sidebar-header">
           <Link href="/" className="navigation-sidebar-instance">
@@ -87,7 +87,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
 
         {/* Navigation Links */}
         {isAuthenticated && (
-          <nav className="navigation-sidebar-nav">
+          <nav className="navigation-sidebar-nav" aria-label="Main navigation">
             {sidebarNavLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;
@@ -143,7 +143,7 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
 
       {/* Mobile Bottom Navigation */}
       {isAuthenticated && (
-        <nav className="navigation-bottom">
+        <nav className="navigation-bottom" aria-label="Mobile navigation">
           {bottomNavLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -192,6 +192,9 @@ function NavigationLink({ href, icon: Icon, label, isActive, variant, badge }: N
         <Icon size={variant === 'sidebar' ? 24 : 22} />
         {badge !== undefined && badge > 0 && (
           <span
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label={`${badge > 99 ? '99+' : badge} unread notifications`}
             style={{
               position: 'absolute',
               top: '-4px',

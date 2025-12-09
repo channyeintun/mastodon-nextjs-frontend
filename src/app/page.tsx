@@ -152,10 +152,26 @@ const TimelinePage = observer(() => {
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-          <Link href="/search">
-            <IconButton>
-              <Search size={20} />
-            </IconButton>
+          <Link
+            href="/search"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 'var(--size-7)',
+              height: 'var(--size-7)',
+              borderRadius: '50%',
+              color: 'var(--text-2)',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = '0.8';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = '1';
+            }}
+          >
+            <Search size={20} />
           </Link>
           <Link href={user ? `/@${user.acct}` : '#'} className={`profile-pill profile-pill-static ${!user ? 'skeleton-loading' : ''}`}>
             {user ? (

@@ -80,6 +80,26 @@ a {
   text-decoration: none;
 }
 
+/* Skip to main content link - keyboard accessibility */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  z-index: 100;
+  padding: var(--size-2) var(--size-4);
+  background: var(--blue-6);
+  color: white;
+  text-decoration: none;
+  font-weight: var(--font-weight-6);
+  border-radius: 0 0 var(--radius-2) 0;
+  transition: top 0.2s ease;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+
 /* View Transitions API */
 @view-transition {
   navigation: auto;

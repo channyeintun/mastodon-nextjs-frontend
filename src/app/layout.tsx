@@ -9,6 +9,7 @@ import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorat
 import { StreamingProvider } from "@/components/providers/StreamingProvider";
 import { AuthModal } from "@/components/molecules";
 import NavigationWrapper from "@/components/organisms/NavigationWrapper";
+import SkipToMain from "@/components/atoms/SkipToMain";
 import { GlobalModalProvider } from "@/contexts/GlobalModalContext";
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default async function RootLayout({
   return (
     <html lang="en" data-theme={dataTheme}>
       <body>
+        <SkipToMain />
         <QueryProvider>
           <StoreProvider initialState={initialState}>
             <ThemeProvider />
@@ -53,7 +55,9 @@ export default async function RootLayout({
                 <ScrollRestorationProvider />
                 <NavigationWrapper />
                 <ViewTransition name="page-content">
-                  {children}
+                  <main id="main-content">
+                    {children}
+                  </main>
                 </ViewTransition>
                 <AuthModal />
               </GlobalModalProvider>
