@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { useAuthStore } from '@/hooks/useStores';
 import { getRedirectURI } from '@/utils/oauth';
 
@@ -50,8 +51,13 @@ function CallbackContent() {
         // Store access token
         authStore.setAccessToken(token.access_token);
 
-        // Redirect to home page
-        router.push('/');
+        // Get redirect path from cookie (set by middleware when accessing protected route)
+        const redirectPath = Cookies.get('authRedirect') || '/';
+        // Clear the redirect cookie
+        Cookies.remove('authRedirect');
+
+        // Redirect to the intended page or home
+        router.push(redirectPath);
       } catch (err) {
         console.error('OAuth callback error:', err);
         setError(err instanceof Error ? err.message : 'Authentication failed');

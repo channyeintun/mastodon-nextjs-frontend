@@ -1,7 +1,7 @@
 'use client';
 
 import { use, useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, ExternalLink, MoreHorizontal, Ban, VolumeX, Volume2, Pin } from 'lucide-react';
 import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount, usePinnedStatuses } from '@/api/queries';
@@ -29,7 +29,7 @@ export default function AccountPage({
 
   // Check if acct starts with @, if not show 404
   if (!decodedAcct.startsWith('@')) {
-    throw new Error('Not Found');
+    notFound();
   }
 
   // Remove @ prefix to get the acct handle

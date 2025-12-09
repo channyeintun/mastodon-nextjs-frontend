@@ -34,8 +34,15 @@ export function proxy(request: NextRequest) {
   // Redirect unauthenticated users from protected routes to sign-in
   if (isProtectedRoute && !isAuthenticated) {
     const signInUrl = new URL('/auth/signin', request.url);
-    signInUrl.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(signInUrl);
+    const response = NextResponse.redirect(signInUrl);
+    // Store the intended destination in a cookie for post-auth redirect
+    // Note: Not httpOnly so client-side JS can read it in the callback
+    response.cookies.set('authRedirect', pathname, {
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 10, // 10 minutes - short-lived
+    });
+    return response;
   }
 
   // Redirect authenticated users from auth routes to home
