@@ -1,5 +1,6 @@
 'use client';
 
+import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List } from 'lucide-react';
@@ -11,15 +12,22 @@ import { Avatar } from '@/components/atoms/Avatar';
 import { EmojiText } from '@/components/atoms/EmojiText';
 import { ThemeSelector } from '@/components/molecules/ThemeSelector';
 import { useAuthStore } from '@/hooks/useStores';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function SettingsPage() {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const authStore = useAuthStore();
   const { data: currentAccount, isLoading } = useCurrentAccount();
+  const [isPending, startTransition] = useTransition();
 
-  const handleSignOut = () => {
-    authStore.signOut();
-    window.location.href = '/auth/signin';
+  const handleSignOut = async () => {
+    startTransition(async () => {
+      queryClient.clear();
+      authStore.signOut();
+      router.replace('/auth/signin');
+      router.refresh();
+    });
   };
 
   if (isLoading) {
@@ -223,10 +231,11 @@ export default function SettingsPage() {
           type="button"
           variant="danger"
           onClick={handleSignOut}
+          disabled={isPending}
           style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}
         >
           <LogOut size={18} />
-          Sign Out
+          {isPending ? 'Signing out...' : 'Sign Out'}
         </Button>
       </Card>
     </div>

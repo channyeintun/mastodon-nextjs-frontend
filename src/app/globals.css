@@ -140,6 +140,24 @@ a {
   }
 }
 
+/* Auth Layout - Clean, centered authentication pages */
+.auth-layout {
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--size-8) var(--size-4);
+  background: var(--surface-1);
+}
+
+@media (min-width: 768px) {
+  .auth-layout {
+    /* Counteract the body margin-left from nav sidebar */
+    margin-left: calc(-1 * var(--app-sidebar-width));
+    width: calc(100% + var(--app-sidebar-width));
+  }
+}
+
 /* Container utilities */
 .container {
   max-width: var(--app-max-width);

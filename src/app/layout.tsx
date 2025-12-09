@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { ViewTransition } from "react";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorationProvider";
-import { StreamingProvider } from "@/components/providers/StreamingProvider";
-import { AuthModalBridge } from "@/components/molecules";
-import NavigationWrapper from "@/components/organisms/NavigationWrapper";
 import SkipToMain from "@/components/atoms/SkipToMain";
-import { GlobalModalProvider } from "@/contexts/GlobalModalContext";
 
 export const metadata: Metadata = {
   title: "Mastodon",
@@ -50,18 +44,7 @@ export default async function RootLayout({
         <QueryProvider>
           <StoreProvider initialState={initialState}>
             <ThemeProvider />
-            <StreamingProvider>
-              <GlobalModalProvider>
-                <ScrollRestorationProvider />
-                <NavigationWrapper />
-                <ViewTransition name="page-content">
-                  <main id="main-content">
-                    {children}
-                  </main>
-                </ViewTransition>
-                <AuthModalBridge />
-              </GlobalModalProvider>
-            </StreamingProvider>
+            {children}
           </StoreProvider>
         </QueryProvider>
       </body>
