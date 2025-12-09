@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import axios from 'axios';
 import { useAuthStore } from '@/hooks/useStores';
 import {
@@ -11,20 +12,41 @@ import {
   getAppName,
 } from '@/utils/oauth';
 
+function SubmitButton({ disabled }: { disabled: boolean }) {
+  const { pending } = useFormStatus();
+  const isDisabled = pending || disabled;
+
+  return (
+    <button
+      type="submit"
+      disabled={isDisabled}
+      style={{
+        width: '100%',
+        padding: 'var(--size-3)',
+        fontSize: 'var(--font-size-2)',
+        fontWeight: 'var(--font-weight-6)',
+        border: 'none',
+        borderRadius: 'var(--radius-2)',
+        background: isDisabled ? 'var(--surface-3)' : 'var(--blue-6)',
+        color: 'white',
+        cursor: isDisabled ? 'not-allowed' : 'pointer',
+      }}
+    >
+      {pending ? 'Connecting...' : 'Continue with Mastodon'}
+    </button>
+  );
+}
+
 export default function SignInPage() {
   const authStore = useAuthStore();
   const [instanceURL, setInstanceURL] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setIsLoading(true);
+  const handleSubmit = async (_prevState: string | null, formData: FormData) => {
+    const instance = formData.get('instance') as string;
 
     try {
       // Normalize instance URL
-      const normalizedURL = normalizeInstanceURL(instanceURL);
+      const normalizedURL = normalizeInstanceURL(instance);
       // Create axios client for this specific instance
       const instanceClient = axios.create({
         baseURL: normalizedURL.replace(/\/$/, ''),
@@ -48,11 +70,14 @@ export default function SignInPage() {
       // Generate authorization URL and redirect
       const authURL = generateAuthorizationURL(normalizedURL, app.client_id);
       window.location.href = authURL;
+
+      return null;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sign in');
-      setIsLoading(false);
+      return err instanceof Error ? err.message : 'Failed to sign in';
     }
   };
+
+  const [error, formAction] = useActionState(handleSubmit, null);
 
   return (
     <div className="container" style={{ maxWidth: '500px', marginTop: 'var(--size-8)' }}>
@@ -63,7 +88,7 @@ export default function SignInPage() {
         Enter your Mastodon instance URL to get started
       </p>
 
-      <form onSubmit={handleSubmit}>
+      <form action={formAction}>
         <div style={{ marginBottom: 'var(--size-4)' }}>
           <label
             htmlFor="instance"
@@ -77,12 +102,12 @@ export default function SignInPage() {
           </label>
           <input
             id="instance"
+            name="instance"
             type="text"
             value={instanceURL}
             onChange={(e) => setInstanceURL(e.target.value)}
             placeholder="mastodon.social"
             required
-            disabled={isLoading}
             style={{
               width: '100%',
               padding: 'var(--size-3)',
@@ -112,23 +137,7 @@ export default function SignInPage() {
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={isLoading || !instanceURL.trim()}
-          style={{
-            width: '100%',
-            padding: 'var(--size-3)',
-            fontSize: 'var(--font-size-2)',
-            fontWeight: 'var(--font-weight-6)',
-            border: 'none',
-            borderRadius: 'var(--radius-2)',
-            background: isLoading || !instanceURL.trim() ? 'var(--surface-3)' : 'var(--blue-6)',
-            color: 'white',
-            cursor: isLoading || !instanceURL.trim() ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {isLoading ? 'Connecting...' : 'Continue with Mastodon'}
-        </button>
+        <SubmitButton disabled={!instanceURL.trim()} />
       </form>
     </div>
   );
