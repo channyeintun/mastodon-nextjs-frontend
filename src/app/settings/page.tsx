@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock } from 'lucide-react';
+import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List } from 'lucide-react';
 import { useCurrentAccount } from '@/api/queries';
 import { Button } from '@/components/atoms/Button';
 import { IconButton } from '@/components/atoms/IconButton';
@@ -150,6 +150,11 @@ export default function SettingsPage() {
           <Link href="/bookmarks" className="settings-link">
             <Bookmark size={20} className="settings-link-icon" />
             Bookmarks
+          </Link>
+
+          <Link href="/lists" className="settings-link">
+            <List size={20} className="settings-link-icon" />
+            Lists
           </Link>
 
           <Link href="/scheduled" className="settings-link">
