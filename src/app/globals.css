@@ -8,6 +8,10 @@
 @import "open-props/buttons.min.css";
 @import "open-props/animations.min.css";
 
+/* Theme switching support - allows data-theme="light" and data-theme="dark" */
+@import "open-props/theme.light.switch.min.css";
+@import "open-props/theme.dark.switch.min.css";
+
 :root {
   --app-max-width: 1200px;
   --app-sidebar-width: 280px;

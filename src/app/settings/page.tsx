@@ -9,6 +9,7 @@ import { IconButton } from '@/components/atoms/IconButton';
 import { Card } from '@/components/atoms/Card';
 import { Avatar } from '@/components/atoms/Avatar';
 import { EmojiText } from '@/components/atoms/EmojiText';
+import { ThemeSelector } from '@/components/molecules/ThemeSelector';
 import { useAuthStore } from '@/hooks/useStores';
 
 export default function SettingsPage() {
@@ -133,6 +134,19 @@ export default function SettingsPage() {
           <User size={20} className="settings-link-icon" />
           Edit Profile
         </Link>
+      </Card>
+
+      {/* Appearance */}
+      <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+        <h2 style={{
+          fontSize: 'var(--font-size-2)',
+          fontWeight: 'var(--font-weight-6)',
+          marginBottom: 'var(--size-3)',
+          color: 'var(--text-2)',
+        }}>
+          Appearance
+        </h2>
+        <ThemeSelector />
       </Card>
 
       {/* Quick Links */}

@@ -24,8 +24,3 @@ export function useUserStore() {
   const { userStore } = useStores()
   return userStore
 }
-
-export function useUIStore() {
-  const { uiStore } = useStores()
-  return uiStore
-}

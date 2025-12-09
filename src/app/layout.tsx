@@ -4,6 +4,7 @@ import { ViewTransition } from "react";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ScrollRestorationProvider } from "@/components/providers/ScrollRestorationProvider";
 import { StreamingProvider } from "@/components/providers/StreamingProvider";
 import { AuthModal } from "@/components/molecules";
@@ -28,6 +29,10 @@ export default async function RootLayout({
   const clientSecret = cookieStore.get('clientSecret')?.value ?? null;
   const theme = cookieStore.get('theme')?.value as 'light' | 'dark' | 'auto' | undefined;
 
+  // For SSR: only set data-theme if user explicitly chose light or dark
+  // If auto or undefined, let client handle it to avoid forcing wrong default
+  const dataTheme = theme === 'light' || theme === 'dark' ? theme : undefined;
+
   const initialState = {
     auth: {
       instanceURL,
@@ -35,14 +40,14 @@ export default async function RootLayout({
       clientId,
       clientSecret,
     },
-    theme: theme ?? 'auto',
   };
 
   return (
-    <html lang="en">
+    <html lang="en" data-theme={dataTheme}>
       <body>
         <QueryProvider>
           <StoreProvider initialState={initialState}>
+            <ThemeProvider />
             <StreamingProvider>
               <GlobalModalProvider>
                 <ScrollRestorationProvider />

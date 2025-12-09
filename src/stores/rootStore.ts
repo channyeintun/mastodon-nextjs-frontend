@@ -5,29 +5,24 @@
 
 import { AuthStore, type AuthState } from './authStore'
 import { UserStore } from './userStore'
-import { UIStore, type Theme } from './uiStore'
 
 export interface RootStoreInitialState {
   auth?: Partial<AuthState>
-  theme?: Theme
 }
 
 export class RootStore {
   authStore: AuthStore
   userStore: UserStore
-  uiStore: UIStore
 
   constructor(initialState?: RootStoreInitialState) {
     this.authStore = new AuthStore(initialState?.auth)
     this.userStore = new UserStore()
-    this.uiStore = new UIStore(initialState?.theme)
   }
 
   // Helper method to reset all stores (e.g., on logout)
   reset() {
     this.authStore.signOut()
     this.userStore.clearUser()
-    // UI store preferences are preserved
   }
 }
 
