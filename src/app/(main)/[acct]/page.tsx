@@ -4,17 +4,11 @@ import { use, useState, useRef, useEffect } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, ExternalLink, MoreHorizontal, Ban, VolumeX, Volume2, Pin } from 'lucide-react';
-import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount, usePinnedStatuses } from '@/api/queries';
-import { useFollowAccount, useUnfollowAccount, useBlockAccount, useUnblockAccount, useMuteAccount, useUnmuteAccount } from '@/api/mutations';
-import { PostCard } from '@/components/molecules/PostCard';
+import { useLookupAccount, useInfiniteAccountStatuses, useRelationships, useCurrentAccount, usePinnedStatuses, useFollowAccount, useUnfollowAccount, useBlockAccount, useUnblockAccount, useMuteAccount, useUnmuteAccount } from '@/api';
+import { PostCard, PostCardSkeletonList, PostCardSkeleton, AccountProfileSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
-import { AccountProfileSkeleton } from '@/components/molecules/AccountProfileSkeleton';
-import { Avatar } from '@/components/atoms/Avatar';
-import { Button } from '@/components/atoms/Button';
-import { IconButton } from '@/components/atoms/IconButton';
-import { EmojiText } from '@/components/atoms/EmojiText';
-import type { Status } from '@/types/mastodon';
+import { Avatar, Button, IconButton, EmojiText } from '@/components/atoms';
+import type { Status } from '@/types';
 
 export default function AccountPage({
   params,

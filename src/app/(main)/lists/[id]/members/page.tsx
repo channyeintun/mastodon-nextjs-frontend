@@ -4,13 +4,11 @@ import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, List, UserPlus, UserMinus, Search, X } from 'lucide-react';
-import { useList, useListAccounts, useInfiniteFollowing, useCurrentAccount, useSearch } from '@/api/queries';
-import { useAddAccountsToList, useRemoveAccountsFromList } from '@/api/mutations';
-import { IconButton } from '@/components/atoms/IconButton';
-import { Spinner } from '@/components/atoms/Spinner';
-import { AccountCard, AccountCardSkeleton } from '@/components/molecules/AccountCard';
+import { useList, useListAccounts, useInfiniteFollowing, useCurrentAccount, useSearch, useAddAccountsToList, useRemoveAccountsFromList } from '@/api';
+import { IconButton, Spinner } from '@/components/atoms';
+import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import type { Account } from '@/types/mastodon';
+import type { Account } from '@/types';
 
 export default function ListMembersPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();

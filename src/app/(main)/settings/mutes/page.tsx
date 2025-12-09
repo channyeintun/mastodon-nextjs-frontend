@@ -3,12 +3,11 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, VolumeX } from 'lucide-react';
-import { useMutedAccounts } from '@/api/queries';
-import { AccountCard, AccountCardSkeleton } from '@/components/molecules/AccountCard';
+import { useMutedAccounts } from '@/api';
+import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton } from '@/components/atoms/IconButton';
-import { Spinner } from '@/components/atoms/Spinner';
-import type { Account } from '@/types/mastodon';
+import { IconButton, Spinner } from '@/components/atoms';
+import type { Account } from '@/types';
 
 export default function MutedAccountsPage() {
     const router = useRouter();

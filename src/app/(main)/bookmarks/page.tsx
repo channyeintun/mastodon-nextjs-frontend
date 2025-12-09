@@ -3,13 +3,11 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Bookmark as BookmarkIcon } from 'lucide-react';
-import { useInfiniteBookmarks } from '@/api/queries';
-import { PostCard } from '@/components/molecules/PostCard';
+import { useInfiniteBookmarks } from '@/api';
+import { PostCard, PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
-import { Button } from '@/components/atoms/Button';
-import { IconButton } from '@/components/atoms/IconButton';
-import type { Status } from '@/types/mastodon';
+import { Button, IconButton } from '@/components/atoms';
+import type { Status } from '@/types';
 
 export default function BookmarksPage() {
   const router = useRouter();

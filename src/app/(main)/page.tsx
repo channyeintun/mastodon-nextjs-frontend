@@ -3,16 +3,13 @@
 import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
 import { useAuthStore } from '@/hooks/useStores';
-import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api/queries';
-import { PostCard } from '@/components/molecules/PostCard';
+import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api';
+import { PostCard, PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { TrendingContent } from '@/components/organisms/TrendingContent';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
-import { EmojiText } from '@/components/atoms/EmojiText';
-import { Button } from '@/components/atoms/Button';
-import { IconButton } from '@/components/atoms/IconButton';
+import { EmojiText, Button, IconButton } from '@/components/atoms';
 import { Plus, TrendingUp, Search } from 'lucide-react';
-import type { Status } from '@/types/mastodon';
+import type { Status } from '@/types';
 
 const HomePage = observer(() => {
   const authStore = useAuthStore();

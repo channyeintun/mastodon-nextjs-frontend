@@ -12,13 +12,10 @@ import {
     Bell,
     X,
 } from 'lucide-react';
-import { Avatar } from '../atoms/Avatar';
-import { Card } from '../atoms/Card';
-import { EmojiText } from '../atoms/EmojiText';
-import { StatusContent } from './StatusContent';
-import { IconButton } from '../atoms/IconButton';
-import type { Notification, NotificationType } from '@/types/mastodon';
-import { useDismissNotification } from '@/api/mutations';
+import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
+import { StatusContent } from '@/components/molecules';
+import type { Notification, NotificationType } from '@/types';
+import { useDismissNotification } from '@/api';
 
 interface NotificationCardProps {
     notification: Notification;

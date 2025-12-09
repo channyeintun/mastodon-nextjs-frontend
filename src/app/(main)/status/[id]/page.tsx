@@ -3,12 +3,10 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { useStatus, useStatusContext } from '@/api/queries';
+import { useStatus, useStatusContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
-import { PostCard } from '@/components/molecules/PostCard';
-import { PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
-import { Button } from '@/components/atoms/Button';
-import { IconButton } from '@/components/atoms/IconButton';
+import { PostCard, PostCardSkeleton } from '@/components/molecules';
+import { Button, IconButton } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 
 export default function StatusPage({

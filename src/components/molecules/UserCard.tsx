@@ -2,13 +2,9 @@
 
 import { type CSSProperties, useState } from 'react';
 import Link from 'next/link';
-import { Avatar } from '../atoms/Avatar';
-import { Card } from '../atoms/Card';
-import { Button } from '../atoms/Button';
-import { EmojiText } from '../atoms/EmojiText';
-import type { Account } from '@/types/mastodon';
-import { useFollowAccount, useUnfollowAccount } from '@/api/mutations';
-import { useRelationships } from '@/api/queries';
+import { Avatar, Card, Button, EmojiText } from '@/components/atoms';
+import type { Account } from '@/types';
+import { useFollowAccount, useUnfollowAccount, useRelationships } from '@/api';
 
 interface UserCardProps {
   account: Account;

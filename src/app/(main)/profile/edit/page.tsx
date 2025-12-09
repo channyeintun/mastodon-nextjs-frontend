@@ -3,12 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, X, Check, Copy, ChevronDown, ChevronUp } from 'lucide-react';
-import { useCurrentAccount } from '@/api/queries';
-import { useUpdateAccount } from '@/api/mutations';
-import { Button } from '@/components/atoms/Button';
-import { IconButton } from '@/components/atoms/IconButton';
-import { Card } from '@/components/atoms/Card';
-import { Spinner } from '@/components/atoms/Spinner';
+import { useCurrentAccount, useUpdateAccount } from '@/api';
+import { Button, IconButton, Card, Spinner } from '@/components/atoms';
 
 export default function ProfileEditPage() {
     const router = useRouter();

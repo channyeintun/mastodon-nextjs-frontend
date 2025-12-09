@@ -4,11 +4,9 @@ import { useState, useEffect, useRef, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Plus, List, MoreVertical, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
-import { useLists } from '@/api/queries';
-import { useCreateList, useUpdateList, useDeleteList } from '@/api/mutations';
-import { IconButton } from '@/components/atoms/IconButton';
-import { Spinner } from '@/components/atoms/Spinner';
-import type { List as ListType, ListRepliesPolicy, CreateListParams, UpdateListParams } from '@/types/mastodon';
+import { useLists, useCreateList, useUpdateList, useDeleteList } from '@/api';
+import { IconButton, Spinner } from '@/components/atoms';
+import type { List as ListType, ListRepliesPolicy, CreateListParams, UpdateListParams } from '@/types';
 
 // Modal for creating/editing a list
 function ListModal({

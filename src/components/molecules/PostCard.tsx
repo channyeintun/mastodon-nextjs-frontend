@@ -21,15 +21,9 @@ import {
   Volume2,
   VolumeX
 } from 'lucide-react';
-import { Avatar } from '../atoms/Avatar';
-import { Card } from '../atoms/Card';
-import { IconButton } from '../atoms/IconButton';
-import { Button } from '../atoms/Button';
-import { EmojiText } from '../atoms/EmojiText';
-import { StatusContent } from './StatusContent';
-import { LinkPreview } from './LinkPreview';
-import { StatusEditHistory } from './StatusEditHistory';
-import type { Status } from '@/types/mastodon';
+import { Avatar, Card, IconButton, Button, EmojiText } from '@/components/atoms';
+import { StatusContent, LinkPreview, StatusEditHistory, DeletePostModal } from '@/components/molecules';
+import type { Status } from '@/types';
 import {
   useFavouriteStatus,
   useUnfavouriteStatus,
@@ -42,11 +36,10 @@ import {
   usePinStatus,
   useUnpinStatus,
   useVotePoll,
-} from '@/api/mutations';
-import { useCurrentAccount } from '@/api/queries';
+  useCurrentAccount,
+} from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
-import { DeletePostModal } from './DeletePostModal';
 import { CSSProperties, useState } from 'react';
 
 interface PostCardProps {

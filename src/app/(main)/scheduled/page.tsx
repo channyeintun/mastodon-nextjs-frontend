@@ -1,16 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useScheduledStatuses } from '@/api/queries';
-import { useDeleteScheduledStatus } from '@/api/mutations';
+import { useScheduledStatuses, useDeleteScheduledStatus } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
-import { Card } from '@/components/atoms/Card';
-import { Button } from '@/components/atoms/Button';
-import { IconButton } from '@/components/atoms/IconButton';
+import { Card, Button, IconButton } from '@/components/atoms';
 import { ArrowLeft, Calendar, Trash2, Edit2, Clock } from 'lucide-react';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { ScheduledCardSkeletonList } from '@/components/molecules/ScheduledCardSkeleton';
-import type { ScheduledStatus } from '@/types/mastodon';
+import { ScheduledCardSkeletonList } from '@/components/molecules';
+import type { ScheduledStatus } from '@/types';
 
 export default function ScheduledStatusesPage() {
     const router = useRouter();

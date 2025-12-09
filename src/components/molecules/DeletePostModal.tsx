@@ -1,7 +1,7 @@
 'use client';
 
-import { useDeleteStatus } from '@/api/mutations';
-import { Button } from '@/components/atoms/Button';
+import { useDeleteStatus } from '@/api';
+import { Button } from '@/components/atoms';
 
 interface DeletePostModalProps {
     postId: string;

@@ -2,9 +2,9 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { useStatus, useStatusSource } from '@/api/queries';
+import { useStatus, useStatusSource } from '@/api';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
-import { Button } from '@/components/atoms/Button';
+import { Button } from '@/components/atoms';
 
 export default function EditStatusPage() {
   const params = useParams();

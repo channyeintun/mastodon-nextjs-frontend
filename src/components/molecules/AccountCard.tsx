@@ -2,12 +2,9 @@
 
 import Link from 'next/link';
 import { Check, X, Ban, VolumeX } from 'lucide-react';
-import { Avatar } from '@/components/atoms/Avatar';
-import { Button } from '@/components/atoms/Button';
-import { EmojiText } from '@/components/atoms/EmojiText';
-import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest, useUnblockAccount, useUnmuteAccount } from '@/api/mutations';
-import { useRelationships, useCurrentAccount } from '@/api/queries';
-import type { Account } from '@/types/mastodon';
+import { Avatar, Button, EmojiText } from '@/components/atoms';
+import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest, useUnblockAccount, useUnmuteAccount, useRelationships, useCurrentAccount } from '@/api';
+import type { Account } from '@/types';
 
 interface AccountCardProps {
     account: Account;

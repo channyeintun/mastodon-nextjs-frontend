@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { History, ChevronDown, ChevronUp } from 'lucide-react';
-import { useStatusHistory } from '@/api/queries';
-import { StatusContent } from './StatusContent';
-import type { StatusEdit } from '@/types/mastodon';
+import { useStatusHistory } from '@/api';
+import { StatusContent } from '@/components/molecules';
+import type { StatusEdit } from '@/types';
 
 interface StatusEditHistoryProps {
     statusId: string;

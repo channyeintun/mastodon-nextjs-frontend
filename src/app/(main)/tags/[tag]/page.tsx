@@ -4,12 +4,11 @@ import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Hash } from 'lucide-react';
-import { useInfiniteHashtagTimeline } from '@/api/queries';
-import { PostCard } from '@/components/molecules/PostCard';
+import { useInfiniteHashtagTimeline } from '@/api';
+import { PostCard, PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
-import { IconButton } from '@/components/atoms/IconButton';
-import type { Status } from '@/types/mastodon';
+import { IconButton } from '@/components/atoms';
+import type { Status } from '@/types';
 
 export default function HashtagPage({
   params,

@@ -2,16 +2,14 @@
 
 import { useEffect } from 'react';
 import { Bell, Trash2, Check } from 'lucide-react';
-import { NotificationCard } from '@/components/molecules/NotificationCard';
-import { NotificationSkeletonList } from '@/components/molecules/NotificationSkeleton';
+import { NotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { Button } from '@/components/atoms/Button';
-import { useInfiniteNotifications } from '@/api/queries';
-import { useClearNotifications, useMarkNotificationsAsRead } from '@/api/mutations';
+import { Button } from '@/components/atoms';
+import { useInfiniteNotifications, useClearNotifications, useMarkNotificationsAsRead } from '@/api';
 import { useNotificationStream } from '@/hooks/useStreaming';
 import { useAuthStore } from '@/hooks/useStores';
 import { useRouter } from 'next/navigation';
-import type { Notification } from '@/types/mastodon';
+import type { Notification } from '@/types';
 
 export default function NotificationsPage() {
     const router = useRouter();

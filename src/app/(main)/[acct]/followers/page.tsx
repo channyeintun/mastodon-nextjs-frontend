@@ -4,13 +4,11 @@ import { use } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { useLookupAccount, useInfiniteFollowers } from '@/api/queries';
-import { AccountCard, AccountCardSkeleton } from '@/components/molecules/AccountCard';
+import { useLookupAccount, useInfiniteFollowers } from '@/api';
+import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton } from '@/components/atoms/IconButton';
-import { EmojiText } from '@/components/atoms/EmojiText';
-import { Button } from '@/components/atoms/Button';
-import type { Account } from '@/types/mastodon';
+import { IconButton, EmojiText, Button } from '@/components/atoms';
+import type { Account } from '@/types';
 
 export default function FollowersPage({
     params,

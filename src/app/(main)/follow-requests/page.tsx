@@ -3,11 +3,10 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, UserPlus } from 'lucide-react';
-import { useFollowRequests } from '@/api/queries';
-import { AccountCard, AccountCardSkeleton } from '@/components/molecules/AccountCard';
-import { IconButton } from '@/components/atoms/IconButton';
-import { Button } from '@/components/atoms/Button';
-import type { Account } from '@/types/mastodon';
+import { useFollowRequests } from '@/api';
+import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
+import { IconButton, Button } from '@/components/atoms';
+import type { Account } from '@/types';
 
 export default function FollowRequestsPage() {
     const router = useRouter();

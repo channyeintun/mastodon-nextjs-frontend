@@ -1,8 +1,8 @@
 'use client';
 
 import EmojiPickerReact, { Theme } from 'emoji-picker-react';
-import { useCustomEmojis } from '@/api/queries';
-import type { Emoji } from '@/types/mastodon';
+import { useCustomEmojis } from '@/api';
+import type { Emoji } from '@/types';
 
 interface EmojiPickerProps {
   onEmojiSelect: (emoji: string) => void;
@@ -44,7 +44,7 @@ export function EmojiPicker({ onEmojiSelect, onClose }: EmojiPickerProps) {
 
   return (
     <>
-        <div
+      <div
         style={{
           position: 'fixed',
           inset: 0,

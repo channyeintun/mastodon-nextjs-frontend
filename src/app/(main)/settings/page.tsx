@@ -4,13 +4,9 @@ import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List } from 'lucide-react';
-import { useCurrentAccount } from '@/api/queries';
-import { Button } from '@/components/atoms/Button';
-import { IconButton } from '@/components/atoms/IconButton';
-import { Card } from '@/components/atoms/Card';
-import { Avatar } from '@/components/atoms/Avatar';
-import { EmojiText } from '@/components/atoms/EmojiText';
-import { ThemeSelector } from '@/components/molecules/ThemeSelector';
+import { useCurrentAccount } from '@/api';
+import { Button, IconButton, Card, Avatar, EmojiText } from '@/components/atoms';
+import { ThemeSelector } from '@/components/molecules';
 import { useAuthStore } from '@/hooks/useStores';
 import { useQueryClient } from '@tanstack/react-query';
 

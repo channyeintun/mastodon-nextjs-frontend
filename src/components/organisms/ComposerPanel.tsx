@@ -2,21 +2,17 @@
 
 import { useState, useRef, useEffect, Activity } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus } from '@/api/queries';
-import { useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api/mutations';
-import { PostCard } from '../molecules/PostCard';
-import { Avatar } from '../atoms/Avatar';
-import { EmojiText } from '../atoms/EmojiText';
-import { MediaUpload } from '../molecules/MediaUpload';
-import { PollComposer, type PollData } from '../molecules/PollComposer';
+import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
+import { PostCard, MediaUpload, PollComposer, VisibilitySettingsModal } from '@/components/molecules';
+import type { PollData } from '@/components/molecules/PollComposer';
+import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
+import { Avatar, EmojiText, TiptapEditor } from '@/components/atoms';
 import { EmojiPicker } from './EmojiPicker';
-import { VisibilitySettingsModal, type Visibility, type QuoteVisibility } from '../molecules/VisibilitySettingsModal';
-import { TiptapEditor } from '../atoms/TiptapEditor';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2, MessageSquareQuote, Clock } from 'lucide-react';
-import type { CreateStatusParams, MediaAttachment } from '@/types/mastodon';
+import type { CreateStatusParams, MediaAttachment } from '@/types';
 
 const MAX_CHAR_COUNT = 500;
 

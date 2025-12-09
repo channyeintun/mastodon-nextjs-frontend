@@ -4,12 +4,11 @@ import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, List, Users, Settings, Loader2 } from 'lucide-react';
-import { useList, useInfiniteListTimeline } from '@/api/queries';
-import { IconButton } from '@/components/atoms/IconButton';
-import { PostCard } from '@/components/molecules/PostCard';
-import { PostCardSkeleton, PostCardSkeletonList } from '@/components/molecules/PostCardSkeleton';
+import { useList, useInfiniteListTimeline } from '@/api';
+import { IconButton } from '@/components/atoms';
+import { PostCard, PostCardSkeleton, PostCardSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import type { Status } from '@/types/mastodon';
+import type { Status } from '@/types';
 
 export default function ListDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();

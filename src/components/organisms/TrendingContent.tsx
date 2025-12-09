@@ -2,16 +2,13 @@
 
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
-import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api/queries';
-import { PostCard } from '@/components/molecules/PostCard';
+import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api';
+import { PostCard, PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
-import { TrendingTagCard, TrendingTagCardSkeleton } from '@/components/molecules/TrendingTagCard';
-import { TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules/TrendingLinkCard';
-import { Button } from '@/components/atoms/Button';
-import { Tabs, type TabItem } from '@/components/atoms/Tabs';
+import { Button, Tabs } from '@/components/atoms';
+import type { TabItem } from '@/components/atoms/Tabs';
 import { Hash, Newspaper, FileText } from 'lucide-react';
-import type { Status, Tag, TrendingLink } from '@/types/mastodon';
+import type { Status, Tag, TrendingLink } from '@/types';
 
 type TrendingTab = 'posts' | 'tags' | 'links';
 

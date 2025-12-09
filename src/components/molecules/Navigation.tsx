@@ -3,8 +3,8 @@
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, Calendar, TrendingUp } from 'lucide-react';
-import { useInstance, useUnreadNotificationCount } from '@/api/queries';
-import type { Account } from '@/types/mastodon';
+import { useInstance, useUnreadNotificationCount } from '@/api';
+import type { Account } from '@/types';
 
 interface NavigationProps {
   isAuthenticated: boolean;

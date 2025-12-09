@@ -3,19 +3,12 @@
 import { useState, useEffect, Activity } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { ArrowLeft, Search as SearchIcon, Hash, X, Clock } from 'lucide-react';
-import { useSearch, useInfiniteSearch } from '@/api/queries';
+import { useSearch, useInfiniteSearch } from '@/api';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { PostCard } from '@/components/molecules/PostCard';
-import { UserCard } from '@/components/molecules/UserCard';
-import { Input } from '@/components/atoms/Input';
-import { Spinner } from '@/components/atoms/Spinner';
-import { IconButton } from '@/components/atoms/IconButton';
-import { Card } from '@/components/atoms/Card';
+import { PostCard, PostCardSkeleton, TrendingTagCardSkeleton, UserCard } from '@/components/molecules';
+import { Input, Spinner, IconButton, Card } from '@/components/atoms';
 
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
-
-import { PostCardSkeleton } from '@/components/molecules/PostCardSkeleton';
-import { TrendingTagCardSkeleton } from '@/components/molecules/TrendingTagCard';
 
 // Inline skeleton for UserCard since we don't have a dedicated one yet
 export function UserCardSkeleton({ style }: { style?: React.CSSProperties }) {
@@ -59,7 +52,7 @@ export function UserCardSkeleton({ style }: { style?: React.CSSProperties }) {
 }
 
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import type { Account, Status, Tag } from '@/types/mastodon';
+import type { Account, Status, Tag } from '@/types';
 
 // ... (existing imports)
 
