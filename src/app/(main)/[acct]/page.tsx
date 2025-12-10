@@ -138,6 +138,7 @@ export default function AccountPage({
           borderBottom: '1px solid var(--surface-3)',
           display: 'flex',
           alignItems: 'center',
+          gap: 'var(--size-3)',
           flexShrink: 0,
         }}>
           <IconButton onClick={() => router.back()}>
@@ -397,11 +398,161 @@ export default function AccountPage({
                 BOT
               </span>
             )}
-            {account.locked && <span style={{ marginLeft: 'var(--size-2)' }}>🔒</span>}
+            {account.locked && (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 'var(--size-2)', verticalAlign: 'middle', display: 'inline' }}>
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            )}
           </h2>
-          <p style={{ color: 'var(--text-2)', fontSize: 'var(--font-size-1)' }}>
-            @{account.acct}
-          </p>
+          {/* Handle display with explanation */}
+          {(() => {
+            const parts = account.acct.split('@');
+            const username = parts[0];
+            const server = parts[1] || new URL(account.url).hostname;
+            return (
+              <div style={{
+                fontSize: 'var(--font-size-1)',
+                display: 'flex',
+                flexDirection: 'column',
+              }}>
+                <div style={{ color: 'var(--text-2)', marginBottom: 'var(--size-2)' }}>@{username}</div>
+                <details style={{ background: 'none', padding: 0, margin: 0, border: 'none', boxShadow: 'none', outline: 'none' }}>
+                  <summary style={{
+                    display: 'inline-flex',
+                    cursor: 'pointer',
+                    padding: 'var(--size-1) var(--size-2)',
+                    margin: 0,
+                    background: 'var(--blue-6)',
+                    color: 'white',
+                    borderRadius: 'var(--radius-1)',
+                    fontSize: 'var(--font-size-0)',
+                    fontWeight: 'var(--font-weight-5)',
+                  }}>
+                    {server}
+                  </summary>
+                  <div style={{
+                    marginTop: 'var(--size-3)',
+                    padding: 'var(--size-4)',
+                    background: 'var(--surface-2)',
+                    borderRadius: 'var(--radius-2)',
+                    fontSize: 'var(--font-size-1)',
+                  }}>
+                    {/* Header with icon */}
+                    <div style={{
+                      fontWeight: 'var(--font-weight-6)',
+                      fontSize: 'var(--font-size-3)',
+                      color: 'var(--text-1)',
+                      marginBottom: 'var(--size-4)',
+                    }}>
+                      What&apos;s in a handle?
+                    </div>
+
+                    {/* Handle box with dashed border */}
+                    <div style={{
+                      padding: 'var(--size-3)',
+                      border: '2px dashed var(--surface-4)',
+                      borderRadius: 'var(--radius-2)',
+                      marginBottom: 'var(--size-4)',
+                    }}>
+                      <div style={{ color: 'var(--text-2)', marginBottom: 'var(--size-1)' }}>
+                        Their handle:
+                      </div>
+                      <div style={{ color: 'var(--blue-6)', fontWeight: 'var(--font-weight-5)' }}>
+                        @{username}@{server}
+                      </div>
+                    </div>
+
+                    {/* Definitions with icons */}
+                    <dl style={{ margin: 0 }}>
+                      <div style={{ display: 'flex', gap: 'var(--size-3)', marginBottom: 'var(--size-4)' }}>
+                        <span style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '36px',
+                          height: '36px',
+                          background: 'var(--surface-3)',
+                          borderRadius: 'var(--radius-round)',
+                          color: 'var(--text-1)',
+                          flexShrink: 0,
+                        }}>
+                          @
+                        </span>
+                        <div>
+                          <dt style={{
+                            fontWeight: 'var(--font-weight-6)',
+                            color: 'var(--text-1)',
+                            marginBottom: 'var(--size-1)',
+                          }}>
+                            Username
+                          </dt>
+                          <dd style={{ margin: 0, color: 'var(--text-2)' }}>
+                            Their unique identifier on their server. It&apos;s possible to find users with the same username on different servers.
+                          </dd>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 'var(--size-3)', marginBottom: 'var(--size-4)' }}>
+                        <span style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '36px',
+                          height: '36px',
+                          background: 'var(--surface-3)',
+                          borderRadius: 'var(--radius-round)',
+                          color: 'var(--text-1)',
+                          flexShrink: 0,
+                        }}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                          </svg>
+                        </span>
+                        <div>
+                          <dt style={{
+                            fontWeight: 'var(--font-weight-6)',
+                            color: 'var(--text-1)',
+                            marginBottom: 'var(--size-1)',
+                          }}>
+                            Server
+                          </dt>
+                          <dd style={{ margin: 0, color: 'var(--text-2)' }}>
+                            Their digital home, where all of their posts live.
+                          </dd>
+                        </div>
+                      </div>
+                    </dl>
+
+                    {/* ActivityPub section */}
+                    <div style={{ color: 'var(--text-2)' }}>
+                      Since handles say who someone is and where they are, you can interact with people across the social web of{' '}
+                      <details style={{ display: 'inline', background: 'none', padding: 0 }}>
+                        <summary style={{
+                          display: 'inline',
+                          color: 'var(--blue-6)',
+                          cursor: 'pointer',
+                          listStyle: 'none',
+                          background: 'none',
+                        }}>
+                          <dfn style={{ fontStyle: 'normal' }}>ActivityPub-powered platforms</dfn>.
+                        </summary>
+                        <div style={{ marginTop: 'var(--size-3)', color: 'var(--text-2)' }}>
+                          <p style={{ marginBottom: 'var(--size-3)' }}>
+                            ActivityPub is like the language Mastodon speaks with other social networks.
+                          </p>
+                          <p style={{ margin: 0 }}>
+                            It lets you connect and interact with people not just on Mastodon, but across different social apps too.
+                          </p>
+                        </div>
+                      </details>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Bio */}
@@ -417,28 +568,30 @@ export default function AccountPage({
         )}
 
         {/* Fields (metadata) */}
-        {account.fields.length > 0 && (
-          <div style={{ marginBottom: 'var(--size-3)' }}>
-            {account.fields.map((field, index) => (
-              <div
-                key={index}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '120px 1fr',
-                  gap: 'var(--size-2)',
-                  padding: 'var(--size-2) 0',
-                  borderBottom: index < account.fields.length - 1 ? '1px solid var(--surface-3)' : 'none',
-                  fontSize: 'var(--font-size-1)',
-                }}
-              >
-                <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
-                  {field.name}
+        {
+          account.fields.length > 0 && (
+            <div style={{ marginBottom: 'var(--size-3)' }}>
+              {account.fields.map((field, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '120px 1fr',
+                    gap: 'var(--size-2)',
+                    padding: 'var(--size-2) 0',
+                    borderBottom: index < account.fields.length - 1 ? '1px solid var(--surface-3)' : 'none',
+                    fontSize: 'var(--font-size-1)',
+                  }}
+                >
+                  <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
+                    {field.name}
+                  </div>
+                  <div dangerouslySetInnerHTML={{ __html: field.value }} />
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: field.value }} />
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )
+        }
 
         {/* Joined date */}
         <div style={{
@@ -477,54 +630,58 @@ export default function AccountPage({
         </div>
 
         {/* External link */}
-        {account.url && (
-          <a
-            href={account.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 'var(--size-1)',
-              color: 'var(--blue-6)',
-              fontSize: 'var(--font-size-1)',
-              textDecoration: 'none',
-            }}
-          >
-            View on Mastodon <ExternalLink size={14} />
-          </a>
-        )}
-      </div>
+        {
+          account.url && (
+            <a
+              href={account.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 'var(--size-1)',
+                color: 'var(--blue-6)',
+                fontSize: 'var(--font-size-1)',
+                textDecoration: 'none',
+              }}
+            >
+              View on Mastodon <ExternalLink size={14} />
+            </a>
+          )
+        }
+      </div >
 
       {/* Pinned Posts Section */}
-      {pinnedStatuses && pinnedStatuses.length > 0 && (
-        <div style={{
-          borderTop: '1px solid var(--surface-3)',
-          paddingTop: 'var(--size-4)',
-          marginTop: 'var(--size-4)',
-        }}>
-          <h3 style={{
-            fontSize: 'var(--font-size-2)',
-            fontWeight: 'var(--font-weight-6)',
-            marginBottom: 'var(--size-3)',
-            paddingLeft: 'var(--size-4)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-2)',
-            color: 'var(--text-2)',
+      {
+        pinnedStatuses && pinnedStatuses.length > 0 && (
+          <div style={{
+            borderTop: '1px solid var(--surface-3)',
+            paddingTop: 'var(--size-4)',
+            marginTop: 'var(--size-4)',
           }}>
-            <Pin size={16} />
-            Pinned Posts
-          </h3>
-          {pinnedStatuses.map(status => (
-            <PostCard
-              key={status.id}
-              status={status}
-              style={{ marginBottom: 'var(--size-3)' }}
-            />
-          ))}
-        </div>
-      )}
+            <h3 style={{
+              fontSize: 'var(--font-size-2)',
+              fontWeight: 'var(--font-weight-6)',
+              marginBottom: 'var(--size-3)',
+              paddingLeft: 'var(--size-4)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--size-2)',
+              color: 'var(--text-2)',
+            }}>
+              <Pin size={16} />
+              Pinned Posts
+            </h3>
+            {pinnedStatuses.map(status => (
+              <PostCard
+                key={status.id}
+                status={status}
+                style={{ marginBottom: 'var(--size-3)' }}
+              />
+            ))}
+          </div>
+        )
+      }
 
       {/* Posts Section */}
       <div style={{
@@ -576,6 +733,6 @@ export default function AccountPage({
           />
         )}
       </div>
-    </div>
+    </div >
   );
 }
