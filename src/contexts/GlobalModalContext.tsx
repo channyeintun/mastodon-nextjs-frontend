@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode, useCallback, useRef } from 'react';
+import React, { createContext, use, useState, ReactNode, useCallback, useRef } from 'react';
 
 interface GlobalModalContextType {
     isOpen: boolean;
@@ -60,7 +60,7 @@ export function GlobalModalProvider({ children }: { children: ReactNode }) {
 }
 
 export function useGlobalModal() {
-    const context = useContext(GlobalModalContext);
+    const context = use(GlobalModalContext);
     if (context === undefined) {
         throw new Error('useGlobalModal must be used within a GlobalModalProvider');
     }
