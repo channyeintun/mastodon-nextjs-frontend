@@ -516,7 +516,6 @@ a {
 
 .navigation-bottom-link:hover {
   color: var(--text-1);
-  background: var(--surface-3);
 }
 
 .navigation-bottom-link.active {
