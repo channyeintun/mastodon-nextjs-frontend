@@ -1611,3 +1611,21 @@ dialog::backdrop {
     flex-direction: row;
   }
 }
+
+/* Details Element Styling */
+details summary {
+  list-style: none;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details[open] .details-chevron {
+  transform: rotate(180deg);
+}
+
+.details-chevron {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}

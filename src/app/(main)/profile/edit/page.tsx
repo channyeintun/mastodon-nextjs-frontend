@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Upload, X, Check, Copy, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Upload, X, Check, Copy, ChevronDown } from 'lucide-react';
 import { useCurrentAccount, useUpdateAccount } from '@/api';
 import { Button, IconButton, Card, Spinner } from '@/components/atoms';
 import { ImageCropper } from '@/components/molecules';
@@ -32,7 +32,7 @@ export default function ProfileEditPage() {
         { name: '', value: '', verified_at: null },
         { name: '', value: '', verified_at: null },
     ]);
-    const [showVerificationInfo, setShowVerificationInfo] = useState(false);
+
 
     const avatarInputRef = useRef<HTMLInputElement>(null);
     const headerInputRef = useRef<HTMLInputElement>(null);
@@ -590,89 +590,82 @@ export default function ProfileEditPage() {
                     </div>
 
                     {/* Verification Info */}
-                    <div style={{ marginTop: 'var(--size-4)', borderTop: '1px solid var(--surface-3)', paddingTop: 'var(--size-4)' }}>
-                        <button
-                            type="button"
-                            onClick={() => setShowVerificationInfo(!showVerificationInfo)}
+                    <details style={{ marginTop: 'var(--size-4)', borderTop: '1px solid var(--surface-3)', paddingTop: 'var(--size-4)' }}>
+                        <summary
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 'var(--size-2)',
-                                background: 'none',
-                                border: 'none',
                                 color: 'var(--text-1)',
                                 fontSize: 'var(--font-size-1)',
                                 fontWeight: 'var(--font-weight-6)',
                                 cursor: 'pointer',
-                                padding: 0,
+                                listStyle: 'none',
                             }}
                         >
-                            {showVerificationInfo ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                            <ChevronDown size={18} className="details-chevron" />
                             Link Verification
-                        </button>
+                        </summary>
 
-                        {showVerificationInfo && (
-                            <div style={{ marginTop: 'var(--size-3)' }}>
-                                <p style={{
+                        <div style={{ marginTop: 'var(--size-3)' }}>
+                            <p style={{
+                                fontSize: 'var(--font-size-0)',
+                                color: 'var(--text-2)',
+                                marginBottom: 'var(--size-3)',
+                                lineHeight: 1.5,
+                            }}>
+                                You can verify yourself as the owner of the links in your profile metadata. For this, the linked website must contain a link back to your Mastodon profile. The link back must have a <code style={{ background: 'var(--surface-3)', padding: '2px 4px', borderRadius: '4px' }}>rel=&quot;me&quot;</code> attribute.
+                            </p>
+
+                            <div style={{
+                                background: 'var(--surface-2)',
+                                borderRadius: 'var(--radius-2)',
+                                paddingBlock: 'var(--size-3)',
+                                display: 'flex',
+                                placeItems: 'center',
+                            }}>
+                                <code style={{
                                     fontSize: 'var(--font-size-0)',
-                                    color: 'var(--text-2)',
-                                    marginBottom: 'var(--size-3)',
-                                    lineHeight: 1.5,
+                                    fontFamily: 'monospace',
+                                    whiteSpace: 'nowrap',
+                                    display: 'block',
+                                    paddingRight: 'var(--size-8)',
+                                    overflow: 'auto',
                                 }}>
-                                    You can verify yourself as the owner of the links in your profile metadata. For this, the linked website must contain a link back to your Mastodon profile. The link back must have a <code style={{ background: 'var(--surface-3)', padding: '2px 4px', borderRadius: '4px' }}>rel=&quot;me&quot;</code> attribute.
-                                </p>
-
-                                <div style={{
-                                    background: 'var(--surface-2)',
-                                    borderRadius: 'var(--radius-2)',
-                                    padding: 'var(--size-3)',
-                                    position: 'relative',
-                                }}>
-                                    <code style={{
-                                        fontSize: 'var(--font-size-0)',
-                                        fontFamily: 'monospace',
-                                        wordBreak: 'break-all',
-                                        display: 'block',
-                                        paddingRight: 'var(--size-6)',
-                                    }}>
-                                        {`<a rel="me" href="${currentAccount?.url || ''}">Mastodon</a>`}
-                                    </code>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(`<a rel="me" href="${currentAccount?.url || ''}">Mastodon</a>`);
-                                        }}
-                                        style={{
-                                            position: 'absolute',
-                                            top: 'var(--size-2)',
-                                            right: 'var(--size-2)',
-                                            background: 'var(--surface-3)',
-                                            border: 'none',
-                                            borderRadius: 'var(--radius-1)',
-                                            padding: 'var(--size-1)',
-                                            cursor: 'pointer',
-                                            color: 'var(--text-2)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                        title="Copy to clipboard"
-                                    >
-                                        <Copy size={14} />
-                                    </button>
-                                </div>
-
-                                <p style={{
-                                    fontSize: 'var(--font-size-0)',
-                                    color: 'var(--text-2)',
-                                    marginTop: 'var(--size-3)',
-                                    lineHeight: 1.5,
-                                }}>
-                                    <strong>Tip:</strong> The link on your website can be invisible. The important part is <code style={{ background: 'var(--surface-3)', padding: '2px 4px', borderRadius: '4px' }}>rel=&quot;me&quot;</code> which prevents impersonation.
-                                </p>
+                                    {`<a rel="me" href="${currentAccount?.url || ''}">Mastodon</a>`}
+                                </code>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(`<a rel="me" href="${currentAccount?.url || ''}">Mastodon</a>`);
+                                    }}
+                                    style={{
+                                        background: 'var(--surface-3)',
+                                        border: 'none',
+                                        borderRadius: 'var(--radius-1)',
+                                        padding: 'var(--size-1)',
+                                        cursor: 'pointer',
+                                        color: 'var(--text-2)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                    title="Copy to clipboard"
+                                >
+                                    <Copy size={14} />
+                                </button>
                             </div>
-                        )}
-                    </div>
+
+                            <p style={{
+                                fontSize: 'var(--font-size-0)',
+                                color: 'var(--text-2)',
+                                marginTop: 'var(--size-3)',
+                                lineHeight: 1.5,
+                            }}>
+                                <strong>Tip:</strong> The link on your website can be invisible. The important part is <code style={{ background: 'var(--surface-3)', padding: '2px 4px', borderRadius: '4px' }}>rel=&quot;me&quot;</code> which prevents impersonation.
+                            </p>
+                        </div>
+                    </details>
                 </Card>
 
                 {/* Privacy Settings */}
