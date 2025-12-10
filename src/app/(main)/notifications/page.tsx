@@ -59,9 +59,21 @@ export default function NotificationsPage() {
     }
 
     return (
-        <div className="notifications-page full-height-container">
+        <div className="container full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
             {/* Header */}
-            <div className="notifications-header">
+            <div style={{
+                background: 'var(--surface-1)',
+                zIndex: 10,
+                padding: 'var(--size-4)',
+                marginBottom: 'var(--size-4)',
+                borderBottom: '1px solid var(--surface-3)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexShrink: 0,
+                flexWrap: 'wrap',
+                gap: 'var(--size-3)',
+            }}>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -95,7 +107,10 @@ export default function NotificationsPage() {
                 </div>
 
                 {allNotifications.length > 0 && (
-                    <div className="notifications-actions">
+                    <div style={{
+                        display: 'flex',
+                        gap: 'var(--size-2)',
+                    }}>
                         <Button
                             variant="ghost"
                             size="small"
@@ -104,7 +119,7 @@ export default function NotificationsPage() {
                             aria-label="Mark as read"
                         >
                             <Check size={16} />
-                            <span className="notifications-action-label">Mark as read</span>
+                            <span className="hide-on-mobile">Mark as read</span>
                         </Button>
                         <Button
                             variant="ghost"
@@ -114,7 +129,7 @@ export default function NotificationsPage() {
                             aria-label="Clear all"
                         >
                             <Trash2 size={16} />
-                            <span className="notifications-action-label">Clear all</span>
+                            <span className="hide-on-mobile">Clear all</span>
                         </Button>
                     </div>
                 )}

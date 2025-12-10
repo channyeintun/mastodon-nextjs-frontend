@@ -309,13 +309,18 @@ Global styles using Open Props:
   - `--app-sidebar-width`: Desktop sidebar width (280px)
   - `--app-bottom-nav-height`: Mobile bottom navigation height (64px)
 - View Transitions CSS
-- Utility classes (container, spinner)
+- Utility classes:
+  - `container`: Page container with max width and auto margins
+  - `full-height-container`: Full viewport height container with flex layout
+  - `spinner`: Loading spinner animation
+  - `hide-on-mobile`: Hides content on screens ≤480px (for responsive button labels)
 - Navigation styles:
   - Sidebar for desktop (full height with header, nav links, footer)
   - Bottom bar for mobile
   - Logo, instance URL, sign in/out buttons
 - Responsive breakpoints (768px tablet, 1024px desktop)
 - Layout adjustments (body margins/padding for sidebar and bottom nav)
+- **Styling convention**: Pages use inline styles and generic utility classes (not page-specific CSS classes) for consistency
 
 ### `tsconfig.json`
 TypeScript configuration:
