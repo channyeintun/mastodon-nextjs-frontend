@@ -533,65 +533,61 @@ export default function ProfileEditPage() {
                         You can have up to 4 items displayed as a table on your profile
                     </p>
 
-                    {fields.map((field, index) => (
-                        <div
-                            key={index}
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 1fr auto',
-                                gap: 'var(--size-2)',
-                                marginBottom: 'var(--size-3)',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <input
-                                type="text"
-                                placeholder={`Label ${index + 1}`}
-                                value={field.name}
-                                onChange={(e) => {
-                                    const newFields = [...fields];
-                                    newFields[index] = { ...newFields[index], name: e.target.value };
-                                    setFields(newFields);
-                                }}
-                                style={{
-                                    padding: 'var(--size-2)',
-                                    border: '1px solid var(--surface-4)',
-                                    borderRadius: 'var(--radius-2)',
-                                    background: 'var(--surface-1)',
-                                    color: 'var(--text-1)',
-                                    fontSize: 'var(--font-size-1)',
-                                }}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Content"
-                                value={field.value}
-                                onChange={(e) => {
-                                    const newFields = [...fields];
-                                    newFields[index] = { ...newFields[index], value: e.target.value };
-                                    setFields(newFields);
-                                }}
-                                style={{
-                                    padding: 'var(--size-2)',
-                                    border: field.verified_at ? '1px solid var(--green-6)' : '1px solid var(--surface-4)',
-                                    borderRadius: 'var(--radius-2)',
-                                    background: field.verified_at ? 'color-mix(in srgb, var(--green-6) 10%, var(--surface-1))' : 'var(--surface-1)',
-                                    color: 'var(--text-1)',
-                                    fontSize: 'var(--font-size-1)',
-                                }}
-                            />
-                            <div style={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-                                {field.verified_at && (
-                                    <span title={`Verified on ${new Date(field.verified_at).toLocaleDateString()}`}>
-                                        <Check
-                                            size={18}
-                                            style={{ color: 'var(--green-6)' }}
-                                        />
-                                    </span>
-                                )}
+                    <div className="profile-edit-fields-container">
+                        {fields.map((field, index) => (
+                            <div
+                                key={index}
+                                className="profile-edit-field-row"
+                            >
+                                <input
+                                    type="text"
+                                    placeholder={`Label ${index + 1}`}
+                                    value={field.name}
+                                    onChange={(e) => {
+                                        const newFields = [...fields];
+                                        newFields[index] = { ...newFields[index], name: e.target.value };
+                                        setFields(newFields);
+                                    }}
+                                    style={{
+                                        padding: 'var(--size-2)',
+                                        border: '1px solid var(--surface-4)',
+                                        borderRadius: 'var(--radius-2)',
+                                        background: 'var(--surface-1)',
+                                        color: 'var(--text-1)',
+                                        fontSize: 'var(--font-size-1)',
+                                    }}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Content"
+                                    value={field.value}
+                                    onChange={(e) => {
+                                        const newFields = [...fields];
+                                        newFields[index] = { ...newFields[index], value: e.target.value };
+                                        setFields(newFields);
+                                    }}
+                                    style={{
+                                        padding: 'var(--size-2)',
+                                        border: field.verified_at ? '1px solid var(--green-6)' : '1px solid var(--surface-4)',
+                                        borderRadius: 'var(--radius-2)',
+                                        background: field.verified_at ? 'color-mix(in srgb, var(--green-6) 10%, var(--surface-1))' : 'var(--surface-1)',
+                                        color: 'var(--text-1)',
+                                        fontSize: 'var(--font-size-1)',
+                                    }}
+                                />
+                                <div style={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
+                                    {field.verified_at && (
+                                        <span title={`Verified on ${new Date(field.verified_at).toLocaleDateString()}`}>
+                                            <Check
+                                                size={18}
+                                                style={{ color: 'var(--green-6)' }}
+                                            />
+                                        </span>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
 
                     {/* Verification Info */}
                     <div style={{ marginTop: 'var(--size-4)', borderTop: '1px solid var(--surface-3)', paddingTop: 'var(--size-4)' }}>

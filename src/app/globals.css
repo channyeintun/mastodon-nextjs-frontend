@@ -836,6 +836,25 @@ body {
 }
 
 /* ====================================
+   Profile Edit Page
+   ==================================== */
+.profile-edit-fields-container {
+  container-type: inline-size;
+
+  .profile-edit-field-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--size-2);
+    margin-bottom: var(--size-3);
+    align-items: center;
+
+    @container (min-width: 400px) {
+      grid-template-columns: 1fr 1fr auto;
+    }
+  }
+}
+
+/* ====================================
    Profile Pill (Compact Top-Right)
    ==================================== */
 .profile-pill {
