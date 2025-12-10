@@ -125,9 +125,15 @@ export default function FollowersPage({
                 loadingIndicator={<AccountCardSkeleton />}
                 endIndicator="No more followers"
                 emptyState={
-                    <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
-                        No followers yet
-                    </div>
+                    account.followers_count > 0 ? (
+                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
+                            This user has chosen to not make this information available
+                        </div>
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: 'var(--size-8)', color: 'var(--text-2)' }}>
+                            No followers yet
+                        </div>
+                    )
                 }
             />
         </div>
