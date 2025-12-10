@@ -63,6 +63,72 @@ function updateStatusOrReblog(
   return status
 }
 
+// Helper to find a status in any cache (for rollback purposes)
+function findStatusInCaches(
+  queryClient: QueryClient,
+  statusId: string
+): Status | undefined {
+  // 1. Try detail cache first
+  const detail = queryClient.getQueryData<Status>(queryKeys.statuses.detail(statusId))
+  if (detail) return detail
+
+  // 2. Try trending statuses
+  const trendingData = queryClient.getQueryData<InfiniteData<Status[]>>(queryKeys.trends.statuses())
+  if (trendingData?.pages) {
+    for (const page of trendingData.pages) {
+      const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
+      if (found) {
+        return found.id === statusId ? found : found.reblog!
+      }
+    }
+  }
+
+  // 3. Try timelines
+  const timelines = queryClient.getQueriesData<InfiniteData<Status[]>>({
+    predicate: (query) => {
+      const key = query.queryKey as readonly unknown[]
+      return key[0] === 'timelines'
+    }
+  })
+
+  for (const [_, data] of timelines) {
+    if (data?.pages) {
+      for (const page of data.pages) {
+        const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
+        if (found) {
+          return found.id === statusId ? found : found.reblog!
+        }
+      }
+    }
+  }
+
+  // 4. Try bookmarks
+  const bookmarks = queryClient.getQueryData<InfiniteData<Status[]>>(queryKeys.bookmarks.all())
+  if (bookmarks?.pages) {
+    for (const page of bookmarks.pages) {
+      const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
+      if (found) {
+        return found.id === statusId ? found : found.reblog!
+      }
+    }
+  }
+
+  // 5. Try account statuses
+  const accounts = queryClient.getQueriesData<InfiniteData<Status[]>>({ queryKey: ['accounts'] })
+  for (const [_, data] of accounts) {
+    if (data?.pages) {
+      for (const page of data.pages) {
+        const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
+        if (found) {
+          return found.id === statusId ? found : found.reblog!
+        }
+      }
+    }
+  }
+
+  return undefined
+}
+
 // Helper function to update status in all infinite query caches
 function updateStatusInCaches(
   queryClient: QueryClient,
@@ -378,7 +444,7 @@ export function useFavouriteStatus() {
       // Cancel all queries that will be updated optimistically
       await cancelStatusQueries(queryClient, id)
 
-      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
+      const previous = findStatusInCaches(queryClient, id)
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -420,7 +486,7 @@ export function useUnfavouriteStatus() {
       // Cancel all queries that will be updated optimistically
       await cancelStatusQueries(queryClient, id)
 
-      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
+      const previous = findStatusInCaches(queryClient, id)
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -461,7 +527,7 @@ export function useReblogStatus() {
       // Cancel all queries that will be updated optimistically
       await cancelStatusQueries(queryClient, id)
 
-      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
+      const previous = findStatusInCaches(queryClient, id)
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -502,7 +568,7 @@ export function useUnreblogStatus() {
       // Cancel all queries that will be updated optimistically
       await cancelStatusQueries(queryClient, id)
 
-      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
+      const previous = findStatusInCaches(queryClient, id)
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -543,7 +609,7 @@ export function useBookmarkStatus() {
       // Cancel all queries that will be updated optimistically
       await cancelStatusQueries(queryClient, id)
 
-      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
+      const previous = findStatusInCaches(queryClient, id)
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
@@ -582,7 +648,7 @@ export function useUnbookmarkStatus() {
       // Cancel all queries that will be updated optimistically
       await cancelStatusQueries(queryClient, id)
 
-      const previous = queryClient.getQueryData<Status>(queryKeys.statuses.detail(id))
+      const previous = findStatusInCaches(queryClient, id)
 
       if (previous) {
         queryClient.setQueryData<Status>(queryKeys.statuses.detail(id), {
