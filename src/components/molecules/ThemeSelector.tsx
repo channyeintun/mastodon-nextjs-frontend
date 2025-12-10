@@ -100,7 +100,7 @@ export function ThemeSelector({ initialTheme = 'auto' }: ThemeSelectorProps) {
                             width: '18px',
                             height: '18px',
                             cursor: 'pointer',
-                            accentColor: currentTheme === option.value ? 'white' : 'var(--blue-6)',
+                            accentColor: 'var(--cyan-6)',
                         }}
                     />
                     <div

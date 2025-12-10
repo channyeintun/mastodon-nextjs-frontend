@@ -80,6 +80,10 @@ a {
   text-decoration: none;
 }
 
+input[type="radio"] {
+  accent-color: var(--cyan-6);
+}
+
 /* Skip to main content link - keyboard accessibility */
 .skip-to-main {
   position: absolute;
