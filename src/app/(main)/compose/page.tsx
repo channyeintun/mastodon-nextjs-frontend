@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import AuthGuard from '@/components/organisms/AuthGuard';
 import { useSearchParams } from 'next/navigation';
