@@ -4,6 +4,70 @@ import styled from '@emotion/styled';
 import { Clock, X, Search } from 'lucide-react';
 import { EmptyState } from '@/components/atoms';
 
+interface SearchHistoryProps {
+    /** List of recent search terms */
+    history: string[];
+    /** Callback when a search term is selected */
+    onSelect: (term: string) => void;
+    /** Callback when a search term is removed */
+    onRemove: (term: string) => void;
+    /** Callback when all history is cleared */
+    onClear: () => void;
+}
+
+/**
+ * SearchHistory - Displays recent search history with remove functionality
+ */
+export function SearchHistory({
+    history,
+    onSelect,
+    onRemove,
+    onClear,
+}: SearchHistoryProps) {
+    if (history.length === 0) {
+        return (
+            <EmptyState
+                icon={<Search size={48} />}
+                title="Search for people, posts, or hashtags"
+            />
+        );
+    }
+
+    return (
+        <Container>
+            <Header>
+                <Title>Recent</Title>
+                <ClearButton onClick={onClear}>
+                    Clear all
+                </ClearButton>
+            </Header>
+            <HistoryList>
+                {history.map((term, index) => (
+                    <HistoryItem
+                        key={term + index}
+                        className="recent-search-item"
+                        onClick={() => onSelect(term)}
+                    >
+                        <HistoryItemContent>
+                            <ClockIcon size={16} />
+                            <TermText>{term}</TermText>
+                        </HistoryItemContent>
+                        <RemoveButton
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onRemove(term);
+                            }}
+                            className="recent-search-remove"
+                        >
+                            <X size={16} />
+                        </RemoveButton>
+                    </HistoryItem>
+                ))}
+            </HistoryList>
+        </Container>
+    );
+}
+
 // Styled components
 const Container = styled.div``;
 
@@ -81,67 +145,3 @@ const RemoveButton = styled.button`
         background: var(--surface-3);
     }
 `;
-
-interface SearchHistoryProps {
-    /** List of recent search terms */
-    history: string[];
-    /** Callback when a search term is selected */
-    onSelect: (term: string) => void;
-    /** Callback when a search term is removed */
-    onRemove: (term: string) => void;
-    /** Callback when all history is cleared */
-    onClear: () => void;
-}
-
-/**
- * SearchHistory - Displays recent search history with remove functionality
- */
-export function SearchHistory({
-    history,
-    onSelect,
-    onRemove,
-    onClear,
-}: SearchHistoryProps) {
-    if (history.length === 0) {
-        return (
-            <EmptyState
-                icon={<Search size={48} />}
-                title="Search for people, posts, or hashtags"
-            />
-        );
-    }
-
-    return (
-        <Container>
-            <Header>
-                <Title>Recent</Title>
-                <ClearButton onClick={onClear}>
-                    Clear all
-                </ClearButton>
-            </Header>
-            <HistoryList>
-                {history.map((term, index) => (
-                    <HistoryItem
-                        key={term + index}
-                        className="recent-search-item"
-                        onClick={() => onSelect(term)}
-                    >
-                        <HistoryItemContent>
-                            <ClockIcon size={16} />
-                            <TermText>{term}</TermText>
-                        </HistoryItemContent>
-                        <RemoveButton
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onRemove(term);
-                            }}
-                            className="recent-search-remove"
-                        >
-                            <X size={16} />
-                        </RemoveButton>
-                    </HistoryItem>
-                ))}
-            </HistoryList>
-        </Container>
-    );
-}

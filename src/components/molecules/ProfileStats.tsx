@@ -9,25 +9,6 @@ interface ProfileStatsProps {
     followersCount: number;
 }
 
-const Container = styled.div`
-  display: flex;
-  gap: var(--size-4);
-  font-size: var(--font-size-1);
-  margin-bottom: var(--size-4);
-`;
-
-const StatsLink = styled(Link)`
-  text-decoration: none;
-`;
-
-const Count = styled.strong`
-  color: var(--text-1);
-`;
-
-const Label = styled.span`
-  color: var(--text-2);
-`;
-
 /**
  * Presentation component for profile follower/following stats.
  */
@@ -53,3 +34,22 @@ export function ProfileStats({
         </Container>
     );
 }
+
+const Container = styled.div`
+  display: flex;
+  gap: var(--size-4);
+  font-size: var(--font-size-1);
+  margin-bottom: var(--size-4);
+`;
+
+const StatsLink = styled(Link)`
+  text-decoration: none;
+`;
+
+const Count = styled.strong`
+  color: var(--text-1);
+`;
+
+const Label = styled.span`
+  color: var(--text-2);
+`;

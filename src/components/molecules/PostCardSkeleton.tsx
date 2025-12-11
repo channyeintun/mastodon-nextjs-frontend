@@ -8,6 +8,59 @@ interface PostCardSkeletonProps {
   className?: string;
 }
 
+/**
+ * Skeleton loading placeholder for PostCard
+ */
+export function PostCardSkeleton({ style, className }: PostCardSkeletonProps) {
+  return (
+    <Card padding="medium" style={style} className={className}>
+      <Container>
+        {/* Avatar skeleton */}
+        <AvatarSkeleton />
+
+        <ContentContainer>
+          {/* Header skeleton */}
+          <HeaderSection>
+            <DisplayNameSkeleton />
+            <UsernameSkeleton />
+          </HeaderSection>
+
+          {/* Content skeleton */}
+          <TextSection>
+            <TextLine $width="100%" $hasMargin />
+            <TextLine $width="90%" $hasMargin />
+            <TextLine $width="70%" />
+          </TextSection>
+
+          {/* Action bar skeleton */}
+          <ActionBar>
+            {[1, 2, 3, 4].map((i) => (
+              <ActionItem key={i} />
+            ))}
+          </ActionBar>
+        </ContentContainer>
+      </Container>
+    </Card>
+  );
+}
+
+const SkeletonWithMargin = styled(PostCardSkeleton)`
+  margin-bottom: var(--size-3);
+`;
+
+/**
+ * Multiple skeleton cards for initial loading
+ */
+export function PostCardSkeletonList({ count = 5 }: { count?: number }) {
+  return (
+    <>
+      {Array.from({ length: count }).map((_, i) => (
+        <SkeletonWithMargin key={i} />
+      ))}
+    </>
+  );
+}
+
 const Container = styled.div`
   display: flex;
   gap: var(--size-3);
@@ -74,56 +127,3 @@ const ActionItem = styled.div`
   border-radius: var(--radius-1);
   animation: var(--animation-blink);
 `;
-
-/**
- * Skeleton loading placeholder for PostCard
- */
-export function PostCardSkeleton({ style, className }: PostCardSkeletonProps) {
-  return (
-    <Card padding="medium" style={style} className={className}>
-      <Container>
-        {/* Avatar skeleton */}
-        <AvatarSkeleton />
-
-        <ContentContainer>
-          {/* Header skeleton */}
-          <HeaderSection>
-            <DisplayNameSkeleton />
-            <UsernameSkeleton />
-          </HeaderSection>
-
-          {/* Content skeleton */}
-          <TextSection>
-            <TextLine $width="100%" $hasMargin />
-            <TextLine $width="90%" $hasMargin />
-            <TextLine $width="70%" />
-          </TextSection>
-
-          {/* Action bar skeleton */}
-          <ActionBar>
-            {[1, 2, 3, 4].map((i) => (
-              <ActionItem key={i} />
-            ))}
-          </ActionBar>
-        </ContentContainer>
-      </Container>
-    </Card>
-  );
-}
-
-const SkeletonWithMargin = styled(PostCardSkeleton)`
-  margin-bottom: var(--size-3);
-`;
-
-/**
- * Multiple skeleton cards for initial loading
- */
-export function PostCardSkeletonList({ count = 5 }: { count?: number }) {
-  return (
-    <>
-      {Array.from({ length: count }).map((_, i) => (
-        <SkeletonWithMargin key={i} />
-      ))}
-    </>
-  );
-}

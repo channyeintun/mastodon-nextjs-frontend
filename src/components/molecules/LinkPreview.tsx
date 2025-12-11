@@ -10,6 +10,58 @@ interface LinkPreviewProps {
   style?: React.CSSProperties;
 }
 
+/**
+ * Displays a rich link preview card with image, title, and description
+ */
+export function LinkPreview({ card, style }: LinkPreviewProps) {
+  const handleClick = () => {
+    window.open(card.url, '_blank', 'noopener,noreferrer');
+  };
+
+  return (
+    <StyledCard
+      hoverable
+      style={style}
+      onClick={handleClick}
+    >
+      <Container>
+        {/* Image */}
+        {card.image && (
+          <ImageContainer>
+            <Image
+              src={card.image}
+              alt={card.title}
+            />
+          </ImageContainer>
+        )}
+
+        {/* Content */}
+        <Content>
+          {/* URL domain */}
+          <UrlSection>
+            <Icon size={14} />
+            <Domain>
+              {new URL(card.url).hostname}
+            </Domain>
+          </UrlSection>
+
+          {/* Title */}
+          <Title>
+            {card.title}
+          </Title>
+
+          {/* Description */}
+          {card.description && (
+            <Description>
+              {card.description}
+            </Description>
+          )}
+        </Content>
+      </Container>
+    </StyledCard>
+  );
+}
+
 const StyledCard = styled(Card)`
   cursor: pointer;
   overflow: hidden;
@@ -70,55 +122,3 @@ const Description = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
-
-/**
- * Displays a rich link preview card with image, title, and description
- */
-export function LinkPreview({ card, style }: LinkPreviewProps) {
-  const handleClick = () => {
-    window.open(card.url, '_blank', 'noopener,noreferrer');
-  };
-
-  return (
-    <StyledCard
-      hoverable
-      style={style}
-      onClick={handleClick}
-    >
-      <Container>
-        {/* Image */}
-        {card.image && (
-          <ImageContainer>
-            <Image
-              src={card.image}
-              alt={card.title}
-            />
-          </ImageContainer>
-        )}
-
-        {/* Content */}
-        <Content>
-          {/* URL domain */}
-          <UrlSection>
-            <Icon size={14} />
-            <Domain>
-              {new URL(card.url).hostname}
-            </Domain>
-          </UrlSection>
-
-          {/* Title */}
-          <Title>
-            {card.title}
-          </Title>
-
-          {/* Description */}
-          {card.description && (
-            <Description>
-              {card.description}
-            </Description>
-          )}
-        </Content>
-      </Container>
-    </StyledCard>
-  );
-}

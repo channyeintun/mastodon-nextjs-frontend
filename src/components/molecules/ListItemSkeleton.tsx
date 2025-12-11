@@ -2,23 +2,6 @@ import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import { ImageSkeleton, TextSkeleton } from '@/components/atoms';
 
-// Styled components
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  padding: var(--size-4);
-  border-bottom: 1px solid var(--surface-3);
-  gap: var(--size-3);
-`;
-
-const InfoWrapper = styled.div`
-  flex: 1;
-`;
-
-const TitleSkeleton = styled(TextSkeleton)`
-  margin-bottom: var(--size-1);
-`;
-
 interface ListItemSkeletonProps {
   /** Additional inline styles */
   style?: CSSProperties;
@@ -47,3 +30,21 @@ export const ListItemSkeleton = ({ style }: ListItemSkeletonProps) => {
     </Container>
   );
 };
+
+// Styled components
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  padding: var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+  gap: var(--size-3);
+`;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+`;
+
+const TitleSkeleton = styled(TextSkeleton)`
+  margin-bottom: var(--size-1);
+`;
+

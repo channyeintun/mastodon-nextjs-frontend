@@ -8,6 +8,39 @@ interface EmptyStateProps {
   action?: ReactNode;
 }
 
+export function EmptyState({
+  icon,
+  title,
+  description,
+  action,
+}: EmptyStateProps) {
+  return (
+    <Container>
+      {icon && (
+        <IconContainer>
+          {icon}
+        </IconContainer>
+      )}
+
+      <Title $hasDescription={!!description}>
+        {title}
+      </Title>
+
+      {description && (
+        <Description>
+          {description}
+        </Description>
+      )}
+
+      {action && (
+        <ActionContainer>
+          {action}
+        </ActionContainer>
+      )}
+    </Container>
+  );
+}
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -41,36 +74,3 @@ const Description = styled.p`
 const ActionContainer = styled.div`
   margin-top: var(--size-4);
 `;
-
-export function EmptyState({
-  icon,
-  title,
-  description,
-  action,
-}: EmptyStateProps) {
-  return (
-    <Container>
-      {icon && (
-        <IconContainer>
-          {icon}
-        </IconContainer>
-      )}
-
-      <Title $hasDescription={!!description}>
-        {title}
-      </Title>
-
-      {description && (
-        <Description>
-          {description}
-        </Description>
-      )}
-
-      {action && (
-        <ActionContainer>
-          {action}
-        </ActionContainer>
-      )}
-    </Container>
-  );
-}

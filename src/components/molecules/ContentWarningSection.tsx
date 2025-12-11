@@ -6,6 +6,29 @@ interface ContentWarningSectionProps {
   onToggle: () => void;
 }
 
+export function ContentWarningSection({
+  spoilerText,
+  isExpanded,
+  onToggle,
+}: ContentWarningSectionProps) {
+  return (
+    <Container>
+      <WarningText>
+        Content Warning: {spoilerText}
+      </WarningText>
+      <ToggleButton
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onToggle();
+        }}
+      >
+        {isExpanded ? 'Hide content' : 'Show content'}
+      </ToggleButton>
+    </Container>
+  );
+}
+
 const Container = styled.div`
   margin-top: var(--size-2);
   padding: var(--size-3);
@@ -34,26 +57,3 @@ const ToggleButton = styled.button`
     opacity: 0.9;
   }
 `;
-
-export function ContentWarningSection({
-  spoilerText,
-  isExpanded,
-  onToggle,
-}: ContentWarningSectionProps) {
-  return (
-    <Container>
-      <WarningText>
-        Content Warning: {spoilerText}
-      </WarningText>
-      <ToggleButton
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onToggle();
-        }}
-      >
-        {isExpanded ? 'Hide content' : 'Show content'}
-      </ToggleButton>
-    </Container>
-  );
-}

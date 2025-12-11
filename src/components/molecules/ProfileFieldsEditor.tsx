@@ -4,6 +4,139 @@ import { Check, Copy, ChevronDown } from 'lucide-react';
 import { Card, Input, FormField } from '@/components/atoms';
 import type { ProfileFormData } from '@/schemas/profileFormSchema';
 
+interface ProfileFieldsEditorProps {
+  register: UseFormRegister<ProfileFormData>;
+  control: Control<ProfileFormData>;
+  errors: FieldErrors<ProfileFormData>;
+  watch: UseFormWatch<ProfileFormData>;
+  profileUrl: string;
+}
+
+export function ProfileFieldsEditor({
+  register,
+  errors,
+  watch,
+  profileUrl,
+}: ProfileFieldsEditorProps) {
+  const bio = watch('bio');
+  const fields = watch('fields');
+
+  return (
+    <>
+      {/* Profile Information */}
+      <SectionCard padding="medium">
+        <SectionTitle>Profile Information</SectionTitle>
+
+        <FieldsWrapper>
+          <FormField
+            label="Display Name"
+            htmlFor="display-name"
+            error={errors.displayName?.message}
+          >
+            <Input
+              id="display-name"
+              type="text"
+              {...register('displayName')}
+              maxLength={30}
+            />
+          </FormField>
+
+          <FormField
+            label="Bio"
+            htmlFor="bio"
+            description={`${bio?.length || 0} / 500`}
+            error={errors.bio?.message}
+          >
+            <Textarea
+              id="bio"
+              {...register('bio')}
+              maxLength={500}
+              rows={4}
+            />
+          </FormField>
+        </FieldsWrapper>
+      </SectionCard>
+
+      {/* Extra Fields */}
+      <SectionCard padding="medium">
+        <FieldsTitle>Extra Fields</FieldsTitle>
+        <FieldsDescription>
+          You can have up to 4 items displayed as a table on your profile
+        </FieldsDescription>
+
+        <div className="profile-edit-fields-container">
+          {fields.map((field, index) => (
+            <div key={index} className="profile-edit-field-row">
+              <FieldInput
+                type="text"
+                placeholder={`Label ${index + 1}`}
+                {...register(`fields.${index}.name`)}
+              />
+              <FieldInput
+                type="text"
+                placeholder="Content"
+                {...register(`fields.${index}.value`)}
+                $verified={!!field.verified_at}
+              />
+              <VerificationIcon>
+                {field.verified_at && (
+                  <span
+                    title={`Verified on ${new Date(field.verified_at).toLocaleDateString()}`}
+                  >
+                    <GreenCheck size={18} />
+                  </span>
+                )}
+              </VerificationIcon>
+            </div>
+          ))}
+        </div>
+
+        {/* Verification Info */}
+        <Details>
+          <Summary>
+            <ChevronDown size={18} className="details-chevron" />
+            Link Verification
+          </Summary>
+
+          <DetailsContent>
+            <VerificationText>
+              You can verify yourself as the owner of the links in your profile
+              metadata. For this, the linked website must contain a link back to
+              your Mastodon profile. The link back must have a{' '}
+              <CodeSnippet>rel=&quot;me&quot;</CodeSnippet>{' '}
+              attribute.
+            </VerificationText>
+
+            <CodeBlock>
+              <CodeContent>
+                {`<a rel="me" href="${profileUrl}">Mastodon</a>`}
+              </CodeContent>
+              <CopyButton
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `<a rel="me" href="${profileUrl}">Mastodon</a>`
+                  );
+                }}
+                title="Copy to clipboard"
+              >
+                <Copy size={14} />
+              </CopyButton>
+            </CodeBlock>
+
+            <TipText>
+              <strong>Tip:</strong> The link on your website can be invisible. The
+              important part is{' '}
+              <CodeSnippet>rel=&quot;me&quot;</CodeSnippet>{' '}
+              which prevents impersonation.
+            </TipText>
+          </DetailsContent>
+        </Details>
+      </SectionCard>
+    </>
+  );
+}
+
 // Styled components
 const SectionCard = styled(Card)`
   margin-bottom: var(--size-4);
@@ -137,136 +270,3 @@ const TipText = styled.p`
   margin-top: var(--size-3);
   line-height: 1.5;
 `;
-
-interface ProfileFieldsEditorProps {
-  register: UseFormRegister<ProfileFormData>;
-  control: Control<ProfileFormData>;
-  errors: FieldErrors<ProfileFormData>;
-  watch: UseFormWatch<ProfileFormData>;
-  profileUrl: string;
-}
-
-export function ProfileFieldsEditor({
-  register,
-  errors,
-  watch,
-  profileUrl,
-}: ProfileFieldsEditorProps) {
-  const bio = watch('bio');
-  const fields = watch('fields');
-
-  return (
-    <>
-      {/* Profile Information */}
-      <SectionCard padding="medium">
-        <SectionTitle>Profile Information</SectionTitle>
-
-        <FieldsWrapper>
-          <FormField
-            label="Display Name"
-            htmlFor="display-name"
-            error={errors.displayName?.message}
-          >
-            <Input
-              id="display-name"
-              type="text"
-              {...register('displayName')}
-              maxLength={30}
-            />
-          </FormField>
-
-          <FormField
-            label="Bio"
-            htmlFor="bio"
-            description={`${bio?.length || 0} / 500`}
-            error={errors.bio?.message}
-          >
-            <Textarea
-              id="bio"
-              {...register('bio')}
-              maxLength={500}
-              rows={4}
-            />
-          </FormField>
-        </FieldsWrapper>
-      </SectionCard>
-
-      {/* Extra Fields */}
-      <SectionCard padding="medium">
-        <FieldsTitle>Extra Fields</FieldsTitle>
-        <FieldsDescription>
-          You can have up to 4 items displayed as a table on your profile
-        </FieldsDescription>
-
-        <div className="profile-edit-fields-container">
-          {fields.map((field, index) => (
-            <div key={index} className="profile-edit-field-row">
-              <FieldInput
-                type="text"
-                placeholder={`Label ${index + 1}`}
-                {...register(`fields.${index}.name`)}
-              />
-              <FieldInput
-                type="text"
-                placeholder="Content"
-                {...register(`fields.${index}.value`)}
-                $verified={!!field.verified_at}
-              />
-              <VerificationIcon>
-                {field.verified_at && (
-                  <span
-                    title={`Verified on ${new Date(field.verified_at).toLocaleDateString()}`}
-                  >
-                    <GreenCheck size={18} />
-                  </span>
-                )}
-              </VerificationIcon>
-            </div>
-          ))}
-        </div>
-
-        {/* Verification Info */}
-        <Details>
-          <Summary>
-            <ChevronDown size={18} className="details-chevron" />
-            Link Verification
-          </Summary>
-
-          <DetailsContent>
-            <VerificationText>
-              You can verify yourself as the owner of the links in your profile
-              metadata. For this, the linked website must contain a link back to
-              your Mastodon profile. The link back must have a{' '}
-              <CodeSnippet>rel=&quot;me&quot;</CodeSnippet>{' '}
-              attribute.
-            </VerificationText>
-
-            <CodeBlock>
-              <CodeContent>
-                {`<a rel="me" href="${profileUrl}">Mastodon</a>`}
-              </CodeContent>
-              <CopyButton
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `<a rel="me" href="${profileUrl}">Mastodon</a>`
-                  );
-                }}
-                title="Copy to clipboard"
-              >
-                <Copy size={14} />
-              </CopyButton>
-            </CodeBlock>
-
-            <TipText>
-              <strong>Tip:</strong> The link on your website can be invisible. The
-              important part is{' '}
-              <CodeSnippet>rel=&quot;me&quot;</CodeSnippet>{' '}
-              which prevents impersonation.
-            </TipText>
-          </DetailsContent>
-        </Details>
-      </SectionCard>
-    </>
-  );
-}

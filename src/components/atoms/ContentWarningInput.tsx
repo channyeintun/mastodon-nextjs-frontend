@@ -3,6 +3,39 @@
 import styled from '@emotion/styled';
 import { X } from 'lucide-react';
 
+interface ContentWarningInputProps {
+    value: string;
+    onChange: (value: string) => void;
+    onRemove: () => void;
+}
+
+/**
+ * Presentational component for content warning/spoiler input.
+ */
+export function ContentWarningInput({
+    value,
+    onChange,
+    onRemove,
+}: ContentWarningInputProps) {
+    return (
+        <Container>
+            <Header>
+                <Label htmlFor="cw-input">Content Warning</Label>
+                <RemoveButton aria-label="Remove content warning" onClick={onRemove}>
+                    <X size={16} />
+                </RemoveButton>
+            </Header>
+            <Input
+                id="cw-input"
+                type="text"
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder="Write your warning here..."
+            />
+        </Container>
+    );
+}
+
 // Styled components
 const Container = styled.div`
     margin-bottom: var(--size-2);
@@ -42,36 +75,3 @@ const Input = styled.input`
     color: var(--text-1);
     font-size: var(--font-size-2);
 `;
-
-interface ContentWarningInputProps {
-    value: string;
-    onChange: (value: string) => void;
-    onRemove: () => void;
-}
-
-/**
- * Presentational component for content warning/spoiler input.
- */
-export function ContentWarningInput({
-    value,
-    onChange,
-    onRemove,
-}: ContentWarningInputProps) {
-    return (
-        <Container>
-            <Header>
-                <Label htmlFor="cw-input">Content Warning</Label>
-                <RemoveButton aria-label="Remove content warning" onClick={onRemove}>
-                    <X size={16} />
-                </RemoveButton>
-            </Header>
-            <Input
-                id="cw-input"
-                type="text"
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder="Write your warning here..."
-            />
-        </Container>
-    );
-}

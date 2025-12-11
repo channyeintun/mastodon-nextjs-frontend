@@ -4,68 +4,6 @@ import { Upload, X } from 'lucide-react';
 import { Button, IconButton, Card } from '@/components/atoms';
 import type { Account } from '@/types';
 
-// Styled components
-const ImageCard = styled(Card)`
-    margin-bottom: var(--size-4);
-`;
-
-const HeaderContainer = styled.div`
-    position: relative;
-`;
-
-const HeaderImage = styled.div<{ $background: string }>`
-    width: 100%;
-    height: 200px;
-    background: ${props => props.$background};
-    background-size: cover;
-    background-position: center;
-    border-radius: var(--radius-2) var(--radius-2) 0 0;
-    position: relative;
-`;
-
-const HeaderControls = styled.div`
-    position: absolute;
-    top: var(--size-3);
-    right: var(--size-3);
-    display: flex;
-    gap: var(--size-2);
-`;
-
-const AvatarContainer = styled.div`
-    position: absolute;
-    bottom: -40px;
-    left: var(--size-4);
-`;
-
-const AvatarWrapper = styled.div`
-    position: relative;
-`;
-
-const AvatarImage = styled.div<{ $background: string }>`
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: ${props => props.$background};
-    background-size: cover;
-    background-position: center;
-    border: 4px solid var(--surface-1);
-`;
-
-const AvatarButton = styled(Button)`
-    position: absolute;
-    bottom: 0;
-    right: 0;
-`;
-
-const BottomPadding = styled.div`
-    padding: var(--size-4);
-    padding-top: var(--size-8);
-`;
-
-const HiddenInput = styled.input`
-    display: none;
-`;
-
 interface ProfileImageUploaderProps {
   currentAccount: Account;
   avatarPreview: string | null;
@@ -157,3 +95,65 @@ export function ProfileImageUploader({
     </>
   );
 }
+
+// Styled components
+const ImageCard = styled(Card)`
+    margin-bottom: var(--size-4);
+`;
+
+const HeaderContainer = styled.div`
+    position: relative;
+`;
+
+const HeaderImage = styled.div<{ $background: string }>`
+    width: 100%;
+    height: 200px;
+    background: ${props => props.$background};
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--radius-2) var(--radius-2) 0 0;
+    position: relative;
+`;
+
+const HeaderControls = styled.div`
+    position: absolute;
+    top: var(--size-3);
+    right: var(--size-3);
+    display: flex;
+    gap: var(--size-2);
+`;
+
+const AvatarContainer = styled.div`
+    position: absolute;
+    bottom: -40px;
+    left: var(--size-4);
+`;
+
+const AvatarWrapper = styled.div`
+    position: relative;
+`;
+
+const AvatarImage = styled.div<{ $background: string }>`
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: ${props => props.$background};
+    background-size: cover;
+    background-position: center;
+    border: 4px solid var(--surface-1);
+`;
+
+const AvatarButton = styled(Button)`
+    position: absolute;
+    bottom: 0;
+    right: 0;
+`;
+
+const BottomPadding = styled.div`
+    padding: var(--size-4);
+    padding-top: var(--size-8);
+`;
+
+const HiddenInput = styled.input`
+    display: none;
+`;

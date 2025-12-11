@@ -20,59 +20,6 @@ interface ProfileActionButtonsProps {
     onBlockToggle: () => void;
 }
 
-const ButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-`;
-
-const MenuContainer = styled.div`
-  position: relative;
-`;
-
-const StyledIconButton = styled(IconButton)`
-  border: 1px solid var(--surface-3);
-  border-radius: var(--radius-round);
-`;
-
-const Menu = styled.div`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: var(--size-2);
-  background: var(--surface-2);
-  border-radius: var(--radius-2);
-  box-shadow: var(--shadow-3);
-  overflow: hidden;
-  z-index: 50;
-  min-width: 180px;
-  border: 1px solid var(--surface-3);
-`;
-
-const MenuItem = styled.button<{ $isDestructive?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  width: 100%;
-  padding: var(--size-3);
-  background: transparent;
-  border: none;
-  color: ${({ $isDestructive }) => ($isDestructive ? 'var(--red-6)' : 'var(--text-1)')};
-  cursor: pointer;
-  font-size: var(--font-size-1);
-  text-align: left;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: var(--surface-3);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-`;
-
 /**
  * Presentation component for profile action buttons
  * (edit profile, follow/unfollow, mute/block menu).
@@ -178,3 +125,56 @@ export function ProfileActionButtons({
         </ButtonContainer>
     );
 }
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+`;
+
+const MenuContainer = styled.div`
+  position: relative;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-round);
+`;
+
+const Menu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--size-2);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+  z-index: 50;
+  min-width: 180px;
+  border: 1px solid var(--surface-3);
+`;
+
+const MenuItem = styled.button<{ $isDestructive?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  width: 100%;
+  padding: var(--size-3);
+  background: transparent;
+  border: none;
+  color: ${({ $isDestructive }) => ($isDestructive ? 'var(--red-6)' : 'var(--text-1)')};
+  cursor: pointer;
+  font-size: var(--font-size-1);
+  text-align: left;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--surface-3);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;

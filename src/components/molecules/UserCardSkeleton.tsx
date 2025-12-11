@@ -2,25 +2,6 @@ import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import { Card, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 
-// Styled components
-const ContentWrapper = styled.div`
-  display: flex;
-  gap: var(--size-3);
-  align-items: center;
-`;
-
-const InfoWrapper = styled.div`
-  flex: 1;
-`;
-
-const NameSkeleton = styled(TextSkeleton)`
-  margin-bottom: var(--size-2);
-`;
-
-const ButtonSkeleton = styled(TextSkeleton)`
-  border-radius: var(--radius-2);
-`;
-
 interface UserCardSkeletonProps {
   /** Additional inline styles */
   style?: CSSProperties;
@@ -53,3 +34,22 @@ export const UserCardSkeleton = ({ style, className }: UserCardSkeletonProps) =>
     </Card>
   );
 };
+
+// Styled components
+const ContentWrapper = styled.div`
+  display: flex;
+  gap: var(--size-3);
+  align-items: center;
+`;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+`;
+
+const NameSkeleton = styled(TextSkeleton)`
+  margin-bottom: var(--size-2);
+`;
+
+const ButtonSkeleton = styled(TextSkeleton)`
+  border-radius: var(--radius-2);
+`;

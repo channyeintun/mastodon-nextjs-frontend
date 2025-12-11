@@ -2,39 +2,6 @@ import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import { TextSkeleton } from '@/components/atoms';
 
-// Styled components
-const Container = styled.div<{ $showBorder: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: var(--size-3);
-  padding: var(--size-4);
-  border-bottom: ${props => props.$showBorder ? '1px solid var(--surface-3)' : 'none'};
-`;
-
-const BackButtonSkeleton = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-2);
-  background: var(--surface-3);
-  animation: var(--animation-blink);
-  flex-shrink: 0;
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  margin-bottom: var(--size-1);
-`;
-
-const IconSkeleton = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-1);
-  background: var(--surface-3);
-  animation: var(--animation-blink);
-`;
-
 interface PageHeaderSkeletonProps {
   /** Width of the title skeleton (default: 150) */
   titleWidth?: number;
@@ -83,3 +50,36 @@ export const PageHeaderSkeleton = ({
     </Container>
   );
 };
+
+// Styled components
+const Container = styled.div<{ $showBorder: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+  padding: var(--size-4);
+  border-bottom: ${props => props.$showBorder ? '1px solid var(--surface-3)' : 'none'};
+`;
+
+const BackButtonSkeleton = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-2);
+  background: var(--surface-3);
+  animation: var(--animation-blink);
+  flex-shrink: 0;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  margin-bottom: var(--size-1);
+`;
+
+const IconSkeleton = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-1);
+  background: var(--surface-3);
+  animation: var(--animation-blink);
+`;

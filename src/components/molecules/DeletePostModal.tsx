@@ -9,31 +9,6 @@ interface DeletePostModalProps {
     onClose: () => void;
 }
 
-const Title = styled.div`
-  font-size: var(--font-size-3);
-  font-weight: var(--font-weight-6);
-  color: var(--text-1);
-  margin-bottom: var(--size-3);
-`;
-
-const Message = styled.div`
-  font-size: var(--font-size-1);
-  color: var(--text-2);
-  margin-bottom: var(--size-5);
-  line-height: 1.5;
-`;
-
-const ButtonRow = styled.div`
-  display: flex;
-  gap: var(--size-3);
-  justify-content: flex-end;
-`;
-
-const DeleteButton = styled(Button)`
-  background: var(--red-6);
-  color: white;
-`;
-
 export function DeletePostModal({ postId, onClose }: DeletePostModalProps) {
     const deleteStatusMutation = useDeleteStatus();
 
@@ -74,3 +49,28 @@ export function DeletePostModal({ postId, onClose }: DeletePostModalProps) {
         </div>
     );
 }
+
+const Title = styled.div`
+  font-size: var(--font-size-3);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  margin-bottom: var(--size-3);
+`;
+
+const Message = styled.div`
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  margin-bottom: var(--size-5);
+  line-height: 1.5;
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  gap: var(--size-3);
+  justify-content: flex-end;
+`;
+
+const DeleteButton = styled(Button)`
+  background: var(--red-6);
+  color: white;
+`;

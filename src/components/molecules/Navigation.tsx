@@ -7,32 +7,6 @@ import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, Trending
 import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
 import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
 
-// Styled components
-const InstanceInfoSkeleton = styled.div`
-  gap: 4px;
-`;
-
-const IconWrapper = styled.div`
-  position: relative;
-`;
-
-const Badge = styled.span`
-  position: absolute;
-  top: -4px;
-  right: -6px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  font-size: 10px;
-  font-weight: bold;
-  color: white;
-  background: var(--red-6);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 interface NavigationProps {
   isAuthenticated: boolean;
   instanceURL?: string | null;
@@ -242,3 +216,29 @@ const LinkStatus = () => {
     <span className={`navigation-link-spinner ${status.pending ? 'pending' : ''}`} aria-label="Loading..." />
   );
 }
+
+// Styled components
+const InstanceInfoSkeleton = styled.div`
+  gap: 4px;
+`;
+
+const IconWrapper = styled.div`
+  position: relative;
+`;
+
+const Badge = styled.span`
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+  background: var(--red-6);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

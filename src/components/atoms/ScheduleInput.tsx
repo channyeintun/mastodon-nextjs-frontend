@@ -3,6 +3,40 @@
 import styled from '@emotion/styled';
 import { X } from 'lucide-react';
 
+interface ScheduleInputProps {
+    value: string;
+    onChange: (value: string) => void;
+    onRemove: () => void;
+}
+
+/**
+ * Presentational component for scheduling a post.
+ */
+export function ScheduleInput({
+    value,
+    onChange,
+    onRemove,
+}: ScheduleInputProps) {
+    return (
+        <Container>
+            <Header>
+                <Label htmlFor="schedule-input">Schedule Post</Label>
+                <RemoveButton aria-label="Remove schedule" onClick={onRemove}>
+                    <X size={16} />
+                </RemoveButton>
+            </Header>
+            <DateTimeInput
+                id="schedule-input"
+                type="datetime-local"
+                value={value}
+                min={new Date().toISOString().slice(0, 16)}
+                onChange={(e) => onChange(e.target.value)}
+            />
+            <HelpText>Post will be published automatically at this time.</HelpText>
+        </Container>
+    );
+}
+
 // Styled components
 const Container = styled.div``;
 
@@ -46,37 +80,3 @@ const HelpText = styled.div`
     color: var(--text-3);
     margin-top: 4px;
 `;
-
-interface ScheduleInputProps {
-    value: string;
-    onChange: (value: string) => void;
-    onRemove: () => void;
-}
-
-/**
- * Presentational component for scheduling a post.
- */
-export function ScheduleInput({
-    value,
-    onChange,
-    onRemove,
-}: ScheduleInputProps) {
-    return (
-        <Container>
-            <Header>
-                <Label htmlFor="schedule-input">Schedule Post</Label>
-                <RemoveButton aria-label="Remove schedule" onClick={onRemove}>
-                    <X size={16} />
-                </RemoveButton>
-            </Header>
-            <DateTimeInput
-                id="schedule-input"
-                type="datetime-local"
-                value={value}
-                min={new Date().toISOString().slice(0, 16)}
-                onChange={(e) => onChange(e.target.value)}
-            />
-            <HelpText>Post will be published automatically at this time.</HelpText>
-        </Container>
-    );
-}

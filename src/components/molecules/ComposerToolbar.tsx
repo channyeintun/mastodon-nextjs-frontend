@@ -5,31 +5,6 @@ import { type ReactNode, Activity } from 'react';
 import { Smile, Image as ImageIcon, BarChart2, Clock } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-const EmojiContainer = styled.div`
-  position: relative;
-`;
-
-const EmojiButton = styled.button`
-  anchor-name: --emoji-anchor;
-`;
-
-const CWButton = styled.button<{ $isActive: boolean }>`
-  color: ${({ $isActive }) => ($isActive ? 'var(--blue-6)' : 'inherit')};
-  font-weight: ${({ $isActive }) => ($isActive ? 'bold' : 'normal')};
-`;
-
-const CWText = styled.span`
-  font-size: 14px;
-`;
-
-const ScheduleButton = styled.button<{ $isActive: boolean }>`
-  color: ${({ $isActive }) => ($isActive ? 'var(--blue-6)' : 'inherit')};
-`;
-
-const ActionRow = styled.div`
-  gap: var(--size-3);
-`;
-
 interface ComposerToolbarProps {
     // Toolbar button states
     showEmojiPicker: boolean;
@@ -195,3 +170,28 @@ export function ComposerToolbar({
         </div>
     );
 }
+
+const EmojiContainer = styled.div`
+  position: relative;
+`;
+
+const EmojiButton = styled.button`
+  anchor-name: --emoji-anchor;
+`;
+
+const CWButton = styled.button<{ $isActive: boolean }>`
+  color: ${({ $isActive }) => ($isActive ? 'var(--blue-6)' : 'inherit')};
+  font-weight: ${({ $isActive }) => ($isActive ? 'bold' : 'normal')};
+`;
+
+const CWText = styled.span`
+  font-size: 14px;
+`;
+
+const ScheduleButton = styled.button<{ $isActive: boolean }>`
+  color: ${({ $isActive }) => ($isActive ? 'var(--blue-6)' : 'inherit')};
+`;
+
+const ActionRow = styled.div`
+  gap: var(--size-3);
+`;

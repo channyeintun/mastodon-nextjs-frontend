@@ -6,98 +6,6 @@ import { X, Plus } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { IconButton } from '../atoms/IconButton';
 
-// Styled components
-const Container = styled.div`
-  padding: var(--size-3);
-  background: var(--surface-2);
-  border-radius: var(--radius-2);
-  margin-bottom: var(--size-3);
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--size-3);
-`;
-
-const Title = styled.h3`
-  font-size: var(--font-size-2);
-  font-weight: var(--font-weight-6);
-  color: var(--text-1);
-  margin: 0;
-`;
-
-const OptionsSection = styled.div`
-  margin-bottom: var(--size-3);
-`;
-
-const OptionRow = styled.div`
-  display: flex;
-  gap: var(--size-2);
-  margin-bottom: var(--size-2);
-`;
-
-const OptionInput = styled.input`
-  flex: 1;
-  padding: var(--size-2);
-  border: 1px solid var(--surface-4);
-  border-radius: var(--radius-2);
-  background: var(--surface-1);
-  color: var(--text-1);
-  font-size: var(--font-size-1);
-`;
-
-const SettingsRow = styled.div`
-  display: flex;
-  gap: var(--size-3);
-  flex-wrap: wrap;
-  align-items: center;
-`;
-
-const SettingField = styled.div`
-  flex: 1;
-  min-width: 150px;
-`;
-
-const SettingLabel = styled.label`
-  display: block;
-  font-size: var(--font-size-0);
-  font-weight: var(--font-weight-6);
-  margin-bottom: var(--size-1);
-  color: var(--text-1);
-`;
-
-const Select = styled.select`
-  width: 100%;
-  padding: var(--size-2);
-  border: 1px solid var(--surface-4);
-  border-radius: var(--radius-2);
-  background: var(--surface-1);
-  color: var(--text-1);
-  font-size: var(--font-size-1);
-  cursor: pointer;
-`;
-
-const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  cursor: pointer;
-  font-size: var(--font-size-1);
-`;
-
-const Checkbox = styled.input`
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-`;
-
-const CheckboxText = styled.span`
-  color: var(--text-1);
-  font-weight: var(--font-weight-5);
-`;
-
 export interface PollData {
   options: string[];
   expiresIn: number; // seconds
@@ -251,3 +159,95 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
     </Container>
   );
 }
+
+// Styled components
+const Container = styled.div`
+  padding: var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  margin-bottom: var(--size-3);
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--size-3);
+`;
+
+const Title = styled.h3`
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  margin: 0;
+`;
+
+const OptionsSection = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const OptionRow = styled.div`
+  display: flex;
+  gap: var(--size-2);
+  margin-bottom: var(--size-2);
+`;
+
+const OptionInput = styled.input`
+  flex: 1;
+  padding: var(--size-2);
+  border: 1px solid var(--surface-4);
+  border-radius: var(--radius-2);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+`;
+
+const SettingsRow = styled.div`
+  display: flex;
+  gap: var(--size-3);
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
+const SettingField = styled.div`
+  flex: 1;
+  min-width: 150px;
+`;
+
+const SettingLabel = styled.label`
+  display: block;
+  font-size: var(--font-size-0);
+  font-weight: var(--font-weight-6);
+  margin-bottom: var(--size-1);
+  color: var(--text-1);
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: var(--size-2);
+  border: 1px solid var(--surface-4);
+  border-radius: var(--radius-2);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+  cursor: pointer;
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  cursor: pointer;
+  font-size: var(--font-size-1);
+`;
+
+const Checkbox = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+`;
+
+const CheckboxText = styled.span`
+  color: var(--text-1);
+  font-weight: var(--font-weight-5);
+`;

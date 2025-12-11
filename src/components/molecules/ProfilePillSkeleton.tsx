@@ -1,18 +1,6 @@
 import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 
-// Styled components
-const AvatarPlaceholder = styled.div`
-  background: var(--surface-3);
-`;
-
-const NamePlaceholder = styled.div<{ $width: string }>`
-  width: ${props => props.$width};
-  height: 1em;
-  background: var(--surface-3);
-  border-radius: var(--radius-1);
-`;
-
 interface ProfilePillSkeletonProps {
   /** Width of the name placeholder (default: 80px) */
   nameWidth?: string;
@@ -51,3 +39,15 @@ export const ProfilePillSkeleton = ({
     </div>
   );
 };
+
+// Styled components
+const AvatarPlaceholder = styled.div`
+  background: var(--surface-3);
+`;
+
+const NamePlaceholder = styled.div<{ $width: string }>`
+  width: ${props => props.$width};
+  height: 1em;
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+`;

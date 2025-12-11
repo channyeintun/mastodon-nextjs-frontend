@@ -18,126 +18,6 @@ import { StatusContent } from '@/components/molecules';
 import type { NotificationGroup, Account, PartialAccountWithAvatar, Status, NotificationType } from '@/types';
 import { useDismissNotificationGroup } from '@/api';
 
-// Styled components
-const ContentWrapper = styled.div`
-    display: flex;
-    gap: var(--size-3);
-`;
-
-const IconColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--size-2);
-`;
-
-const IconCircle = styled.div<{ $color: string }>`
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: color-mix(in srgb, ${props => props.$color} 20%, transparent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: ${props => props.$color};
-`;
-
-const ContentColumn = styled.div`
-    flex: 1;
-    min-width: 0;
-`;
-
-const HeaderRow = styled.div`
-    display: flex;
-    align-items: flex-start;
-    gap: var(--size-2);
-    margin-bottom: var(--size-2);
-`;
-
-const AvatarsWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    margin-right: var(--size-2);
-`;
-
-const StackedAvatarWrapper = styled.div<{ $index: number; $total: number }>`
-    margin-left: ${props => props.$index > 0 ? '-8px' : '0'};
-    position: relative;
-    z-index: ${props => props.$total - props.$index};
-`;
-
-const StackedAvatarLink = styled(Link)`
-    display: block;
-`;
-
-const AvatarWithBorder = styled(Avatar)`
-    border: 2px solid var(--surface-1);
-    box-sizing: content-box;
-`;
-
-const RemainingCount = styled.span`
-    margin-left: var(--size-1);
-    font-size: var(--font-size-0);
-    color: var(--text-3);
-`;
-
-const InfoWrapper = styled.div`
-    flex: 1;
-    min-width: 0;
-`;
-
-const MessageText = styled.div`
-    font-size: var(--font-size-1);
-    color: var(--text-1);
-    line-height: 1.4;
-`;
-
-const AccountLink = styled(Link)`
-    text-decoration: none;
-    color: var(--text-1);
-    font-weight: var(--font-weight-6);
-`;
-
-const ActionText = styled.span`
-    color: var(--text-2);
-`;
-
-const TimeText = styled.div`
-    font-size: var(--font-size-0);
-    color: var(--text-3);
-    margin-top: var(--size-1);
-`;
-
-const DismissButton = styled(IconButton)`
-    opacity: 0.6;
-`;
-
-const StatusPreview = styled.div`
-    padding: var(--size-2);
-    background: var(--surface-2);
-    border-radius: var(--radius-2);
-    margin-top: var(--size-2);
-`;
-
-const PreviewContent = styled.div`
-    font-size: var(--font-size-0);
-    color: var(--text-2);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-`;
-
-const MentionContent = styled(StatusContent)`
-    font-size: var(--font-size-1);
-`;
-
-const NewCard = styled(Card)`
-    border-left: 3px solid var(--blue-6);
-    background: color-mix(in srgb, var(--blue-6) 5%, var(--surface-2));
-`;
-
 interface GroupedNotificationCardProps {
     group: NotificationGroup;
     accounts: Map<string, Account | PartialAccountWithAvatar>;
@@ -391,3 +271,123 @@ export function GroupedNotificationCard({
         </div>
     );
 }
+
+// Styled components
+const ContentWrapper = styled.div`
+    display: flex;
+    gap: var(--size-3);
+`;
+
+const IconColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--size-2);
+`;
+
+const IconCircle = styled.div<{ $color: string }>`
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: color-mix(in srgb, ${props => props.$color} 20%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.$color};
+`;
+
+const ContentColumn = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const HeaderRow = styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: var(--size-2);
+    margin-bottom: var(--size-2);
+`;
+
+const AvatarsWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    margin-right: var(--size-2);
+`;
+
+const StackedAvatarWrapper = styled.div<{ $index: number; $total: number }>`
+    margin-left: ${props => props.$index > 0 ? '-8px' : '0'};
+    position: relative;
+    z-index: ${props => props.$total - props.$index};
+`;
+
+const StackedAvatarLink = styled(Link)`
+    display: block;
+`;
+
+const AvatarWithBorder = styled(Avatar)`
+    border: 2px solid var(--surface-1);
+    box-sizing: content-box;
+`;
+
+const RemainingCount = styled.span`
+    margin-left: var(--size-1);
+    font-size: var(--font-size-0);
+    color: var(--text-3);
+`;
+
+const InfoWrapper = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const MessageText = styled.div`
+    font-size: var(--font-size-1);
+    color: var(--text-1);
+    line-height: 1.4;
+`;
+
+const AccountLink = styled(Link)`
+    text-decoration: none;
+    color: var(--text-1);
+    font-weight: var(--font-weight-6);
+`;
+
+const ActionText = styled.span`
+    color: var(--text-2);
+`;
+
+const TimeText = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-3);
+    margin-top: var(--size-1);
+`;
+
+const DismissButton = styled(IconButton)`
+    opacity: 0.6;
+`;
+
+const StatusPreview = styled.div`
+    padding: var(--size-2);
+    background: var(--surface-2);
+    border-radius: var(--radius-2);
+    margin-top: var(--size-2);
+`;
+
+const PreviewContent = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+`;
+
+const MentionContent = styled(StatusContent)`
+    font-size: var(--font-size-1);
+`;
+
+const NewCard = styled(Card)`
+    border-left: 3px solid var(--blue-6);
+    background: color-mix(in srgb, var(--blue-6) 5%, var(--surface-2));
+`;

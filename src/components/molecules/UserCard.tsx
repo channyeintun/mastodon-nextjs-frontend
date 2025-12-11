@@ -13,91 +13,6 @@ interface UserCardProps {
   style?: CSSProperties;
 }
 
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  display: block;
-`;
-
-const ContentContainer = styled.div`
-  display: flex;
-  gap: var(--size-3);
-`;
-
-const InfoSection = styled.div`
-  flex: 1;
-  min-width: 0;
-`;
-
-const HeaderRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  gap: var(--size-2);
-  margin-bottom: var(--size-2);
-`;
-
-const NameContainer = styled.div`
-  min-width: 0;
-  flex: 1;
-`;
-
-const DisplayNameRow = styled.div`
-  font-weight: var(--font-weight-6);
-  color: var(--text-1);
-  font-size: var(--font-size-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const BotBadge = styled.span`
-  margin-left: var(--size-2);
-  font-size: var(--font-size-0);
-  padding: 2px var(--size-1);
-  background: var(--surface-3);
-  border-radius: var(--radius-1);
-  font-weight: var(--font-weight-5);
-`;
-
-const LockIcon = styled.span`
-  margin-left: var(--size-2);
-  font-size: var(--font-size-0);
-`;
-
-const Username = styled.div`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const StyledButton = styled(Button)`
-  flex-shrink: 0;
-`;
-
-const Bio = styled.div`
-  font-size: var(--font-size-1);
-  color: var(--text-2);
-  line-height: 1.4;
-  margin-bottom: var(--size-2);
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-`;
-
-const StatsRow = styled.div`
-  display: flex;
-  gap: var(--size-4);
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-`;
-
-const StatCount = styled.strong`
-  color: var(--text-1);
-`;
-
 function stripHtmlTags(html: string): string {
   return html.replace(/<[^>]*>/g, '');
 }
@@ -204,3 +119,88 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
     </Card>
   );
 }
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  display: block;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  gap: var(--size-3);
+`;
+
+const InfoSection = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--size-2);
+  margin-bottom: var(--size-2);
+`;
+
+const NameContainer = styled.div`
+  min-width: 0;
+  flex: 1;
+`;
+
+const DisplayNameRow = styled.div`
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const BotBadge = styled.span`
+  margin-left: var(--size-2);
+  font-size: var(--font-size-0);
+  padding: 2px var(--size-1);
+  background: var(--surface-3);
+  border-radius: var(--radius-1);
+  font-weight: var(--font-weight-5);
+`;
+
+const LockIcon = styled.span`
+  margin-left: var(--size-2);
+  font-size: var(--font-size-0);
+`;
+
+const Username = styled.div`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const StyledButton = styled(Button)`
+  flex-shrink: 0;
+`;
+
+const Bio = styled.div`
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  line-height: 1.4;
+  margin-bottom: var(--size-2);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+`;
+
+const StatsRow = styled.div`
+  display: flex;
+  gap: var(--size-4);
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+`;
+
+const StatCount = styled.strong`
+  color: var(--text-1);
+`;

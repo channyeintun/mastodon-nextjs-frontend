@@ -16,115 +16,6 @@ interface MediaItem {
     originalStatusId: string;
 }
 
-// Modal styled components
-const ModalContainer = styled.div`
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--surface-1);
-  border-radius: var(--radius-3);
-  overflow: hidden;
-`;
-
-const CloseButton = styled.button`
-  position: absolute;
-  top: var(--size-2);
-  right: var(--size-2);
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.6);
-  border: none;
-  border-radius: var(--radius-round);
-  padding: var(--size-2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const MediaContent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-height: 80vh;
-`;
-
-const MediaVideo = styled.video`
-  min-width: if(not media(width < 400px): 200px; else: 400px);
-  width: 100%;
-  aspect-ratio: var(--ratio-wide-screen);
-`;
-
-const MediaImage = styled.img`
-  max-height: 80vh;
-  min-width: min(600px, 90vw);
-  min-height: min(400px, 80vh);
-  object-fit: contain;
-`;
-
-const AltTextSection = styled.div`
-  padding: var(--size-3);
-  background: var(--surface-2);
-  color: var(--text-2);
-  font-size: var(--font-size-1);
-  border-top: 1px solid var(--surface-3);
-`;
-
-const OriginalPostLink = styled.a`
-  padding: var(--size-2) var(--size-3);
-  background: var(--surface-2);
-  color: var(--blue-6);
-  font-size: var(--font-size-0);
-  text-decoration: none;
-  text-align: center;
-`;
-
-// Grid styled components
-const GridContainer = styled.div<{ $hasCustomStyle?: boolean }>`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--size-1);
-  padding: var(--size-2);
-  min-height: 50vh;
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  padding: var(--size-8);
-  color: var(--text-2);
-`;
-
-const MediaButton = styled.button`
-  position: relative;
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: var(--surface-3);
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  border-radius: var(--radius-2);
-`;
-
-const MediaThumbnail = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-const VideoIndicator = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: var(--radius-round);
-  padding: var(--size-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 /**
  * MediaModal - Fullscreen media viewer component
  */
@@ -233,3 +124,112 @@ export function MediaGrid({ statuses, style }: MediaGridProps) {
         </GridContainer>
     );
 }
+
+// Modal styled components
+const ModalContainer = styled.div`
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-1);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: var(--size-2);
+  right: var(--size-2);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: var(--radius-round);
+  padding: var(--size-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MediaContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 80vh;
+`;
+
+const MediaVideo = styled.video`
+  min-width: if(not media(width < 400px): 200px; else: 400px);
+  width: 100%;
+  aspect-ratio: var(--ratio-wide-screen);
+`;
+
+const MediaImage = styled.img`
+  max-height: 80vh;
+  min-width: min(600px, 90vw);
+  min-height: min(400px, 80vh);
+  object-fit: contain;
+`;
+
+const AltTextSection = styled.div`
+  padding: var(--size-3);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: var(--font-size-1);
+  border-top: 1px solid var(--surface-3);
+`;
+
+const OriginalPostLink = styled.a`
+  padding: var(--size-2) var(--size-3);
+  background: var(--surface-2);
+  color: var(--blue-6);
+  font-size: var(--font-size-0);
+  text-decoration: none;
+  text-align: center;
+`;
+
+// Grid styled components
+const GridContainer = styled.div<{ $hasCustomStyle?: boolean }>`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--size-1);
+  padding: var(--size-2);
+  min-height: 50vh;
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  padding: var(--size-8);
+  color: var(--text-2);
+`;
+
+const MediaButton = styled.button`
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--surface-3);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius-2);
+`;
+
+const MediaThumbnail = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const VideoIndicator = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: var(--radius-round);
+  padding: var(--size-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

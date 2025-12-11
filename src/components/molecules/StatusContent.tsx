@@ -5,13 +5,6 @@ import { useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Emoji } from '@/types/mastodon';
 
-// Styled components
-const ContentWrapper = styled.div`
-  color: var(--text-1);
-  line-height: 1.5;
-  word-break: break-word;
-`;
-
 interface StatusContentProps {
   html: string;
   emojis?: Emoji[];
@@ -166,3 +159,10 @@ export function StatusContent({ html, emojis = [], style, className }: StatusCon
     />
   );
 }
+
+// Styled components
+const ContentWrapper = styled.div`
+  color: var(--text-1);
+  line-height: 1.5;
+  word-break: break-word;
+`;

@@ -7,37 +7,6 @@ import { Avatar, Button, EmojiText } from '@/components/atoms';
 import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest, useUnblockAccount, useUnmuteAccount, useRelationships, useCurrentAccount } from '@/api';
 import type { Account } from '@/types';
 
-// Styled components
-const IconButton = styled(Button)`
-    display: flex;
-    align-items: center;
-    gap: var(--size-1);
-`;
-
-const AvatarSkeleton = styled.div`
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    flex-shrink: 0;
-`;
-
-const NameSkeleton = styled.div`
-    width: 120px;
-    height: 16px;
-    margin-bottom: 4px;
-`;
-
-const HandleSkeleton = styled.div`
-    width: 80px;
-    height: 14px;
-`;
-
-const ButtonSkeleton = styled.div`
-    width: 72px;
-    height: 32px;
-    border-radius: var(--radius-2);
-`;
-
 interface AccountCardProps {
     account: Account;
     showFollowButton?: boolean;
@@ -228,3 +197,34 @@ export function AccountCardSkeleton({ style }: { style?: React.CSSProperties }) 
         </div>
     );
 }
+
+// Styled components
+const IconButton = styled(Button)`
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+`;
+
+const AvatarSkeleton = styled.div`
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+`;
+
+const NameSkeleton = styled.div`
+    width: 120px;
+    height: 16px;
+    margin-bottom: 4px;
+`;
+
+const HandleSkeleton = styled.div`
+    width: 80px;
+    height: 14px;
+`;
+
+const ButtonSkeleton = styled.div`
+    width: 72px;
+    height: 32px;
+    border-radius: var(--radius-2);
+`;

@@ -2,6 +2,44 @@
 
 import styled from '@emotion/styled';
 
+/**
+ * Skeleton loading placeholder for NotificationCard
+ */
+export function NotificationSkeleton() {
+    return (
+        <Container>
+            {/* Icon placeholder */}
+            <IconPlaceholder className="skeleton" />
+
+            {/* Content */}
+            <Content>
+                {/* Avatar and name row */}
+                <AvatarRow>
+                    <AvatarPlaceholder className="skeleton" />
+                    <NamePlaceholder className="skeleton" />
+                    <TimePlaceholder className="skeleton" />
+                </AvatarRow>
+
+                {/* Content preview placeholder */}
+                <ContentPlaceholder className="skeleton" />
+            </Content>
+        </Container>
+    );
+}
+
+/**
+ * Multiple skeleton items for loading state
+ */
+export function NotificationSkeletonList({ count = 5 }: { count?: number }) {
+    return (
+        <ListContainer>
+            {Array.from({ length: count }).map((_, i) => (
+                <NotificationSkeleton key={i} />
+            ))}
+        </ListContainer>
+    );
+}
+
 const Container = styled.div`
   padding: var(--size-3);
   background: var(--surface-2);
@@ -61,41 +99,3 @@ const ListContainer = styled.div`
   flex-direction: column;
   gap: var(--size-2);
 `;
-
-/**
- * Skeleton loading placeholder for NotificationCard
- */
-export function NotificationSkeleton() {
-    return (
-        <Container>
-            {/* Icon placeholder */}
-            <IconPlaceholder className="skeleton" />
-
-            {/* Content */}
-            <Content>
-                {/* Avatar and name row */}
-                <AvatarRow>
-                    <AvatarPlaceholder className="skeleton" />
-                    <NamePlaceholder className="skeleton" />
-                    <TimePlaceholder className="skeleton" />
-                </AvatarRow>
-
-                {/* Content preview placeholder */}
-                <ContentPlaceholder className="skeleton" />
-            </Content>
-        </Container>
-    );
-}
-
-/**
- * Multiple skeleton items for loading state
- */
-export function NotificationSkeletonList({ count = 5 }: { count?: number }) {
-    return (
-        <ListContainer>
-            {Array.from({ length: count }).map((_, i) => (
-                <NotificationSkeleton key={i} />
-            ))}
-        </ListContainer>
-    );
-}

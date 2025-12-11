@@ -7,138 +7,6 @@ import { Button } from '../atoms/Button';
 import { IconButton } from '../atoms/IconButton';
 import type { MediaAttachment } from '@/types/mastodon';
 
-// Styled components
-const HiddenInput = styled.input`
-    display: none;
-`;
-
-const AltEditor = styled.div`
-    margin-bottom: var(--size-3);
-    padding: var(--size-3);
-    background: var(--surface-2);
-    border-radius: var(--radius-2);
-`;
-
-const AltEditorHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--size-2);
-`;
-
-const AltLabel = styled.label`
-    font-size: var(--font-size-1);
-    font-weight: var(--font-weight-6);
-    color: var(--text-1);
-`;
-
-const CloseButton = styled.button`
-    padding: var(--size-1);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: var(--text-2);
-`;
-
-const AltTextarea = styled.textarea`
-    width: 100%;
-    padding: var(--size-2);
-    border: 1px solid var(--surface-4);
-    border-radius: var(--radius-2);
-    background: var(--surface-1);
-    color: var(--text-1);
-    font-size: var(--font-size-1);
-    resize: vertical;
-    font-family: inherit;
-    margin-bottom: var(--size-2);
-`;
-
-const AltFooter = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const CharCount = styled.span`
-    font-size: var(--font-size-0);
-    color: var(--text-2);
-`;
-
-const MediaGrid = styled.div<{ $columns: number }>`
-    display: grid;
-    grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
-    gap: var(--size-2);
-    margin-bottom: var(--size-3);
-`;
-
-const MediaItem = styled.div`
-    position: relative;
-    aspect-ratio: 16/9;
-    background: var(--surface-3);
-    border-radius: var(--radius-2);
-    overflow: hidden;
-`;
-
-const MediaPreview = styled.img`
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-`;
-
-const VideoPreview = styled.video`
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-`;
-
-const MediaControls = styled.div`
-    position: absolute;
-    top: var(--size-2);
-    right: var(--size-2);
-    display: flex;
-    gap: var(--size-1);
-`;
-
-const OverlayButton = styled(IconButton)`
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-`;
-
-const AltBadge = styled.div`
-    position: absolute;
-    bottom: var(--size-2);
-    left: var(--size-2);
-    padding: 2px var(--size-2);
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    font-size: var(--font-size-0);
-    border-radius: var(--radius-1);
-`;
-
-const AddButton = styled.button`
-    aspect-ratio: 16/9;
-    border: 2px dashed var(--surface-4);
-    background: var(--surface-2);
-    border-radius: var(--radius-2);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-2);
-    font-size: var(--font-size-1);
-
-    &:hover {
-        background: var(--surface-3);
-        border-color: var(--surface-5);
-    }
-`;
-
-const UploadingText = styled.div`
-    padding: var(--size-2);
-    color: var(--text-2);
-    font-size: var(--font-size-1);
-`;
-
 interface MediaUploadProps {
   media: MediaAttachment[];
   onMediaAdd: (file: File) => Promise<void>;
@@ -285,3 +153,135 @@ export function MediaUpload({
     </div>
   );
 }
+
+// Styled components
+const HiddenInput = styled.input`
+    display: none;
+`;
+
+const AltEditor = styled.div`
+    margin-bottom: var(--size-3);
+    padding: var(--size-3);
+    background: var(--surface-2);
+    border-radius: var(--radius-2);
+`;
+
+const AltEditorHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--size-2);
+`;
+
+const AltLabel = styled.label`
+    font-size: var(--font-size-1);
+    font-weight: var(--font-weight-6);
+    color: var(--text-1);
+`;
+
+const CloseButton = styled.button`
+    padding: var(--size-1);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-2);
+`;
+
+const AltTextarea = styled.textarea`
+    width: 100%;
+    padding: var(--size-2);
+    border: 1px solid var(--surface-4);
+    border-radius: var(--radius-2);
+    background: var(--surface-1);
+    color: var(--text-1);
+    font-size: var(--font-size-1);
+    resize: vertical;
+    font-family: inherit;
+    margin-bottom: var(--size-2);
+`;
+
+const AltFooter = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const CharCount = styled.span`
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+`;
+
+const MediaGrid = styled.div<{ $columns: number }>`
+    display: grid;
+    grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
+    gap: var(--size-2);
+    margin-bottom: var(--size-3);
+`;
+
+const MediaItem = styled.div`
+    position: relative;
+    aspect-ratio: 16/9;
+    background: var(--surface-3);
+    border-radius: var(--radius-2);
+    overflow: hidden;
+`;
+
+const MediaPreview = styled.img`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+`;
+
+const VideoPreview = styled.video`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+`;
+
+const MediaControls = styled.div`
+    position: absolute;
+    top: var(--size-2);
+    right: var(--size-2);
+    display: flex;
+    gap: var(--size-1);
+`;
+
+const OverlayButton = styled(IconButton)`
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+`;
+
+const AltBadge = styled.div`
+    position: absolute;
+    bottom: var(--size-2);
+    left: var(--size-2);
+    padding: 2px var(--size-2);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: var(--font-size-0);
+    border-radius: var(--radius-1);
+`;
+
+const AddButton = styled.button`
+    aspect-ratio: 16/9;
+    border: 2px dashed var(--surface-4);
+    background: var(--surface-2);
+    border-radius: var(--radius-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-2);
+    font-size: var(--font-size-1);
+
+    &:hover {
+        background: var(--surface-3);
+        border-color: var(--surface-5);
+    }
+`;
+
+const UploadingText = styled.div`
+    padding: var(--size-2);
+    color: var(--text-2);
+    font-size: var(--font-size-1);
+`;

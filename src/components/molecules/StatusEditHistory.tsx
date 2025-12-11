@@ -7,25 +7,6 @@ import { useStatusHistory } from '@/api';
 import { StatusContent } from '@/components/molecules';
 import type { StatusEdit } from '@/types';
 
-// Styled components
-const SkeletonContainer = styled.div`
-    display: flex;
-    align-items: center;
-    gap: var(--size-2);
-`;
-
-const IconSkeleton = styled.div`
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-`;
-
-const TextSkeleton = styled.div`
-    width: 100px;
-    height: 14px;
-    border-radius: var(--radius-2);
-`;
-
 interface StatusEditHistoryProps {
     statusId: string;
     editedAt: string;
@@ -125,3 +106,22 @@ export function StatusEditHistory({ statusId, editedAt }: StatusEditHistoryProps
         </div>
     );
 }
+
+// Styled components
+const SkeletonContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+`;
+
+const IconSkeleton = styled.div`
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+`;
+
+const TextSkeleton = styled.div`
+    width: 100px;
+    height: 14px;
+    border-radius: var(--radius-2);
+`;

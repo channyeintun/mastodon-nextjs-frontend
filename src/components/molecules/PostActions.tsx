@@ -27,65 +27,6 @@ interface PostActionsProps {
     onShare: (e: React.MouseEvent) => void;
 }
 
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--size-1);
-  margin-top: var(--size-3);
-`;
-
-const Count = styled.span`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-`;
-
-const BoostContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
-
-const BoostPopover = styled.div`
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: var(--size-2);
-  background: var(--surface-2);
-  border-radius: var(--radius-2);
-  box-shadow: var(--shadow-4);
-  padding: var(--size-2);
-  min-width: 150px;
-  z-index: 50;
-  gap: var(--size-1);
-`;
-
-const PopoverButton = styled.button<{ $isActive?: boolean }>`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  padding: var(--size-2);
-  border: none;
-  background: transparent;
-  border-radius: var(--radius-2);
-  cursor: pointer;
-  color: ${({ $isActive }) => ($isActive ? 'var(--green-6)' : 'var(--text-1)')};
-  font-size: var(--font-size-1);
-  white-space: nowrap;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: var(--surface-3);
-  }
-`;
-
-const RightActions = styled.div`
-  margin-left: auto;
-  display: flex;
-  gap: var(--size-1);
-`;
-
 /**
  * Presentation component for post action buttons
  * (reply, boost, favourite, bookmark, share).
@@ -179,3 +120,63 @@ export function PostActions({
         </Container>
     );
 }
+
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+  margin-top: var(--size-3);
+`;
+
+const Count = styled.span`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+`;
+
+const BoostContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const BoostPopover = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: var(--size-2);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  box-shadow: var(--shadow-4);
+  padding: var(--size-2);
+  min-width: 150px;
+  z-index: 50;
+  gap: var(--size-1);
+`;
+
+const PopoverButton = styled.button<{ $isActive?: boolean }>`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-2);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  color: ${({ $isActive }) => ($isActive ? 'var(--green-6)' : 'var(--text-1)')};
+  font-size: var(--font-size-1);
+  white-space: nowrap;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--surface-3);
+  }
+`;
+
+const RightActions = styled.div`
+  margin-left: auto;
+  display: flex;
+  gap: var(--size-1);
+`;

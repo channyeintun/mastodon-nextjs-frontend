@@ -8,6 +8,87 @@ interface HandleExplainerProps {
     server: string;
 }
 
+/**
+ * Presentation component that explains what a Mastodon handle is.
+ * Uses a details/summary element for progressive disclosure.
+ */
+export function HandleExplainer({ username, server }: HandleExplainerProps) {
+    return (
+        <Container>
+            <Username>@{username}</Username>
+            <StyledDetails>
+                <ServerBadge>
+                    {server}
+                </ServerBadge>
+                <ExplainerContent>
+                    {/* Header */}
+                    <Header>
+                        What&apos;s in a handle?
+                    </Header>
+
+                    {/* Handle box */}
+                    <HandleBox>
+                        <HandleLabel>
+                            Their handle:
+                        </HandleLabel>
+                        <HandleValue>
+                            @{username}@{server}
+                        </HandleValue>
+                    </HandleBox>
+
+                    {/* Definitions */}
+                    <DefinitionList>
+                        <DefinitionItem>
+                            <IconBadge>
+                                @
+                            </IconBadge>
+                            <div>
+                                <Term>
+                                    Username
+                                </Term>
+                                <Description>
+                                    Their unique identifier on their server. It&apos;s possible to find users with the same username on different servers.
+                                </Description>
+                            </div>
+                        </DefinitionItem>
+                        <DefinitionItem>
+                            <IconBadge>
+                                <Globe size={18} />
+                            </IconBadge>
+                            <div>
+                                <Term>
+                                    Server
+                                </Term>
+                                <Description>
+                                    Their digital home, where all of their posts live.
+                                </Description>
+                            </div>
+                        </DefinitionItem>
+                    </DefinitionList>
+
+                    {/* ActivityPub section */}
+                    <ActivityPubSection>
+                        Since handles say who someone is and where they are, you can interact with people across the social web of{' '}
+                        <InlineDetails>
+                            <InlineSummary>
+                                <Definition>ActivityPub-powered platforms</Definition>.
+                            </InlineSummary>
+                            <ActivityPubExplanation>
+                                <Paragraph>
+                                    ActivityPub is like the language Mastodon speaks with other social networks.
+                                </Paragraph>
+                                <Paragraph $lastChild>
+                                    It lets you connect and interact with people not just on Mastodon, but across different social apps too.
+                                </Paragraph>
+                            </ActivityPubExplanation>
+                        </InlineDetails>
+                    </ActivityPubSection>
+                </ExplainerContent>
+            </StyledDetails>
+        </Container>
+    );
+}
+
 const Container = styled.div`
   font-size: var(--font-size-1);
   display: flex;
@@ -135,84 +216,3 @@ const ActivityPubExplanation = styled.div`
 const Paragraph = styled.p<{ $lastChild?: boolean }>`
   margin: ${({ $lastChild }) => ($lastChild ? 0 : '0 0 var(--size-3) 0')};
 `;
-
-/**
- * Presentation component that explains what a Mastodon handle is.
- * Uses a details/summary element for progressive disclosure.
- */
-export function HandleExplainer({ username, server }: HandleExplainerProps) {
-    return (
-        <Container>
-            <Username>@{username}</Username>
-            <StyledDetails>
-                <ServerBadge>
-                    {server}
-                </ServerBadge>
-                <ExplainerContent>
-                    {/* Header */}
-                    <Header>
-                        What&apos;s in a handle?
-                    </Header>
-
-                    {/* Handle box */}
-                    <HandleBox>
-                        <HandleLabel>
-                            Their handle:
-                        </HandleLabel>
-                        <HandleValue>
-                            @{username}@{server}
-                        </HandleValue>
-                    </HandleBox>
-
-                    {/* Definitions */}
-                    <DefinitionList>
-                        <DefinitionItem>
-                            <IconBadge>
-                                @
-                            </IconBadge>
-                            <div>
-                                <Term>
-                                    Username
-                                </Term>
-                                <Description>
-                                    Their unique identifier on their server. It&apos;s possible to find users with the same username on different servers.
-                                </Description>
-                            </div>
-                        </DefinitionItem>
-                        <DefinitionItem>
-                            <IconBadge>
-                                <Globe size={18} />
-                            </IconBadge>
-                            <div>
-                                <Term>
-                                    Server
-                                </Term>
-                                <Description>
-                                    Their digital home, where all of their posts live.
-                                </Description>
-                            </div>
-                        </DefinitionItem>
-                    </DefinitionList>
-
-                    {/* ActivityPub section */}
-                    <ActivityPubSection>
-                        Since handles say who someone is and where they are, you can interact with people across the social web of{' '}
-                        <InlineDetails>
-                            <InlineSummary>
-                                <Definition>ActivityPub-powered platforms</Definition>.
-                            </InlineSummary>
-                            <ActivityPubExplanation>
-                                <Paragraph>
-                                    ActivityPub is like the language Mastodon speaks with other social networks.
-                                </Paragraph>
-                                <Paragraph $lastChild>
-                                    It lets you connect and interact with people not just on Mastodon, but across different social apps too.
-                                </Paragraph>
-                            </ActivityPubExplanation>
-                        </InlineDetails>
-                    </ActivityPubSection>
-                </ExplainerContent>
-            </StyledDetails>
-        </Container>
-    );
-}

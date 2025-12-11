@@ -20,77 +20,6 @@ import type { Account } from '@/types';
 
 type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
 
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-`;
-
-const AvatarLink = styled(Link)`
-  text-decoration: none;
-  flex-shrink: 0;
-`;
-
-const ContentSection = styled.div`
-  flex: 1;
-  min-width: 0;
-`;
-
-const HeaderRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-`;
-
-const NameSection = styled.div`
-  min-width: 0;
-`;
-
-const ProfileLink = styled(Link)`
-  text-decoration: none;
-`;
-
-const DisplayName = styled.div`
-  font-weight: var(--font-weight-6);
-  color: var(--text-1);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const Handle = styled.div`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const MetaSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  flex-shrink: 0;
-`;
-
-const TimeLink = styled(Link)`
-  text-decoration: none;
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-`;
-
-const VisibilityIcon = styled.div`
-  color: var(--text-3);
-  display: flex;
-  align-items: center;
-`;
-
-const MenuDivider = styled.div`
-  height: 1px;
-  background: var(--surface-3);
-  margin: 4px 0;
-`;
-
 interface PostHeaderProps {
     account: Account;
     createdAt: string;
@@ -257,3 +186,74 @@ export function PostHeader({
         </Container>
     );
 }
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+`;
+
+const AvatarLink = styled(Link)`
+  text-decoration: none;
+  flex-shrink: 0;
+`;
+
+const ContentSection = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+`;
+
+const NameSection = styled.div`
+  min-width: 0;
+`;
+
+const ProfileLink = styled(Link)`
+  text-decoration: none;
+`;
+
+const DisplayName = styled.div`
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const Handle = styled.div`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const MetaSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  flex-shrink: 0;
+`;
+
+const TimeLink = styled(Link)`
+  text-decoration: none;
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+`;
+
+const VisibilityIcon = styled.div`
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+`;
+
+const MenuDivider = styled.div`
+  height: 1px;
+  background: var(--surface-3);
+  margin: 4px 0;
+`;

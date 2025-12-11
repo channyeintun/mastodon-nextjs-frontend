@@ -3,69 +3,6 @@ import { useState, useEffect } from 'react';
 import { X, Globe, Lock, Users, Mail, Check } from 'lucide-react';
 import Select, { components, OptionProps, SingleValueProps, StylesConfig } from 'react-select';
 
-const Container = styled.div`
-  width: 500px;
-  max-width: 90vw;
-  overflow: visible;
-`;
-
-const HeaderTitle = styled.h2`
-  font-size: var(--font-size-3);
-  font-weight: bold;
-  margin: 0;
-`;
-
-const CloseButton = styled.button`
-  background: transparent;
-  border: none;
-  color: var(--text-2);
-  cursor: pointer;
-  padding: var(--size-1);
-`;
-
-const Description = styled.p`
-  color: var(--text-2);
-  margin-bottom: var(--size-4);
-  line-height: 1.5;
-`;
-
-const FieldContainer = styled.div`
-  margin-bottom: var(--size-4);
-  position: relative;
-`;
-
-const FieldLabel = styled.label`
-  display: block;
-  font-weight: bold;
-  margin-bottom: var(--size-2);
-`;
-
-const DisabledMessage = styled.div`
-  padding: var(--size-2);
-  font-size: 0.85em;
-  color: var(--text-2);
-`;
-
-const CancelButton = styled.button`
-  padding: var(--size-2) var(--size-3);
-  border-radius: var(--radius-2);
-  border: 1px solid var(--surface-3);
-  background: transparent;
-  color: var(--text-1);
-  cursor: pointer;
-  font-weight: 600;
-`;
-
-const SaveButton = styled.button`
-  padding: var(--size-2) var(--size-3);
-  border-radius: var(--radius-2);
-  border: none;
-  background: var(--blue-6);
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
-`;
-
 export type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
 export type QuoteVisibility = 'public' | 'followers' | 'nobody';
 
@@ -292,3 +229,66 @@ export function VisibilitySettingsModal({
         </Container>
     );
 }
+
+const Container = styled.div`
+  width: 500px;
+  max-width: 90vw;
+  overflow: visible;
+`;
+
+const HeaderTitle = styled.h2`
+  font-size: var(--font-size-3);
+  font-weight: bold;
+  margin: 0;
+`;
+
+const CloseButton = styled.button`
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  cursor: pointer;
+  padding: var(--size-1);
+`;
+
+const Description = styled.p`
+  color: var(--text-2);
+  margin-bottom: var(--size-4);
+  line-height: 1.5;
+`;
+
+const FieldContainer = styled.div`
+  margin-bottom: var(--size-4);
+  position: relative;
+`;
+
+const FieldLabel = styled.label`
+  display: block;
+  font-weight: bold;
+  margin-bottom: var(--size-2);
+`;
+
+const DisabledMessage = styled.div`
+  padding: var(--size-2);
+  font-size: 0.85em;
+  color: var(--text-2);
+`;
+
+const CancelButton = styled.button`
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-2);
+  border: 1px solid var(--surface-3);
+  background: transparent;
+  color: var(--text-1);
+  cursor: pointer;
+  font-weight: 600;
+`;
+
+const SaveButton = styled.button`
+  padding: var(--size-2) var(--size-3);
+  border-radius: var(--radius-2);
+  border: none;
+  background: var(--blue-6);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+`;

@@ -8,78 +8,6 @@ import { X, Check, RotateCw, RotateCcw, FlipHorizontal, FlipVertical, ZoomIn, Zo
 import { Button } from '../atoms/Button';
 import { IconButton } from '../atoms/IconButton';
 
-// Styled components
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.95);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--size-3);
-  background: rgba(0, 0, 0, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-`;
-
-const Title = styled.h2`
-  margin: 0;
-  color: white;
-  font-size: var(--font-size-3);
-  font-weight: var(--font-weight-6);
-`;
-
-const CropperContainer = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--size-4);
-  overflow: hidden;
-`;
-
-const Controls = styled.div`
-  padding: var(--size-4);
-  background: rgba(0, 0, 0, 0.8);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-`;
-
-const ToolButtons = styled.div`
-  display: flex;
-  gap: var(--size-2);
-  justify-content: center;
-  margin-bottom: var(--size-4);
-  flex-wrap: wrap;
-`;
-
-const ToolButton = styled(IconButton)`
-  background: rgba(255, 255, 255, 0.1);
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-`;
-
-const ActionButtons = styled.div`
-  display: flex;
-  gap: var(--size-2);
-  justify-content: flex-end;
-`;
-
-const ApplyButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  gap: var(--size-1);
-`;
-
 interface ImageCropperProps {
   image: string;
   onCropComplete: (croppedImage: Blob) => void;
@@ -231,3 +159,75 @@ export function ImageCropper({
     </Overlay>
   );
 }
+
+// Styled components
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--size-3);
+  background: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const Title = styled.h2`
+  margin: 0;
+  color: white;
+  font-size: var(--font-size-3);
+  font-weight: var(--font-weight-6);
+`;
+
+const CropperContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--size-4);
+  overflow: hidden;
+`;
+
+const Controls = styled.div`
+  padding: var(--size-4);
+  background: rgba(0, 0, 0, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const ToolButtons = styled.div`
+  display: flex;
+  gap: var(--size-2);
+  justify-content: center;
+  margin-bottom: var(--size-4);
+  flex-wrap: wrap;
+`;
+
+const ToolButton = styled(IconButton)`
+  background: rgba(255, 255, 255, 0.1);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: var(--size-2);
+  justify-content: flex-end;
+`;
+
+const ApplyButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+`;

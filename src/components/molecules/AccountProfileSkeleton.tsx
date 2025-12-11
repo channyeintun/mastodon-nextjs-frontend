@@ -2,6 +2,64 @@
 
 import styled from '@emotion/styled';
 
+/**
+ * Skeleton loading placeholder for Account Profile section
+ */
+export function AccountProfileSkeleton() {
+  return (
+    <Container>
+      {/* Profile Header Image */}
+      <HeaderImage />
+
+      {/* Profile Info */}
+      <ProfileInfo>
+        <HeaderRow>
+          {/* Avatar skeleton */}
+          <AvatarSkeleton />
+          {/* Follow button skeleton */}
+          <FollowButtonSkeleton />
+        </HeaderRow>
+
+        {/* Display name and username */}
+        <NameSection>
+          <DisplayNameSkeleton />
+          <UsernameSkeleton />
+        </NameSection>
+
+        {/* Bio */}
+        <BioSection>
+          <BioLine $width="100%" $marginBottom />
+          <BioLine $width="90%" $marginBottom />
+          <BioLine $width="70%" />
+        </BioSection>
+
+        {/* Fields (metadata) */}
+        <FieldsSection>
+          {[1, 2].map((i) => (
+            <FieldRow key={i} $showBorder={i < 2}>
+              <FieldLabelSkeleton />
+              <FieldValueSkeleton />
+            </FieldRow>
+          ))}
+        </FieldsSection>
+
+        {/* Joined date */}
+        <JoinedDateSkeleton />
+
+        {/* Stats */}
+        <StatsRow>
+          {[1, 2].map((i) => (
+            <StatSkeleton key={i} />
+          ))}
+        </StatsRow>
+
+        {/* External link */}
+        <ExternalLinkSkeleton />
+      </ProfileInfo>
+    </Container>
+  );
+}
+
 // Base skeleton styles
 const skeletonBase = `
   background: var(--surface-3);
@@ -130,61 +188,3 @@ const ExternalLinkSkeleton = styled.div`
   ${skeletonBase}
   border-radius: var(--radius-1);
 `;
-
-/**
- * Skeleton loading placeholder for Account Profile section
- */
-export function AccountProfileSkeleton() {
-  return (
-    <Container>
-      {/* Profile Header Image */}
-      <HeaderImage />
-
-      {/* Profile Info */}
-      <ProfileInfo>
-        <HeaderRow>
-          {/* Avatar skeleton */}
-          <AvatarSkeleton />
-          {/* Follow button skeleton */}
-          <FollowButtonSkeleton />
-        </HeaderRow>
-
-        {/* Display name and username */}
-        <NameSection>
-          <DisplayNameSkeleton />
-          <UsernameSkeleton />
-        </NameSection>
-
-        {/* Bio */}
-        <BioSection>
-          <BioLine $width="100%" $marginBottom />
-          <BioLine $width="90%" $marginBottom />
-          <BioLine $width="70%" />
-        </BioSection>
-
-        {/* Fields (metadata) */}
-        <FieldsSection>
-          {[1, 2].map((i) => (
-            <FieldRow key={i} $showBorder={i < 2}>
-              <FieldLabelSkeleton />
-              <FieldValueSkeleton />
-            </FieldRow>
-          ))}
-        </FieldsSection>
-
-        {/* Joined date */}
-        <JoinedDateSkeleton />
-
-        {/* Stats */}
-        <StatsRow>
-          {[1, 2].map((i) => (
-            <StatSkeleton key={i} />
-          ))}
-        </StatsRow>
-
-        {/* External link */}
-        <ExternalLinkSkeleton />
-      </ProfileInfo>
-    </Container>
-  );
-}
