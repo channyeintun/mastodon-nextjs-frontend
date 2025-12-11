@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useAuthStore } from '@/hooks/useStores';
 import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api';
 import { PostCard } from '@/components/organisms';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules';
+import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { TrendingContent } from '@/components/organisms/TrendingContent';
-import { EmojiText, Button, IconButton } from '@/components/atoms';
+import { EmojiText, Button, IconButton, CircleSkeleton } from '@/components/atoms';
 import { Plus, TrendingUp, Search } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
@@ -63,21 +63,8 @@ const TimelinePage = observer(() => {
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-            {/* Search icon skeleton */}
-            <div
-              style={{
-                width: 'var(--size-7)',
-                height: 'var(--size-7)',
-                borderRadius: '50%',
-                background: 'var(--surface-3)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
-            {/* Profile pill skeleton */}
-            <div className="profile-pill profile-pill-static skeleton-loading">
-              <div className="profile-pill-avatar" style={{ background: 'var(--surface-3)' }} />
-              <div className="profile-pill-name" style={{ width: '80px', height: '1em', background: 'var(--surface-3)', borderRadius: 'var(--radius-1)' }} />
-            </div>
+            <CircleSkeleton />
+            <ProfilePillSkeleton />
           </div>
         </div>
 
@@ -166,25 +153,20 @@ const TimelinePage = observer(() => {
           >
             <Search size={20} />
           </Link>
-          <Link href={user ? `/@${user.acct}` : '#'} className={`profile-pill profile-pill-static ${!user ? 'skeleton-loading' : ''}`}>
-            {user ? (
-              <>
-                <img
-                  src={user.avatar}
-                  alt={user.display_name}
-                  className="profile-pill-avatar"
-                />
-                <span className="profile-pill-name">
-                  <EmojiText text={user.display_name} emojis={user.emojis} />
-                </span>
-              </>
-            ) : (
-              <>
-                <div className="profile-pill-avatar" style={{ background: 'var(--surface-3)' }} />
-                <div className="profile-pill-name" style={{ width: '80px', height: '1em', background: 'var(--surface-3)', borderRadius: 'var(--radius-1)' }} />
-              </>
-            )}
-          </Link>
+          {user ? (
+            <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
+              <img
+                src={user.avatar}
+                alt={user.display_name}
+                className="profile-pill-avatar"
+              />
+              <span className="profile-pill-name">
+                <EmojiText text={user.display_name} emojis={user.emojis} />
+              </span>
+            </Link>
+          ) : (
+            <ProfilePillSkeleton />
+          )}
         </div>
       </div>
 

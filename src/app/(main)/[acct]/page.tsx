@@ -23,6 +23,7 @@ import {
   PostCardSkeleton,
   AccountProfileSkeleton,
   MediaGrid,
+  MediaGridSkeleton,
   ProfileStats,
   ProfileBio,
   ProfileFields,
@@ -30,7 +31,7 @@ import {
   HandleExplainer,
 } from '@/components/molecules';
 import { VirtualizedList, PostCard } from '@/components/organisms';
-import { Avatar, Button, IconButton, EmojiText, Tabs } from '@/components/atoms';
+import { Avatar, Button, IconButton, EmojiText, Tabs, TextSkeleton } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
@@ -167,21 +168,8 @@ export default function AccountPage({
             <ArrowLeft size={20} />
           </IconButton>
           <div>
-            <div style={{
-              width: '150px',
-              height: '24px',
-              background: 'var(--surface-3)',
-              borderRadius: 'var(--radius-1)',
-              marginBottom: 'var(--size-1)',
-              animation: 'var(--animation-blink)',
-            }} />
-            <div style={{
-              width: '100px',
-              height: '16px',
-              background: 'var(--surface-3)',
-              borderRadius: 'var(--radius-1)',
-              animation: 'var(--animation-blink)',
-            }} />
+            <TextSkeleton width="150px" height="24px" style={{ marginBottom: 'var(--size-1)' }} />
+            <TextSkeleton width="100px" height="16px" />
           </div>
         </div>
         <AccountProfileSkeleton />
@@ -507,24 +495,7 @@ export default function AccountPage({
         <Activity mode={activeTab === 'media' ? 'visible' : 'hidden'}>
           <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
             {statusesLoading && uniqueStatuses.length === 0 ? (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 'var(--size-1)',
-                padding: 'var(--size-2)'
-              }}>
-                {[...Array(9)].map((_, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      aspectRatio: '1',
-                      background: 'var(--surface-3)',
-                      borderRadius: 'var(--radius-2)',
-                      animation: 'var(--animation-blink)',
-                    }}
-                  />
-                ))}
-              </div>
+              <MediaGridSkeleton />
             ) : (
               <>
                 <MediaGrid statuses={uniqueStatuses} />

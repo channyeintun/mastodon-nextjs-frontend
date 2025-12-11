@@ -7,7 +7,7 @@ import { useStatus, useStatusContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton } from '@/components/molecules';
-import { Button, IconButton } from '@/components/atoms';
+import { Button, IconButton, TextSkeleton } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 
 export default function StatusPage({
@@ -79,15 +79,7 @@ export default function StatusPage({
             marginBottom: 'var(--size-4)',
             color: 'var(--text-2)',
           }}>
-            <div
-              style={{
-                width: '120px',
-                height: '20px',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-1)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
+            <TextSkeleton width="120px" height="20px" />
           </h2>
           <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
           <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />

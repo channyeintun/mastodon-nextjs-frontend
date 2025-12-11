@@ -79,6 +79,7 @@ mastodon-nextjs-client/
 │   │   │   ├── Button.tsx
 │   │   │   ├── Card.tsx
 │   │   │   ├── CheckboxField.tsx         # NEW: Reusable checkbox with label + description
+│   │   │   ├── CircleSkeleton.tsx        # NEW: Circular skeleton loader for icons/avatars
 │   │   │   ├── ContentWarningInput.tsx
 │   │   │   ├── Dialog.tsx                # NEW: Base dialog/modal with Header, Body, Footer
 │   │   │   ├── EmptyState.tsx            # NEW: Empty state with icon, title, description
@@ -123,6 +124,7 @@ mastodon-nextjs-client/
 │   │   │   ├── ProfileFields.tsx
 │   │   │   ├── ProfileFieldsEditor.tsx    # NEW: Extracted from profile/edit
 │   │   │   ├── ProfileImageUploader.tsx   # NEW: Extracted from profile/edit
+│   │   │   ├── ProfilePillSkeleton.tsx    # NEW: Loading skeleton for profile pill
 │   │   │   ├── ProfileStats.tsx
 │   │   │   ├── ReblogIndicator.tsx
 │   │   │   ├── ScheduledCardSkeleton.tsx
@@ -255,9 +257,9 @@ Mastodon API client and TanStack Query integration. Contains:
 ### `/src/components/`
 Atomic design pattern components:
 - **atoms/**: Smallest UI building blocks
-  - Avatar, Badge, Button, Card, EmojiText, IconButton, Input, ScrollToTopButton, SkipToMain, Spinner, Tabs, TextArea, TiptapEditor
+  - Avatar, Badge, Button, Card, CircleSkeleton (circular skeleton loader), EmojiText, IconButton, Input, ScrollToTopButton, SkipToMain, Spinner, Tabs, TextArea, TiptapEditor
 - **molecules/**: Simple component combinations
-  - AccountCard, AccountProfileSkeleton, AuthModalBridge, DeletePostModal, ImageCropper (cropperjs-based image cropping modal with zoom, rotate, flip controls), LinkPreview, MediaUpload (media upload with image cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PollComposer, PostCard, PostCardSkeleton, ScheduledCardSkeleton, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, VisibilitySettingsModal
+  - AccountCard, AccountProfileSkeleton, AuthModalBridge, DeletePostModal, ImageCropper (cropperjs-based image cropping modal with zoom, rotate, flip controls), LinkPreview, MediaUpload (media upload with image cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PollComposer, PostCard, PostCardSkeleton, ProfilePillSkeleton (loading skeleton for profile pill), ScheduledCardSkeleton, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, VisibilitySettingsModal
 - **organisms/**: Complex components
   - AuthGuard (authentication route protection), ComposerPanel (post composition), EmojiPicker, NavigationWrapper (auth integration), TrendingContent, VirtualizedList (infinite scroll)
 - **templates/**: Page layouts (currently empty, layouts handled by route groups)

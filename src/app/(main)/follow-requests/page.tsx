@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, UserPlus } from 'lucide-react';
 import { useFollowRequests } from '@/api';
-import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
-import { IconButton, Button } from '@/components/atoms';
+import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
+import { IconButton, Button, TextSkeleton } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
@@ -25,28 +25,7 @@ export default function FollowRequestsPage() {
         return (
             <div style={{ maxWidth: '600px', margin: '0 auto' }}>
                 {/* Header */}
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--size-3)',
-                    padding: 'var(--size-4)',
-                    borderBottom: '1px solid var(--surface-3)',
-                    position: 'sticky',
-                    top: 0,
-                    background: 'var(--surface-1)',
-                    zIndex: 10,
-                }}>
-                    <IconButton onClick={() => router.back()}>
-                        <ArrowLeft size={20} />
-                    </IconButton>
-                    <div>
-                        <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-                            <UserPlus size={20} />
-                            Follow Requests
-                        </h1>
-                        <div className="skeleton" style={{ width: 100, height: 14, borderRadius: 'var(--radius-1)' }} />
-                    </div>
-                </div>
+                <PageHeaderSkeleton />
                 {Array.from({ length: 3 }).map((_, i) => (
                     <AccountCardSkeleton key={i} />
                 ))}

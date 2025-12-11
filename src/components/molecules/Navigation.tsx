@@ -4,6 +4,7 @@ import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, TrendingUp } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
+import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import type { Account } from '@/types';
 
 interface NavigationProps {
@@ -49,10 +50,10 @@ export default function Navigation({ isAuthenticated, instanceURL, user }: Navig
           <Link href="/" className="navigation-sidebar-instance">
             {isLoadingInstance ? (
               <>
-                <div className="skeleton" style={{ width: 40, height: 40, flexShrink: 0 }} />
+                <CircleSkeleton size="40px" />
                 <div className="navigation-sidebar-instance-info" style={{ gap: 4 }}>
-                  <div className="skeleton" style={{ height: 16, width: 96 }} />
-                  <div className="skeleton" style={{ height: 12, width: 64 }} />
+                  <TextSkeleton width={96} height={16} />
+                  <TextSkeleton width={64} height={12} />
                 </div>
               </>
             ) : instance ? (

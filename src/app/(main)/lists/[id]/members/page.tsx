@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, List, UserPlus, UserMinus, Search, X } from 'lucide-react';
 import { useList, useListAccounts, useInfiniteFollowing, useCurrentAccount, useSearch, useAddAccountsToList, useRemoveAccountsFromList } from '@/api';
 import { IconButton, Spinner } from '@/components/atoms';
-import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
+import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
@@ -68,21 +68,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
     if (isLoadingList) {
         return (
             <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--size-3)',
-                        padding: 'var(--size-4)',
-                        borderBottom: '1px solid var(--surface-3)',
-                    }}
-                >
-                    <div className="skeleton" style={{ width: 32, height: 32, borderRadius: '50%' }} />
-                    <div>
-                        <div className="skeleton" style={{ width: 150, height: 20, marginBottom: 4 }} />
-                        <div className="skeleton" style={{ width: 100, height: 14 }} />
-                    </div>
-                </div>
+                <PageHeaderSkeleton titleWidth={150} subtitleWidth={100} />
                 {Array.from({ length: 5 }).map((_, i) => (
                     <AccountCardSkeleton key={i} />
                 ))}

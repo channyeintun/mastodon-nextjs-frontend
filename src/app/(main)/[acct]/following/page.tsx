@@ -5,7 +5,7 @@ import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useLookupAccount, useInfiniteFollowing } from '@/api';
-import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
+import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton, EmojiText, Button } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
@@ -45,19 +45,7 @@ export default function FollowingPage({
     if (accountLoading || followingLoading) {
         return (
             <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--size-3)',
-                    padding: 'var(--size-4)',
-                    borderBottom: '1px solid var(--surface-3)',
-                }}>
-                    <div className="skeleton" style={{ width: 32, height: 32, borderRadius: '50%' }} />
-                    <div>
-                        <div className="skeleton" style={{ width: 120, height: 20, marginBottom: 4 }} />
-                        <div className="skeleton" style={{ width: 80, height: 14 }} />
-                    </div>
-                </div>
+                <PageHeaderSkeleton />
                 {Array.from({ length: 5 }).map((_, i) => (
                     <AccountCardSkeleton key={i} />
                 ))}

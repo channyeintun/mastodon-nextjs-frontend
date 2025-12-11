@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Plus, List, MoreVertical, Pencil, Trash2, Users, MessageCircle } from 'lucide-react';
 import { useLists, useCreateList, useUpdateList, useDeleteList } from '@/api';
 import { IconButton, Spinner } from '@/components/atoms';
+import { ListItemSkeleton } from '@/components/molecules';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import type { List as ListType, ListRepliesPolicy, CreateListParams, UpdateListParams } from '@/types';
 
@@ -426,27 +427,6 @@ function ListItem({
                         </div>
                     </>
                 )}
-            </div>
-        </div>
-    );
-}
-
-// Skeleton component for loading state
-function ListItemSkeleton() {
-    return (
-        <div
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: 'var(--size-4)',
-                borderBottom: '1px solid var(--surface-3)',
-                gap: 'var(--size-3)',
-            }}
-        >
-            <div className="skeleton" style={{ width: 48, height: 48, borderRadius: 'var(--radius-2)' }} />
-            <div style={{ flex: 1 }}>
-                <div className="skeleton" style={{ width: 120, height: 18, marginBottom: 'var(--size-1)' }} />
-                <div className="skeleton" style={{ width: 80, height: 14 }} />
             </div>
         </div>
     );

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Settings2, Globe, Lock, Users, Mail, Check } from 'lucide-react';
 import Select, { components, OptionProps, SingleValueProps, StylesConfig } from 'react-select';
 import { useCurrentAccount, usePreferences, useUpdateAccount } from '@/api';
-import { Button, IconButton, Card } from '@/components/atoms';
+import { Button, IconButton, Card, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 
 type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
 type QuotePolicy = 'public' | 'followers' | 'nobody';
@@ -225,21 +225,21 @@ export default function PreferencesPage() {
                     gap: 'var(--size-3)',
                     marginBottom: 'var(--size-5)',
                 }}>
-                    <div className="skeleton" style={{ width: 40, height: 40, borderRadius: 'var(--radius-round)' }} />
-                    <div className="skeleton" style={{ width: 120, height: 24, borderRadius: 'var(--radius-2)' }} />
+                    <CircleSkeleton size="40px" />
+                    <TextSkeleton width={120} height={24} />
                 </div>
 
                 {/* Card Skeletons */}
                 <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-                    <div className="skeleton" style={{ width: 150, height: 20, marginBottom: 'var(--size-4)', borderRadius: 'var(--radius-2)' }} />
-                    <div className="skeleton" style={{ width: '100%', height: 50, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-2)' }} />
-                    <div className="skeleton" style={{ width: '100%', height: 50, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-2)' }} />
-                    <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+                    <TextSkeleton width={150} height={20} style={{ marginBottom: 'var(--size-4)' }} />
+                    <TextSkeleton width="100%" height={50} style={{ marginBottom: 'var(--size-3)' }} />
+                    <TextSkeleton width="100%" height={50} style={{ marginBottom: 'var(--size-3)' }} />
+                    <TextSkeleton width="100%" height={40} />
                 </Card>
                 <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-                    <div className="skeleton" style={{ width: 120, height: 20, marginBottom: 'var(--size-4)', borderRadius: 'var(--radius-2)' }} />
-                    <div className="skeleton" style={{ width: '100%', height: 40, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-2)' }} />
-                    <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+                    <TextSkeleton width={120} height={20} style={{ marginBottom: 'var(--size-4)' }} />
+                    <TextSkeleton width="100%" height={40} style={{ marginBottom: 'var(--size-3)' }} />
+                    <TextSkeleton width="100%" height={40} />
                 </Card>
             </div>
         );

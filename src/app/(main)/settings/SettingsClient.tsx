@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2 } from 'lucide-react';
 import { useCurrentAccount } from '@/api';
-import { Button, IconButton, Card, Avatar, EmojiText } from '@/components/atoms';
+import { Button, IconButton, Card, Avatar, EmojiText, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { ThemeSelector } from '@/components/molecules';
 import { useAuthStore } from '@/hooks/useStores';
 import { useQueryClient } from '@tanstack/react-query';
@@ -41,45 +41,45 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           gap: 'var(--size-3)',
           marginBottom: 'var(--size-5)',
         }}>
-          <div className="skeleton" style={{ width: 40, height: 40, borderRadius: 'var(--radius-round)' }} />
-          <div className="skeleton" style={{ width: 100, height: 24, borderRadius: 'var(--radius-2)' }} />
+          <CircleSkeleton size="40px" />
+          <TextSkeleton width={100} height={24} />
         </div>
 
         {/* Account Info Card Skeleton */}
         <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', marginBottom: 'var(--size-4)' }}>
-            <div className="skeleton" style={{ width: 50, height: 50, borderRadius: 'var(--radius-round)', flexShrink: 0 }} />
+            <CircleSkeleton size="50px" />
             <div style={{ flex: 1 }}>
-              <div className="skeleton" style={{ width: 120, height: 18, marginBottom: 'var(--size-2)', borderRadius: 'var(--radius-1)' }} />
-              <div className="skeleton" style={{ width: 90, height: 14, marginBottom: 'var(--size-1)', borderRadius: 'var(--radius-1)' }} />
-              <div className="skeleton" style={{ width: 80, height: 12, borderRadius: 'var(--radius-1)' }} />
+              <TextSkeleton width={120} height={18} style={{ marginBottom: 'var(--size-2)' }} />
+              <TextSkeleton width={90} height={14} style={{ marginBottom: 'var(--size-1)' }} />
+              <TextSkeleton width={80} height={12} />
             </div>
           </div>
-          <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+          <TextSkeleton width="100%" height={40} />
         </Card>
 
         {/* Quick Links Card Skeleton */}
         <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-          <div className="skeleton" style={{ width: 100, height: 18, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-1)' }} />
+          <TextSkeleton width={100} height={18} style={{ marginBottom: 'var(--size-3)' }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
-            <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
-            <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+            <TextSkeleton width="100%" height={40} />
+            <TextSkeleton width="100%" height={40} />
           </div>
         </Card>
 
         {/* Moderation Card Skeleton */}
         <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-          <div className="skeleton" style={{ width: 100, height: 18, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-1)' }} />
+          <TextSkeleton width={100} height={18} style={{ marginBottom: 'var(--size-3)' }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
-            <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
-            <div className="skeleton" style={{ width: '100%', height: 40, borderRadius: 'var(--radius-2)' }} />
+            <TextSkeleton width="100%" height={40} />
+            <TextSkeleton width="100%" height={40} />
           </div>
         </Card>
 
         {/* Account Card Skeleton */}
         <Card padding="medium">
-          <div className="skeleton" style={{ width: 80, height: 18, marginBottom: 'var(--size-3)', borderRadius: 'var(--radius-1)' }} />
-          <div className="skeleton" style={{ width: 100, height: 36, borderRadius: 'var(--radius-2)' }} />
+          <TextSkeleton width={80} height={18} style={{ marginBottom: 'var(--size-3)' }} />
+          <TextSkeleton width={100} height={36} />
         </Card>
       </div>
     );

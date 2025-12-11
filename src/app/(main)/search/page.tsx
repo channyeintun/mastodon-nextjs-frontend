@@ -6,56 +6,13 @@ import { ArrowLeft, Search as SearchIcon, Hash, X, Clock } from 'lucide-react';
 import { useSearch, useInfiniteSearch } from '@/api';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { PostCard } from '@/components/organisms';
-import { PostCardSkeleton, TrendingTagCardSkeleton, UserCard } from '@/components/molecules';
+import { PostCardSkeleton, TrendingTagCardSkeleton, UserCard, UserCardSkeleton } from '@/components/molecules';
 import { Input, Spinner, IconButton, Card } from '@/components/atoms';
+import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
 
-// Inline skeleton for UserCard since we don't have a dedicated one yet
-export function UserCardSkeleton({ style }: { style?: React.CSSProperties }) {
-  return (
-    <Card padding="medium" style={style}>
-      <div style={{ display: 'flex', gap: 'var(--size-3)', alignItems: 'center' }}>
-        <div style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '50%',
-          background: 'var(--surface-3)',
-          animation: 'var(--animation-blink)'
-        }} />
-        <div style={{ flex: 1 }}>
-          <div style={{
-            width: '40%',
-            height: '16px',
-            background: 'var(--surface-3)',
-            borderRadius: 'var(--radius-1)',
-            marginBottom: 'var(--size-2)',
-            animation: 'var(--animation-blink)'
-          }} />
-          <div style={{
-            width: '25%',
-            height: '14px',
-            background: 'var(--surface-3)',
-            borderRadius: 'var(--radius-1)',
-            animation: 'var(--animation-blink)'
-          }} />
-        </div>
-        <div style={{
-          width: '80px',
-          height: '32px',
-          background: 'var(--surface-3)',
-          borderRadius: 'var(--radius-2)',
-          animation: 'var(--animation-blink)'
-        }} />
-      </div>
-    </Card>
-  );
-}
-
-import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import type { Account, Status, Tag } from '@/types';
-
-// ... (existing imports)
 
 export default function SearchPage() {
   const router = useRouter();

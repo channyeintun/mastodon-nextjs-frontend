@@ -7,7 +7,7 @@ import { ArrowLeft, List, Users, Settings } from 'lucide-react';
 import { useList, useInfiniteListTimeline } from '@/api';
 import { IconButton } from '@/components/atoms';
 import { PostCard } from '@/components/organisms';
-import { PostCardSkeleton, PostCardSkeletonList } from '@/components/molecules';
+import { PostCardSkeleton, PostCardSkeletonList, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { flattenPages } from '@/utils/fp';
 import type { Status } from '@/types';
@@ -31,22 +31,11 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
     if (isLoadingList) {
         return (
             <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--size-3)',
-                        padding: 'var(--size-4)',
-                        borderBottom: '1px solid var(--surface-3)',
-                        marginBottom: 'var(--size-4)',
-                    }}
-                >
-                    <div className="skeleton" style={{ width: 32, height: 32, borderRadius: '50%' }} />
-                    <div>
-                        <div className="skeleton" style={{ width: 150, height: 20, marginBottom: 4 }} />
-                        <div className="skeleton" style={{ width: 100, height: 14 }} />
-                    </div>
-                </div>
+                <PageHeaderSkeleton
+                    titleWidth={150}
+                    subtitleWidth={100}
+                    style={{ marginBottom: 'var(--size-4)' }}
+                />
                 <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
                     <PostCardSkeletonList count={5} />
                 </div>
