@@ -685,8 +685,9 @@ export function useUpdateAccount() {
     onSuccess: (data) => {
       // Update current account in cache
       queryClient.setQueryData(queryKeys.accounts.current(), data)
-      // Invalidate account detail
+      // Invalidate account detail and lookup queries
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(data.id) })
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.lookup(data.acct) })
     },
   })
 }
