@@ -117,7 +117,20 @@ function findStatusInCaches(
 
   // 5. Try account statuses
   const accounts = queryClient.getQueriesData<InfiniteData<Status[]>>({ queryKey: ['accounts'] })
-  for (const [_, data] of accounts) {
+  for (const [key, data] of accounts) {
+    // Check if it's a pinned statuses query (flat array)
+    if (Array.isArray(key) && key[2] === 'pinned_statuses') {
+      const pinnedStatuses = data as unknown as Status[]
+      if (Array.isArray(pinnedStatuses)) {
+        const found = pinnedStatuses.find((s) => s.id === statusId || s.reblog?.id === statusId)
+        if (found) {
+          return found.id === statusId ? found : found.reblog!
+        }
+      }
+      continue
+    }
+
+    // Regular account timeline (InfiniteData)
     if (data?.pages) {
       for (const page of data.pages) {
         const found = page.find((s) => s.id === statusId || s.reblog?.id === statusId)
@@ -229,6 +242,21 @@ function updateStatusInCaches(
       }
     }
   )
+
+  // Update pinned statuses (flat array)
+  // Query key format: ['accounts', id, 'pinned_statuses']
+  queryClient.setQueriesData<Status[]>(
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'accounts' && key[2] === 'pinned_statuses'
+      },
+    },
+    (old) => {
+      if (!Array.isArray(old)) return old
+      return old.map((status) => updateStatusOrReblog(status, statusId, updateFn))
+    }
+  )
 }
 
 // Helper function to update poll in all statuses that contain it
@@ -329,6 +357,22 @@ function updatePollInCaches(
             : status
         ),
       }
+    }
+  )
+
+  // Update pinned statuses (flat array)
+  queryClient.setQueriesData<Status[]>(
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'accounts' && key[2] === 'pinned_statuses'
+      },
+    },
+    (old) => {
+      if (!Array.isArray(old)) return old
+      return old.map((status) =>
+        status.poll?.id === pollId ? { ...status, poll: updatedPoll } : status
+      )
     }
   )
 }
