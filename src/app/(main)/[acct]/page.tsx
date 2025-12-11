@@ -1,17 +1,48 @@
 'use client';
 
-import { use, useState, useRef, useEffect, useMemo, Activity } from 'react';
+import { use, useState, useMemo, Activity } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, ExternalLink, MoreHorizontal, Ban, VolumeX, Volume2, Pin } from 'lucide-react';
-import { useLookupAccount, useInfiniteAccountStatusesWithFilters, useRelationships, useCurrentAccount, usePinnedStatuses, useFollowAccount, useUnfollowAccount, useBlockAccount, useUnblockAccount, useMuteAccount, useUnmuteAccount } from '@/api';
+import { ArrowLeft, Calendar, ExternalLink, Pin } from 'lucide-react';
+import {
+  useLookupAccount,
+  useInfiniteAccountStatusesWithFilters,
+  useRelationships,
+  useCurrentAccount,
+  usePinnedStatuses,
+  useFollowAccount,
+  useUnfollowAccount,
+  useBlockAccount,
+  useUnblockAccount,
+  useMuteAccount,
+  useUnmuteAccount,
+} from '@/api';
 import type { AccountStatusFilters } from '@/api/queries';
-import { PostCard, PostCardSkeletonList, PostCardSkeleton, AccountProfileSkeleton, MediaGrid } from '@/components/molecules';
+import {
+  PostCard,
+  PostCardSkeletonList,
+  PostCardSkeleton,
+  AccountProfileSkeleton,
+  MediaGrid,
+  ProfileStats,
+  ProfileBio,
+  ProfileFields,
+  ProfileActionButtons,
+  HandleExplainer,
+} from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Avatar, Button, IconButton, EmojiText, Tabs } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
+
+type ProfileTab = 'posts' | 'posts_replies' | 'media';
+
+const profileTabs: TabItem<ProfileTab>[] = [
+  { value: 'posts', label: 'Posts' },
+  { value: 'posts_replies', label: 'Posts & Replies' },
+  { value: 'media', label: 'Media' },
+];
 
 export default function AccountPage({
   params,
@@ -39,11 +70,9 @@ export default function AccountPage({
     isError: accountError,
   } = useLookupAccount(acct);
 
-  // Use account.id for other queries that require IDs
   const accountId = account?.id;
 
   // Tab state for profile content
-  type ProfileTab = 'posts' | 'posts_replies' | 'media';
   const [activeTab, setActiveTab] = useState<ProfileTab>('posts');
 
   // Compute filter params based on active tab
@@ -72,7 +101,6 @@ export default function AccountPage({
   const relationship = relationships?.[0];
 
   const { data: pinnedStatuses } = usePinnedStatuses(accountId || '');
-
   const { data: currentAccount } = useCurrentAccount();
   const isOwnProfile = currentAccount?.id === accountId;
 
@@ -83,28 +111,10 @@ export default function AccountPage({
   const muteMutation = useMuteAccount();
   const unmuteMutation = useUnmuteAccount();
 
-  const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowMenu(false);
-      }
-    };
-
-    if (showMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showMenu]);
-
-  // Flatten and deduplicate statuses using FP utility
+  // Flatten and deduplicate statuses
   const uniqueStatuses = flattenAndUniqById(statusPages?.pages);
 
+  // Event handlers
   const handleFollowToggle = () => {
     if (!accountId) return;
     if (relationship?.following) {
@@ -114,37 +124,33 @@ export default function AccountPage({
     }
   };
 
-  const handleBlock = () => {
+  const handleBlockToggle = () => {
     if (!accountId) return;
-    blockMutation.mutate(accountId);
-    setShowMenu(false);
+    if (relationship?.blocking) {
+      unblockMutation.mutate(accountId);
+    } else {
+      blockMutation.mutate(accountId);
+    }
   };
 
-  const handleUnblock = () => {
+  const handleMuteToggle = () => {
     if (!accountId) return;
-    unblockMutation.mutate(accountId);
-    setShowMenu(false);
-  };
-
-  const handleMute = () => {
-    if (!accountId) return;
-    muteMutation.mutate({ id: accountId });
-    setShowMenu(false);
-  };
-
-  const handleUnmute = () => {
-    if (!accountId) return;
-    unmuteMutation.mutate(accountId);
-    setShowMenu(false);
+    if (relationship?.muting) {
+      unmuteMutation.mutate(accountId);
+    } else {
+      muteMutation.mutate({ id: accountId });
+    }
   };
 
   const isBlocking = relationship?.blocking || false;
   const isMuting = relationship?.muting || false;
+  const isFollowing = relationship?.following || false;
+  const isFollowLoading = followMutation.isPending || unfollowMutation.isPending;
 
+  // Loading state
   if (accountLoading) {
     return (
       <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
-        {/* Header */}
         <div style={{
           position: 'sticky',
           top: 0,
@@ -162,32 +168,24 @@ export default function AccountPage({
             <ArrowLeft size={20} />
           </IconButton>
           <div>
-            <div
-              style={{
-                width: '150px',
-                height: '24px',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-1)',
-                marginBottom: 'var(--size-1)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
-            <div
-              style={{
-                width: '100px',
-                height: '16px',
-                background: 'var(--surface-3)',
-                borderRadius: 'var(--radius-1)',
-                animation: 'var(--animation-blink)',
-              }}
-            />
+            <div style={{
+              width: '150px',
+              height: '24px',
+              background: 'var(--surface-3)',
+              borderRadius: 'var(--radius-1)',
+              marginBottom: 'var(--size-1)',
+              animation: 'var(--animation-blink)',
+            }} />
+            <div style={{
+              width: '100px',
+              height: '16px',
+              background: 'var(--surface-3)',
+              borderRadius: 'var(--radius-1)',
+              animation: 'var(--animation-blink)',
+            }} />
           </div>
         </div>
-
-        {/* Profile skeleton */}
         <AccountProfileSkeleton />
-
-        {/* Posts Section */}
         <div style={{
           borderTop: '1px solid var(--surface-3)',
           paddingTop: 'var(--size-4)',
@@ -209,6 +207,7 @@ export default function AccountPage({
     );
   }
 
+  // Error state
   if (accountError || !account) {
     return (
       <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
@@ -225,8 +224,10 @@ export default function AccountPage({
     );
   }
 
-  const isFollowing = relationship?.following || false;
-  const isLoading = followMutation.isPending || unfollowMutation.isPending;
+  // Parse username and server from acct
+  const parts = account.acct.split('@');
+  const username = parts[0];
+  const server = parts[1] || new URL(account.url).hostname;
 
   return (
     <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto', padding: 0 }}>
@@ -270,7 +271,8 @@ export default function AccountPage({
             : 'linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%)',
           borderRadius: 'var(--radius-3)',
           marginBottom: 'calc(-1 * var(--size-8))',
-        }} />
+        }}
+      />
 
       {/* Profile Info */}
       <div style={{ padding: 'var(--size-4)', paddingTop: 'var(--size-2)' }}>
@@ -286,114 +288,19 @@ export default function AccountPage({
             }}
           />
 
-          {/* Action buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-            {isOwnProfile ? (
-              <Link href="/profile/edit">
-                <Button variant="secondary">
-                  Edit Profile
-                </Button>
-              </Link>
-            ) : (
-              <>
-                {!isBlocking && (
-                  <Button
-                    variant={isFollowing ? 'secondary' : 'primary'}
-                    onClick={handleFollowToggle}
-                    isLoading={isLoading}
-                  >
-                    {isFollowing ? 'Following' : 'Follow'}
-                  </Button>
-                )}
-
-                {/* More actions menu */}
-                <div ref={menuRef} style={{ position: 'relative' }}>
-                  <IconButton
-                    onClick={() => setShowMenu(!showMenu)}
-                    style={{
-                      border: '1px solid var(--surface-3)',
-                      borderRadius: 'var(--radius-round)',
-                    }}
-                  >
-                    <MoreHorizontal size={20} />
-                  </IconButton>
-
-                  {showMenu && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      right: 0,
-                      marginTop: 'var(--size-2)',
-                      background: 'var(--surface-2)',
-                      borderRadius: 'var(--radius-2)',
-                      boxShadow: 'var(--shadow-3)',
-                      overflow: 'hidden',
-                      zIndex: 50,
-                      minWidth: '180px',
-                      border: '1px solid var(--surface-3)',
-                    }}>
-                      {/* Mute option */}
-                      <button
-                        onClick={isMuting ? handleUnmute : handleMute}
-                        disabled={muteMutation.isPending || unmuteMutation.isPending}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 'var(--size-2)',
-                          width: '100%',
-                          padding: 'var(--size-3)',
-                          background: 'transparent',
-                          border: 'none',
-                          color: 'var(--text-1)',
-                          cursor: 'pointer',
-                          fontSize: 'var(--font-size-1)',
-                          textAlign: 'left',
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-3)'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                      >
-                        {isMuting ? (
-                          <>
-                            <Volume2 size={18} />
-                            Unmute @{account.acct}
-                          </>
-                        ) : (
-                          <>
-                            <VolumeX size={18} />
-                            Mute @{account.acct}
-                          </>
-                        )}
-                      </button>
-
-                      {/* Block option */}
-                      <button
-                        onClick={isBlocking ? handleUnblock : handleBlock}
-                        disabled={blockMutation.isPending || unblockMutation.isPending}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 'var(--size-2)',
-                          width: '100%',
-                          padding: 'var(--size-3)',
-                          background: 'transparent',
-                          border: 'none',
-                          color: isBlocking ? 'var(--text-1)' : 'var(--red-6)',
-                          cursor: 'pointer',
-                          fontSize: 'var(--font-size-1)',
-                          textAlign: 'left',
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-3)'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                      >
-                        <Ban size={18} />
-                        {isBlocking ? `Unblock @${account.acct}` : `Block @${account.acct}`}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
+          <ProfileActionButtons
+            isOwnProfile={isOwnProfile}
+            isBlocking={isBlocking}
+            isMuting={isMuting}
+            isFollowing={isFollowing}
+            isLoading={isFollowLoading}
+            isMutePending={muteMutation.isPending || unmuteMutation.isPending}
+            isBlockPending={blockMutation.isPending || unblockMutation.isPending}
+            acct={account.acct}
+            onFollowToggle={handleFollowToggle}
+            onMuteToggle={handleMuteToggle}
+            onBlockToggle={handleBlockToggle}
+          />
         </div>
 
         {/* Name section */}
@@ -422,200 +329,14 @@ export default function AccountPage({
               </svg>
             )}
           </h2>
-          {/* Handle display with explanation */}
-          {(() => {
-            const parts = account.acct.split('@');
-            const username = parts[0];
-            const server = parts[1] || new URL(account.url).hostname;
-            return (
-              <div style={{
-                fontSize: 'var(--font-size-1)',
-                display: 'flex',
-                flexDirection: 'column',
-              }}>
-                <div style={{ color: 'var(--text-2)', marginBottom: 'var(--size-2)' }}>@{username}</div>
-                <details style={{ background: 'none', padding: 0, margin: 0, border: 'none', boxShadow: 'none', outline: 'none' }}>
-                  <summary style={{
-                    display: 'inline-flex',
-                    cursor: 'pointer',
-                    padding: 'var(--size-1) var(--size-2)',
-                    margin: 0,
-                    background: 'var(--blue-6)',
-                    color: 'white',
-                    borderRadius: 'var(--radius-1)',
-                    fontSize: 'var(--font-size-0)',
-                    fontWeight: 'var(--font-weight-5)',
-                  }}>
-                    {server}
-                  </summary>
-                  <div style={{
-                    marginTop: 'var(--size-3)',
-                    padding: 'var(--size-4)',
-                    background: 'var(--surface-2)',
-                    borderRadius: 'var(--radius-2)',
-                    fontSize: 'var(--font-size-1)',
-                  }}>
-                    {/* Header with icon */}
-                    <div style={{
-                      fontWeight: 'var(--font-weight-6)',
-                      fontSize: 'var(--font-size-3)',
-                      color: 'var(--text-1)',
-                      marginBottom: 'var(--size-4)',
-                    }}>
-                      What&apos;s in a handle?
-                    </div>
-
-                    {/* Handle box with dashed border */}
-                    <div style={{
-                      padding: 'var(--size-3)',
-                      border: '2px dashed var(--surface-4)',
-                      borderRadius: 'var(--radius-2)',
-                      marginBottom: 'var(--size-4)',
-                    }}>
-                      <div style={{ color: 'var(--text-2)', marginBottom: 'var(--size-1)' }}>
-                        Their handle:
-                      </div>
-                      <div style={{ color: 'var(--blue-6)', fontWeight: 'var(--font-weight-5)' }}>
-                        @{username}@{server}
-                      </div>
-                    </div>
-
-                    {/* Definitions with icons */}
-                    <dl style={{ margin: 0 }}>
-                      <div style={{ display: 'flex', gap: 'var(--size-3)', marginBottom: 'var(--size-4)' }}>
-                        <span style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '36px',
-                          height: '36px',
-                          background: 'var(--surface-3)',
-                          borderRadius: 'var(--radius-round)',
-                          color: 'var(--text-1)',
-                          flexShrink: 0,
-                        }}>
-                          @
-                        </span>
-                        <div>
-                          <dt style={{
-                            fontWeight: 'var(--font-weight-6)',
-                            color: 'var(--text-1)',
-                            marginBottom: 'var(--size-1)',
-                          }}>
-                            Username
-                          </dt>
-                          <dd style={{ margin: 0, color: 'var(--text-2)' }}>
-                            Their unique identifier on their server. It&apos;s possible to find users with the same username on different servers.
-                          </dd>
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', gap: 'var(--size-3)', marginBottom: 'var(--size-4)' }}>
-                        <span style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '36px',
-                          height: '36px',
-                          background: 'var(--surface-3)',
-                          borderRadius: 'var(--radius-round)',
-                          color: 'var(--text-1)',
-                          flexShrink: 0,
-                        }}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="2" y1="12" x2="22" y2="12"></line>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                          </svg>
-                        </span>
-                        <div>
-                          <dt style={{
-                            fontWeight: 'var(--font-weight-6)',
-                            color: 'var(--text-1)',
-                            marginBottom: 'var(--size-1)',
-                          }}>
-                            Server
-                          </dt>
-                          <dd style={{ margin: 0, color: 'var(--text-2)' }}>
-                            Their digital home, where all of their posts live.
-                          </dd>
-                        </div>
-                      </div>
-                    </dl>
-
-                    {/* ActivityPub section */}
-                    <div style={{ color: 'var(--text-2)' }}>
-                      Since handles say who someone is and where they are, you can interact with people across the social web of{' '}
-                      <details style={{ display: 'inline', background: 'none', padding: 0 }}>
-                        <summary style={{
-                          display: 'inline',
-                          color: 'var(--blue-6)',
-                          cursor: 'pointer',
-                          listStyle: 'none',
-                          background: 'none',
-                        }}>
-                          <dfn style={{ fontStyle: 'normal' }}>ActivityPub-powered platforms</dfn>.
-                        </summary>
-                        <div style={{ marginTop: 'var(--size-3)', color: 'var(--text-2)' }}>
-                          <p style={{ marginBottom: 'var(--size-3)' }}>
-                            ActivityPub is like the language Mastodon speaks with other social networks.
-                          </p>
-                          <p style={{ margin: 0 }}>
-                            It lets you connect and interact with people not just on Mastodon, but across different social apps too.
-                          </p>
-                        </div>
-                      </details>
-                    </div>
-                  </div>
-                </details>
-              </div>
-            );
-          })()}
+          <HandleExplainer username={username} server={server} />
         </div>
 
         {/* Bio */}
-        {account.note && (
-          <div
-            style={{
-              marginBottom: 'var(--size-3)',
-              lineHeight: '1.5',
-              color: 'var(--text-1)',
-            }}
-            dangerouslySetInnerHTML={{ __html: account.note }}
-          />
-        )}
+        <ProfileBio note={account.note} />
 
         {/* Fields (metadata) */}
-        {
-          account.fields.length > 0 && (
-            <div style={{ marginBottom: 'var(--size-3)' }}>
-              {account.fields.map((field, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '120px 1fr',
-                    gap: 'var(--size-2)',
-                    padding: 'var(--size-2) 0',
-                    borderBottom: index < account.fields.length - 1 ? '1px solid var(--surface-3)' : 'none',
-                    fontSize: 'var(--font-size-1)',
-                  }}
-                >
-                  <div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
-                    {field.name}
-                  </div>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: field.value }}
-                    style={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          )
-        }
+        <ProfileFields fields={account.fields} />
 
         {/* Joined date */}
         <div style={{
@@ -633,47 +354,31 @@ export default function AccountPage({
         </div>
 
         {/* Stats */}
-        <div style={{
-          display: 'flex',
-          gap: 'var(--size-4)',
-          fontSize: 'var(--font-size-1)',
-          marginBottom: 'var(--size-4)',
-        }}>
-          <Link href={`/@${account.acct}/following`} style={{ textDecoration: 'none' }}>
-            <strong style={{ color: 'var(--text-1)' }}>
-              {account.following_count.toLocaleString()}
-            </strong>{' '}
-            <span style={{ color: 'var(--text-2)' }}>Following</span>
-          </Link>
-          <Link href={`/@${account.acct}/followers`} style={{ textDecoration: 'none' }}>
-            <strong style={{ color: 'var(--text-1)' }}>
-              {account.followers_count.toLocaleString()}
-            </strong>{' '}
-            <span style={{ color: 'var(--text-2)' }}>Followers</span>
-          </Link>
-        </div>
+        <ProfileStats
+          acct={account.acct}
+          followingCount={account.following_count}
+          followersCount={account.followers_count}
+        />
 
         {/* External link */}
-        {
-          account.url && (
-            <a
-              href={account.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 'var(--size-1)',
-                color: 'var(--blue-6)',
-                fontSize: 'var(--font-size-1)',
-                textDecoration: 'none',
-              }}
-            >
-              View on Mastodon <ExternalLink size={14} />
-            </a>
-          )
-        }
-      </div >
+        {account.url && (
+          <a
+            href={account.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--size-1)',
+              color: 'var(--blue-6)',
+              fontSize: 'var(--font-size-1)',
+              textDecoration: 'none',
+            }}
+          >
+            View on Mastodon <ExternalLink size={14} />
+          </a>
+        )}
+      </div>
 
       {/* Tabs Section */}
       <div style={{
@@ -681,11 +386,7 @@ export default function AccountPage({
         marginTop: 'var(--size-4)',
       }}>
         <Tabs
-          tabs={[
-            { value: 'posts', label: 'Posts' },
-            { value: 'posts_replies', label: 'Posts & Replies' },
-            { value: 'media', label: 'Media' },
-          ] as TabItem<typeof activeTab>[]}
+          tabs={profileTabs}
           activeTab={activeTab}
           onTabChange={setActiveTab}
           variant="underline"
@@ -693,7 +394,7 @@ export default function AccountPage({
         />
       </div>
 
-      {/* Pinned Posts Section - only show for posts and posts_replies tabs */}
+      {/* Pinned Posts Section */}
       {activeTab !== 'media' && pinnedStatuses && pinnedStatuses.length > 0 && (
         <div style={{
           paddingTop: 'var(--size-4)',
@@ -851,6 +552,6 @@ export default function AccountPage({
           </div>
         </Activity>
       </div>
-    </div >
+    </div>
   );
 }

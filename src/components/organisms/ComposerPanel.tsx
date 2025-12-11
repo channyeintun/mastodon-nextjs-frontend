@@ -1,18 +1,18 @@
 'use client';
 
-import { useState, useRef, useEffect, Activity } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
-import { PostCard, MediaUpload, PollComposer, VisibilitySettingsModal, ImageCropper } from '@/components/molecules';
+import { PostCard, MediaUpload, PollComposer, VisibilitySettingsModal, ImageCropper, ComposerToolbar } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
-import { Avatar, EmojiText, TiptapEditor } from '@/components/atoms';
+import { Avatar, EmojiText, TiptapEditor, ContentWarningInput, ScheduleInput } from '@/components/atoms';
 import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { useCropper } from '@/hooks/useCropper';
-import { Globe, Lock, Users, Mail, X, Smile, Image as ImageIcon, BarChart2, MessageSquareQuote, Clock } from 'lucide-react';
+import { Globe, Lock, Users, Mail } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types';
 
 const MAX_CHAR_COUNT = 500;
@@ -64,30 +64,21 @@ export function ComposerPanel({
   const [textContent, setTextContent] = useState('');
   const [scheduledAt, setScheduledAt] = useState<string>('');
   const [showScheduleInput, setShowScheduleInput] = useState(false);
-
-  // Track whether we've initialized from preferences
   const [hasInitializedFromPreferences, setHasInitializedFromPreferences] = useState(false);
-
-  // Initialize visibility - use props if in edit mode, otherwise start with initial and update from preferences
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
-
-  // Initialize from props, or default to public. We'll update from account preferences below.
   const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>('public');
   const [hasInitializedQuotePolicy, setHasInitializedQuotePolicy] = useState(false);
 
   const { data: quotedStatus } = useStatus(quotedStatusId || '');
 
-  // Quote policy is forced to 'nobody' if visibility is private or direct, OR if this is a reply (per user request)
   const isQuotePolicyDisabled = visibility === 'private' || visibility === 'direct' || isReply;
 
-  // Initialize visibility and sensitive from user preferences (only when not in edit mode)
+  // Initialize from user preferences
   useEffect(() => {
     if (!editMode && !hasInitializedFromPreferences && preferences) {
-      // Set default visibility from preferences
       if (preferences['posting:default:visibility']) {
         setVisibility(preferences['posting:default:visibility']);
       }
-      // Set default sensitive from preferences
       if (preferences['posting:default:sensitive']) {
         setSensitive(preferences['posting:default:sensitive']);
       }
@@ -99,11 +90,11 @@ export function ComposerPanel({
     if (isQuotePolicyDisabled) {
       setQuoteVisibility('nobody');
     } else if (!hasInitializedQuotePolicy && currentAccount?.source?.quote_policy) {
-      // Initialize from account settings if not disabled and not yet initialized
       setQuoteVisibility(currentAccount.source.quote_policy);
       setHasInitializedQuotePolicy(true);
     }
   }, [visibility, isQuotePolicyDisabled, currentAccount, hasInitializedQuotePolicy]);
+
   const [contentWarning, setContentWarning] = useState(initialSpoilerText);
   const [showCWInput, setShowCWInput] = useState(!!initialSpoilerText);
   const [sensitive, setSensitive] = useState(initialSensitive);
@@ -122,7 +113,6 @@ export function ComposerPanel({
   const currentVisibility = visibilityOptions.find((v) => v.value === visibility);
   const VisibilityIcon = currentVisibility?.icon ?? Globe;
 
-  // Helper to open visibility settings modal
   const handleOpenVisibilitySettings = () => {
     openModal(
       <VisibilitySettingsModal
@@ -139,7 +129,6 @@ export function ComposerPanel({
     );
   };
 
-  // Create mention suggestion config for Tiptap
   const mentionSuggestion = createMentionSuggestion();
 
   const handleMediaAdd = async (file: File) => {
@@ -160,12 +149,9 @@ export function ComposerPanel({
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-
-      // Show cropper for images, upload directly for other media types
       if (openCropper(file)) {
-        break; // Handle one image at a time for cropping
+        break;
       } else {
-        // Upload non-image files directly
         await handleMediaAdd(file);
       }
     }
@@ -190,21 +176,14 @@ export function ComposerPanel({
 
   const handleEmojiSelect = (emoji: string) => {
     if (editorRef.current) {
-      // Insert emoji at cursor position using Tiptap commands
       editorRef.current.chain().focus().insertContent(emoji).run();
     }
   };
 
-  // Effect to load scheduled status data
+  // Load scheduled status data
   useEffect(() => {
     if (scheduledStatusData) {
       if (scheduledStatusData.params.status) {
-        // We set text content directly, HTML might not be available or needs conversion
-        // For simplicity, we assume text is plain or basic HTML 
-        // Note: Tiptap might need HTML. Status params 'text' is usually plain text.
-        // But for editing, we might want to just set it.
-        // If we have 'content' from status, we use it. But scheduled status stores "params" which has "status" (text).
-        // Use textContent directly if possible or wrapped in p tags.
         setContent(scheduledStatusData.params.status?.replace(/\n/g, '<br>') || '');
       }
       if (scheduledStatusData.params.spoiler_text) {
@@ -221,9 +200,7 @@ export function ComposerPanel({
         setMedia(scheduledStatusData.media_attachments);
       }
       if (scheduledStatusData.scheduled_at) {
-        // Format for datetime-local input: YYYY-MM-DDThh:mm
         const date = new Date(scheduledStatusData.scheduled_at);
-        // Adjust to local time string
         const localIso = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
         setScheduledAt(localIso);
         setShowScheduleInput(true);
@@ -237,7 +214,7 @@ export function ComposerPanel({
     const params: CreateStatusParams = {
       status: textContent,
       visibility,
-      quote_approval_policy: quoteVisibility, // Pass valid API value
+      quote_approval_policy: quoteVisibility,
       in_reply_to_id: inReplyToId,
       quoted_status_id: quotedStatusId,
     };
@@ -264,7 +241,6 @@ export function ComposerPanel({
       }
     }
 
-    // Add scheduled_at if provided
     if (showScheduleInput && scheduledAt) {
       params.scheduled_at = new Date(scheduledAt).toISOString();
     }
@@ -274,10 +250,8 @@ export function ComposerPanel({
         await updateStatusMutation.mutateAsync({ id: statusId, params });
         router.back();
       } else {
-        // Create new status (scheduled or immediate)
         await createStatusMutation.mutateAsync(params);
 
-        // If we were editing a scheduled status (by creating a new one), we should delete the old one
         if (scheduledStatusId) {
           await deleteScheduledStatusMutation.mutateAsync(scheduledStatusId);
         }
@@ -299,6 +273,13 @@ export function ComposerPanel({
       console.error(`Failed to ${editMode ? 'update' : 'create'} post:`, error);
     }
   };
+
+  // Compute submit button label
+  const submitLabel = editMode
+    ? 'Update'
+    : (showScheduleInput && scheduledAt
+      ? (scheduledStatusId ? 'Reschedule' : 'Schedule')
+      : (isReply ? 'Reply' : 'Publish'));
 
   if (!currentAccount) {
     return (
@@ -365,112 +346,33 @@ export function ComposerPanel({
         </div>
       )}
 
-
-
-      {/* Content Warning */}
+      {/* Content Warning and Schedule Inputs */}
       {(showCWInput || showScheduleInput) && (
         <div style={{ marginBottom: 'var(--size-3)', display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
           {showCWInput && (
-            <div style={{ marginBottom: 'var(--size-2)' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 'var(--size-2)',
-              }}>
-                <label htmlFor="cw-input" style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
-                  Content Warning
-                </label>
-                <button
-                  aria-label="Remove content warning"
-                  onClick={() => {
-                    setShowCWInput(false);
-                    setContentWarning('');
-                  }}
-                  style={{
-                    padding: 'var(--size-1)',
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    color: 'var(--text-2)',
-                  }}
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <input
-                id="cw-input"
-                type="text"
-                value={contentWarning}
-                onChange={(e) => setContentWarning(e.target.value)}
-                placeholder="Write your warning here..."
-                style={{
-                  width: '100%',
-                  padding: 'var(--size-2) var(--size-3)',
-                  border: '1px solid var(--surface-3)',
-                  borderRadius: 'var(--radius-2)',
-                  background: 'var(--surface-1)',
-                  color: 'var(--text-1)',
-                  fontSize: 'var(--font-size-2)',
-                }}
-              />
-            </div>
+            <ContentWarningInput
+              value={contentWarning}
+              onChange={setContentWarning}
+              onRemove={() => {
+                setShowCWInput(false);
+                setContentWarning('');
+              }}
+            />
           )}
-
-          {/* Schedule Input */}
           {showScheduleInput && (
-            <div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 'var(--size-2)',
-              }}>
-                <label htmlFor="schedule-input" style={{ fontSize: 'var(--font-size-1)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-2)' }}>
-                  Schedule Post
-                </label>
-                <button
-                  aria-label="Remove schedule"
-                  onClick={() => {
-                    setShowScheduleInput(false);
-                    setScheduledAt('');
-                  }}
-                  style={{
-                    padding: 'var(--size-1)',
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    color: 'var(--text-2)',
-                  }}
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <input
-                id="schedule-input"
-                type="datetime-local"
-                value={scheduledAt}
-                min={new Date().toISOString().slice(0, 16)}
-                onChange={(e) => setScheduledAt(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: 'var(--size-2) var(--size-3)',
-                  border: '1px solid var(--surface-3)',
-                  borderRadius: 'var(--radius-2)',
-                  background: 'var(--surface-1)',
-                  color: 'var(--text-1)',
-                  fontSize: 'var(--font-size-2)',
-                }}
-              />
-              <div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-3)', marginTop: '4px' }}>
-                Post will be published automatically at this time.
-              </div>
-            </div>
+            <ScheduleInput
+              value={scheduledAt}
+              onChange={setScheduledAt}
+              onRemove={() => {
+                setShowScheduleInput(false);
+                setScheduledAt('');
+              }}
+            />
           )}
         </div>
       )}
 
-      {/* Editor - Minimalist */}
+      {/* Editor */}
       <div className="compose-editor-area">
         <TiptapEditor
           className={isReply ? "tiptap-editor-compact" : ""}
@@ -515,123 +417,38 @@ export function ComposerPanel({
         style={{ display: 'none' }}
       />
 
-      {/* Bottom toolbar */}
-      <div className="compose-toolbar-area">
-        <div className="compose-toolbar-row">
-          <div className="compose-tools">
-            {/* Emoji picker */}
-            <div style={{ position: 'relative' }}>
-              <button
-                className="compose-tool-btn"
-                style={{
-                  anchorName: '--emoji-anchor'
-                }}
-                type="button"
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                title="Add emoji"
-                aria-label="Add emoji"
-              >
-                <Smile size={22} />
-              </button>
-              {<Activity mode={showEmojiPicker ? 'visible' : 'hidden'} >
-                <EmojiPicker
-                  onEmojiSelect={handleEmojiSelect}
-                  onClose={() => setShowEmojiPicker(false)}
-                />
-              </Activity>}
-            </div>
+      {/* Toolbar */}
+      <ComposerToolbar
+        showEmojiPicker={showEmojiPicker}
+        showCWInput={showCWInput}
+        showScheduleInput={showScheduleInput}
+        canAddMedia={poll === null && media.length < 4}
+        canAddPoll={media.length === 0 && poll === null}
+        canSchedule={!statusId}
+        isReply={isReply}
+        VisibilityIcon={VisibilityIcon}
+        visibilityLabel={currentVisibility?.label}
+        charCount={charCount}
+        maxCharCount={MAX_CHAR_COUNT}
+        isOverLimit={isOverLimit}
+        canPost={canPost}
+        submitLabel={submitLabel}
+        onEmojiToggle={() => setShowEmojiPicker(!showEmojiPicker)}
+        onMediaClick={() => fileInputRef.current?.click()}
+        onPollClick={() => setPoll({ options: ['', ''], expiresIn: 86400, multiple: false })}
+        onCWToggle={() => setShowCWInput(!showCWInput)}
+        onScheduleToggle={() => setShowScheduleInput(!showScheduleInput)}
+        onVisibilityClick={handleOpenVisibilitySettings}
+        onSubmit={handlePost}
+        emojiPicker={
+          <EmojiPicker
+            onEmojiSelect={handleEmojiSelect}
+            onClose={() => setShowEmojiPicker(false)}
+          />
+        }
+      />
 
-            {/* Media Button */}
-            <button
-              className="compose-tool-btn"
-              type="button" // Fix: explicit type
-              onClick={() => fileInputRef.current?.click()}
-              disabled={poll !== null || media.length >= 4}
-              title="Add media"
-              aria-label="Add media"
-            >
-              <ImageIcon size={22} />
-            </button>
-
-            {/* Poll Button */}
-            <button
-              className="compose-tool-btn"
-              type="button"
-              onClick={() => setPoll({ options: ['', ''], expiresIn: 86400, multiple: false })}
-              disabled={media.length > 0 || poll !== null}
-              title="Add poll"
-              aria-label="Add poll"
-            >
-              <BarChart2 size={22} />
-            </button>
-
-            {/* Content Warning toggle */}
-            <button
-              className="compose-tool-btn"
-              type="button"
-              onClick={() => setShowCWInput(!showCWInput)}
-              style={{
-                color: showCWInput ? 'var(--blue-6)' : undefined,
-                fontWeight: showCWInput ? 'bold' : 'normal',
-              }}
-              title="Add content warning"
-              aria-label="Add content warning"
-            >
-              <span style={{ fontSize: '14px' }}>CW</span>
-            </button>
-
-            {/* Schedule Button */}
-            <button
-              className="compose-tool-btn"
-              type="button"
-              onClick={() => setShowScheduleInput(!showScheduleInput)}
-              style={{
-                color: showScheduleInput ? 'var(--blue-6)' : undefined,
-              }}
-              title="Schedule post"
-              aria-label="Schedule post"
-              disabled={!!statusId} // Cannot schedule explicitly when editing a published post (though Mastodon API might not support it anyway)
-            >
-              <Clock size={22} />
-            </button>
-
-            {/* Visibility Button (Only shown in toolbar if it's a reply) */}
-            {isReply && (
-              <button
-                className="compose-tool-btn"
-                type="button"
-                onClick={handleOpenVisibilitySettings}
-                title={`Visibility: ${currentVisibility?.label}`}
-              >
-                <VisibilityIcon size={22} />
-              </button>
-            )}
-          </div>
-
-          <div className="compose-action-row" style={{ gap: 'var(--size-3)' }}>
-            {/* Character count */}
-            <div
-              className={`compose-char-count ${isOverLimit ? 'danger' : charCount > MAX_CHAR_COUNT - 50 ? 'warning' : ''
-                }`}
-              aria-live="polite"
-              aria-label={`${MAX_CHAR_COUNT - charCount} characters remaining`}
-            >
-              {MAX_CHAR_COUNT - charCount}
-            </div>
-
-            {/* Post/Update button */}
-            <button
-              className="compose-submit-btn"
-              onClick={handlePost}
-              disabled={!canPost}
-            >
-              {editMode ? 'Update' : (showScheduleInput && scheduledAt ? (scheduledStatusId ? 'Reschedule' : 'Schedule') : (isReply ? 'Reply' : 'Publish'))}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Quote Preview - Below Compose Panel */}
+      {/* Quote Preview */}
       {quotedStatus && (
         <div style={{
           marginTop: 'var(--size-4)',
