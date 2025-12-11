@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,67 +23,71 @@ export default function ProfileEditPage() {
     const updateAccountMutation = useUpdateAccount();
     const [cropperType, setCropperType] = useState<'avatar' | 'header' | null>(null);
 
+    // Compute form values from current account data
+    const formValues = useMemo((): ProfileFormData => {
+        if (!currentAccount) {
+            return {
+                displayName: '',
+                bio: '',
+                locked: false,
+                bot: false,
+                discoverable: true,
+                fields: [
+                    { name: '', value: '', verified_at: null },
+                    { name: '', value: '', verified_at: null },
+                    { name: '', value: '', verified_at: null },
+                    { name: '', value: '', verified_at: null },
+                ],
+                avatarFile: undefined,
+                headerFile: undefined,
+            };
+        }
+
+        const sourceFields = currentAccount.source?.fields || currentAccount.fields || [];
+        const initialFields: ProfileField[] = [
+            { name: '', value: '', verified_at: null },
+            { name: '', value: '', verified_at: null },
+            { name: '', value: '', verified_at: null },
+            { name: '', value: '', verified_at: null },
+        ];
+        sourceFields.forEach((field, index) => {
+            if (index < 4) {
+                initialFields[index] = {
+                    name: field.name || '',
+                    value: currentAccount.source?.fields?.[index]?.value || field.value.replace(/<[^>]*>/g, '') || '',
+                    verified_at: currentAccount.fields?.[index]?.verified_at || null,
+                };
+            }
+        });
+
+        // Use source.note for plain text bio, fallback to stripping HTML from note
+        const plainTextBio = currentAccount.source?.note ?? currentAccount.note.replace(/<[^>]*>/g, '');
+
+        return {
+            displayName: currentAccount.display_name,
+            bio: plainTextBio,
+            locked: currentAccount.locked,
+            bot: currentAccount.bot,
+            discoverable: currentAccount.discoverable ?? true,
+            fields: initialFields,
+            avatarFile: undefined,
+            headerFile: undefined,
+        };
+    }, [currentAccount]);
+
     const {
         register,
         handleSubmit,
         control,
         watch,
         setValue,
-        reset,
         formState: { errors },
     } = useForm<ProfileFormData>({
         resolver: zodResolver(profileFormSchema),
-        defaultValues: {
-            displayName: '',
-            bio: '',
-            locked: false,
-            bot: false,
-            discoverable: true,
-            fields: [
-                { name: '', value: '', verified_at: null },
-                { name: '', value: '', verified_at: null },
-                { name: '', value: '', verified_at: null },
-                { name: '', value: '', verified_at: null },
-            ],
-            avatarFile: undefined,
-            headerFile: undefined,
-        },
+        values: formValues,
     });
 
     const { cropperImage, openCropper, closeCropper, handleCropComplete } = useCropper();
-
-    // Initialize form with current account data
-    useEffect(() => {
-        if (currentAccount) {
-            const sourceFields = currentAccount.source?.fields || currentAccount.fields || [];
-            const initialFields: ProfileField[] = [
-                { name: '', value: '', verified_at: null },
-                { name: '', value: '', verified_at: null },
-                { name: '', value: '', verified_at: null },
-                { name: '', value: '', verified_at: null },
-            ];
-            sourceFields.forEach((field, index) => {
-                if (index < 4) {
-                    initialFields[index] = {
-                        name: field.name || '',
-                        value: currentAccount.source?.fields?.[index]?.value || field.value.replace(/<[^>]*>/g, '') || '',
-                        verified_at: currentAccount.fields?.[index]?.verified_at || null,
-                    };
-                }
-            });
-
-            reset({
-                displayName: currentAccount.display_name,
-                bio: currentAccount.note.replace(/<[^>]*>/g, ''),
-                locked: currentAccount.locked,
-                bot: currentAccount.bot,
-                discoverable: currentAccount.discoverable ?? true,
-                fields: initialFields,
-                avatarFile: undefined,
-                headerFile: undefined,
-            });
-        }
-    }, [currentAccount, reset]);
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -121,7 +125,7 @@ export default function ProfileEditPage() {
         if (data.displayName !== currentAccount?.display_name) {
             params.display_name = data.displayName;
         }
-        if (data.bio !== currentAccount?.note.replace(/<[^>]*>/g, '')) {
+        if (data.bio !== (currentAccount?.source?.note ?? currentAccount?.note.replace(/<[^>]*>/g, ''))) {
             params.note = data.bio;
         }
         if (data.locked !== currentAccount?.locked) {
