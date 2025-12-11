@@ -7,6 +7,7 @@ import { useBlockedAccounts } from '@/api';
 import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton, Spinner } from '@/components/atoms';
+import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
 export default function BlockedAccountsPage() {
@@ -19,7 +20,7 @@ export default function BlockedAccountsPage() {
         isFetchingNextPage,
     } = useBlockedAccounts();
 
-    const blockedAccounts = blockedPages?.pages.flatMap((page) => page) ?? [];
+    const blockedAccounts = flattenPages(blockedPages?.pages);
 
     if (isLoading) {
         return (

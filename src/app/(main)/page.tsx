@@ -9,6 +9,7 @@ import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { TrendingContent } from '@/components/organisms/TrendingContent';
 import { EmojiText, Button, IconButton } from '@/components/atoms';
 import { Plus, TrendingUp, Search } from 'lucide-react';
+import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 
 const HomePage = observer(() => {
@@ -34,13 +35,8 @@ const TimelinePage = observer(() => {
     isFetchingNextPage,
   } = useInfiniteHomeTimeline();
 
-  // Flatten all pages into a single array of statuses and deduplicate by ID
-  const allStatuses = data?.pages.flatMap((page) => page) ?? [];
-
-  // Deduplicate statuses by ID (handles pagination overlaps)
-  const uniqueStatuses = Array.from(
-    new Map(allStatuses.map((status) => [status.id, status])).values()
-  );
+  // Flatten and deduplicate statuses using FP utility
+  const uniqueStatuses = flattenAndUniqById(data?.pages);
 
   if (isLoading) {
     return (

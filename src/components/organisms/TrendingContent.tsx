@@ -8,6 +8,7 @@ import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button, Tabs } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { Hash, Newspaper, FileText } from 'lucide-react';
+import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink } from '@/types';
 
 type TrendingTab = 'posts' | 'tags' | 'links';
@@ -55,23 +56,10 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
         isFetchingNextPage: isFetchingNextLinks,
     } = useInfiniteTrendingLinks();
 
-    // Flatten and deduplicate statuses
-    const allStatuses = statusData?.pages.flatMap((page) => page) ?? [];
-    const uniqueStatuses = Array.from(
-        new Map(allStatuses.map((status) => [status.id, status])).values()
-    );
-
-    // Flatten and deduplicate tags
-    const allTags = tagsData?.pages.flatMap((page) => page) ?? [];
-    const uniqueTags = Array.from(
-        new Map(allTags.map((tag) => [tag.name, tag])).values()
-    );
-
-    // Flatten and deduplicate links
-    const allLinks = linksData?.pages.flatMap((page) => page) ?? [];
-    const uniqueLinks = Array.from(
-        new Map(allLinks.map((link) => [link.url, link])).values()
-    );
+    // Flatten and deduplicate using FP utilities
+    const uniqueStatuses = flattenAndUniqById(statusData?.pages);
+    const uniqueTags = flattenAndUniqByKey<Tag>('name')(tagsData?.pages);
+    const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages);
 
     return (
         <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>

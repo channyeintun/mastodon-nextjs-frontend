@@ -10,6 +10,7 @@ import { PostCard, PostCardSkeletonList, PostCardSkeleton, AccountProfileSkeleto
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Avatar, Button, IconButton, EmojiText, Tabs } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
+import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 
 export default function AccountPage({
@@ -101,12 +102,8 @@ export default function AccountPage({
     };
   }, [showMenu]);
 
-  const allStatuses = statusPages?.pages.flatMap((page) => page) ?? [];
-
-  // Deduplicate statuses by ID (handles pagination overlaps)
-  const uniqueStatuses = Array.from(
-    new Map(allStatuses.map((status) => [status.id, status])).values()
-  );
+  // Flatten and deduplicate statuses using FP utility
+  const uniqueStatuses = flattenAndUniqById(statusPages?.pages);
 
   const handleFollowToggle = () => {
     if (!accountId) return;

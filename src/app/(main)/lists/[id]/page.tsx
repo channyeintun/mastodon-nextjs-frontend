@@ -8,6 +8,7 @@ import { useList, useInfiniteListTimeline } from '@/api';
 import { IconButton } from '@/components/atoms';
 import { PostCard, PostCardSkeleton, PostCardSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
+import { flattenPages } from '@/utils/fp';
 import type { Status } from '@/types';
 
 export default function ListDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -24,7 +25,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
         isFetchingNextPage,
     } = useInfiniteListTimeline(listId);
 
-    const statuses = timelinePages?.pages.flatMap((page) => page) ?? [];
+    const statuses = flattenPages(timelinePages?.pages);
 
     if (isLoadingList) {
         return (

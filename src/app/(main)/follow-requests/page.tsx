@@ -6,6 +6,7 @@ import { ArrowLeft, UserPlus } from 'lucide-react';
 import { useFollowRequests } from '@/api';
 import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
 import { IconButton, Button } from '@/components/atoms';
+import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
 export default function FollowRequestsPage() {
@@ -18,7 +19,7 @@ export default function FollowRequestsPage() {
         isFetchingNextPage,
     } = useFollowRequests();
 
-    const requests = requestPages?.pages.flatMap((page) => page) ?? [];
+    const requests = flattenPages(requestPages?.pages);
 
     if (isLoading) {
         return (

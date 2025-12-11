@@ -8,6 +8,7 @@ import { useLookupAccount, useInfiniteFollowers } from '@/api';
 import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton, EmojiText, Button } from '@/components/atoms';
+import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
 export default function FollowersPage({
@@ -39,7 +40,7 @@ export default function FollowersPage({
         isFetchingNextPage,
     } = useInfiniteFollowers(account?.id || '');
 
-    const followers = followerPages?.pages.flatMap((page) => page) ?? [];
+    const followers = flattenPages(followerPages?.pages);
 
     if (accountLoading || followersLoading) {
         return (

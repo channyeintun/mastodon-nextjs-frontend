@@ -8,6 +8,7 @@ import { useInfiniteHashtagTimeline } from '@/api';
 import { PostCard, PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton } from '@/components/atoms';
+import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 
 export default function HashtagPage({
@@ -30,13 +31,8 @@ export default function HashtagPage({
     isError,
   } = useInfiniteHashtagTimeline(decodedTag);
 
-  // Flatten all pages into a single array of statuses and deduplicate by ID
-  const allStatuses = data?.pages.flatMap((page) => page) ?? [];
-
-  // Deduplicate statuses by ID (handles pagination overlaps)
-  const uniqueStatuses = Array.from(
-    new Map(allStatuses.map((status) => [status.id, status])).values()
-  );
+  // Flatten and deduplicate statuses using FP utility
+  const uniqueStatuses = flattenAndUniqById(data?.pages);
 
   if (isLoading) {
     return (

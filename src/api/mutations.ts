@@ -41,6 +41,7 @@ import {
   deleteScheduledStatus,
 } from './client'
 import { queryKeys } from './queryKeys'
+import { mapPages } from '@/utils/fp'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams } from '../types/mastodon'
 
 // Helper to update a status or its nested reblog
@@ -136,6 +137,10 @@ function updateStatusInCaches(
   statusId: string,
   updateFn: (status: Status) => Status
 ) {
+  const updateStatusPage = mapPages((status: Status) =>
+    updateStatusOrReblog(status, statusId, updateFn)
+  )
+
   // Update all timeline types (home, public, list, hashtag, etc.)
   // Using predicate to ensure we match all queries starting with 'timelines'
   queryClient.setQueriesData<InfiniteData<Status[]>>(
@@ -149,9 +154,7 @@ function updateStatusInCaches(
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) => updateStatusOrReblog(status, statusId, updateFn))
-        ),
+        pages: updateStatusPage(old.pages),
       }
     }
   )
@@ -163,9 +166,7 @@ function updateStatusInCaches(
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) => updateStatusOrReblog(status, statusId, updateFn))
-        ),
+        pages: updateStatusPage(old.pages),
       }
     }
   )
@@ -177,9 +178,7 @@ function updateStatusInCaches(
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) => updateStatusOrReblog(status, statusId, updateFn))
-        ),
+        pages: updateStatusPage(old.pages),
       }
     }
   )
@@ -191,9 +190,7 @@ function updateStatusInCaches(
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) => updateStatusOrReblog(status, statusId, updateFn))
-        ),
+        pages: updateStatusPage(old.pages),
       }
     }
   )
@@ -240,6 +237,12 @@ function updatePollInCaches(
   pollId: string,
   updatedPoll: Poll
 ) {
+  const updatePollPage = mapPages((status: Status) =>
+    status.poll?.id === pollId
+      ? { ...status, poll: updatedPoll }
+      : status
+  )
+
   // Update all timeline types (home, public, list, hashtag, etc.)
   // Using predicate to ensure we match all queries starting with 'timelines'
   queryClient.setQueriesData<InfiniteData<Status[]>>(
@@ -253,13 +256,7 @@ function updatePollInCaches(
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) =>
-            status.poll?.id === pollId
-              ? { ...status, poll: updatedPoll }
-              : status
-          )
-        ),
+        pages: updatePollPage(old.pages),
       }
     }
   )
@@ -271,13 +268,7 @@ function updatePollInCaches(
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) =>
-            status.poll?.id === pollId
-              ? { ...status, poll: updatedPoll }
-              : status
-          )
-        ),
+        pages: updatePollPage(old.pages),
       }
     }
   )
@@ -289,13 +280,7 @@ function updatePollInCaches(
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) =>
-            status.poll?.id === pollId
-              ? { ...status, poll: updatedPoll }
-              : status
-          )
-        ),
+        pages: updatePollPage(old.pages),
       }
     }
   )
@@ -307,13 +292,7 @@ function updatePollInCaches(
       if (!old?.pages) return old
       return {
         ...old,
-        pages: old.pages.map((page) =>
-          page.map((status) =>
-            status.poll?.id === pollId
-              ? { ...status, poll: updatedPoll }
-              : status
-          )
-        ),
+        pages: updatePollPage(old.pages),
       }
     }
   )

@@ -7,6 +7,7 @@ import { Card, Button, IconButton } from '@/components/atoms';
 import { ArrowLeft, Calendar, Trash2, Edit2, Clock } from 'lucide-react';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { ScheduledCardSkeletonList } from '@/components/molecules';
+import { flattenPages } from '@/utils/fp';
 import type { ScheduledStatus } from '@/types';
 
 export default function ScheduledStatusesPage() {
@@ -51,7 +52,7 @@ export default function ScheduledStatusesPage() {
         });
     };
 
-    const allScheduledStatuses = scheduledStatuses?.pages.flatMap((page) => page) ?? [];
+    const allScheduledStatuses = flattenPages(scheduledStatuses?.pages);
 
     const renderItem = (status: ScheduledStatus) => (
         <Card padding="medium" style={{ marginBottom: 'var(--size-3)' }}>

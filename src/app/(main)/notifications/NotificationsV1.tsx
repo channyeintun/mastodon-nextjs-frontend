@@ -6,6 +6,7 @@ import { NotificationCard, NotificationSkeletonList } from '@/components/molecul
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button } from '@/components/atoms';
 import { useInfiniteNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker } from '@/api';
+import { flattenPages } from '@/utils/fp';
 import type { Notification } from '@/types';
 
 interface NotificationsV1Props {
@@ -39,7 +40,7 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
 
     const lastReadIdForHighlight = initialMarkerRef.current;
 
-    const allNotifications = data?.pages.flatMap((page) => page) ?? [];
+    const allNotifications = flattenPages(data?.pages);
 
     useEffect(() => {
         if (allNotifications.length > 0 && !hasAutoMarkedRef.current) {

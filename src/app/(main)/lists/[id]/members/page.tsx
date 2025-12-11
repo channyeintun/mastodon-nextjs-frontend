@@ -8,6 +8,7 @@ import { useList, useListAccounts, useInfiniteFollowing, useCurrentAccount, useS
 import { IconButton, Spinner } from '@/components/atoms';
 import { AccountCard, AccountCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
+import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
 export default function ListMembersPage({ params }: { params: Promise<{ id: string }> }) {
@@ -28,7 +29,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
     const [showAddMembers, setShowAddMembers] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const members = membersPages?.pages.flatMap((page) => page) ?? [];
+    const members = flattenPages(membersPages?.pages);
     const memberIds = new Set(members.map((m) => m.id));
 
     // Get following list for adding members
@@ -51,7 +52,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
     const addMembersMutation = useAddAccountsToList();
     const removeMembersMutation = useRemoveAccountsFromList();
 
-    const following = followingPages?.pages.flatMap((page) => page) ?? [];
+    const following = flattenPages(followingPages?.pages);
     const availableToAdd = searchQuery
         ? (searchResults?.accounts || []).filter((a) => !memberIds.has(a.id))
         : following.filter((a) => !memberIds.has(a.id));
