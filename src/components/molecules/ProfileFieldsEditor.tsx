@@ -34,43 +34,45 @@ export function ProfileFieldsEditor({
           Profile Information
         </h2>
 
-        <FormField
-          label="Display Name"
-          htmlFor="display-name"
-          error={errors.displayName?.message}
-        >
-          <Input
-            id="display-name"
-            type="text"
-            {...register('displayName')}
-            maxLength={30}
-          />
-        </FormField>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-4)' }}>
+          <FormField
+            label="Display Name"
+            htmlFor="display-name"
+            error={errors.displayName?.message}
+          >
+            <Input
+              id="display-name"
+              type="text"
+              {...register('displayName')}
+              maxLength={30}
+            />
+          </FormField>
 
-        <FormField
-          label="Bio"
-          htmlFor="bio"
-          description={`${bio?.length || 0} / 500`}
-          error={errors.bio?.message}
-        >
-          <textarea
-            id="bio"
-            {...register('bio')}
-            maxLength={500}
-            rows={4}
-            style={{
-              width: '100%',
-              padding: 'var(--size-2)',
-              border: '1px solid var(--surface-4)',
-              borderRadius: 'var(--radius-2)',
-              background: 'var(--surface-1)',
-              color: 'var(--text-1)',
-              fontSize: 'var(--font-size-1)',
-              resize: 'vertical',
-              fontFamily: 'inherit',
-            }}
-          />
-        </FormField>
+          <FormField
+            label="Bio"
+            htmlFor="bio"
+            description={`${bio?.length || 0} / 500`}
+            error={errors.bio?.message}
+          >
+            <textarea
+              id="bio"
+              {...register('bio')}
+              maxLength={500}
+              rows={4}
+              style={{
+                width: '100%',
+                padding: 'var(--size-2)',
+                border: '1px solid var(--surface-4)',
+                borderRadius: 'var(--radius-2)',
+                background: 'var(--surface-1)',
+                color: 'var(--text-1)',
+                fontSize: 'var(--font-size-1)',
+                resize: 'vertical',
+                fontFamily: 'inherit',
+              }}
+            />
+          </FormField>
+        </div>
       </Card>
 
       {/* Extra Fields */}
