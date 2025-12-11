@@ -1,5 +1,16 @@
+import styled from '@emotion/styled';
 import type { CSSProperties, ReactElement } from 'react';
 import type { Emoji } from '@/types/mastodon';
+
+// Styled components
+const EmojiImage = styled.img`
+  height: 1.25em;
+  width: 1.25em;
+  vertical-align: middle;
+  object-fit: contain;
+  display: inline-block;
+  margin: 0 0.1em;
+`;
 
 interface EmojiTextProps {
   text: string;
@@ -46,19 +57,11 @@ export function EmojiText({ text, emojis, style, className }: EmojiTextProps) {
 
     if (emoji) {
       parts.push(
-        <img
+        <EmojiImage
           key={key++}
           src={emoji.url}
           alt={`:${shortcode}:`}
           title={`:${shortcode}:`}
-          style={{
-            height: '1.25em',
-            width: '1.25em',
-            verticalAlign: 'middle',
-            objectFit: 'contain',
-            display: 'inline-block',
-            margin: '0 0.1em',
-          }}
           loading="lazy"
         />
       );
