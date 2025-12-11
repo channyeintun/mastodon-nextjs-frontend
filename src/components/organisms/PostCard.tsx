@@ -247,7 +247,11 @@ export function PostCard({
           displayStatus.quote?.state === 'accepted' &&
           displayStatus.quote.quoted_status && (
             <div style={{ marginTop: 'var(--size-3)' }}>
-              <PostCard status={displayStatus.quote.quoted_status} hideActions />
+              <PostCard
+                status={displayStatus.quote.quoted_status}
+                hideActions
+                style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
+              />
             </div>
           )}
 
