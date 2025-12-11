@@ -2,7 +2,6 @@
 
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { ArrowLeft, Hash } from 'lucide-react';
 import { useInfiniteHashtagTimeline } from '@/api';
 import { PostCard } from '@/components/organisms';

@@ -17,10 +17,9 @@ import {
   T,
   identity,
   find,
-  chain,
   complement
 } from 'ramda'
-import type { Status, Tag, TrendingLink } from '@/types'
+import type { Status } from '@/types'
 
 // ============================================================================
 // DEDUPLICATION HELPERS

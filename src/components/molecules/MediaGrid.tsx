@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { X, Play } from 'lucide-react';
 import type { Status, MediaAttachment } from '@/types';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';

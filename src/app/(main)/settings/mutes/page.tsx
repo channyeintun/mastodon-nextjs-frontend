@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { ArrowLeft, VolumeX } from 'lucide-react';
 import { useMutedAccounts } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';

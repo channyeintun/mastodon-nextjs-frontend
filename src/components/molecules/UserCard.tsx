@@ -1,6 +1,6 @@
 'use client';
 
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties } from 'react';
 import Link from 'next/link';
 import { Avatar, Card, Button, EmojiText } from '@/components/atoms';
 import type { Account } from '@/types';

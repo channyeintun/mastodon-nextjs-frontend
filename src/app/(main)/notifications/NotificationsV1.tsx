@@ -50,7 +50,6 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
                 markAsReadMutation.mutate(latestId);
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allNotifications.length, lastReadIdForHighlight]);
 
     const isNotificationNew = (notificationId: string): boolean => {

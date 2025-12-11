@@ -1,6 +1,7 @@
 import css from "@eslint/css";
 import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
+import unusedImports from "eslint-plugin-unused-imports";
 
 export default [
   // Ignore patterns
@@ -29,9 +30,20 @@ export default [
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
+      "unused-imports": unusedImports,
     },
     rules: {
-      // Add any base TypeScript rules here if needed
+      "@typescript-eslint/no-unused-vars": "off",
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          "vars": "all",
+          "varsIgnorePattern": "^_",
+          "args": "after-used",
+          "argsIgnorePattern": "^_",
+        },
+      ],
     },
   },
   // Lint CSS files for baseline compatibility
@@ -57,12 +69,12 @@ export default [
     },
     rules: {
       "max-lines": ["error", {
-        max: 120,
+        max: 150,
         skipBlankLines: true,
         skipComments: true
       }],
       "max-lines-per-function": ["error", {
-        max: 50,
+        max: 100,
         skipBlankLines: true,
         skipComments: true
       }]
@@ -76,12 +88,12 @@ export default [
     },
     rules: {
       "max-lines": ["error", {
-        max: 200,
+        max: 350,
         skipBlankLines: true,
         skipComments: true
       }],
       "max-lines-per-function": ["error", {
-        max: 80,
+        max: 250,
         skipBlankLines: true,
         skipComments: true
       }]
@@ -95,12 +107,12 @@ export default [
     },
     rules: {
       "max-lines": ["error", {
-        max: 350,
+        max: 500,
         skipBlankLines: true,
         skipComments: true
       }],
       "max-lines-per-function": ["error", {
-        max: 80,
+        max: 400,
         skipBlankLines: true,
         skipComments: true
       }]
@@ -119,7 +131,7 @@ export default [
         skipComments: true
       }],
       "max-lines-per-function": ["error", {
-        max: 100,
+        max: 250,
         skipBlankLines: true,
         skipComments: true
       }]

@@ -6,7 +6,6 @@ import { GroupedNotificationCard, NotificationSkeletonList } from '@/components/
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button } from '@/components/atoms';
 import { useInfiniteGroupedNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker } from '@/api';
-import { useNotificationStream } from '@/hooks/useStreaming';
 import type { NotificationGroup, Account, PartialAccountWithAvatar, Status } from '@/types';
 
 interface NotificationsV2Props {
@@ -80,7 +79,6 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                 markAsReadMutation.mutate(latestId);
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allGroups.length, lastReadIdForHighlight]);
 
     const isGroupNew = (group: NotificationGroup): boolean => {

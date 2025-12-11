@@ -8,7 +8,7 @@ import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { TrendingContent } from '@/components/organisms/TrendingContent';
-import { EmojiText, Button, IconButton, CircleSkeleton, EmptyState } from '@/components/atoms';
+import { EmojiText, Button, CircleSkeleton, EmptyState } from '@/components/atoms';
 import { Plus, TrendingUp, Search } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';

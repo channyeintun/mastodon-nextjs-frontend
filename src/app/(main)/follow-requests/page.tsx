@@ -1,11 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { ArrowLeft, UserPlus } from 'lucide-react';
 import { useFollowRequests } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
-import { IconButton, Button, TextSkeleton, EmptyState } from '@/components/atoms';
+import { IconButton, Button, EmptyState } from '@/components/atoms';
 import { flattenPages } from '@/utils/fp';
 import type { Account } from '@/types';
 
