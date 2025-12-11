@@ -165,20 +165,26 @@ export default function AccountPage({
       {/* Scrollable Content */}
       <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
         {/* Profile Section */}
-        <div style={{ padding: 'var(--size-4)' }}>
+        <div style={{ padding: 0 }}>
           {/* Header Image */}
           {account.header && !account.header.includes('missing.png') && (
             <div style={{
-              width: '100%', height: '150px', borderRadius: 'var(--radius-3)',
+              width: '100%', height: '200px', borderRadius: 'var(--radius-3)',
               backgroundImage: `url(${account.header})`, backgroundSize: 'cover', backgroundPosition: 'center',
-              marginBottom: 'var(--size-4)',
+              marginBottom: 'calc(-1 * var(--size-8))',
             }} />
           )}
 
-          {/* Avatar and Actions */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--size-4)' }}>
-            <Avatar src={account.avatar} alt={account.display_name || account.username} size="xlarge" />
-            {!isOwnProfile && (
+          {/* Profile Details Container */}
+          <div style={{ padding: 'var(--size-4)', paddingTop: 'var(--size-2)' }}>
+            {/* Avatar and Actions */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--size-4)' }}>
+              <Avatar
+                src={account.avatar}
+                alt={account.display_name || account.username}
+                size="xlarge"
+                style={{ border: '4px solid var(--surface-1)' }}
+              />
               <ProfileActionButtons
                 isOwnProfile={isOwnProfile}
                 isFollowing={isFollowing}
@@ -192,41 +198,41 @@ export default function AccountPage({
                 onBlockToggle={handleBlockToggle}
                 onMuteToggle={handleMuteToggle}
               />
-            )}
+            </div>
+
+            {/* Name and Handle */}
+            <div style={{ marginBottom: 'var(--size-4)' }}>
+              <h2 style={{ fontSize: 'var(--font-size-5)', fontWeight: 'var(--font-weight-7)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)', flexWrap: 'wrap' }}>
+                <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
+                {account.bot && <span style={{ fontSize: 'var(--font-size-0)', background: 'var(--surface-3)', padding: '2px var(--size-2)', borderRadius: 'var(--radius-1)' }}>BOT</span>}
+                {account.locked && <span style={{ fontSize: 'var(--font-size-1)' }}>🔒</span>}
+              </h2>
+              <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
+            </div>
+
+            {/* Bio */}
+            <ProfileBio note={account.note} />
+
+            {/* Stats */}
+            <ProfileStats acct={account.acct} followingCount={account.following_count} followersCount={account.followers_count} />
+
+            {/* Joined Date & External Link */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--size-4)', fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>
+              {account.created_at && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
+                  <Calendar size={14} />
+                  Joined {new Date(account.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                </span>
+              )}
+              <a href={account.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', color: 'var(--blue-6)', textDecoration: 'none' }}>
+                <ExternalLink size={14} />
+                View on instance
+              </a>
+            </div>
+
+            {/* Custom Fields */}
+            <ProfileFields fields={account.fields} />
           </div>
-
-          {/* Name and Handle */}
-          <div style={{ marginBottom: 'var(--size-4)' }}>
-            <h2 style={{ fontSize: 'var(--font-size-5)', fontWeight: 'var(--font-weight-7)', marginBottom: 'var(--size-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)', flexWrap: 'wrap' }}>
-              <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
-              {account.bot && <span style={{ fontSize: 'var(--font-size-0)', background: 'var(--surface-3)', padding: '2px var(--size-2)', borderRadius: 'var(--radius-1)' }}>BOT</span>}
-              {account.locked && <span style={{ fontSize: 'var(--font-size-1)' }}>🔒</span>}
-            </h2>
-            <HandleExplainer username={account.username} server={account.acct.includes('@') ? account.acct.split('@')[1] : 'local'} />
-          </div>
-
-          {/* Bio */}
-          <ProfileBio note={account.note} />
-
-          {/* Stats */}
-          <ProfileStats acct={account.acct} followingCount={account.following_count} followersCount={account.followers_count} />
-
-          {/* Joined Date & External Link */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--size-4)', fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>
-            {account.created_at && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-                <Calendar size={14} />
-                Joined {new Date(account.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-              </span>
-            )}
-            <a href={account.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', color: 'var(--blue-6)', textDecoration: 'none' }}>
-              <ExternalLink size={14} />
-              View on instance
-            </a>
-          </div>
-
-          {/* Custom Fields */}
-          <ProfileFields fields={account.fields} />
         </div>
 
         {/* Profile Content */}
