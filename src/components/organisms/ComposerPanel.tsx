@@ -266,8 +266,11 @@ export function ComposerPanel({
         setScheduledAt('');
         setShowScheduleInput(false);
 
+        // Navigate after publishing
         if (scheduledStatusId) {
           router.push('/scheduled');
+        } else if (quotedStatusId) {
+          router.push('/');
         }
       }
     } catch (error) {

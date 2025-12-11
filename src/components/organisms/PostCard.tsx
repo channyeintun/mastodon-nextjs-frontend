@@ -76,6 +76,22 @@ export function PostCard({
     toggleCWMedia,
   } = actions;
 
+  // Remove "RE: [link]" from content when displaying quotes
+  // Mastodon automatically adds "RE: [url]" to quote posts, we remove it since we show the quoted status
+  const contentToDisplay = displayStatus.quote?.quoted_status
+    ? displayStatus.content
+        // Remove <p class="quote-inline">RE: <a>...</a></p> (with nested spans)
+        .replace(/<p\s+class="quote-inline">RE:\s*<a[^>]*>.*?<\/a><\/p>\s*/gi, '')
+        // Remove RE: with link wrapped in regular <p> tag: <p>RE: <a>...</a></p>
+        .replace(/^<p>\s*RE:\s*<a[^>]*>.*?<\/a>\s*<\/p>\s*/i, '')
+        // Remove RE: with plain URL in <p>: <p>RE: https://...</p>
+        .replace(/^<p>\s*RE:\s*https?:\/\/[^\s<]+\s*<\/p>\s*/i, '')
+        .replace(/^RE:\s*https?:\/\/\S+\s*/i, '')
+        // Remove leftover empty paragraphs
+        .replace(/^<p>\s*<\/p>\s*/, '')
+        .trim()
+    : displayStatus.content;
+
   return (
     <Card as="article" padding="medium" style={style} onClick={handleCardClick}>
       {/* Reblog indicator */}
@@ -120,10 +136,9 @@ export function PostCard({
 
         {/* Post content */}
         {(!hasContentWarning || showCWContent) &&
-          displayStatus.content &&
-          !displayStatus.quote?.quoted_status && (
+          contentToDisplay && (
             <StatusContent
-              html={displayStatus.content}
+              html={contentToDisplay}
               emojis={displayStatus.emojis}
               style={{ marginTop: 'var(--size-3)' }}
             />
