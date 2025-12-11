@@ -68,7 +68,6 @@ function MediaModal({
                     alignItems: 'center',
                     justifyContent: 'center',
                     maxHeight: '80vh',
-                    overflow: 'hidden',
                 }}
             >
                 {isVideo ? (
@@ -77,9 +76,9 @@ function MediaModal({
                         controls
                         autoPlay
                         style={{
-                            maxWidth: '100%',
-                            maxHeight: '80vh',
-                            objectFit: 'contain',
+                            minWidth: 'if(not media(width < 400px): 200px; else: 400px)',
+                            width: '100%',
+                            aspectRatio: 'var(--ratio-wide-screen)',
                         }}
                     />
                 ) : (
@@ -87,8 +86,9 @@ function MediaModal({
                         src={attachment.url || attachment.preview_url || undefined}
                         alt={attachment.description || 'Media'}
                         style={{
-                            maxWidth: '100%',
                             maxHeight: '80vh',
+                            minWidth: 'min(600px, 90vw)',
+                            minHeight: 'min(400px, 80vh)',
                             objectFit: 'contain',
                         }}
                     />
