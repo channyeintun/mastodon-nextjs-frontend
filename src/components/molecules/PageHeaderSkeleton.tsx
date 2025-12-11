@@ -1,12 +1,10 @@
 import type { CSSProperties } from 'react';
-import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
+import { TextSkeleton } from '@/components/atoms';
 
 interface PageHeaderSkeletonProps {
-  /** Size of the icon skeleton (default: 32) */
-  iconSize?: number;
-  /** Width of the title skeleton (default: 120) */
+  /** Width of the title skeleton (default: 150) */
   titleWidth?: number;
-  /** Width of the subtitle skeleton (default: 80) */
+  /** Width of the subtitle skeleton (default: 100) */
   subtitleWidth?: number;
   /** Additional inline styles */
   style?: CSSProperties;
@@ -17,20 +15,21 @@ interface PageHeaderSkeletonProps {
 /**
  * PageHeaderSkeleton - Loading skeleton for page headers
  *
- * Displays a skeleton loader with icon and text placeholders,
- * commonly used in page headers with navigation icons and titles.
+ * Displays a skeleton loader matching the typical page header structure:
+ * - Back button placeholder (rounded square)
+ * - Title area with icon placeholder and text
+ * - Subtitle text
  *
  * @example
  * ```tsx
  * <PageHeaderSkeleton />
- * <PageHeaderSkeleton iconSize={40} titleWidth={150} />
+ * <PageHeaderSkeleton titleWidth={180} subtitleWidth={120} />
  * <PageHeaderSkeleton showBorder={false} />
  * ```
  */
 export const PageHeaderSkeleton = ({
-  iconSize = 32,
-  titleWidth = 120,
-  subtitleWidth = 80,
+  titleWidth = 150,
+  subtitleWidth = 100,
   style,
   showBorder = true,
 }: PageHeaderSkeletonProps) => {
@@ -45,9 +44,32 @@ export const PageHeaderSkeleton = ({
         ...style,
       }}
     >
-      <CircleSkeleton size={`${iconSize}px`} />
+      {/* Back button skeleton (rounded square like IconButton) */}
+      <div
+        style={{
+          width: 32,
+          height: 32,
+          borderRadius: 'var(--radius-2)',
+          background: 'var(--surface-3)',
+          animation: 'var(--animation-blink)',
+          flexShrink: 0,
+        }}
+      />
       <div>
-        <TextSkeleton width={titleWidth} height={20} style={{ marginBottom: 4 }} />
+        {/* Title with icon placeholder */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)', marginBottom: 'var(--size-1)' }}>
+          <div
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 'var(--radius-1)',
+              background: 'var(--surface-3)',
+              animation: 'var(--animation-blink)',
+            }}
+          />
+          <TextSkeleton width={titleWidth} height={20} />
+        </div>
+        {/* Subtitle */}
         <TextSkeleton width={subtitleWidth} height={14} />
       </div>
     </div>
