@@ -155,8 +155,10 @@ mastodon-nextjs-client/
 │   ├── utils/                # Utility functions
 │   │   ├── account.ts        # Account helper functions
 │   │   ├── cookies.ts        # Cookie management utilities
+│   │   ├── fp.ts             # Ramda-based functional programming utilities
 │   │   ├── oauth.ts          # OAuth flow helpers
 │   │   ├── tiptapExtensions.ts  # Tiptap extension utilities
+│   │   ├── RAMDA.md          # Ramda functions documentation
 │   │   └── README.md
 │   └── proxy.ts              # Proxy configuration
 ├── .claude/                  # Claude Code configuration
@@ -261,10 +263,13 @@ TypeScript type definitions:
 
 ### `/src/utils/`
 Utility functions:
+- **fp.ts**: Ramda-based functional programming utilities for data transformation (deduplication, nested maps, status helpers)
 - **oauth.ts**: OAuth flow helpers (URL generation, token exchange)
 - **account.ts**: Account-related utility functions
 - **cookies.ts**: Cookie management utilities (using native cookieStore API)
 - **tiptapExtensions.ts**: Tiptap editor extension utilities
+- **RAMDA.md**: Comprehensive documentation of Ramda functions used in the project
+- **README.md**: Utils directory overview and documentation index
 
 ## Key Files
 
