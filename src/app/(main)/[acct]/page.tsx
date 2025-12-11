@@ -429,7 +429,6 @@ export default function AccountPage({
         paddingTop: 'var(--size-4)',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
       }}>
         {/* Posts Tab Content */}
         <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
@@ -507,7 +506,7 @@ export default function AccountPage({
 
         {/* Media Tab Content */}
         <Activity mode={activeTab === 'media' ? 'visible' : 'hidden'}>
-          <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
             {statusesLoading && uniqueStatuses.length === 0 ? (
               <div style={{
                 display: 'grid',
