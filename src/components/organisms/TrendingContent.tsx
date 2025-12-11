@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api';
@@ -63,33 +64,32 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages);
 
     return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <Container className="full-height-container">
             {/* Header */}
             {header}
 
             {/* Tab Navigation */}
-            <Tabs
+            <StyledTabs
                 tabs={trendingTabs}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
                 variant="underline"
-                style={{ padding: '0 var(--size-4)' }}
             />
 
             {/* Tab Content - using Activity for toggling */}
             <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
-                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <TabContent>
                     {statusesLoading ? (
-                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                        <ListContainer className="virtualized-list-container">
                             <PostCardSkeletonList count={5} />
-                        </div>
+                        </ListContainer>
                     ) : statusesError ? (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)' }}>
-                            <p style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
+                        <ErrorContainer>
+                            <ErrorText>
                                 {statusesErrorMsg instanceof Error ? statusesErrorMsg.message : 'Failed to load posts'}
-                            </p>
+                            </ErrorText>
                             <Button onClick={() => window.location.reload()}>Retry</Button>
-                        </div>
+                        </ErrorContainer>
                     ) : uniqueStatuses.length === 0 ? (
                         <EmptyState title="No trending posts at the moment" />
                     ) : (
@@ -112,19 +112,19 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             endIndicator="You've reached the end of trending posts"
                         />
                     )}
-                </div>
+                </TabContent>
             </Activity>
 
             <Activity mode={activeTab === 'tags' ? 'visible' : 'hidden'}>
-                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%', padding: '0 var(--size-4)' }}>
+                <TabContentWithPadding>
                     {tagsLoading ? (
-                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+                        <ListContainer className="virtualized-list-container">
+                            <SkeletonList>
                                 {Array.from({ length: 8 }).map((_, i) => (
                                     <TrendingTagCardSkeleton key={i} />
                                 ))}
-                            </div>
-                        </div>
+                            </SkeletonList>
+                        </ListContainer>
                     ) : tagsError ? (
                         <EmptyState title="Failed to load trending tags" />
                     ) : uniqueTags.length === 0 ? (
@@ -149,19 +149,19 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             endIndicator="You've reached the end of trending tags"
                         />
                     )}
-                </div>
+                </TabContentWithPadding>
             </Activity>
 
             <Activity mode={activeTab === 'links' ? 'visible' : 'hidden'}>
-                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%', padding: '0 var(--size-4)' }}>
+                <TabContentWithPadding>
                     {linksLoading ? (
-                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+                        <ListContainer className="virtualized-list-container">
+                            <SkeletonList>
                                 {Array.from({ length: 5 }).map((_, i) => (
                                     <TrendingLinkCardSkeleton key={i} />
                                 ))}
-                            </div>
-                        </div>
+                            </SkeletonList>
+                        </ListContainer>
                     ) : linksError ? (
                         <EmptyState title="Failed to load trending news" />
                     ) : uniqueLinks.length === 0 ? (
@@ -186,8 +186,54 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             endIndicator="You've reached the end of trending news"
                         />
                     )}
-                </div>
+                </TabContentWithPadding>
             </Activity>
-        </div>
+        </Container>
     );
 });
+
+
+// Styled components
+const Container = styled.div`
+    max-width: 600px;
+    margin: 0 auto;
+`;
+
+const TabContent = styled.div`
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`;
+
+const TabContentWithPadding = styled(TabContent)`
+    padding: 0 var(--size-4);
+`;
+
+const ListContainer = styled.div`
+    flex: 1;
+    overflow: auto;
+`;
+
+const SkeletonList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+`;
+
+const ErrorContainer = styled.div`
+    text-align: center;
+    padding: var(--size-8);
+`;
+
+const ErrorText = styled.p`
+    color: var(--red-6);
+    margin-bottom: var(--size-3);
+`;
+
+
+
+const StyledTabs = styled(Tabs)`
+    padding: 0 var(--size-4);
+` as typeof Tabs;

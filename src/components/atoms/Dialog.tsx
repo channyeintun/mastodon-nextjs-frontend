@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { type ReactNode, useEffect } from 'react';
 
 interface DialogProps {
@@ -27,81 +28,70 @@ export function Dialog({
   if (!isOpen) return null;
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        padding: 'var(--size-4)',
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          backgroundColor: 'var(--surface-1)',
-          borderRadius: 'var(--radius-3)',
-          maxWidth,
-          width: '100%',
-          maxHeight: '90vh',
-          overflow: 'auto',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Overlay onClick={onClose}>
+      <Content $maxWidth={maxWidth} onClick={(e) => e.stopPropagation()}>
         {children}
-      </div>
-    </div>
+      </Content>
+    </Overlay>
   );
 }
 
 export function DialogHeader({ children }: { children: ReactNode }) {
   return (
-    <div
-      style={{
-        padding: 'var(--size-4)',
-        borderBottom: '1px solid var(--surface-3)',
-      }}
-    >
-      <h2
-        style={{
-          margin: 0,
-          fontSize: 'var(--font-size-3)',
-          fontWeight: 600,
-        }}
-      >
-        {children}
-      </h2>
-    </div>
+    <HeaderWrapper>
+      <HeaderTitle>{children}</HeaderTitle>
+    </HeaderWrapper>
   );
 }
 
 export function DialogBody({ children }: { children: ReactNode }) {
-  return (
-    <div
-      style={{
-        padding: 'var(--size-4)',
-      }}
-    >
-      {children}
-    </div>
-  );
+  return <BodyWrapper>{children}</BodyWrapper>;
 }
 
 export function DialogFooter({ children }: { children: ReactNode }) {
-  return (
-    <div
-      style={{
-        padding: 'var(--size-4)',
-        borderTop: '1px solid var(--surface-3)',
-        display: 'flex',
-        gap: 'var(--size-3)',
-        justifyContent: 'flex-end',
-      }}
-    >
-      {children}
-    </div>
-  );
+  return <FooterWrapper>{children}</FooterWrapper>;
 }
+
+// Styled components
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--size-4);
+`;
+
+const Content = styled.div<{ $maxWidth: string }>`
+  background-color: var(--surface-1);
+  border-radius: var(--radius-3);
+  max-width: ${props => props.$maxWidth};
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+`;
+
+const HeaderWrapper = styled.div`
+  padding: var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+`;
+
+const HeaderTitle = styled.h2`
+  margin: 0;
+  font-size: var(--font-size-3);
+  font-weight: 600;
+`;
+
+const BodyWrapper = styled.div`
+  padding: var(--size-4);
+`;
+
+const FooterWrapper = styled.div`
+  padding: var(--size-4);
+  border-top: 1px solid var(--surface-3);
+  display: flex;
+  gap: var(--size-3);
+  justify-content: flex-end;
+`;

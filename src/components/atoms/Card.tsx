@@ -5,12 +5,13 @@ interface CardProps {
   padding?: 'none' | 'small' | 'medium' | 'large';
   hoverable?: boolean;
   style?: CSSProperties;
+  className?: string;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   as?: ElementType;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  { children, padding = 'medium', hoverable = false, style, onClick, as: Component = 'div' },
+  { children, padding = 'medium', hoverable = false, style, className, onClick, as: Component = 'div' },
   ref
 ) {
   const paddingMap = {
@@ -34,6 +35,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     <Component
       ref={ref}
       style={cardStyle}
+      className={className}
       onClick={onClick}
       onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
         if (hoverable) {

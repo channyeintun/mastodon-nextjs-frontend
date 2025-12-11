@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { Card, SensitiveContentButton } from '@/components/atoms';
 import {
   StatusContent,
@@ -15,6 +16,7 @@ import {
 import type { Status } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
+import { removeQuotePrefix } from '@/utils/fp';
 import { CSSProperties } from 'react';
 
 interface PostCardProps {
@@ -73,22 +75,8 @@ export function PostCard({
   } = actions;
 
   // Remove "RE: [link]" from content when displaying quotes
-  // Mastodon automatically adds "RE: [url]" to quote posts, we remove it since we show the quoted status
   const contentToDisplay = displayStatus.quote?.quoted_status
-    ? displayStatus.content
-      // Remove <p class="quote-inline">RE: <a>...</a></p> (with nested spans)
-      .replace(/<p\s+class="quote-inline">RE:\s*<a[^>]*>.*?<\/a><\/p>\s*/gi, '')
-      // Remove RE: with link wrapped in regular <p> tag: <p>RE: <a>...</a></p>
-      .replace(/^<p>\s*RE:\s*<a[^>]*>.*?<\/a>\s*<\/p>\s*/i, '')
-      // Remove RE: with plain URL in <p>: <p>RE: https://...</p>
-      .replace(/^<p>\s*RE:\s*https?:\/\/[^\s<]+\s*<\/p>\s*/i, '')
-      // Remove RE: with link not in <p>: RE: <a>...</a>
-      .replace(/^RE:\s*<a[^>]*>.*?<\/a>\s*/i, '')
-      // Remove RE: with plain URL not in <p>: RE: https://...
-      .replace(/^RE:\s*https?:\/\/\S+\s*/i, '')
-      // Remove leftover empty paragraphs
-      .replace(/^<p>\s*<\/p>\s*/, '')
-      .trim()
+    ? removeQuotePrefix(displayStatus.content)
     : displayStatus.content;
 
   return (
@@ -97,7 +85,7 @@ export function PostCard({
       {isReblog && <ReblogIndicator account={status.account} />}
 
       {/* Post header and content */}
-      <div style={{ marginBottom: 'var(--size-3)' }}>
+      <PostContent>
         <PostHeader
           account={displayStatus.account}
           createdAt={displayStatus.created_at}
@@ -136,123 +124,65 @@ export function PostCard({
         {/* Post content */}
         {(!hasContentWarning || showCWContent) &&
           contentToDisplay && (
-            <StatusContent
+            <StyledStatusContent
               html={contentToDisplay}
               emojis={displayStatus.emojis}
-              style={{ marginTop: 'var(--size-3)' }}
             />
           )}
 
         {/* Media attachments */}
         {(!hasContentWarning || showCWContent) &&
           displayStatus.media_attachments.length > 0 && (
-            <div style={{ marginTop: 'var(--size-3)', position: 'relative' }}>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns:
-                    displayStatus.media_attachments.length === 1
-                      ? '1fr'
-                      : 'repeat(2, 1fr)',
-                  gap: 'var(--size-2)',
-                  borderRadius: 'var(--radius-2)',
-                  overflow: 'hidden',
-                  filter:
-                    hasSensitiveMedia && !showCWMedia ? 'blur(32px)' : 'none',
-                  transition: 'filter 0.2s ease',
-                }}
+            <MediaContainer>
+              <MediaGrid
+                $columns={displayStatus.media_attachments.length === 1 ? 1 : 2}
+                $blurred={!!(hasSensitiveMedia && !showCWMedia)}
               >
                 {displayStatus.media_attachments.map((media) => (
-                  <div
-                    key={media.id}
-                    style={{
-                      position: 'relative',
-                      aspectRatio: '16/9',
-                      background: 'var(--surface-3)',
-                    }}
-                  >
+                  <MediaItem key={media.id}>
                     {media.type === 'image' && media.preview_url && (
-                      <img
+                      <MediaImage
                         src={media.preview_url}
                         alt={media.description || ''}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
                       />
                     )}
                     {media.type === 'video' && media.url && (
-                      <video
-                        src={media.url}
-                        controls
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
-                      />
+                      <MediaVideo src={media.url} controls />
                     )}
                     {media.type === 'gifv' && media.url && (
-                      <video
-                        src={media.url}
-                        autoPlay
-                        loop
-                        muted
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
-                      />
+                      <MediaVideo src={media.url} autoPlay loop muted />
                     )}
-                  </div>
+                  </MediaItem>
                 ))}
-              </div>
+              </MediaGrid>
 
               {/* Sensitive content overlay */}
               {hasSensitiveMedia && !showCWMedia && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'rgba(0, 0, 0, 0.3)',
-                    borderRadius: 'var(--radius-2)',
-                  }}
-                >
+                <SensitiveOverlay>
                   <SensitiveContentButton onClick={toggleCWMedia} />
-                </div>
+                </SensitiveOverlay>
               )}
-            </div>
+            </MediaContainer>
           )}
 
         {/* Link preview */}
         {(!hasContentWarning || showCWContent) &&
           displayStatus.card &&
           displayStatus.media_attachments.length === 0 && (
-            <LinkPreview
-              card={displayStatus.card}
-              style={{ marginTop: 'var(--size-3)' }}
-            />
+            <StyledLinkPreview card={displayStatus.card} />
           )}
 
         {/* Quoted status */}
         {(!hasContentWarning || showCWContent) &&
           displayStatus.quote?.state === 'accepted' &&
           displayStatus.quote.quoted_status && (
-            <div style={{ marginTop: 'var(--size-3)' }}>
+            <QuotedPostWrapper>
               <PostCard
                 status={displayStatus.quote.quoted_status}
                 hideActions
                 style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
               />
-            </div>
+            </QuotedPostWrapper>
           )}
 
         {/* Poll */}
@@ -285,7 +215,7 @@ export function PostCard({
             onShare={handleShare}
           />
         )}
-      </div>
+      </PostContent>
 
       {/* Edit History */}
       {showEditHistory && displayStatus.edited_at && (
@@ -297,3 +227,66 @@ export function PostCard({
     </Card>
   );
 }
+
+// Styled components
+const PostContent = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const StyledStatusContent = styled(StatusContent)`
+  margin-top: var(--size-3);
+`;
+
+const MediaContainer = styled.div`
+  margin-top: var(--size-3);
+  position: relative;
+`;
+
+const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
+  display: grid;
+  grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
+  gap: var(--size-2);
+  border-radius: var(--radius-2);
+  overflow: hidden;
+  filter: ${props => props.$blurred ? 'blur(32px)' : 'none'};
+  transition: filter 0.2s ease;
+`;
+
+const MediaItem = styled.div`
+  position: relative;
+  aspect-ratio: 16/9;
+  background: var(--surface-3);
+`;
+
+const MediaImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const MediaVideo = styled.video`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const SensitiveOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-2);
+`;
+
+const StyledLinkPreview = styled(LinkPreview)`
+  margin-top: var(--size-3);
+`;
+
+const QuotedPostWrapper = styled.div`
+  margin-top: var(--size-3);
+`;

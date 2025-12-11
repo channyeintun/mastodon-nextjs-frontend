@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { Button } from '../atoms/Button';
@@ -81,58 +82,25 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
   }
 
   return (
-    <div style={{
-      padding: 'var(--size-3)',
-      background: 'var(--surface-2)',
-      borderRadius: 'var(--radius-2)',
-      marginBottom: 'var(--size-3)',
-    }}>
+    <Container>
       {/* Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 'var(--size-3)',
-      }}>
-        <h3 style={{
-          fontSize: 'var(--font-size-2)',
-          fontWeight: 'var(--font-weight-6)',
-          color: 'var(--text-1)',
-          margin: 0,
-        }}>
-          Poll
-        </h3>
+      <Header>
+        <Title>Poll</Title>
         <IconButton size="small" onClick={handleRemovePoll} title="Remove poll">
           <X size={16} />
         </IconButton>
-      </div>
+      </Header>
 
       {/* Options */}
-      <div style={{ marginBottom: 'var(--size-3)' }}>
+      <OptionsSection>
         {options.map((option, index) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              gap: 'var(--size-2)',
-              marginBottom: 'var(--size-2)',
-            }}
-          >
-            <input
+          <OptionRow key={index}>
+            <OptionInput
               type="text"
               value={option}
               onChange={(e) => handleOptionChange(index, e.target.value)}
               placeholder={`Option ${index + 1}`}
               maxLength={50}
-              style={{
-                flex: 1,
-                padding: 'var(--size-2)',
-                border: '1px solid var(--surface-4)',
-                borderRadius: 'var(--radius-2)',
-                background: 'var(--surface-1)',
-                color: 'var(--text-1)',
-                fontSize: 'var(--font-size-1)',
-              }}
             />
             {options.length > 2 && (
               <IconButton
@@ -143,7 +111,7 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
                 <X size={16} />
               </IconButton>
             )}
-          </div>
+          </OptionRow>
         ))}
 
         {options.length < 4 && (
@@ -157,73 +125,129 @@ export function PollComposer({ poll, onPollChange }: PollComposerProps) {
             Add Option
           </Button>
         )}
-      </div>
+      </OptionsSection>
 
       {/* Settings */}
-      <div style={{
-        display: 'flex',
-        gap: 'var(--size-3)',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-      }}>
+      <SettingsRow>
         {/* Expiry */}
-        <div style={{ flex: 1, minWidth: '150px' }}>
-          <label style={{
-            display: 'block',
-            fontSize: 'var(--font-size-0)',
-            fontWeight: 'var(--font-weight-6)',
-            marginBottom: 'var(--size-1)',
-            color: 'var(--text-1)',
-          }}>
-            Poll duration
-          </label>
-          <select
+        <SettingField>
+          <SettingLabel>Poll duration</SettingLabel>
+          <Select
             value={expiresIn}
             onChange={(e) => handleExpiryChange(Number(e.target.value))}
-            style={{
-              width: '100%',
-              padding: 'var(--size-2)',
-              border: '1px solid var(--surface-4)',
-              borderRadius: 'var(--radius-2)',
-              background: 'var(--surface-1)',
-              color: 'var(--text-1)',
-              fontSize: 'var(--font-size-1)',
-              cursor: 'pointer',
-            }}
           >
             {EXPIRY_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
             ))}
-          </select>
-        </div>
+          </Select>
+        </SettingField>
 
         {/* Multiple choice */}
         <div>
-          <label style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-2)',
-            cursor: 'pointer',
-            fontSize: 'var(--font-size-1)',
-          }}>
-            <input
+          <CheckboxLabel>
+            <Checkbox
               type="checkbox"
               checked={multiple}
               onChange={(e) => handleMultipleChange(e.target.checked)}
-              style={{
-                width: '18px',
-                height: '18px',
-                cursor: 'pointer',
-              }}
             />
-            <span style={{ color: 'var(--text-1)', fontWeight: 'var(--font-weight-5)' }}>
-              Multiple choice
-            </span>
-          </label>
+            <CheckboxText>Multiple choice</CheckboxText>
+          </CheckboxLabel>
         </div>
-      </div>
-    </div>
+      </SettingsRow>
+    </Container>
   );
 }
+
+// Styled components
+const Container = styled.div`
+  padding: var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  margin-bottom: var(--size-3);
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--size-3);
+`;
+
+const Title = styled.h3`
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  margin: 0;
+`;
+
+const OptionsSection = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const OptionRow = styled.div`
+  display: flex;
+  gap: var(--size-2);
+  margin-bottom: var(--size-2);
+`;
+
+const OptionInput = styled.input`
+  flex: 1;
+  padding: var(--size-2);
+  border: 1px solid var(--surface-4);
+  border-radius: var(--radius-2);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+`;
+
+const SettingsRow = styled.div`
+  display: flex;
+  gap: var(--size-3);
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
+const SettingField = styled.div`
+  flex: 1;
+  min-width: 150px;
+`;
+
+const SettingLabel = styled.label`
+  display: block;
+  font-size: var(--font-size-0);
+  font-weight: var(--font-weight-6);
+  margin-bottom: var(--size-1);
+  color: var(--text-1);
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: var(--size-2);
+  border: 1px solid var(--surface-4);
+  border-radius: var(--radius-2);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+  cursor: pointer;
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  cursor: pointer;
+  font-size: var(--font-size-1);
+`;
+
+const Checkbox = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+`;
+
+const CheckboxText = styled.span`
+  color: var(--text-1);
+  font-weight: var(--font-weight-5);
+`;

@@ -119,13 +119,15 @@ interface MemberItemProps {
     account: Account;
     onRemove: (accountId: string) => void;
     isRemovePending: boolean;
+    style?: React.CSSProperties;
 }
 
-export function MemberItem({ account, onRemove, isRemovePending }: MemberItemProps) {
+export function MemberItem({ account, onRemove, isRemovePending, style }: MemberItemProps) {
     return (
         <div style={{
             display: 'flex', alignItems: 'center',
             padding: 'var(--size-3) var(--size-4)', borderBottom: '1px solid var(--surface-2)',
+            ...style,
         }}>
             <Link href={`/@${account.acct}`} style={{
                 flex: 1, display: 'flex', alignItems: 'center', gap: 'var(--size-3)',

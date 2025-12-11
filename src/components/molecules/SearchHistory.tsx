@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { Clock, X, Search } from 'lucide-react';
 import { EmptyState } from '@/components/atoms';
 
@@ -33,77 +34,114 @@ export function SearchHistory({
     }
 
     return (
-        <div>
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 'var(--size-3)',
-                padding: '0 var(--size-2)'
-            }}>
-                <h3 style={{
-                    fontSize: 'var(--font-size-2)',
-                    fontWeight: 'var(--font-weight-6)',
-                    color: 'var(--text-2)'
-                }}>Recent</h3>
-                <button
-                    onClick={onClear}
-                    style={{
-                        border: 'none',
-                        background: 'none',
-                        color: 'var(--blue-6)',
-                        fontSize: 'var(--font-size-1)',
-                        fontWeight: 'var(--font-weight-6)',
-                        cursor: 'pointer'
-                    }}
-                >
+        <Container>
+            <Header>
+                <Title>Recent</Title>
+                <ClearButton onClick={onClear}>
                     Clear all
-                </button>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+                </ClearButton>
+            </Header>
+            <HistoryList>
                 {history.map((term, index) => (
-                    <div
+                    <HistoryItem
                         key={term + index}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: 'var(--size-3)',
-                            borderRadius: 'var(--radius-2)',
-                            background: 'var(--surface-2)',
-                            cursor: 'pointer',
-                            transition: 'background 0.2s ease'
-                        }}
                         className="recent-search-item"
                         onClick={() => onSelect(term)}
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)' }}>
-                            <Clock size={16} style={{ color: 'var(--text-3)' }} />
-                            <span style={{ color: 'var(--text-1)' }}>{term}</span>
-                        </div>
-                        <button
+                        <HistoryItemContent>
+                            <ClockIcon size={16} />
+                            <TermText>{term}</TermText>
+                        </HistoryItemContent>
+                        <RemoveButton
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onRemove(term);
                             }}
-                            style={{
-                                border: 'none',
-                                background: 'none',
-                                color: 'var(--text-3)',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: 'var(--size-1)',
-                                borderRadius: '50%'
-                            }}
                             className="recent-search-remove"
                         >
                             <X size={16} />
-                        </button>
-                    </div>
+                        </RemoveButton>
+                    </HistoryItem>
                 ))}
-            </div>
-        </div>
+            </HistoryList>
+        </Container>
     );
 }
+
+// Styled components
+const Container = styled.div``;
+
+const Header = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--size-3);
+    padding: 0 var(--size-2);
+`;
+
+const Title = styled.h3`
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-6);
+    color: var(--text-2);
+`;
+
+const ClearButton = styled.button`
+    border: none;
+    background: none;
+    color: var(--blue-6);
+    font-size: var(--font-size-1);
+    font-weight: var(--font-weight-6);
+    cursor: pointer;
+`;
+
+const HistoryList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+`;
+
+const HistoryItem = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--size-3);
+    border-radius: var(--radius-2);
+    background: var(--surface-2);
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: var(--surface-3);
+    }
+`;
+
+const HistoryItemContent = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-3);
+`;
+
+const ClockIcon = styled(Clock)`
+    color: var(--text-3);
+`;
+
+const TermText = styled.span`
+    color: var(--text-1);
+`;
+
+const RemoveButton = styled.button`
+    border: none;
+    background: none;
+    color: var(--text-3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--size-1);
+    border-radius: 50%;
+
+    &:hover {
+        color: var(--text-2);
+        background: var(--surface-3);
+    }
+`;

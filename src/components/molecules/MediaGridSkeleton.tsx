@@ -1,5 +1,14 @@
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import { ImageSkeleton } from '@/components/atoms';
+
+// Styled components
+const Grid = styled.div<{ $columns: number }>`
+  display: grid;
+  grid-template-columns: repeat(${props => props.$columns}, 1fr);
+  gap: var(--size-1);
+  padding: var(--size-2);
+`;
 
 interface MediaGridSkeletonProps {
   /** Number of skeleton items to display (default: 9) */
@@ -29,18 +38,10 @@ export const MediaGridSkeleton = ({
   style,
 }: MediaGridSkeletonProps) => {
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        gap: 'var(--size-1)',
-        padding: 'var(--size-2)',
-        ...style,
-      }}
-    >
+    <Grid $columns={columns} style={style}>
       {[...Array(count)].map((_, i) => (
         <ImageSkeleton key={i} aspectRatio="1" />
       ))}
-    </div>
+    </Grid>
   );
 };

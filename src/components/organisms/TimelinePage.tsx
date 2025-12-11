@@ -1,148 +1,101 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
-import { useAuthStore } from '@/hooks/useStores';
 import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api';
 import { PostCard } from './PostCard';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
 import { VirtualizedList } from './VirtualizedList';
-import { EmojiText, Button, CircleSkeleton, EmptyState } from '@/components/atoms';
-import { Plus, Search } from 'lucide-react';
+import { EmojiText, Button, EmptyState } from '@/components/atoms';
+import { Search } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 
 export const TimelinePage = observer(() => {
-    const authStore = useAuthStore();
-    const { data: user } = useCurrentAccount();
-    const {
-        data,
-        isLoading,
-        isError,
-        error,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useInfiniteHomeTimeline();
+    const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
+    const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
 
-    // Flatten and deduplicate statuses using FP utility
-    const uniqueStatuses = flattenAndUniqById(data?.pages);
+    const uniqueStatuses = flattenAndUniqById(statusPages?.pages);
 
+    // Loading state
     if (isLoading) {
         return (
-            <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                {/* Header */}
-                <div style={{
-                    background: 'var(--surface-1)',
-                    zIndex: 10,
-                    padding: 'var(--size-4)',
-                    marginBottom: 'var(--size-4)',
-                    borderBottom: '1px solid var(--surface-3)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexShrink: 0,
-                }}>
+            <Container>
+                <Header>
                     <div>
-                        <h1 style={{ fontSize: 'var(--font-size-5)', marginBottom: 'var(--size-1)' }}>
-                            Home
-                        </h1>
-                        <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                            {authStore.instanceURL?.replace('https://', '')}
-                        </p>
+                        <Title>Home</Title>
+                        <Subtitle>Your personal timeline</Subtitle>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-                        <CircleSkeleton />
+                    <HeaderActions>
+                        <SearchLink href="/search">
+                            <Search size={20} />
+                        </SearchLink>
                         <ProfilePillSkeleton />
-                    </div>
-                </div>
-
-                {/* Skeleton loading */}
-                <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
-                    <PostCardSkeletonList count={5} />
-                </div>
-            </div>
+                    </HeaderActions>
+                </Header>
+                <ListContainer className="virtualized-list-container">
+                    <PostCardSkeletonList count={3} />
+                </ListContainer>
+            </Container>
         );
     }
 
+    // Error state
     if (isError) {
         return (
-            <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-                <h2 style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
-                    Error Loading Timeline
-                </h2>
-                <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>
-                    {error instanceof Error ? error.message : 'An unknown error occurred'}
-                </p>
-                <Button onClick={() => window.location.reload()}>
-                    Retry
-                </Button>
-            </div>
+            <Container>
+                <Header>
+                    <div>
+                        <Title>Home</Title>
+                        <Subtitle>Your personal timeline</Subtitle>
+                    </div>
+                </Header>
+                <ErrorContainer>
+                    <ErrorTitle>Error loading timeline</ErrorTitle>
+                    <ErrorMessage>Please check your connection and try again.</ErrorMessage>
+                    <Button onClick={() => window.location.reload()}>Retry</Button>
+                </ErrorContainer>
+            </Container>
         );
     }
 
-    if (uniqueStatuses.length === 0) {
+    // Empty state
+    if (!isLoading && uniqueStatuses.length === 0) {
         return (
-            <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-                <h2 style={{ marginBottom: 'var(--size-3)' }}>Your Timeline is Empty</h2>
-                <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>
-                    Follow some accounts to see their posts here!
-                </p>
-                <Link href="/compose">
-                    <Button>
-                        <Plus size={18} />
-                        Create Your First Post
-                    </Button>
-                </Link>
-            </div>
+            <Container>
+                <Header>
+                    <div>
+                        <Title>Home</Title>
+                        <Subtitle>Your personal timeline</Subtitle>
+                    </div>
+                </Header>
+                <EmptyContainer>
+                    <EmptyTitle>Your timeline is empty</EmptyTitle>
+                    <EmptyMessage>
+                        Follow some people to see their posts here.
+                    </EmptyMessage>
+                    <Link href="/explore">
+                        <Button>Explore</Button>
+                    </Link>
+                </EmptyContainer>
+            </Container>
         );
     }
 
     return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-            {/* Header */}
-            <div style={{
-                background: 'var(--surface-1)',
-                zIndex: 10,
-                padding: 'var(--size-4)',
-                marginBottom: 'var(--size-4)',
-                borderBottom: '1px solid var(--surface-3)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexShrink: 0,
-            }}>
+        <Container className="full-height-container">
+            {/* Sticky Header */}
+            <Header>
                 <div>
-                    <h1 style={{ fontSize: 'var(--font-size-5)', marginBottom: 'var(--size-1)' }}>
-                        Home
-                    </h1>
-                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-                        {authStore.instanceURL?.replace('https://', '')}
-                    </p>
+                    <Title>Home</Title>
+                    <Subtitle>Your personal timeline</Subtitle>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
-                    <Link
-                        href="/search"
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: 'var(--size-7)',
-                            height: 'var(--size-7)',
-                            borderRadius: '50%',
-                            color: 'var(--text-2)',
-                            transition: 'all 0.2s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.opacity = '0.8';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.opacity = '1';
-                        }}
-                    >
+                <HeaderActions>
+                    <SearchLink href="/search">
                         <Search size={20} />
-                    </Link>
-                    {user ? (
+                    </SearchLink>
+                    {!isLoadingUser && user ? (
                         <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
                             <img
                                 src={user.avatar}
@@ -156,17 +109,14 @@ export const TimelinePage = observer(() => {
                     ) : (
                         <ProfilePillSkeleton />
                     )}
-                </div>
-            </div>
+                </HeaderActions>
+            </Header>
 
             {/* Virtual scrolling container with scroll restoration */}
             <VirtualizedList<Status>
                 items={uniqueStatuses}
                 renderItem={(status) => (
-                    <PostCard
-                        status={status}
-                        style={{ marginBottom: 'var(--size-3)' }}
-                    />
+                    <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                 )}
                 getItemKey={(status) => status.id}
                 estimateSize={300}
@@ -182,6 +132,91 @@ export const TimelinePage = observer(() => {
                 endIndicator="You've reached the end of your timeline"
                 emptyState={<EmptyState title="No posts yet" description="Follow some people to see their posts here." />}
             />
-        </div>
+        </Container>
     );
 });
+
+// Styled components
+const Container = styled.div`
+    max-width: 600px;
+    margin: 0 auto;
+`;
+
+const Header = styled.div`
+    background: var(--surface-1);
+    z-index: 10;
+    padding: var(--size-4);
+    margin-bottom: var(--size-4);
+    border-bottom: 1px solid var(--surface-3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+`;
+
+const Title = styled.h1`
+    font-size: var(--font-size-5);
+    margin-bottom: var(--size-1);
+`;
+
+const Subtitle = styled.p`
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+`;
+
+const HeaderActions = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+`;
+
+const SearchLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-7);
+    height: var(--size-7);
+    border-radius: 50%;
+    color: var(--text-2);
+    transition: all 0.2s ease;
+
+    &:hover {
+        opacity: 0.8;
+    }
+`;
+
+const ListContainer = styled.div`
+    flex: 1;
+    overflow: auto;
+`;
+
+const ErrorContainer = styled.div`
+    text-align: center;
+    margin-top: var(--size-8);
+`;
+
+const ErrorTitle = styled.h2`
+    color: var(--red-6);
+    margin-bottom: var(--size-3);
+`;
+
+const ErrorMessage = styled.p`
+    color: var(--text-2);
+    margin-bottom: var(--size-4);
+`;
+
+const EmptyContainer = styled.div`
+    text-align: center;
+    margin-top: var(--size-8);
+`;
+
+const EmptyTitle = styled.h2`
+    margin-bottom: var(--size-3);
+`;
+
+const EmptyMessage = styled.p`
+    color: var(--text-2);
+    margin-bottom: var(--size-4);
+`;
+
+

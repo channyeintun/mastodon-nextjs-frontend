@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import { ImageSkeleton, TextSkeleton } from '@/components/atoms';
 
@@ -20,21 +21,30 @@ interface ListItemSkeletonProps {
  */
 export const ListItemSkeleton = ({ style }: ListItemSkeletonProps) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: 'var(--size-4)',
-        borderBottom: '1px solid var(--surface-3)',
-        gap: 'var(--size-3)',
-        ...style,
-      }}
-    >
+    <Container style={style}>
       <ImageSkeleton width={48} height={48} borderRadius="var(--radius-2)" />
-      <div style={{ flex: 1 }}>
-        <TextSkeleton width={120} height={18} style={{ marginBottom: 'var(--size-1)' }} />
+      <InfoWrapper>
+        <TitleSkeleton width={120} height={18} />
         <TextSkeleton width={80} height={14} />
-      </div>
-    </div>
+      </InfoWrapper>
+    </Container>
   );
 };
+
+// Styled components
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  padding: var(--size-4);
+  border-bottom: 1px solid var(--surface-3);
+  gap: var(--size-3);
+`;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+`;
+
+const TitleSkeleton = styled(TextSkeleton)`
+  margin-bottom: var(--size-1);
+`;
+

@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import type { ReactNode } from 'react';
 
 interface FormFieldProps {
@@ -18,51 +19,46 @@ export function FormField({
   children,
 }: FormFieldProps) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--size-2)',
-      }}
-    >
-      <label
-        htmlFor={htmlFor}
-        style={{
-          fontSize: 'var(--font-size-1)',
-          fontWeight: 600,
-          color: 'var(--text-1)',
-        }}
-      >
+    <Container>
+      <Label htmlFor={htmlFor}>
         {label}
-        {required && (
-          <span style={{ color: 'var(--red-6)', marginLeft: '4px' }}>*</span>
-        )}
-      </label>
+        {required && <RequiredMark>*</RequiredMark>}
+      </Label>
 
-      {description && (
-        <p
-          style={{
-            fontSize: 'var(--font-size-0)',
-            color: 'var(--text-2)',
-            margin: 0,
-          }}
-        >
-          {description}
-        </p>
-      )}
+      {description && <Description>{description}</Description>}
 
       {children}
 
-      {error && (
-        <span
-          style={{
-            fontSize: 'var(--font-size-0)',
-            color: 'var(--red-6)',
-          }}
-        >
-          {error}
-        </span>
-      )}
-    </div>
+      {error && <ErrorText>{error}</ErrorText>}
+    </Container>
   );
 }
+
+// Styled components
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2);
+`;
+
+const Label = styled.label`
+  font-size: var(--font-size-1);
+  font-weight: 600;
+  color: var(--text-1);
+`;
+
+const RequiredMark = styled.span`
+  color: var(--red-6);
+  margin-left: 4px;
+`;
+
+const Description = styled.p`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  margin: 0;
+`;
+
+const ErrorText = styled.span`
+  font-size: var(--font-size-0);
+  color: var(--red-6);
+`;

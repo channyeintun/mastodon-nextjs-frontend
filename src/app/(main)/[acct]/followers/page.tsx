@@ -99,6 +99,7 @@ export default function FollowersPage({
                     <AccountCard
                         account={follower}
                         showFollowButton={true}
+                        style={{ marginBottom: 'var(--size-2)' }}
                     />
                 )}
                 getItemKey={(follower) => follower.id}
@@ -111,7 +112,7 @@ export default function FollowersPage({
                 height="auto"
                 style={{ flex: 1, minHeight: 0 }}
                 scrollRestorationKey={`followers-${acct}`}
-                loadingIndicator={<AccountCardSkeleton />}
+                loadingIndicator={<AccountCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
                 endIndicator="No more followers"
                 emptyState={
                     account.followers_count > 0 ? (

@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import Link from 'next/link';
 import { Check, X, Ban, VolumeX } from 'lucide-react';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
@@ -78,61 +79,57 @@ export function AccountCard({
     const renderActions = () => {
         if (showUnblockButton) {
             return (
-                <Button
+                <IconButton
                     variant="secondary"
                     size="small"
                     onClick={handleUnblock}
                     disabled={isUnblockLoading}
                     isLoading={isUnblockLoading}
-                    style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
                 >
                     <Ban size={16} />
                     Unblock
-                </Button>
+                </IconButton>
             );
         }
 
         if (showUnmuteButton) {
             return (
-                <Button
+                <IconButton
                     variant="secondary"
                     size="small"
                     onClick={handleUnmute}
                     disabled={isUnmuteLoading}
                     isLoading={isUnmuteLoading}
-                    style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
                 >
                     <VolumeX size={16} />
                     Unmute
-                </Button>
+                </IconButton>
             );
         }
 
         if (showFollowRequestActions) {
             return (
                 <>
-                    <Button
+                    <IconButton
                         variant="primary"
                         size="small"
                         onClick={handleAccept}
                         disabled={isRequestLoading}
                         isLoading={acceptMutation.isPending}
-                        style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
                     >
                         <Check size={16} />
                         Accept
-                    </Button>
-                    <Button
+                    </IconButton>
+                    <IconButton
                         variant="ghost"
                         size="small"
                         onClick={handleReject}
                         disabled={isRequestLoading}
                         isLoading={rejectMutation.isPending}
-                        style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}
                     >
                         <X size={16} />
                         Reject
-                    </Button>
+                    </IconButton>
                 </>
             );
         }
@@ -189,15 +186,45 @@ export function AccountCard({
 export function AccountCardSkeleton({ style }: { style?: React.CSSProperties }) {
     return (
         <div className="account-card" style={style}>
-            <div className="skeleton" style={{ width: 48, height: 48, borderRadius: '50%', flexShrink: 0 }} />
+            <AvatarSkeleton className="skeleton" />
             <div className="account-card-info">
-                <div className="skeleton" style={{ width: 120, height: 16, marginBottom: 4 }} />
-                <div className="skeleton" style={{ width: 80, height: 14 }} />
+                <NameSkeleton className="skeleton" />
+                <HandleSkeleton className="skeleton" />
             </div>
             <div className="account-card-actions">
-                <div className="skeleton" style={{ width: 72, height: 32, borderRadius: 'var(--radius-2)' }} />
+                <ButtonSkeleton className="skeleton" />
             </div>
         </div>
     );
 }
 
+// Styled components
+const IconButton = styled(Button)`
+    display: flex;
+    align-items: center;
+    gap: var(--size-1);
+`;
+
+const AvatarSkeleton = styled.div`
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+`;
+
+const NameSkeleton = styled.div`
+    width: 120px;
+    height: 16px;
+    margin-bottom: 4px;
+`;
+
+const HandleSkeleton = styled.div`
+    width: 80px;
+    height: 14px;
+`;
+
+const ButtonSkeleton = styled.div`
+    width: 72px;
+    height: 32px;
+    border-radius: var(--radius-2);
+`;

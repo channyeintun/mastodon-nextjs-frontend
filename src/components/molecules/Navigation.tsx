@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, TrendingUp } from 'lucide-react';
@@ -49,10 +50,10 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
             {isLoadingInstance ? (
               <>
                 <CircleSkeleton size="40px" />
-                <div className="navigation-sidebar-instance-info" style={{ gap: 4 }}>
+                <InstanceInfoSkeleton className="navigation-sidebar-instance-info">
                   <TextSkeleton width={96} height={16} />
                   <TextSkeleton width={64} height={12} />
-                </div>
+                </InstanceInfoSkeleton>
               </>
             ) : instance ? (
               <>
@@ -190,34 +191,18 @@ function NavigationLink({ href, icon: Icon, label, isActive, variant, badge }: N
       aria-label={label}
       aria-current={isActive ? 'page' : undefined}
     >
-      <div className="navigation-link-icon" style={{ position: 'relative' }}>
+      <IconWrapper className="navigation-link-icon">
         <Icon size={variant === 'sidebar' ? 24 : 22} />
         {badge !== undefined && badge > 0 && (
-          <span
+          <Badge
             aria-live="polite"
             aria-atomic="true"
             aria-label={`${badge > 99 ? '99+' : badge} unread notifications`}
-            style={{
-              position: 'absolute',
-              top: '-4px',
-              right: '-6px',
-              minWidth: '16px',
-              height: '16px',
-              padding: '0 4px',
-              fontSize: '10px',
-              fontWeight: 'bold',
-              color: 'white',
-              background: 'var(--red-6)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
           >
             {badge > 99 ? '99+' : badge}
-          </span>
+          </Badge>
         )}
-      </div>
+      </IconWrapper>
       <span className="navigation-link-label">{label}</span>
       <LinkStatus />
     </Link>
@@ -231,3 +216,29 @@ const LinkStatus = () => {
     <span className={`navigation-link-spinner ${status.pending ? 'pending' : ''}`} aria-label="Loading..." />
   );
 }
+
+// Styled components
+const InstanceInfoSkeleton = styled.div`
+  gap: 4px;
+`;
+
+const IconWrapper = styled.div`
+  position: relative;
+`;
+
+const Badge = styled.span`
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+  background: var(--red-6);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

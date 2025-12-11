@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useState } from 'react';
 import { History, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStatusHistory } from '@/api';
@@ -29,10 +30,10 @@ export function StatusEditHistory({ statusId, editedAt }: StatusEditHistoryProps
     // Show skeleton while loading to prevent flickering
     if (isLoading) {
         return (
-            <div className="edit-history-skeleton">
-                <div className="skeleton" style={{ width: '14px', height: '14px', borderRadius: '50%' }} />
-                <div className="skeleton" style={{ width: '100px', height: '14px', borderRadius: 'var(--radius-2)' }} />
-            </div>
+            <SkeletonContainer className="edit-history-skeleton">
+                <IconSkeleton className="skeleton" />
+                <TextSkeleton className="skeleton" />
+            </SkeletonContainer>
         );
     }
 
@@ -105,3 +106,22 @@ export function StatusEditHistory({ statusId, editedAt }: StatusEditHistoryProps
         </div>
     );
 }
+
+// Styled components
+const SkeletonContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+`;
+
+const IconSkeleton = styled.div`
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+`;
+
+const TextSkeleton = styled.div`
+    width: 100px;
+    height: 14px;
+    border-radius: var(--radius-2);
+`;

@@ -1,5 +1,6 @@
 'use client'
 
+import styled from '@emotion/styled';
 import Link from 'next/link'
 import { Hash, TrendingUp } from 'lucide-react'
 import type { Tag } from '@/types/mastodon'
@@ -47,14 +48,33 @@ export function TrendingTagCard({ tag, style }: TrendingTagCardProps) {
     )
 }
 
-export function TrendingTagCardSkeleton({ style }: { style?: React.CSSProperties }) {
+export function TrendingTagCardSkeleton({ style, className }: { style?: React.CSSProperties; className?: string }) {
     return (
-        <div className="trending-tag-card skeleton" style={style}>
-            <div className="trending-tag-icon skeleton-loading" style={{ width: 40, height: 40 }} />
+        <div className={`trending-tag-card skeleton ${className || ''}`} style={style}>
+            <SkeletonIcon className="trending-tag-icon skeleton-loading" />
             <div className="trending-tag-content">
-                <div className="skeleton-loading" style={{ width: '60%', height: '1.2em', borderRadius: 'var(--radius-1)' }} />
-                <div className="skeleton-loading" style={{ width: '40%', height: '0.9em', borderRadius: 'var(--radius-1)', marginTop: 'var(--size-2)' }} />
+                <SkeletonTitle className="skeleton-loading" />
+                <SkeletonStats className="skeleton-loading" />
             </div>
         </div>
     )
 }
+
+// Styled components for skeleton
+const SkeletonIcon = styled.div`
+    width: 40px;
+    height: 40px;
+`;
+
+const SkeletonTitle = styled.div`
+    width: 60%;
+    height: 1.2em;
+    border-radius: var(--radius-1);
+`;
+
+const SkeletonStats = styled.div`
+    width: 40%;
+    height: 0.9em;
+    border-radius: var(--radius-1);
+    margin-top: var(--size-2);
+`;

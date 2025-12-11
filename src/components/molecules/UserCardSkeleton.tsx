@@ -1,9 +1,12 @@
+import styled from '@emotion/styled';
 import type { CSSProperties } from 'react';
 import { Card, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 
 interface UserCardSkeletonProps {
   /** Additional inline styles */
   style?: CSSProperties;
+  /** Additional class name for styled-components */
+  className?: string;
 }
 
 /**
@@ -17,21 +20,36 @@ interface UserCardSkeletonProps {
  * <UserCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
  * ```
  */
-export const UserCardSkeleton = ({ style }: UserCardSkeletonProps) => {
+export const UserCardSkeleton = ({ style, className }: UserCardSkeletonProps) => {
   return (
-    <Card padding="medium" style={style}>
-      <div style={{ display: 'flex', gap: 'var(--size-3)', alignItems: 'center' }}>
+    <Card padding="medium" style={style} className={className}>
+      <ContentWrapper>
         <CircleSkeleton size="48px" />
-        <div style={{ flex: 1 }}>
-          <TextSkeleton
-            width="40%"
-            height="16px"
-            style={{ marginBottom: 'var(--size-2)' }}
-          />
+        <InfoWrapper>
+          <NameSkeleton width="40%" height="16px" />
           <TextSkeleton width="25%" height="14px" />
-        </div>
-        <TextSkeleton width="80px" height="32px" style={{ borderRadius: 'var(--radius-2)' }} />
-      </div>
+        </InfoWrapper>
+        <ButtonSkeleton width="80px" height="32px" />
+      </ContentWrapper>
     </Card>
   );
 };
+
+// Styled components
+const ContentWrapper = styled.div`
+  display: flex;
+  gap: var(--size-3);
+  align-items: center;
+`;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+`;
+
+const NameSkeleton = styled(TextSkeleton)`
+  margin-bottom: var(--size-2);
+`;
+
+const ButtonSkeleton = styled(TextSkeleton)`
+  border-radius: var(--radius-2);
+`;
