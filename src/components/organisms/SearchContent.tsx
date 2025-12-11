@@ -173,9 +173,7 @@ export function SearchContent({
                         <VirtualizedList<Account>
                             items={accounts}
                             renderItem={(account) => (
-                                <ItemWrapper>
-                                    <UserCard account={account} />
-                                </ItemWrapper>
+                                <UserCard account={account} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
                             getItemKey={(account) => account.id}
                             estimateSize={80}
@@ -184,7 +182,7 @@ export function SearchContent({
                             onLoadMore={fetchNextAccounts}
                             hasMore={hasNextAccounts}
                             isLoadingMore={isFetchingNextAccounts}
-                            loadingIndicator={<StyledUserCardSkeleton />}
+                            loadingIndicator={<UserCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                         />
                     )}
                 </TabContainer>
@@ -203,9 +201,7 @@ export function SearchContent({
                         <VirtualizedList<Status>
                             items={statuses}
                             renderItem={(status) => (
-                                <ItemWrapper>
-                                    <PostCard status={status} />
-                                </ItemWrapper>
+                                <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
                             getItemKey={(status) => status.id}
                             estimateSize={200}
@@ -214,7 +210,7 @@ export function SearchContent({
                             onLoadMore={fetchNextStatuses}
                             hasMore={hasNextStatuses}
                             isLoadingMore={isFetchingNextStatuses}
-                            loadingIndicator={<StyledPostCardSkeleton />}
+                            loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                         />
                     )}
                 </TabContainer>
@@ -240,7 +236,7 @@ export function SearchContent({
                             onLoadMore={fetchNextHashtags}
                             hasMore={hasNextHashtags}
                             isLoadingMore={isFetchingNextHashtags}
-                            loadingIndicator={<StyledTrendingTagCardSkeleton />}
+                            loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                         />
                     )}
                 </TabContainer>
@@ -335,19 +331,5 @@ const HashtagStats = styled.div`
     margin-top: var(--size-1);
 `;
 
-const ItemWrapper = styled.div`
-    margin-bottom: var(--size-3);
-`;
 
-const StyledPostCardSkeleton = styled(PostCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;
-
-const StyledUserCardSkeleton = styled(UserCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;
-
-const StyledTrendingTagCardSkeleton = styled(TrendingTagCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;
 

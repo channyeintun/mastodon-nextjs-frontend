@@ -5,6 +5,7 @@ import { Card } from '../atoms/Card';
 
 interface PostCardSkeletonProps {
   style?: React.CSSProperties;
+  className?: string;
 }
 
 const Container = styled.div`
@@ -77,9 +78,9 @@ const ActionItem = styled.div`
 /**
  * Skeleton loading placeholder for PostCard
  */
-export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
+export function PostCardSkeleton({ style, className }: PostCardSkeletonProps) {
   return (
-    <Card padding="medium" style={style}>
+    <Card padding="medium" style={style} className={className}>
       <Container>
         {/* Avatar skeleton */}
         <AvatarSkeleton />

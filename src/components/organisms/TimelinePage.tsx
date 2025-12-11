@@ -7,8 +7,8 @@ import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api';
 import { PostCard } from './PostCard';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
 import { VirtualizedList } from './VirtualizedList';
-import { EmojiText, Button, CircleSkeleton, EmptyState } from '@/components/atoms';
-import { Plus, Search } from 'lucide-react';
+import { EmojiText, Button, EmptyState } from '@/components/atoms';
+import { Search } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 
@@ -31,7 +31,7 @@ export const TimelinePage = observer(() => {
                         <SearchLink href="/search">
                             <Search size={20} />
                         </SearchLink>
-                        <CircleSkeleton size="var(--size-7)" />
+                        <ProfilePillSkeleton />
                     </HeaderActions>
                 </Header>
                 <ListContainer className="virtualized-list-container">
@@ -95,11 +95,8 @@ export const TimelinePage = observer(() => {
                     <SearchLink href="/search">
                         <Search size={20} />
                     </SearchLink>
-                    <Link href="/compose" className="icon-button">
-                        <Plus size={20} />
-                    </Link>
                     {!isLoadingUser && user ? (
-                        <Link href={`/@${user.acct}`} className="profile-pill">
+                        <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
                             <img
                                 src={user.avatar}
                                 alt={user.display_name}
@@ -119,7 +116,7 @@ export const TimelinePage = observer(() => {
             <VirtualizedList<Status>
                 items={uniqueStatuses}
                 renderItem={(status) => (
-                    <PostCardWrapper status={status} />
+                    <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                 )}
                 getItemKey={(status) => status.id}
                 estimateSize={300}
@@ -131,7 +128,7 @@ export const TimelinePage = observer(() => {
                 height="auto"
                 style={{ flex: 1, minHeight: 0 }}
                 scrollRestorationKey="home-timeline"
-                loadingIndicator={<PostCardSkeletonWrapper />}
+                loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                 endIndicator="You've reached the end of your timeline"
                 emptyState={<EmptyState title="No posts yet" description="Follow some people to see their posts here." />}
             />
@@ -222,10 +219,4 @@ const EmptyMessage = styled.p`
     margin-bottom: var(--size-4);
 `;
 
-const PostCardWrapper = styled(PostCard)`
-    margin-bottom: var(--size-3);
-`;
 
-const PostCardSkeletonWrapper = styled(PostCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;

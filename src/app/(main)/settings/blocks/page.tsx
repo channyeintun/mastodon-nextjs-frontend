@@ -69,6 +69,7 @@ export default function BlockedAccountsPage() {
                         account={account}
                         showFollowButton={false}
                         showUnblockButton={true}
+                        style={{ marginBottom: 'var(--size-2)' }}
                     />
                 )}
                 getItemKey={(account) => account.id}

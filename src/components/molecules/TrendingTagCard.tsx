@@ -67,9 +67,9 @@ export function TrendingTagCard({ tag, style }: TrendingTagCardProps) {
     )
 }
 
-export function TrendingTagCardSkeleton({ style }: { style?: React.CSSProperties }) {
+export function TrendingTagCardSkeleton({ style, className }: { style?: React.CSSProperties; className?: string }) {
     return (
-        <div className="trending-tag-card skeleton" style={style}>
+        <div className={`trending-tag-card skeleton ${className || ''}`} style={style}>
             <SkeletonIcon className="trending-tag-icon skeleton-loading" />
             <div className="trending-tag-content">
                 <SkeletonTitle className="skeleton-loading" />

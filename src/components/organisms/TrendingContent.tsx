@@ -96,7 +96,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                         <VirtualizedList<Status>
                             items={uniqueStatuses}
                             renderItem={(status) => (
-                                <StyledPostCard status={status} />
+                                <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
                             getItemKey={(status) => status.id}
                             estimateSize={300}
@@ -108,7 +108,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             height="100%"
                             style={{ height: '100%' }}
                             scrollRestorationKey={`${scrollRestorationPrefix}-posts`}
-                            loadingIndicator={<StyledPostCardSkeleton />}
+                            loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                             endIndicator="You've reached the end of trending posts"
                         />
                     )}
@@ -133,7 +133,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                         <VirtualizedList<Tag>
                             items={uniqueTags}
                             renderItem={(tag) => (
-                                <StyledTrendingTagCard tag={tag} />
+                                <TrendingTagCard tag={tag} style={{ marginBottom: 'var(--size-2)' }} />
                             )}
                             getItemKey={(tag) => tag.name}
                             estimateSize={80}
@@ -145,7 +145,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             height="100%"
                             style={{ height: '100%' }}
                             scrollRestorationKey={`${scrollRestorationPrefix}-tags`}
-                            loadingIndicator={<StyledTrendingTagCardSkeleton />}
+                            loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
                             endIndicator="You've reached the end of trending tags"
                         />
                     )}
@@ -170,7 +170,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                         <VirtualizedList<TrendingLink>
                             items={uniqueLinks}
                             renderItem={(link) => (
-                                <StyledTrendingLinkCard link={link} />
+                                <TrendingLinkCard link={link} style={{ marginBottom: 'var(--size-2)' }} />
                             )}
                             getItemKey={(link) => link.url}
                             estimateSize={120}
@@ -182,7 +182,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             height="100%"
                             style={{ height: '100%' }}
                             scrollRestorationKey={`${scrollRestorationPrefix}-links`}
-                            loadingIndicator={<StyledTrendingLinkCardSkeleton />}
+                            loadingIndicator={<TrendingLinkCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
                             endIndicator="You've reached the end of trending news"
                         />
                     )}
@@ -232,29 +232,7 @@ const ErrorText = styled.p`
     margin-bottom: var(--size-3);
 `;
 
-const StyledPostCard = styled(PostCard)`
-    margin-bottom: var(--size-3);
-`;
 
-const StyledPostCardSkeleton = styled(PostCardSkeleton)`
-    margin-bottom: var(--size-3);
-`;
-
-const StyledTrendingTagCard = styled(TrendingTagCard)`
-    margin-bottom: var(--size-2);
-`;
-
-const StyledTrendingTagCardSkeleton = styled(TrendingTagCardSkeleton)`
-    margin-bottom: var(--size-2);
-`;
-
-const StyledTrendingLinkCard = styled(TrendingLinkCard)`
-    margin-bottom: var(--size-2);
-`;
-
-const StyledTrendingLinkCardSkeleton = styled(TrendingLinkCardSkeleton)`
-    margin-bottom: var(--size-2);
-`;
 
 const StyledTabs = styled(Tabs)`
     padding: 0 var(--size-4);

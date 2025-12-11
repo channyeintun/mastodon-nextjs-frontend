@@ -24,6 +24,8 @@ const ButtonSkeleton = styled(TextSkeleton)`
 interface UserCardSkeletonProps {
   /** Additional inline styles */
   style?: CSSProperties;
+  /** Additional class name for styled-components */
+  className?: string;
 }
 
 /**
@@ -37,9 +39,9 @@ interface UserCardSkeletonProps {
  * <UserCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
  * ```
  */
-export const UserCardSkeleton = ({ style }: UserCardSkeletonProps) => {
+export const UserCardSkeleton = ({ style, className }: UserCardSkeletonProps) => {
   return (
-    <Card padding="medium" style={style}>
+    <Card padding="medium" style={style} className={className}>
       <ContentWrapper>
         <CircleSkeleton size="48px" />
         <InfoWrapper>

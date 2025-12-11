@@ -84,9 +84,9 @@ export function TrendingLinkCard({ link, style }: TrendingLinkCardProps) {
     )
 }
 
-export function TrendingLinkCardSkeleton({ style }: { style?: React.CSSProperties }) {
+export function TrendingLinkCardSkeleton({ style, className }: { style?: React.CSSProperties; className?: string }) {
     return (
-        <div className="trending-link-card skeleton" style={style}>
+        <div className={`trending-link-card skeleton ${className || ''}`} style={style}>
             <div className="trending-link-image skeleton-loading" />
             <div className="trending-link-content">
                 <ProviderSkeleton className="skeleton-loading" />

@@ -109,7 +109,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
                 <VirtualizedList<Account>
                     items={members}
                     renderItem={(account) => (
-                        <MemberItem account={account} onRemove={handleRemoveMember} isRemovePending={removeMembersMutation.isPending} />
+                        <MemberItem account={account} onRemove={handleRemoveMember} isRemovePending={removeMembersMutation.isPending} style={{ marginBottom: 'var(--size-2)' }} />
                     )}
                     getItemKey={(account) => account.id}
                     estimateSize={72}

@@ -69,6 +69,7 @@ export default function MutedAccountsPage() {
                         account={account}
                         showFollowButton={false}
                         showUnmuteButton={true}
+                        style={{ marginBottom: 'var(--size-2)' }}
                     />
                 )}
                 getItemKey={(account) => account.id}

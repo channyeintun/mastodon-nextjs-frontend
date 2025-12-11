@@ -60,10 +60,14 @@ const AvatarsWrapper = styled.div`
     margin-right: var(--size-2);
 `;
 
-const StackedAvatarLink = styled(Link) <{ $index: number; $total: number }>`
+const StackedAvatarWrapper = styled.div<{ $index: number; $total: number }>`
     margin-left: ${props => props.$index > 0 ? '-8px' : '0'};
     position: relative;
     z-index: ${props => props.$total - props.$index};
+`;
+
+const StackedAvatarLink = styled(Link)`
+    display: block;
 `;
 
 const AvatarWithBorder = styled(Avatar)`
@@ -294,18 +298,19 @@ export function GroupedNotificationCard({
         return (
             <AvatarsWrapper>
                 {visibleAccounts.map((account, index) => (
-                    <StackedAvatarLink
+                    <StackedAvatarWrapper
                         key={account.id}
-                        href={`/@${account.acct}`}
                         $index={index}
                         $total={visibleAccounts.length}
                     >
-                        <AvatarWithBorder
-                            src={account.avatar}
-                            alt={isFullAccount(account) ? account.display_name || account.acct : account.acct}
-                            size="small"
-                        />
-                    </StackedAvatarLink>
+                        <StackedAvatarLink href={`/@${account.acct}`}>
+                            <AvatarWithBorder
+                                src={account.avatar}
+                                alt={isFullAccount(account) ? account.display_name || account.acct : account.acct}
+                                size="small"
+                            />
+                        </StackedAvatarLink>
+                    </StackedAvatarWrapper>
                 ))}
                 {remainingCount > 0 && (
                     <RemainingCount>+{remainingCount}</RemainingCount>
