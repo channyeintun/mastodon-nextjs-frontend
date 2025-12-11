@@ -710,7 +710,7 @@ export function useVotePoll() {
       // Update the poll in all cached statuses that contain it
       updatePollInCaches(queryClient, pollId, updatedPoll)
     },
-    onError: (_error, { pollId }) => {
+    onError: (_error) => {
       // Invalidate all relevant queries to refetch on error
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })

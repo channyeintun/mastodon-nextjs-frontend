@@ -11,7 +11,6 @@ interface TrendingTagCardProps {
 
 export function TrendingTagCard({ tag, style }: TrendingTagCardProps) {
     // Calculate usage stats from history
-    const todayUses = tag.history?.[0] ? parseInt(tag.history[0].uses, 10) : 0
     const todayAccounts = tag.history?.[0] ? parseInt(tag.history[0].accounts, 10) : 0
 
     // Calculate weekly stats

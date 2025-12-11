@@ -19,10 +19,8 @@ import { CSSProperties } from 'react';
 
 interface PostCardProps {
   status: Status;
-  showThread?: boolean;
   style?: CSSProperties;
   hideActions?: boolean;
-  showThreadLine?: boolean;
   showEditHistory?: boolean;
 }
 
@@ -32,10 +30,8 @@ interface PostCardProps {
  */
 export function PostCard({
   status,
-  showThread = false,
   style,
   hideActions = false,
-  showThreadLine = false,
   showEditHistory = false,
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
@@ -80,19 +76,19 @@ export function PostCard({
   // Mastodon automatically adds "RE: [url]" to quote posts, we remove it since we show the quoted status
   const contentToDisplay = displayStatus.quote?.quoted_status
     ? displayStatus.content
-        // Remove <p class="quote-inline">RE: <a>...</a></p> (with nested spans)
-        .replace(/<p\s+class="quote-inline">RE:\s*<a[^>]*>.*?<\/a><\/p>\s*/gi, '')
-        // Remove RE: with link wrapped in regular <p> tag: <p>RE: <a>...</a></p>
-        .replace(/^<p>\s*RE:\s*<a[^>]*>.*?<\/a>\s*<\/p>\s*/i, '')
-        // Remove RE: with plain URL in <p>: <p>RE: https://...</p>
-        .replace(/^<p>\s*RE:\s*https?:\/\/[^\s<]+\s*<\/p>\s*/i, '')
-        // Remove RE: with link not in <p>: RE: <a>...</a>
-        .replace(/^RE:\s*<a[^>]*>.*?<\/a>\s*/i, '')
-        // Remove RE: with plain URL not in <p>: RE: https://...
-        .replace(/^RE:\s*https?:\/\/\S+\s*/i, '')
-        // Remove leftover empty paragraphs
-        .replace(/^<p>\s*<\/p>\s*/, '')
-        .trim()
+      // Remove <p class="quote-inline">RE: <a>...</a></p> (with nested spans)
+      .replace(/<p\s+class="quote-inline">RE:\s*<a[^>]*>.*?<\/a><\/p>\s*/gi, '')
+      // Remove RE: with link wrapped in regular <p> tag: <p>RE: <a>...</a></p>
+      .replace(/^<p>\s*RE:\s*<a[^>]*>.*?<\/a>\s*<\/p>\s*/i, '')
+      // Remove RE: with plain URL in <p>: <p>RE: https://...</p>
+      .replace(/^<p>\s*RE:\s*https?:\/\/[^\s<]+\s*<\/p>\s*/i, '')
+      // Remove RE: with link not in <p>: RE: <a>...</a>
+      .replace(/^RE:\s*<a[^>]*>.*?<\/a>\s*/i, '')
+      // Remove RE: with plain URL not in <p>: RE: https://...
+      .replace(/^RE:\s*https?:\/\/\S+\s*/i, '')
+      // Remove leftover empty paragraphs
+      .replace(/^<p>\s*<\/p>\s*/, '')
+      .trim()
     : displayStatus.content;
 
   return (
@@ -107,10 +103,10 @@ export function PostCard({
           createdAt={displayStatus.created_at}
           visibility={
             displayStatus.visibility as
-              | 'public'
-              | 'unlisted'
-              | 'private'
-              | 'direct'
+            | 'public'
+            | 'unlisted'
+            | 'private'
+            | 'direct'
           }
           statusId={displayStatus.id}
           isOwnPost={isOwnPost}
@@ -120,8 +116,8 @@ export function PostCard({
           onDelete={isOwnPost ? handleDelete : undefined}
           onPin={
             isOwnPost &&
-            (displayStatus.visibility === 'public' ||
-              displayStatus.visibility === 'unlisted')
+              (displayStatus.visibility === 'public' ||
+                displayStatus.visibility === 'unlisted')
               ? handlePin
               : undefined
           }

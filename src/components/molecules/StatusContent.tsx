@@ -27,7 +27,7 @@ export function StatusContent({ html, emojis = [], style }: StatusContentProps) 
     }
 
     // Create a map of shortcode to emoji URL
-    const emojiMap = new Map(emojis.map(e => [e.shortcode, e.url]));
+    // const emojiMap = new Map(emojis.map(e => [e.shortcode, e.url]));
 
     // Replace :shortcode: with <img> tags
     let processed = html;
@@ -80,8 +80,8 @@ export function StatusContent({ html, emojis = [], style }: StatusContentProps) 
       const anchor = link as HTMLAnchorElement;
       // Skip if it's a mention or hashtag
       if (anchor.classList.contains('mention') ||
-          anchor.classList.contains('u-url') ||
-          anchor.classList.contains('hashtag')) {
+        anchor.classList.contains('u-url') ||
+        anchor.classList.contains('hashtag')) {
         return;
       }
       // Style regular external links

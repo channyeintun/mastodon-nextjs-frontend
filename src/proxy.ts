@@ -50,6 +50,11 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
+  // Redirect unauthenticated users from home page to explore
+  if (pathname === '/' && !isAuthenticated) {
+    return NextResponse.redirect(new URL('/explore', request.url));
+  }
+
   return NextResponse.next();
 }
 

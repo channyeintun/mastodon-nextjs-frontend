@@ -14,7 +14,7 @@ export const MentionWithClick = Mention.extend<MentionWithClickOptions>({
     return {
       ...parentOptions,
       HTMLAttributes: {},
-      renderLabel({ options, node }) {
+      renderLabel({ node }) {
         return `@${node.attrs.label ?? node.attrs.id}`;
       },
       onMentionClick: undefined,

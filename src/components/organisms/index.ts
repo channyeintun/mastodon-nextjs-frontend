@@ -7,3 +7,5 @@ export { ProfileContent } from './ProfileContent';
 export { SearchContent } from './SearchContent';
 export { TrendingContent } from './TrendingContent';
 export { VirtualizedList } from './VirtualizedList';
+export { TimelinePage } from './TimelinePage';
+export { TrendingPage } from './TrendingPage';

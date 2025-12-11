@@ -5,15 +5,13 @@ import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, TrendingUp } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
 import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
-import type { Account } from '@/types';
 
 interface NavigationProps {
   isAuthenticated: boolean;
   instanceURL?: string | null;
-  user?: Account | null;
 }
 
-export default function Navigation({ isAuthenticated, instanceURL, user }: NavigationProps) {
+export default function Navigation({ isAuthenticated, instanceURL }: NavigationProps) {
   const pathname = usePathname();
   const { data: instance, isLoading: isLoadingInstance } = useInstance();
   const { data: unreadCount } = useUnreadNotificationCount();
