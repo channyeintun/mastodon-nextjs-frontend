@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState, useMemo } from 'react';
+import { use, useState } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
@@ -29,7 +29,7 @@ import {
 } from '@/components/molecules';
 import { ProfileContent } from '@/components/organisms';
 import { Avatar, Button, IconButton, EmojiText, TextSkeleton } from '@/components/atoms';
-import { flattenAndUniqById } from '@/utils/fp';
+import { flattenAndUniqById, getStatusFilters } from '@/utils/fp';
 
 type ProfileTab = 'posts' | 'posts_replies' | 'media';
 
@@ -53,14 +53,8 @@ export default function AccountPage({
 
   const [activeTab, setActiveTab] = useState<ProfileTab>('posts');
 
-  const statusFilters: AccountStatusFilters = useMemo(() => {
-    switch (activeTab) {
-      case 'posts': return { exclude_replies: true };
-      case 'posts_replies': return { exclude_replies: false, exclude_reblogs: true };
-      case 'media': return { only_media: true };
-      default: return { exclude_replies: true };
-    }
-  }, [activeTab]);
+  const statusFilters: AccountStatusFilters = getStatusFilters(activeTab);
+
 
   const {
     data: statusPages, isLoading: statusesLoading, fetchNextPage, hasNextPage, isFetchingNextPage,
