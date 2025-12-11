@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
-import { PostCard, PostCardSkeleton } from '@/components/molecules';
+import { PostCard } from '@/components/organisms';
+import { PostCardSkeleton } from '@/components/molecules';
 import { Button, IconButton } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 

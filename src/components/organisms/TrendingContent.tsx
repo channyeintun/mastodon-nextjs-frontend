@@ -3,7 +3,8 @@
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api';
-import { PostCard, PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
+import { PostCard } from '@/components/organisms';
+import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button, Tabs } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';

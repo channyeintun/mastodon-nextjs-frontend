@@ -72,15 +72,21 @@ mastodon-nextjs-client/
 │   │   ├── queries.ts        # TanStack Query hooks for data fetching
 │   │   ├── queryKeys.ts      # Query key factory for cache management
 │   │   └── index.ts          # API exports
-│   ├── components/           # Atomic design components
-│   │   ├── atoms/            # Basic UI elements
+│   ├── components/           # Atomic design components (strict LOC limits enforced by ESLint)
+│   │   ├── atoms/            # Basic UI elements (max 120 LOC)
 │   │   │   ├── Avatar.tsx
 │   │   │   ├── Badge.tsx
 │   │   │   ├── Button.tsx
 │   │   │   ├── Card.tsx
+│   │   │   ├── CheckboxField.tsx         # NEW: Reusable checkbox with label + description
+│   │   │   ├── ContentWarningInput.tsx
+│   │   │   ├── Dialog.tsx                # NEW: Base dialog/modal with Header, Body, Footer
+│   │   │   ├── EmptyState.tsx            # NEW: Empty state with icon, title, description
 │   │   │   ├── EmojiText.tsx
+│   │   │   ├── FormField.tsx             # NEW: Reusable form field wrapper
 │   │   │   ├── IconButton.tsx
 │   │   │   ├── Input.tsx
+│   │   │   ├── ScheduleInput.tsx
 │   │   │   ├── ScrollToTopButton.tsx
 │   │   │   ├── SkipToMain.tsx
 │   │   │   ├── Spinner.tsx
@@ -88,21 +94,37 @@ mastodon-nextjs-client/
 │   │   │   ├── TextArea.tsx
 │   │   │   ├── TiptapEditor.tsx
 │   │   │   └── index.ts
-│   │   ├── molecules/        # Simple component combinations
+│   │   ├── molecules/        # Simple component combinations (max 200 LOC)
 │   │   │   ├── AccountCard.tsx
 │   │   │   ├── AccountProfileSkeleton.tsx
 │   │   │   ├── AuthModalBridge.tsx
+│   │   │   ├── ComposerToolbar.tsx
+│   │   │   ├── ContentWarningSection.tsx  # NEW: Extracted from PostCard
 │   │   │   ├── DeletePostModal.tsx
+│   │   │   ├── GroupedNotificationCard.tsx
+│   │   │   ├── HandleExplainer.tsx
 │   │   │   ├── ImageCropper.tsx
 │   │   │   ├── LinkPreview.tsx
+│   │   │   ├── MediaGrid.tsx
 │   │   │   ├── MediaUpload.tsx
 │   │   │   ├── MentionSuggestions.tsx
 │   │   │   ├── Navigation.tsx
 │   │   │   ├── NotificationCard.tsx
 │   │   │   ├── NotificationSkeleton.tsx
 │   │   │   ├── PollComposer.tsx
-│   │   │   ├── PostCard.tsx
+│   │   │   ├── PostActions.tsx
 │   │   │   ├── PostCardSkeleton.tsx
+│   │   │   ├── PostHeader.tsx
+│   │   │   ├── PostPoll.tsx
+│   │   │   ├── PrivacySettingsForm.tsx    # NEW: Extracted from profile/edit
+│   │   │   ├── ProfileActionButtons.tsx
+│   │   │   ├── ProfileBio.tsx
+│   │   │   ├── ProfileEditorSkeleton.tsx  # NEW: Extracted from profile/edit
+│   │   │   ├── ProfileFields.tsx
+│   │   │   ├── ProfileFieldsEditor.tsx    # NEW: Extracted from profile/edit
+│   │   │   ├── ProfileImageUploader.tsx   # NEW: Extracted from profile/edit
+│   │   │   ├── ProfileStats.tsx
+│   │   │   ├── ReblogIndicator.tsx
 │   │   │   ├── ScheduledCardSkeleton.tsx
 │   │   │   ├── StatusContent.tsx
 │   │   │   ├── StatusEditHistory.tsx
@@ -112,13 +134,15 @@ mastodon-nextjs-client/
 │   │   │   ├── UserCard.tsx
 │   │   │   ├── VisibilitySettingsModal.tsx
 │   │   │   └── index.ts
-│   │   ├── organisms/        # Complex components
+│   │   ├── organisms/        # Complex components (max 350 LOC)
 │   │   │   ├── AuthGuard.tsx
 │   │   │   ├── ComposerPanel.tsx
 │   │   │   ├── EmojiPicker.tsx
 │   │   │   ├── NavigationWrapper.tsx
+│   │   │   ├── PostCard.tsx              # MOVED: Now organism with usePostActions hook
 │   │   │   ├── TrendingContent.tsx
-│   │   │   └── VirtualizedList.tsx
+│   │   │   ├── VirtualizedList.tsx
+│   │   │   └── index.ts                  # NEW: Organisms index file
 │   │   ├── providers/        # React context providers
 │   │   │   ├── QueryProvider.tsx   # TanStack Query provider
 │   │   │   ├── ScrollRestorationProvider.tsx
@@ -129,6 +153,8 @@ mastodon-nextjs-client/
 │   ├── contexts/             # React context definitions
 │   │   └── GlobalModalContext.tsx
 │   ├── hooks/                # Custom React hooks
+│   │   ├── useCropper.ts     # Reusable image cropper state management
+│   │   ├── usePostActions.ts # NEW: PostCard mutations and event handlers (extracted from PostCard)
 │   │   ├── useScrollDirection.ts
 │   │   ├── useSearchHistory.ts
 │   │   ├── useStores.ts      # MobX store hooks
@@ -287,15 +313,34 @@ Dependencies and scripts:
   - `lint:fix`: Run ESLint with auto-fix
 
 ### `eslint.config.js`
-ESLint configuration with CSS baseline linting:
+ESLint configuration with CSS baseline linting and atomic design LOC limits:
+
+**CSS Linting:**
 - **@eslint/css plugin**: Official ESLint CSS language plugin
 - **Baseline checking**: Warns when using CSS features not widely available
-- **Rules enabled**:
+- **CSS Rules**:
   - `css/no-duplicate-imports`: Error on duplicate CSS @import rules
   - `css/no-empty-blocks`: Warn on empty CSS blocks
   - `css/use-baseline`: Warn when using non-widely-available CSS features
 - **Ignored directories**: .next/, node_modules/, dist/, build/, out/, *.min.css
-- Helps ensure CSS compatibility across browsers
+
+**Atomic Design LOC Limits:**
+Enforces maximum lines of code (LOC) to maintain component simplicity:
+- **Atoms** (src/components/atoms/\*\*/\*.tsx): max 120 LOC
+  - max 50 LOC per function
+- **Molecules** (src/components/molecules/\*\*/\*.tsx): max 200 LOC
+  - max 80 LOC per function
+- **Organisms** (src/components/organisms/\*\*/\*.tsx): max 350 LOC
+  - max 80 LOC per function
+- **Pages** (src/app/\*\*/page.tsx, layout.tsx): max 300 LOC
+  - max 100 LOC per function
+  - Pages should only orchestrate organisms, not contain presentational components
+
+These limits encourage:
+- Breaking down complex components into smaller, reusable pieces
+- Following atomic design hierarchy properly
+- Container/presentation pattern separation
+- Extracting logic into custom hooks
 
 ### `next.config.ts`
 Next.js configuration:

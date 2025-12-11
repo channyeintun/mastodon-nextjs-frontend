@@ -19,7 +19,6 @@ import {
 } from '@/api';
 import type { AccountStatusFilters } from '@/api/queries';
 import {
-  PostCard,
   PostCardSkeletonList,
   PostCardSkeleton,
   AccountProfileSkeleton,
@@ -30,7 +29,7 @@ import {
   ProfileActionButtons,
   HandleExplainer,
 } from '@/components/molecules';
-import { VirtualizedList } from '@/components/organisms/VirtualizedList';
+import { VirtualizedList, PostCard } from '@/components/organisms';
 import { Avatar, Button, IconButton, EmojiText, Tabs } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById } from '@/utils/fp';

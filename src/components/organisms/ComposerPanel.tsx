@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
-import { PostCard, MediaUpload, PollComposer, VisibilitySettingsModal, ImageCropper, ComposerToolbar } from '@/components/molecules';
+import { PostCard } from '@/components/organisms';
+import { MediaUpload, PollComposer, VisibilitySettingsModal, ImageCropper, ComposerToolbar } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
 import { Avatar, EmojiText, TiptapEditor, ContentWarningInput, ScheduleInput } from '@/components/atoms';

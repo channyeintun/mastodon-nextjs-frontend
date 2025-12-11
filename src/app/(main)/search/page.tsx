@@ -5,7 +5,8 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { ArrowLeft, Search as SearchIcon, Hash, X, Clock } from 'lucide-react';
 import { useSearch, useInfiniteSearch } from '@/api';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
-import { PostCard, PostCardSkeleton, TrendingTagCardSkeleton, UserCard } from '@/components/molecules';
+import { PostCard } from '@/components/organisms';
+import { PostCardSkeleton, TrendingTagCardSkeleton, UserCard } from '@/components/molecules';
 import { Input, Spinner, IconButton, Card } from '@/components/atoms';
 
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
