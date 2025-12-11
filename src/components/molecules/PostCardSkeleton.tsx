@@ -110,6 +110,10 @@ export function PostCardSkeleton({ style }: PostCardSkeletonProps) {
   );
 }
 
+const SkeletonWithMargin = styled(PostCardSkeleton)`
+  margin-bottom: var(--size-3);
+`;
+
 /**
  * Multiple skeleton cards for initial loading
  */
@@ -117,7 +121,7 @@ export function PostCardSkeletonList({ count = 5 }: { count?: number }) {
   return (
     <>
       {Array.from({ length: count }).map((_, i) => (
-        <PostCardSkeleton key={i} style={{ marginBottom: 'var(--size-3)' }} />
+        <SkeletonWithMargin key={i} />
       ))}
     </>
   );

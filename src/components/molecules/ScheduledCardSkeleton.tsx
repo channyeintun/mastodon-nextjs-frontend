@@ -1,6 +1,66 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { Card } from '../atoms/Card';
+
+// Base skeleton styles
+const skeletonBase = `
+  background: var(--surface-3);
+  animation: var(--animation-blink);
+`;
+
+// Styled components
+const DateHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  margin-bottom: var(--size-3);
+  padding-bottom: var(--size-2);
+  border-bottom: 1px solid var(--surface-3);
+`;
+
+const ClockIconSkeleton = styled.div`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  ${skeletonBase}
+  flex-shrink: 0;
+`;
+
+const DateTextSkeleton = styled.div`
+  width: 60%;
+  height: 16px;
+  ${skeletonBase}
+  border-radius: var(--radius-1);
+`;
+
+const ContentArea = styled.div`
+  margin-bottom: var(--size-3);
+`;
+
+const ContentSkeleton = styled.div`
+  width: 80%;
+  height: 16px;
+  ${skeletonBase}
+  border-radius: var(--radius-1);
+`;
+
+const ActionsRow = styled.div`
+  display: flex;
+  gap: var(--size-2);
+  justify-content: flex-end;
+`;
+
+const ActionButtonSkeleton = styled.div<{ $width: number }>`
+  width: ${props => props.$width}px;
+  height: 32px;
+  ${skeletonBase}
+  border-radius: var(--radius-2);
+`;
+
+const SkeletonCard = styled(Card)`
+  margin-bottom: var(--size-3);
+`;
 
 interface ScheduledCardSkeletonProps {
     style?: React.CSSProperties;
@@ -13,71 +73,23 @@ export function ScheduledCardSkeleton({ style }: ScheduledCardSkeletonProps) {
     return (
         <Card padding="medium" style={style}>
             {/* Scheduled date header */}
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--size-2)',
-                marginBottom: 'var(--size-3)',
-                paddingBottom: 'var(--size-2)',
-                borderBottom: '1px solid var(--surface-3)'
-            }}>
+            <DateHeader>
                 {/* Clock icon placeholder */}
-                <div
-                    style={{
-                        width: '16px',
-                        height: '16px',
-                        borderRadius: '50%',
-                        background: 'var(--surface-3)',
-                        flexShrink: 0,
-                        animation: 'var(--animation-blink)',
-                    }}
-                />
+                <ClockIconSkeleton />
                 {/* Date text placeholder */}
-                <div
-                    style={{
-                        width: '60%',
-                        height: '16px',
-                        background: 'var(--surface-3)',
-                        borderRadius: 'var(--radius-1)',
-                        animation: 'var(--animation-blink)',
-                    }}
-                />
-            </div>
+                <DateTextSkeleton />
+            </DateHeader>
 
             {/* Content area */}
-            <div style={{ marginBottom: 'var(--size-3)' }}>
-                <div
-                    style={{
-                        width: '80%',
-                        height: '16px',
-                        background: 'var(--surface-3)',
-                        borderRadius: 'var(--radius-1)',
-                        animation: 'var(--animation-blink)',
-                    }}
-                />
-            </div>
+            <ContentArea>
+                <ContentSkeleton />
+            </ContentArea>
 
             {/* Action buttons */}
-            <div style={{ display: 'flex', gap: 'var(--size-2)', justifyContent: 'flex-end' }}>
-                <div
-                    style={{
-                        width: '70px',
-                        height: '32px',
-                        background: 'var(--surface-3)',
-                        borderRadius: 'var(--radius-2)',
-                        animation: 'var(--animation-blink)',
-                    }}
-                />
-                <div
-                    style={{
-                        width: '80px',
-                        height: '32px',
-                        background: 'var(--surface-3)',
-                        borderRadius: 'var(--radius-2)',
-                        animation: 'var(--animation-blink)',
-                    }}
-                />
-            </div>
+            <ActionsRow>
+                <ActionButtonSkeleton $width={70} />
+                <ActionButtonSkeleton $width={80} />
+            </ActionsRow>
         </Card>
     );
 }
@@ -89,7 +101,24 @@ export function ScheduledCardSkeletonList({ count = 5 }: { count?: number }) {
     return (
         <>
             {Array.from({ length: count }).map((_, i) => (
-                <ScheduledCardSkeleton key={i} style={{ marginBottom: 'var(--size-3)' }} />
+                <SkeletonCard key={i} padding="medium">
+                    {/* Scheduled date header */}
+                    <DateHeader>
+                        <ClockIconSkeleton />
+                        <DateTextSkeleton />
+                    </DateHeader>
+
+                    {/* Content area */}
+                    <ContentArea>
+                        <ContentSkeleton />
+                    </ContentArea>
+
+                    {/* Action buttons */}
+                    <ActionsRow>
+                        <ActionButtonSkeleton $width={70} />
+                        <ActionButtonSkeleton $width={80} />
+                    </ActionsRow>
+                </SkeletonCard>
             ))}
         </>
     );

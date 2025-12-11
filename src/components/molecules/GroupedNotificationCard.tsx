@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -16,6 +17,122 @@ import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
 import { StatusContent } from '@/components/molecules';
 import type { NotificationGroup, Account, PartialAccountWithAvatar, Status, NotificationType } from '@/types';
 import { useDismissNotificationGroup } from '@/api';
+
+// Styled components
+const ContentWrapper = styled.div`
+    display: flex;
+    gap: var(--size-3);
+`;
+
+const IconColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--size-2);
+`;
+
+const IconCircle = styled.div<{ $color: string }>`
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: color-mix(in srgb, ${props => props.$color} 20%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.$color};
+`;
+
+const ContentColumn = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const HeaderRow = styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: var(--size-2);
+    margin-bottom: var(--size-2);
+`;
+
+const AvatarsWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    margin-right: var(--size-2);
+`;
+
+const StackedAvatarLink = styled(Link) <{ $index: number; $total: number }>`
+    margin-left: ${props => props.$index > 0 ? '-8px' : '0'};
+    position: relative;
+    z-index: ${props => props.$total - props.$index};
+`;
+
+const AvatarWithBorder = styled(Avatar)`
+    border: 2px solid var(--surface-1);
+    box-sizing: content-box;
+`;
+
+const RemainingCount = styled.span`
+    margin-left: var(--size-1);
+    font-size: var(--font-size-0);
+    color: var(--text-3);
+`;
+
+const InfoWrapper = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const MessageText = styled.div`
+    font-size: var(--font-size-1);
+    color: var(--text-1);
+    line-height: 1.4;
+`;
+
+const AccountLink = styled(Link)`
+    text-decoration: none;
+    color: var(--text-1);
+    font-weight: var(--font-weight-6);
+`;
+
+const ActionText = styled.span`
+    color: var(--text-2);
+`;
+
+const TimeText = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-3);
+    margin-top: var(--size-1);
+`;
+
+const DismissButton = styled(IconButton)`
+    opacity: 0.6;
+`;
+
+const StatusPreview = styled.div`
+    padding: var(--size-2);
+    background: var(--surface-2);
+    border-radius: var(--radius-2);
+    margin-top: var(--size-2);
+`;
+
+const PreviewContent = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+`;
+
+const MentionContent = styled(StatusContent)`
+    font-size: var(--font-size-1);
+`;
+
+const NewCard = styled(Card)`
+    border-left: 3px solid var(--blue-6);
+    background: color-mix(in srgb, var(--blue-6) 5%, var(--surface-2));
+`;
 
 interface GroupedNotificationCardProps {
     group: NotificationGroup;
@@ -175,174 +292,97 @@ export function GroupedNotificationCard({
         const remainingCount = group.notifications_count - visibleAccounts.length;
 
         return (
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginRight: 'var(--size-2)',
-            }}>
+            <AvatarsWrapper>
                 {visibleAccounts.map((account, index) => (
-                    <Link
+                    <StackedAvatarLink
                         key={account.id}
                         href={`/@${account.acct}`}
-                        style={{
-                            marginLeft: index > 0 ? '-8px' : 0,
-                            position: 'relative',
-                            zIndex: visibleAccounts.length - index,
-                        }}
+                        $index={index}
+                        $total={visibleAccounts.length}
                     >
-                        <Avatar
+                        <AvatarWithBorder
                             src={account.avatar}
                             alt={isFullAccount(account) ? account.display_name || account.acct : account.acct}
                             size="small"
-                            style={{
-                                border: '2px solid var(--surface-1)',
-                                boxSizing: 'content-box',
-                            }}
                         />
-                    </Link>
+                    </StackedAvatarLink>
                 ))}
                 {remainingCount > 0 && (
-                    <span style={{
-                        marginLeft: 'var(--size-1)',
-                        fontSize: 'var(--font-size-0)',
-                        color: 'var(--text-3)',
-                    }}>
-                        +{remainingCount}
-                    </span>
+                    <RemainingCount>+{remainingCount}</RemainingCount>
                 )}
-            </div>
+            </AvatarsWrapper>
         );
     };
 
+    const CardComponent = isNew ? NewCard : Card;
+
     return (
         <div style={style}>
-            <Card
-                padding="medium"
-                onClick={handleCardClick}
-                style={isNew ? {
-                    borderLeft: '3px solid var(--blue-6)',
-                    background: 'color-mix(in srgb, var(--blue-6) 5%, var(--surface-2))',
-                } : undefined}
-            >
-                <div style={{
-                    display: 'flex',
-                    gap: 'var(--size-3)',
-                }}>
+            <CardComponent padding="medium" onClick={handleCardClick}>
+                <ContentWrapper>
                     {/* Notification type icon */}
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 'var(--size-2)',
-                    }}>
-                        <div style={{
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            background: `color-mix(in srgb, ${config.color} 20%, transparent)`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: config.color,
-                        }}>
+                    <IconColumn>
+                        <IconCircle $color={config.color}>
                             {config.icon}
-                        </div>
-                    </div>
+                        </IconCircle>
+                    </IconColumn>
 
                     {/* Content */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    <ContentColumn>
                         {/* Header with avatars, message, and time */}
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            gap: 'var(--size-2)',
-                            marginBottom: 'var(--size-2)',
-                        }}>
+                        <HeaderRow>
                             {renderAvatars()}
 
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{
-                                    fontSize: 'var(--font-size-1)',
-                                    color: 'var(--text-1)',
-                                    lineHeight: 1.4,
-                                }}>
+                            <InfoWrapper>
+                                <MessageText>
                                     {primaryAccount && isFullAccount(primaryAccount) ? (
                                         <>
-                                            <Link
-                                                href={`/@${primaryAccount.acct}`}
-                                                style={{
-                                                    textDecoration: 'none',
-                                                    color: 'var(--text-1)',
-                                                    fontWeight: 'var(--font-weight-6)',
-                                                }}
-                                            >
+                                            <AccountLink href={`/@${primaryAccount.acct}`}>
                                                 <EmojiText text={primaryDisplayName} emojis={primaryAccount.emojis} />
-                                            </Link>
+                                            </AccountLink>
                                             {' '}
                                         </>
                                     ) : null}
-                                    <span style={{ color: 'var(--text-2)' }}>
+                                    <ActionText>
                                         {config.getMessage(group.notifications_count, primaryDisplayName).replace(primaryDisplayName, '').trim()}
-                                    </span>
-                                </div>
+                                    </ActionText>
+                                </MessageText>
                                 {group.latest_page_notification_at && (
-                                    <div style={{
-                                        fontSize: 'var(--font-size-0)',
-                                        color: 'var(--text-3)',
-                                        marginTop: 'var(--size-1)',
-                                    }}>
+                                    <TimeText>
                                         {formatRelativeTime(group.latest_page_notification_at)}
-                                    </div>
+                                    </TimeText>
                                 )}
-                            </div>
+                            </InfoWrapper>
 
                             {/* Dismiss button */}
-                            <IconButton
-                                size="small"
-                                onClick={handleDismiss}
-                                style={{ opacity: 0.6 }}
-                            >
+                            <DismissButton size="small" onClick={handleDismiss}>
                                 <X size={14} />
-                            </IconButton>
-                        </div>
+                            </DismissButton>
+                        </HeaderRow>
 
                         {/* Status preview (for mention, status, reblog, favourite, poll, update) */}
                         {relatedStatus && (
-                            <div style={{
-                                padding: 'var(--size-2)',
-                                background: 'var(--surface-2)',
-                                borderRadius: 'var(--radius-2)',
-                                marginTop: 'var(--size-2)',
-                            }}>
+                            <StatusPreview>
                                 {group.type === 'mention' ? (
                                     // Full content for mentions
-                                    <StatusContent
+                                    <MentionContent
                                         html={relatedStatus.content}
                                         emojis={relatedStatus.emojis}
-                                        style={{ fontSize: 'var(--font-size-1)' }}
                                     />
                                 ) : (
                                     // Preview for other types
-                                    <div style={{
-                                        fontSize: 'var(--font-size-0)',
-                                        color: 'var(--text-2)',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        display: '-webkit-box',
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: 'vertical',
-                                    }}>
+                                    <PreviewContent>
                                         <StatusContent
                                             html={relatedStatus.content}
                                             emojis={relatedStatus.emojis}
                                         />
-                                    </div>
+                                    </PreviewContent>
                                 )}
-                            </div>
+                            </StatusPreview>
                         )}
-                    </div>
-                </div>
-            </Card>
+                    </ContentColumn>
+                </ContentWrapper>
+            </CardComponent>
         </div>
     );
 }

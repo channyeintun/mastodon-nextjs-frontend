@@ -1,7 +1,29 @@
 'use client'
 
+import styled from '@emotion/styled';
 import { ExternalLink, Newspaper } from 'lucide-react'
 import type { TrendingLink } from '@/types/mastodon'
+
+// Styled components for skeleton
+const ProviderSkeleton = styled.div`
+    width: 30%;
+    height: 0.8em;
+    border-radius: var(--radius-1);
+`;
+
+const TitleSkeleton = styled.div`
+    width: 90%;
+    height: 1.2em;
+    border-radius: var(--radius-1);
+    margin-top: var(--size-2);
+`;
+
+const DescriptionSkeleton = styled.div`
+    width: 60%;
+    height: 0.9em;
+    border-radius: var(--radius-1);
+    margin-top: var(--size-2);
+`;
 
 interface TrendingLinkCardProps {
     link: TrendingLink
@@ -67,9 +89,9 @@ export function TrendingLinkCardSkeleton({ style }: { style?: React.CSSPropertie
         <div className="trending-link-card skeleton" style={style}>
             <div className="trending-link-image skeleton-loading" />
             <div className="trending-link-content">
-                <div className="skeleton-loading" style={{ width: '30%', height: '0.8em', borderRadius: 'var(--radius-1)' }} />
-                <div className="skeleton-loading" style={{ width: '90%', height: '1.2em', borderRadius: 'var(--radius-1)', marginTop: 'var(--size-2)' }} />
-                <div className="skeleton-loading" style={{ width: '60%', height: '0.9em', borderRadius: 'var(--radius-1)', marginTop: 'var(--size-2)' }} />
+                <ProviderSkeleton className="skeleton-loading" />
+                <TitleSkeleton className="skeleton-loading" />
+                <DescriptionSkeleton className="skeleton-loading" />
             </div>
         </div>
     )

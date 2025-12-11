@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -16,6 +17,103 @@ import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
 import { StatusContent } from '@/components/molecules';
 import type { Notification, NotificationType } from '@/types';
 import { useDismissNotification } from '@/api';
+
+// Styled components
+const ContentWrapper = styled.div`
+    display: flex;
+    gap: var(--size-3);
+`;
+
+const IconColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--size-2);
+`;
+
+const IconCircle = styled.div<{ $color: string }>`
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: color-mix(in srgb, ${props => props.$color} 20%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.$color};
+`;
+
+const ContentColumn = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const HeaderRow = styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: var(--size-2);
+    margin-bottom: var(--size-2);
+`;
+
+const AvatarLink = styled(Link)`
+    flex-shrink: 0;
+`;
+
+const InfoWrapper = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const MessageText = styled.div`
+    font-size: var(--font-size-1);
+    color: var(--text-1);
+    line-height: 1.4;
+`;
+
+const AccountLink = styled(Link)`
+    text-decoration: none;
+    color: var(--text-1);
+    font-weight: var(--font-weight-6);
+`;
+
+const ActionText = styled.span`
+    color: var(--text-2);
+`;
+
+const TimeText = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-3);
+    margin-top: var(--size-1);
+`;
+
+const DismissButton = styled(IconButton)`
+    opacity: 0.6;
+`;
+
+const StatusPreview = styled.div`
+    padding: var(--size-2);
+    background: var(--surface-2);
+    border-radius: var(--radius-2);
+    margin-top: var(--size-2);
+`;
+
+const PreviewContent = styled.div`
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+`;
+
+const MentionContent = styled(StatusContent)`
+    font-size: var(--font-size-1);
+`;
+
+const NewCard = styled(Card)`
+    border-left: 3px solid var(--blue-6);
+    background: color-mix(in srgb, var(--blue-6) 5%, var(--surface-2));
+`;
 
 interface NotificationCardProps {
     notification: Notification;
@@ -136,135 +234,75 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
         onDismiss?.(notification.id);
     };
 
+    const CardComponent = isNew ? NewCard : Card;
+
     return (
         <div style={style}>
-            <Card
-                padding="medium"
-                onClick={handleCardClick}
-                style={isNew ? {
-                    borderLeft: '3px solid var(--blue-6)',
-                    background: 'color-mix(in srgb, var(--blue-6) 5%, var(--surface-2))',
-                } : undefined}
-            >
-                <div style={{
-                    display: 'flex',
-                    gap: 'var(--size-3)',
-                }}>
+            <CardComponent padding="medium" onClick={handleCardClick}>
+                <ContentWrapper>
                     {/* Notification type icon */}
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 'var(--size-2)',
-                    }}>
-                        <div style={{
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            background: `color-mix(in srgb, ${config.color} 20%, transparent)`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: config.color,
-                        }}>
+                    <IconColumn>
+                        <IconCircle $color={config.color}>
                             {config.icon}
-                        </div>
-                    </div>
+                        </IconCircle>
+                    </IconColumn>
 
                     {/* Content */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    <ContentColumn>
                         {/* Header with avatar, message, and time */}
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            gap: 'var(--size-2)',
-                            marginBottom: 'var(--size-2)',
-                        }}>
-                            <Link href={`/@${account.acct}`} style={{ flexShrink: 0 }}>
+                        <HeaderRow>
+                            <AvatarLink href={`/@${account.acct}`}>
                                 <Avatar
                                     src={account.avatar}
                                     alt={displayName}
                                     size="small"
                                 />
-                            </Link>
+                            </AvatarLink>
 
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{
-                                    fontSize: 'var(--font-size-1)',
-                                    color: 'var(--text-1)',
-                                    lineHeight: 1.4,
-                                }}>
-                                    <Link
-                                        href={`/@${account.acct}`}
-                                        style={{
-                                            textDecoration: 'none',
-                                            color: 'var(--text-1)',
-                                            fontWeight: 'var(--font-weight-6)',
-                                        }}
-                                    >
+                            <InfoWrapper>
+                                <MessageText>
+                                    <AccountLink href={`/@${account.acct}`}>
                                         <EmojiText text={displayName} emojis={account.emojis} />
-                                    </Link>
+                                    </AccountLink>
                                     {' '}
-                                    <span style={{ color: 'var(--text-2)' }}>
+                                    <ActionText>
                                         {config.getMessage(displayName).replace(displayName, '').trim()}
-                                    </span>
-                                </div>
-                                <div style={{
-                                    fontSize: 'var(--font-size-0)',
-                                    color: 'var(--text-3)',
-                                    marginTop: 'var(--size-1)',
-                                }}>
+                                    </ActionText>
+                                </MessageText>
+                                <TimeText>
                                     {formatRelativeTime(notification.created_at)}
-                                </div>
-                            </div>
+                                </TimeText>
+                            </InfoWrapper>
 
                             {/* Dismiss button */}
-                            <IconButton
-                                size="small"
-                                onClick={handleDismiss}
-                                style={{ opacity: 0.6 }}
-                            >
+                            <DismissButton size="small" onClick={handleDismiss}>
                                 <X size={14} />
-                            </IconButton>
-                        </div>
+                            </DismissButton>
+                        </HeaderRow>
 
                         {/* Status preview (for mention, status, reblog, favourite, poll, update) */}
                         {notification.status && (
-                            <div style={{
-                                padding: 'var(--size-2)',
-                                background: 'var(--surface-2)',
-                                borderRadius: 'var(--radius-2)',
-                                marginTop: 'var(--size-2)',
-                            }}>
+                            <StatusPreview>
                                 {notification.type === 'mention' ? (
                                     // Full content for mentions
-                                    <StatusContent
+                                    <MentionContent
                                         html={notification.status.content}
                                         emojis={notification.status.emojis}
-                                        style={{ fontSize: 'var(--font-size-1)' }}
                                     />
                                 ) : (
                                     // Preview for other types
-                                    <div style={{
-                                        fontSize: 'var(--font-size-0)',
-                                        color: 'var(--text-2)',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        display: '-webkit-box',
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: 'vertical',
-                                    }}>
+                                    <PreviewContent>
                                         <StatusContent
                                             html={notification.status.content}
                                             emojis={notification.status.emojis}
                                         />
-                                    </div>
+                                    </PreviewContent>
                                 )}
-                            </div>
+                            </StatusPreview>
                         )}
-                    </div>
-                </div>
-            </Card>
+                    </ContentColumn>
+                </ContentWrapper>
+            </CardComponent>
         </div>
     );
 }

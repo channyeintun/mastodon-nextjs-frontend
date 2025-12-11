@@ -1,10 +1,79 @@
 'use client';
 
-
+import styled from '@emotion/styled';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
 import { EmojiText } from '../atoms/EmojiText';
 import type { Account } from '@/types/mastodon';
+
+// Styled components
+const Container = styled.div<{ $top: number; $left: number }>`
+  position: absolute;
+  top: ${props => props.$top}px;
+  left: ${props => props.$left}px;
+  z-index: 100;
+  min-width: 300px;
+  max-width: 400px;
+  animation: fadeInUp 0.2s ease-out;
+`;
+
+const ScrollContainer = styled.div`
+  max-height: 300px;
+  overflow-y: auto;
+`;
+
+const LoadingMessage = styled.div`
+  padding: var(--size-3);
+  text-align: center;
+  color: var(--text-2);
+  font-size: var(--font-size-1);
+`;
+
+const SuggestionButton = styled.button<{ $isSelected: boolean }>`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  padding: var(--size-3);
+  border: none;
+  background: ${props => props.$isSelected ? 'var(--surface-3)' : 'transparent'};
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--surface-3);
+  }
+`;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const DisplayName = styled.div`
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const Handle = styled.div`
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const EmptyMessage = styled.div`
+  padding: var(--size-3);
+  text-align: center;
+  color: var(--text-2);
+  font-size: var(--font-size-1);
+`;
 
 interface MentionSuggestionsProps {
   accounts: Account[];
@@ -26,104 +95,41 @@ export function MentionSuggestions({
   if (!shouldShow) return null;
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: `${position?.top || 0}px`,
-        left: `${position?.left || 0}px`,
-        zIndex: 100,
-        minWidth: '300px',
-        maxWidth: '400px',
-        animation: 'fadeInUp 0.2s ease-out',
-      }}
-    >
+    <Container $top={position?.top || 0} $left={position?.left || 0}>
       <Card padding="none">
-        <div style={{
-          maxHeight: '300px',
-          overflowY: 'auto',
-        }}>
+        <ScrollContainer>
           {isLoading && (
-            <div style={{
-              padding: 'var(--size-3)',
-              textAlign: 'center',
-              color: 'var(--text-2)',
-              fontSize: 'var(--font-size-1)',
-            }}>
-              Searching...
-            </div>
+            <LoadingMessage>Searching...</LoadingMessage>
           )}
 
           {!isLoading && accounts.length > 0 && accounts.map((account, index) => (
-            <button
+            <SuggestionButton
               key={account.id}
               onClick={() => onSelect(account)}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--size-2)',
-                padding: 'var(--size-3)',
-                border: 'none',
-                background: selectedIndex === index ? 'var(--surface-3)' : 'transparent',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'background 0.15s',
-              }}
-              onMouseEnter={(e) => {
-                if (selectedIndex !== index) {
-                  e.currentTarget.style.background = 'var(--surface-3)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedIndex !== index) {
-                  e.currentTarget.style.background = 'transparent';
-                }
-              }}
+              $isSelected={selectedIndex === index}
             >
               <Avatar
                 src={account.avatar}
                 alt={account.display_name || account.username}
                 size="small"
               />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{
-                  fontWeight: 'var(--font-weight-6)',
-                  color: 'var(--text-1)',
-                  fontSize: 'var(--font-size-1)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}>
+              <InfoWrapper>
+                <DisplayName>
                   <EmojiText
                     text={account.display_name || account.username}
                     emojis={account.emojis}
                   />
-                </div>
-                <div style={{
-                  fontSize: 'var(--font-size-0)',
-                  color: 'var(--text-2)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}>
-                  @{account.acct}
-                </div>
-              </div>
-            </button>
+                </DisplayName>
+                <Handle>@{account.acct}</Handle>
+              </InfoWrapper>
+            </SuggestionButton>
           ))}
 
           {!isLoading && accounts.length === 0 && (
-            <div style={{
-              padding: 'var(--size-3)',
-              textAlign: 'center',
-              color: 'var(--text-2)',
-              fontSize: 'var(--font-size-1)',
-            }}>
-              No users found
-            </div>
+            <EmptyMessage>No users found</EmptyMessage>
           )}
-        </div>
+        </ScrollContainer>
       </Card>
-    </div>
+    </Container>
   );
 }

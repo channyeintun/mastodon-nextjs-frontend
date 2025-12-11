@@ -1,5 +1,6 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api';
@@ -11,6 +12,73 @@ import type { TabItem } from '@/components/atoms/Tabs';
 import { Hash, Newspaper, FileText } from 'lucide-react';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink } from '@/types';
+
+// Styled components
+const Container = styled.div`
+    max-width: 600px;
+    margin: 0 auto;
+`;
+
+const TabContent = styled.div`
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`;
+
+const TabContentWithPadding = styled(TabContent)`
+    padding: 0 var(--size-4);
+`;
+
+const ListContainer = styled.div`
+    flex: 1;
+    overflow: auto;
+`;
+
+const SkeletonList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+`;
+
+const ErrorContainer = styled.div`
+    text-align: center;
+    padding: var(--size-8);
+`;
+
+const ErrorText = styled.p`
+    color: var(--red-6);
+    margin-bottom: var(--size-3);
+`;
+
+const StyledPostCard = styled(PostCard)`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledPostCardSkeleton = styled(PostCardSkeleton)`
+    margin-bottom: var(--size-3);
+`;
+
+const StyledTrendingTagCard = styled(TrendingTagCard)`
+    margin-bottom: var(--size-2);
+`;
+
+const StyledTrendingTagCardSkeleton = styled(TrendingTagCardSkeleton)`
+    margin-bottom: var(--size-2);
+`;
+
+const StyledTrendingLinkCard = styled(TrendingLinkCard)`
+    margin-bottom: var(--size-2);
+`;
+
+const StyledTrendingLinkCardSkeleton = styled(TrendingLinkCardSkeleton)`
+    margin-bottom: var(--size-2);
+`;
+
+const StyledTabs = styled(Tabs)`
+    padding: 0 var(--size-4);
+` as typeof Tabs;
 
 type TrendingTab = 'posts' | 'tags' | 'links';
 
@@ -63,40 +131,39 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages);
 
     return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <Container className="full-height-container">
             {/* Header */}
             {header}
 
             {/* Tab Navigation */}
-            <Tabs
+            <StyledTabs
                 tabs={trendingTabs}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
                 variant="underline"
-                style={{ padding: '0 var(--size-4)' }}
             />
 
             {/* Tab Content - using Activity for toggling */}
             <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
-                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <TabContent>
                     {statusesLoading ? (
-                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+                        <ListContainer className="virtualized-list-container">
                             <PostCardSkeletonList count={5} />
-                        </div>
+                        </ListContainer>
                     ) : statusesError ? (
-                        <div style={{ textAlign: 'center', padding: 'var(--size-8)' }}>
-                            <p style={{ color: 'var(--red-6)', marginBottom: 'var(--size-3)' }}>
+                        <ErrorContainer>
+                            <ErrorText>
                                 {statusesErrorMsg instanceof Error ? statusesErrorMsg.message : 'Failed to load posts'}
-                            </p>
+                            </ErrorText>
                             <Button onClick={() => window.location.reload()}>Retry</Button>
-                        </div>
+                        </ErrorContainer>
                     ) : uniqueStatuses.length === 0 ? (
                         <EmptyState title="No trending posts at the moment" />
                     ) : (
                         <VirtualizedList<Status>
                             items={uniqueStatuses}
                             renderItem={(status) => (
-                                <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
+                                <StyledPostCard status={status} />
                             )}
                             getItemKey={(status) => status.id}
                             estimateSize={300}
@@ -108,23 +175,23 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             height="100%"
                             style={{ height: '100%' }}
                             scrollRestorationKey={`${scrollRestorationPrefix}-posts`}
-                            loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
+                            loadingIndicator={<StyledPostCardSkeleton />}
                             endIndicator="You've reached the end of trending posts"
                         />
                     )}
-                </div>
+                </TabContent>
             </Activity>
 
             <Activity mode={activeTab === 'tags' ? 'visible' : 'hidden'}>
-                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%', padding: '0 var(--size-4)' }}>
+                <TabContentWithPadding>
                     {tagsLoading ? (
-                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+                        <ListContainer className="virtualized-list-container">
+                            <SkeletonList>
                                 {Array.from({ length: 8 }).map((_, i) => (
                                     <TrendingTagCardSkeleton key={i} />
                                 ))}
-                            </div>
-                        </div>
+                            </SkeletonList>
+                        </ListContainer>
                     ) : tagsError ? (
                         <EmptyState title="Failed to load trending tags" />
                     ) : uniqueTags.length === 0 ? (
@@ -133,7 +200,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                         <VirtualizedList<Tag>
                             items={uniqueTags}
                             renderItem={(tag) => (
-                                <TrendingTagCard tag={tag} style={{ marginBottom: 'var(--size-2)' }} />
+                                <StyledTrendingTagCard tag={tag} />
                             )}
                             getItemKey={(tag) => tag.name}
                             estimateSize={80}
@@ -145,23 +212,23 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             height="100%"
                             style={{ height: '100%' }}
                             scrollRestorationKey={`${scrollRestorationPrefix}-tags`}
-                            loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
+                            loadingIndicator={<StyledTrendingTagCardSkeleton />}
                             endIndicator="You've reached the end of trending tags"
                         />
                     )}
-                </div>
+                </TabContentWithPadding>
             </Activity>
 
             <Activity mode={activeTab === 'links' ? 'visible' : 'hidden'}>
-                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', height: '100%', padding: '0 var(--size-4)' }}>
+                <TabContentWithPadding>
                     {linksLoading ? (
-                        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+                        <ListContainer className="virtualized-list-container">
+                            <SkeletonList>
                                 {Array.from({ length: 5 }).map((_, i) => (
                                     <TrendingLinkCardSkeleton key={i} />
                                 ))}
-                            </div>
-                        </div>
+                            </SkeletonList>
+                        </ListContainer>
                     ) : linksError ? (
                         <EmptyState title="Failed to load trending news" />
                     ) : uniqueLinks.length === 0 ? (
@@ -170,7 +237,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                         <VirtualizedList<TrendingLink>
                             items={uniqueLinks}
                             renderItem={(link) => (
-                                <TrendingLinkCard link={link} style={{ marginBottom: 'var(--size-2)' }} />
+                                <StyledTrendingLinkCard link={link} />
                             )}
                             getItemKey={(link) => link.url}
                             estimateSize={120}
@@ -182,12 +249,12 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             height="100%"
                             style={{ height: '100%' }}
                             scrollRestorationKey={`${scrollRestorationPrefix}-links`}
-                            loadingIndicator={<TrendingLinkCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
+                            loadingIndicator={<StyledTrendingLinkCardSkeleton />}
                             endIndicator="You've reached the end of trending news"
                         />
                     )}
-                </div>
+                </TabContentWithPadding>
             </Activity>
-        </div>
+        </Container>
     );
 });

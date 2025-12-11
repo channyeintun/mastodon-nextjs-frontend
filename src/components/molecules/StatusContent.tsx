@@ -1,13 +1,22 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Emoji } from '@/types/mastodon';
+
+// Styled components
+const ContentWrapper = styled.div`
+  color: var(--text-1);
+  line-height: 1.5;
+  word-break: break-word;
+`;
 
 interface StatusContentProps {
   html: string;
   emojis?: Emoji[];
   style?: React.CSSProperties;
+  className?: string;
 }
 
 /**
@@ -16,7 +25,7 @@ interface StatusContentProps {
  * - Custom emoji rendering
  * - Internal navigation for mentions and hashtags (no external redirects)
  */
-export function StatusContent({ html, emojis = [], style }: StatusContentProps) {
+export function StatusContent({ html, emojis = [], style, className }: StatusContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -149,14 +158,10 @@ export function StatusContent({ html, emojis = [], style }: StatusContentProps) 
   }, [processedHtml, router]);
 
   return (
-    <div
+    <ContentWrapper
       ref={contentRef}
-      style={{
-        ...style,
-        color: 'var(--text-1)',
-        lineHeight: '1.5',
-        wordBreak: 'break-word',
-      }}
+      style={style}
+      className={className}
       dangerouslySetInnerHTML={{ __html: processedHtml }}
     />
   );
