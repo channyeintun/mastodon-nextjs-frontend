@@ -10,6 +10,7 @@ import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import { getStreamingStore } from '../stores/streamingStore'
 import { useInstance } from '../api/queries'
 import { useAuthStore } from './useStores'
+import { useNotificationSound } from './useNotificationSound'
 import { queryKeys } from '../api/queryKeys'
 import type { Notification } from '../types/mastodon'
 
@@ -22,10 +23,16 @@ export function useNotificationStream() {
     const authStore = useAuthStore()
     const { data: instance } = useInstance()
     const streamingStore = getStreamingStore()
+    const { play: playNotificationSound } = useNotificationSound()
 
     // Handle incoming notifications - using useEffectEvent to always access
     // the latest queryClient without making it a reactive dependency
     const handleNotification = useEffectEvent((notification: Notification) => {
+        // Play boop sound if document is hidden (user is on another tab)
+        if (document.hidden) {
+            playNotificationSound();
+        }
+
         // Only update notifications cache if it already exists (user has visited the page)
         // If no cache exists, don't create one - let the page fetch fresh data with proper loading
         const existingData = queryClient.getQueryData<InfiniteData<Notification[]>>(

@@ -6,16 +6,12 @@ import { ScrollRestorationProvider } from '@/components/providers/ScrollRestorat
 import { StreamingProvider } from '@/components/providers/StreamingProvider';
 import { GlobalModalProvider } from '@/contexts/GlobalModalContext';
 import { AuthModalBridge } from '@/components/molecules';
-import { useDocumentTitleNotification } from '@/hooks/useDocumentTitleNotification';
 
 export default function MainLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    // Update document title with notification count when tab is not visible
-    useDocumentTitleNotification();
-
     return (
         <StreamingProvider>
             <GlobalModalProvider>
