@@ -104,6 +104,7 @@ export const TimelinePage = observer(() => {
                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                 endIndicator="You've reached the end of your timeline"
                 emptyState={<EmptyState title="No posts yet" description="Follow some people to see their posts here." />}
+                stickyHeader
                 header={
                     <div>
                         <div className="header-title">

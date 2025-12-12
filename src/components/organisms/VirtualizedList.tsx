@@ -93,6 +93,13 @@ interface VirtualizedListProps<T> {
    * Header should contain: .header-title, .header-subtitle, .header-actions
    */
   header?: ReactNode;
+
+  /**
+   * Whether to enable the sticky collapsible header behavior
+   * When true, the header will stick to the top and collapse when scrolling
+   * @default false
+   */
+  stickyHeader?: boolean;
 }
 
 // Global cache for scroll restoration
@@ -121,6 +128,7 @@ export function VirtualizedList<T>({
   style,
   scrollRestorationKey,
   header,
+  stickyHeader = false,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -190,7 +198,7 @@ export function VirtualizedList<T>({
       style={style}
     >
       {/* Sticky header with scroll-state container query support */}
-      {header && <StickyHeaderWrapper>{header}</StickyHeaderWrapper>}
+      {header && (stickyHeader ? <StickyHeaderWrapper>{header}</StickyHeaderWrapper> : header)}
 
       {items.length === 0 && emptyState && emptyState}
 
@@ -271,7 +279,10 @@ const StickyHeaderWrapper = styled.div`
     display: flex;
     flex-direction: column;
     gap: var(--size-1);
-    transition: gap 0.3s ease, flex-direction 0.3s ease;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0.2s ease, gap 0.3s ease;
+    transition-behavior: allow-discrete;
 
     h1 {
       font-size: var(--font-size-5);
@@ -286,7 +297,9 @@ const StickyHeaderWrapper = styled.div`
     max-height: 2em;
     overflow: hidden;
     opacity: 1;
-    transition: opacity 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
+    transition-behavior: allow-discrete;
   }
 
   .header-actions {
@@ -301,18 +314,20 @@ const StickyHeaderWrapper = styled.div`
     > * {
       padding: var(--size-2) var(--size-4);
       gap: var(--size-2);
-      justify-content: flex-end;
     }
 
     .header-title {
-      display: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease 0.1s, visibility 0.15s ease 0.1s;
+      transition-behavior: allow-discrete;
     }
 
     .header-subtitle {
       opacity: 0;
+      visibility: hidden;
       max-height: 0;
       margin-top: 0;
-      pointer-events: none;
     }
 
     .header-actions .btn-text {
