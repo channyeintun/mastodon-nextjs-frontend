@@ -78,7 +78,7 @@ const HeaderImage = styled.div`
 `;
 
 const ProfileInfo = styled.div`
-  padding: var(--size-4);
+  padding: var(--size-4) var(--size-2);
   padding-top: var(--size-2);
 `;
 

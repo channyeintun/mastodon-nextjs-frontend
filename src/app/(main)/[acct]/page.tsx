@@ -19,7 +19,6 @@ import {
 } from '@/api';
 import type { AccountStatusFilters } from '@/api/queries';
 import {
-  PostCardSkeletonList,
   AccountProfileSkeleton,
   ProfileStats,
   ProfileBio,
@@ -47,8 +46,6 @@ import {
   MetaLink,
   ErrorContainer,
   ErrorTitle,
-  PostsHeader,
-  LoadingBorder,
 } from './styles';
 
 type ProfileTab = 'posts' | 'posts_replies' | 'media';
@@ -127,12 +124,6 @@ export default function AccountPage({
           </IconButton>
         </FixedBackButton>
         <AccountProfileSkeleton />
-        <LoadingBorder>
-          <PostsHeader>Posts</PostsHeader>
-          <ScrollableContent className="virtualized-list-container">
-            <PostCardSkeletonList count={3} />
-          </ScrollableContent>
-        </LoadingBorder>
       </PageContainer>
     );
   }
