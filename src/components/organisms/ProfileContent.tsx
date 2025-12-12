@@ -75,19 +75,21 @@ export function ProfileContent({
                             <VirtualizedList<Status>
                                 style={{ padding: 0 }}
                                 items={statuses}
-                                header={<PinnedSection>
-                                    <PinnedHeader>
-                                        <Pin size={16} />
-                                        Pinned Posts
-                                    </PinnedHeader>
-                                    {pinnedStatuses?.map(status => (
-                                        <PostCard
-                                            key={status.id}
-                                            status={status}
-                                            style={{ marginBottom: 'var(--size-3)' }}
-                                        />
-                                    ))}
-                                </PinnedSection>}
+                                header={pinnedStatuses && pinnedStatuses.length > 0 ? (
+                                    <PinnedSection>
+                                        <PinnedHeader>
+                                            <Pin size={16} />
+                                            Pinned Posts
+                                        </PinnedHeader>
+                                        {pinnedStatuses.map(status => (
+                                            <PostCard
+                                                key={status.id}
+                                                status={status}
+                                                style={{ marginBottom: 'var(--size-3)' }}
+                                            />
+                                        ))}
+                                    </PinnedSection>
+                                ) : undefined}
                                 renderItem={(status) => (
                                     <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                                 )}
@@ -119,19 +121,21 @@ export function ProfileContent({
                             <VirtualizedList<Status>
                                 style={{ padding: 0 }}
                                 items={statuses}
-                                header={<PinnedSection>
-                                    <PinnedHeader>
-                                        <Pin size={16} />
-                                        Pinned Posts
-                                    </PinnedHeader>
-                                    {pinnedStatuses?.map(status => (
-                                        <PostCard
-                                            key={status.id}
-                                            status={status}
-                                            style={{ marginBottom: 'var(--size-3)' }}
-                                        />
-                                    ))}
-                                </PinnedSection>}
+                                header={pinnedStatuses && pinnedStatuses.length > 0 ? (
+                                    <PinnedSection>
+                                        <PinnedHeader>
+                                            <Pin size={16} />
+                                            Pinned Posts
+                                        </PinnedHeader>
+                                        {pinnedStatuses.map(status => (
+                                            <PostCard
+                                                key={status.id}
+                                                status={status}
+                                                style={{ marginBottom: 'var(--size-3)' }}
+                                            />
+                                        ))}
+                                    </PinnedSection>
+                                ) : undefined}
                                 renderItem={(status) => (
                                     <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                                 )}
