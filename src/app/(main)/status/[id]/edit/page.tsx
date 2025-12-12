@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusSource } from '@/api';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
-import { Button } from '@/components/atoms';
+import { IconButton } from '@/components/atoms/IconButton';
 
 export default function EditStatusPage() {
   const params = useParams();
@@ -60,44 +60,31 @@ export default function EditStatusPage() {
     : status.content;
 
   return (
-    <div style={{
-      maxWidth: '600px',
-      margin: '0 auto',
-      padding: 'var(--size-4)',
-    }}>
-      {/* Header */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--size-3)',
-        marginBottom: 'var(--size-4)',
-      }}>
-        <Button
-          variant="ghost"
-          size="small"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft size={20} />
-        </Button>
-        <h1 style={{
-          fontSize: 'var(--font-size-4)',
-          fontWeight: 'var(--font-weight-6)',
-          color: 'var(--text-1)',
-          margin: 0,
-        }}>
-          Edit Post
-        </h1>
-      </div>
+    <div className="compose-page-container">
+      <div className="compose-card">
+        {/* Header */}
+        <div className="compose-header">
+          <IconButton onClick={() => router.back()}>
+            <ArrowLeft size={24} />
+          </IconButton>
+          <h1 style={{
+            fontSize: 'var(--font-size-4)',
+            fontWeight: 'var(--font-weight-7)',
+          }}>
+            Edit Post
+          </h1>
+        </div>
 
-      {/* Composer with initial content */}
-      <ComposerPanel
-        editMode={true}
-        statusId={status.id}
-        initialContent={initialContent}
-        initialSpoilerText={source?.spoiler_text || status.spoiler_text}
-        initialVisibility={status.visibility}
-        initialSensitive={status.sensitive}
-      />
+        {/* Composer with initial content */}
+        <ComposerPanel
+          editMode={true}
+          statusId={status.id}
+          initialContent={initialContent}
+          initialSpoilerText={source?.spoiler_text || status.spoiler_text}
+          initialVisibility={status.visibility}
+          initialSensitive={status.sensitive}
+        />
+      </div>
     </div>
   );
 }

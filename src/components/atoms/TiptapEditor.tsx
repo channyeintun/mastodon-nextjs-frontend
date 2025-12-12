@@ -46,7 +46,10 @@ export function TiptapEditor({
       StarterKit.configure({
         // Disable built-in code block for cleaner output
         codeBlock: false,
-        // Keep paragraph, bold, italic, etc.
+        // Disable automatic list conversion (- and space → bullet list)
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
       }),
       Placeholder.configure({
         placeholder,
