@@ -84,7 +84,7 @@ export default function PreferencesPage() {
 
     if (isLoadingAccount || isLoadingPreferences) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4)' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', marginBottom: 'var(--size-5)' }}>
                     <CircleSkeleton size="40px" />
                     <TextSkeleton width={120} height={24} />
@@ -104,7 +104,7 @@ export default function PreferencesPage() {
     const labelStyle = { display: 'flex', alignItems: 'flex-start', gap: 'var(--size-3)', padding: 'var(--size-3)', borderRadius: 'var(--radius-2)', background: 'transparent', cursor: 'pointer' } as const;
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4)' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', marginBottom: 'var(--size-5)' }}>
                 <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
                 <h1 style={{ fontSize: 'var(--font-size-4)', fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
