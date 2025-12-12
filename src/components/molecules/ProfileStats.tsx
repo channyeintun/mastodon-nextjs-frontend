@@ -5,20 +5,28 @@ import Link from 'next/link';
 
 interface ProfileStatsProps {
     acct: string;
+    postsCount: number;
     followingCount: number;
     followersCount: number;
 }
 
 /**
- * Presentation component for profile follower/following stats.
+ * Presentation component for profile posts/follower/following stats.
  */
 export function ProfileStats({
     acct,
+    postsCount,
     followingCount,
     followersCount,
 }: ProfileStatsProps) {
     return (
         <Container>
+            <StatItem>
+                <Count>
+                    {postsCount.toLocaleString()}
+                </Count>{' '}
+                <Label>Posts</Label>
+            </StatItem>
             <StatsLink href={`/@${acct}/following`}>
                 <Count>
                     {followingCount.toLocaleString()}
@@ -40,6 +48,15 @@ const Container = styled.div`
   gap: var(--size-4);
   font-size: var(--font-size-1);
   margin-bottom: var(--size-4);
+  flex-wrap: wrap;
+
+  @media (max-width: 400px) {
+    gap: var(--size-3);
+  }
+`;
+
+const StatItem = styled.span`
+  text-decoration: none;
 `;
 
 const StatsLink = styled(Link)`
@@ -52,4 +69,8 @@ const Count = styled.strong`
 
 const Label = styled.span`
   color: var(--text-2);
+
+  @media (max-width: 320px) {
+    display: none;
+  }
 `;

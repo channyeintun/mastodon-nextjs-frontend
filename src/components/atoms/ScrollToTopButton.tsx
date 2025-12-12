@@ -2,10 +2,12 @@
 
 import styled from '@emotion/styled';
 import { ChevronUp } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { useEffect, useState } from 'react';
 
 const Button = styled.button<{ $visible: boolean }>`
-    position: sticky;
-    bottom: var(--size-6);
+    position: fixed;
+    bottom: calc(var(--app-bottom-nav-height) + var(--size-4));
     left: 50%;
     transform: translateX(-50%) translateY(${props => props.$visible ? '0' : '100px'});
     opacity: ${props => props.$visible ? 1 : 0};
@@ -21,13 +23,19 @@ const Button = styled.button<{ $visible: boolean }>`
     align-items: center;
     gap: var(--size-2);
     box-shadow: var(--shadow-4);
-    z-index: 100;
+    z-index: 999;
     font-size: var(--font-size-0);
     font-weight: 500;
     pointer-events: ${props => props.$visible ? 'auto' : 'none'};
-
     &:hover {
         background: var(--blue-7);
+    }
+
+    /* On desktop, center within the content area (accounting for sidebar) */
+    @media (min-width: 768px) {
+        bottom: var(--size-6);
+        /* Center of content area = sidebar + half of remaining space */
+        left: calc(var(--app-sidebar-width) + (100vw - var(--app-sidebar-width)) / 2);
     }
 `;
 
@@ -37,7 +45,13 @@ interface ScrollToTopButtonProps {
 }
 
 export function ScrollToTopButton({ visible, onClick }: ScrollToTopButtonProps) {
-    return (
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const button = (
         <Button
             $visible={visible}
             onClick={onClick}
@@ -47,4 +61,8 @@ export function ScrollToTopButton({ visible, onClick }: ScrollToTopButtonProps) 
             Back to top
         </Button>
     );
+
+    // Use portal to render at document.body level, avoiding container clipping
+    if (!mounted) return null;
+    return createPortal(button, document.body);
 }

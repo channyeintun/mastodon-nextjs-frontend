@@ -28,13 +28,11 @@ import {
   HandleExplainer,
 } from '@/components/molecules';
 import { ProfileContent } from '@/components/organisms';
-import { Avatar, Button, IconButton, EmojiText, TextSkeleton } from '@/components/atoms';
+import { Avatar, Button, IconButton, EmojiText } from '@/components/atoms';
 import { flattenAndUniqById, getStatusFilters } from '@/utils/fp';
 import {
   PageContainer,
-  Header,
-  HeaderTitle,
-  HeaderSubtitle,
+  FixedBackButton,
   ScrollableContent,
   HeaderImage,
   ProfileSection,
@@ -123,15 +121,11 @@ export default function AccountPage({
   if (accountLoading) {
     return (
       <PageContainer className="full-height-container">
-        <Header>
+        <FixedBackButton>
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
           </IconButton>
-          <div>
-            <TextSkeleton width="150px" height="24px" style={{ marginBottom: 'var(--size-1)' }} />
-            <TextSkeleton width="100px" height="16px" />
-          </div>
-        </Header>
+        </FixedBackButton>
         <AccountProfileSkeleton />
         <LoadingBorder>
           <PostsHeader>Posts</PostsHeader>
@@ -155,20 +149,12 @@ export default function AccountPage({
 
   return (
     <PageContainer className="full-height-container">
-      {/* Header */}
-      <Header>
+      {/* Fixed Back Button */}
+      <FixedBackButton>
         <IconButton onClick={() => router.back()}>
           <ArrowLeft size={20} />
         </IconButton>
-        <div>
-          <HeaderTitle>
-            <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
-          </HeaderTitle>
-          <HeaderSubtitle>
-            {account.statuses_count.toLocaleString()} posts
-          </HeaderSubtitle>
-        </div>
-      </Header>
+      </FixedBackButton>
 
       {/* Scrollable Content */}
       <ScrollableContent className="virtualized-list-container">
@@ -219,7 +205,7 @@ export default function AccountPage({
             <ProfileBio note={account.note} />
 
             {/* Stats */}
-            <ProfileStats acct={account.acct} followingCount={account.following_count} followersCount={account.followers_count} />
+            <ProfileStats acct={account.acct} postsCount={account.statuses_count} followingCount={account.following_count} followersCount={account.followers_count} />
 
             {/* Joined Date & External Link */}
             <MetaSection>

@@ -8,26 +8,24 @@ export const PageContainer = styled.div`
   flex-direction: column;
 `;
 
-export const Header = styled.div`
-  position: sticky;
-  top: 0;
-  background: var(--surface-1);
-  z-index: 10;
-  padding: var(--size-4);
-  display: flex;
-  align-items: center;
-  gap: var(--size-3);
-  flex-shrink: 0;
-`;
+export const FixedBackButton = styled.div`
+  position: fixed;
+  top: var(--size-4);
+  left: var(--size-4);
+  z-index: 100;
 
-export const HeaderTitle = styled.h1`
-  font-size: var(--font-size-4);
-  margin-bottom: var(--size-1);
-`;
+  /* On desktop, account for sidebar and centered content */
+  @media (min-width: 768px) {
+    /* Sidebar width + half of remaining space - half of content width + padding */
+    left: calc(var(--app-sidebar-width) + (100vw - var(--app-sidebar-width) - 600px) / 2 + var(--size-4));
+  }
 
-export const HeaderSubtitle = styled.p`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
+  button {
+    background: var(--surface-1);
+    border-radius: var(--radius-round);
+    box-shadow: var(--shadow-2);
+    backdrop-filter: blur(8px);
+  }
 `;
 
 export const ScrollableContent = styled.div`
