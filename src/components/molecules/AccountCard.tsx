@@ -45,7 +45,7 @@ export function AccountCard({
     const handleFollowToggle = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if (isFollowing) {
+        if (isFollowing || relationship?.requested) {
             unfollowMutation.mutate(account.id);
         } else {
             followMutation.mutate(account.id);
@@ -137,13 +137,13 @@ export function AccountCard({
         if (showFollowButton && !isOwnProfile) {
             return (
                 <Button
-                    variant={isFollowing ? 'secondary' : 'primary'}
+                    variant={isFollowing || relationship?.requested ? 'secondary' : 'primary'}
                     size="small"
                     onClick={handleFollowToggle}
                     disabled={isLoading}
                     isLoading={isLoading}
                 >
-                    {isFollowing ? 'Following' : 'Follow'}
+                    {relationship?.requested ? 'Requested' : (isFollowing ? 'Following' : 'Follow')}
                 </Button>
             );
         }

@@ -11,6 +11,7 @@ interface ProfileActionButtonsProps {
     isBlocking: boolean;
     isMuting: boolean;
     isFollowing: boolean;
+    isRequested?: boolean;
     isLoading: boolean;
     isMutePending: boolean;
     isBlockPending: boolean;
@@ -29,6 +30,7 @@ export function ProfileActionButtons({
     isBlocking,
     isMuting,
     isFollowing,
+    isRequested,
     isLoading,
     isMutePending,
     isBlockPending,
@@ -70,11 +72,11 @@ export function ProfileActionButtons({
         <ButtonContainer>
             {!isBlocking && (
                 <Button
-                    variant={isFollowing ? 'secondary' : 'primary'}
+                    variant={isFollowing || isRequested ? 'secondary' : 'primary'}
                     onClick={onFollowToggle}
                     isLoading={isLoading}
                 >
-                    {isFollowing ? 'Following' : 'Follow'}
+                    {isRequested ? 'Requested' : (isFollowing ? 'Following' : 'Follow')}
                 </Button>
             )}
 

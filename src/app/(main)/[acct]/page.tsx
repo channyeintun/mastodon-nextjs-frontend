@@ -101,7 +101,7 @@ export default function AccountPage({
   // Event handlers
   const handleFollowToggle = () => {
     if (!accountId) return;
-    relationship?.following ? unfollowMutation.mutate(accountId) : followMutation.mutate(accountId);
+    relationship?.following || relationship?.requested ? unfollowMutation.mutate(accountId) : followMutation.mutate(accountId);
   };
 
   const handleBlockToggle = () => {
@@ -192,6 +192,7 @@ export default function AccountPage({
               <ProfileActionButtons
                 isOwnProfile={isOwnProfile}
                 isFollowing={isFollowing}
+                isRequested={relationship?.requested}
                 isBlocking={isBlocking}
                 isMuting={isMuting}
                 isLoading={isFollowLoading}
