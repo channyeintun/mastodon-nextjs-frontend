@@ -11,6 +11,7 @@ export { LinkPreview } from './LinkPreview';
 export { ListItemSkeleton } from './ListItemSkeleton';
 export { MediaGrid } from './MediaGrid';
 export { MediaGridSkeleton } from './MediaGridSkeleton';
+export { MediaModal } from './MediaModal';
 export { MediaUpload } from './MediaUpload';
 export { MentionSuggestions } from './MentionSuggestions';
 export { default as Navigation } from './Navigation';

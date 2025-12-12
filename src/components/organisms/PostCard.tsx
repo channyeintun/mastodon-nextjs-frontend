@@ -12,6 +12,7 @@ import {
   PostPoll,
   ContentWarningSection,
   DeletePostModal,
+  MediaModal,
 } from '@/components/molecules';
 import type { Status } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
@@ -41,6 +42,17 @@ export function PostCard({
   const handleDeleteClick = (postId: string) => {
     openModal(
       <DeletePostModal postId={postId} onClose={closeModal} />
+    );
+  };
+
+  const handleMediaClick = (index: number) => (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    openModal(
+      <MediaModal
+        mediaAttachments={displayStatus.media_attachments}
+        initialIndex={index}
+        onClose={closeModal}
+      />
     );
   };
 
@@ -138,8 +150,12 @@ export function PostCard({
                 $columns={displayStatus.media_attachments.length === 1 ? 1 : 2}
                 $blurred={!!(hasSensitiveMedia && !showCWMedia)}
               >
-                {displayStatus.media_attachments.map((media) => (
-                  <MediaItem key={media.id}>
+                {displayStatus.media_attachments.map((media, index) => (
+                  <MediaItem
+                    key={media.id}
+                    onClick={handleMediaClick(index)}
+                    $clickable={!(hasSensitiveMedia && !showCWMedia)}
+                  >
                     {media.type === 'image' && media.preview_url && (
                       <MediaImage
                         src={media.preview_url}
@@ -252,10 +268,16 @@ const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
   transition: filter 0.2s ease;
 `;
 
-const MediaItem = styled.div`
+const MediaItem = styled.div<{ $clickable?: boolean }>`
   position: relative;
   aspect-ratio: 16/9;
   background: var(--surface-3);
+  cursor: ${props => props.$clickable ? 'pointer' : 'default'};
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: ${props => props.$clickable ? '0.9' : '1'};
+  }
 `;
 
 const MediaImage = styled.img`

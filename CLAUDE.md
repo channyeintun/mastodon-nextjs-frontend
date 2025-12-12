@@ -126,6 +126,7 @@ mastodon-nextjs-client/
 │   │   │   ├── ListItemSkeleton.tsx      # List item skeleton loader
 │   │   │   ├── MediaGrid.tsx
 │   │   │   ├── MediaGridSkeleton.tsx     # Media grid skeleton loader
+│   │   │   ├── MediaModal.tsx            # Fullscreen media viewer with navigation
 │   │   │   ├── MediaUpload.tsx
 │   │   │   ├── MentionSuggestions.tsx
 │   │   │   ├── Navigation.tsx
@@ -285,7 +286,7 @@ Atomic design pattern components:
 - **atoms/**: Smallest UI building blocks
   - Avatar, Badge, Button, Card, CheckboxField, CircleSkeleton (circular skeleton loader), ContentWarningInput, Dialog (base modal), EmptyState, EmojiText, FormField, IconButton, ImageSkeleton (image loader), Input, ScheduleInput, ScrollToTopButton, SensitiveContentButton, SkipToMain, Spinner, Tabs, TextArea, TextSkeleton (text loader), TiptapEditor
 - **molecules/**: Simple component combinations
-  - AccountCard, AccountProfileSkeleton, AuthModalBridge, ComposerToolbar, ContentWarningSection, DeletePostModal, GroupedNotificationCard, HandleExplainer, ImageCropper (cropperjs-based image cropping with zoom, rotate, flip), LinkPreview, ListItemSkeleton, MediaGrid, MediaGridSkeleton, MediaUpload (media upload with cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PageHeaderSkeleton, PollComposer, PostActions, PostCardSkeleton, PostHeader, PostPoll, PrivacySettingsForm, ProfileActionButtons, ProfileBio, ProfileEditorSkeleton, ProfileFields, ProfileFieldsEditor, ProfileImageUploader, ProfilePillSkeleton, ProfileStats, ReblogIndicator, ScheduledCardSkeleton, SearchHistory, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, UserCardSkeleton, VisibilitySettingsModal
+  - AccountCard, AccountProfileSkeleton, AuthModalBridge, ComposerToolbar, ContentWarningSection, DeletePostModal, GroupedNotificationCard, HandleExplainer, ImageCropper (cropperjs-based image cropping with zoom, rotate, flip), LinkPreview, ListItemSkeleton, MediaGrid, MediaGridSkeleton, MediaModal (fullscreen media viewer with keyboard navigation), MediaUpload (media upload with cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PageHeaderSkeleton, PollComposer, PostActions, PostCardSkeleton, PostHeader, PostPoll, PrivacySettingsForm, ProfileActionButtons, ProfileBio, ProfileEditorSkeleton, ProfileFields, ProfileFieldsEditor, ProfileImageUploader, ProfilePillSkeleton, ProfileStats, ReblogIndicator, ScheduledCardSkeleton, SearchHistory, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, UserCardSkeleton, VisibilitySettingsModal
 - **organisms/**: Complex components
   - AuthGuard (authentication route protection), ComposerPanel (post composition), EmojiPicker, NavigationWrapper (auth integration), PostCard (with usePostActions hook), ProfileContent (profile tabs), SearchContent (search results), TimelinePage (reusable timeline), TrendingContent, TrendingPage (trending with navigation), VirtualizedList (infinite scroll)
 - **templates/**: Page layouts (currently empty, layouts handled by route groups)
@@ -339,7 +340,7 @@ Example files and documentation:
 ### `package.json`
 Dependencies and scripts:
 - **Type**: ES module (`"type": "module"`)
-- **Main dependencies**: Next.js 16, React 19, TanStack Query, MobX, Motion, Tiptap, Open Props, @emotion/styled, @emotion/react, cropperjs/react-cropper (image cropping)
+- **Main dependencies**: Next.js 16, React 19, TanStack Query, MobX, Tiptap, Open Props, @emotion/styled, @emotion/react, cropperjs/react-cropper (image cropping)
 - **Dev dependencies**: ESLint, @eslint/css (CSS baseline linting)
 - **Styling approach**: Emotion styled components (replaces inline styles for better maintainability and performance)
 - **Scripts**:

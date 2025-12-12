@@ -1135,6 +1135,13 @@ dialog {
   overflow: visible;
 }
 
+/* Media modal dialog override */
+dialog:has(.media-modal) {
+  max-width: 95vw;
+  background: transparent;
+  box-shadow: none;
+}
+
 /* Modal-specific styles (opened with showModal()) */
 dialog:modal {
   /* Animation properties */
