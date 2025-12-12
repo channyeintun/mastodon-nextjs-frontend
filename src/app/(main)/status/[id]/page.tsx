@@ -125,7 +125,7 @@ export default function StatusPage({
             <ComposerPanel
               key={`reply-${status.id}`}
               initialVisibility={status.visibility}
-              initialContent={`<span data-type="mention" class="mention" data-id="${status.account.acct}" data-label="${status.account.acct}">@${status.account.acct}</span> `}
+              mentionPrefix={status.account.acct}
               inReplyToId={status.id}
               isReply={true}
             />

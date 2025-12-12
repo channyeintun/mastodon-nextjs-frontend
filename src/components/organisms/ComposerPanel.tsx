@@ -37,6 +37,8 @@ interface ComposerPanelProps {
   isReply?: boolean;
   quotedStatusId?: string;
   scheduledStatusId?: string;
+  /** Account acct to prepend as a mention (used for replies) */
+  mentionPrefix?: string;
 }
 
 export function ComposerPanel({
@@ -50,7 +52,12 @@ export function ComposerPanel({
   isReply = false,
   quotedStatusId,
   scheduledStatusId,
+  mentionPrefix,
 }: ComposerPanelProps) {
+  // Build initial content with mention prefix if provided
+  const computedInitialContent = mentionPrefix
+    ? `<span data-type="mention" class="mention" data-id="${mentionPrefix}" data-label="${mentionPrefix}">@${mentionPrefix}</span>&nbsp;${initialContent}`
+    : initialContent;
   const router = useRouter();
   const { data: currentAccount } = useCurrentAccount();
   const { data: customEmojis } = useCustomEmojis();
@@ -62,7 +69,7 @@ export function ComposerPanel({
   const { openModal, closeModal } = useGlobalModal();
   const editorRef = useRef<any>(null);
 
-  const [content, setContent] = useState(initialContent);
+  const [content, setContent] = useState(computedInitialContent);
   const [textContent, setTextContent] = useState('');
   const [scheduledAt, setScheduledAt] = useState<string>('');
   const [showScheduleInput, setShowScheduleInput] = useState(false);
