@@ -49,7 +49,7 @@ export default function StatusPage({
         </Header>
 
         {/* Skeleton loading */}
-        <div>
+        <div className="virtualized-list-container">
           {/* Main post skeleton with highlight border */}
           <HighlightedPost>
             <PostCardSkeleton />
@@ -98,7 +98,7 @@ export default function StatusPage({
       </Header>
 
       {/* Thread container */}
-      <div>
+      <div className="virtualized-list-container">
         {/* Ancestors (parent posts) */}
         {ancestors.length > 0 && (
           <div>
@@ -175,7 +175,7 @@ const Header = styled.div`
   top: 0;
   background: var(--surface-1);
   z-index: 10;
-  padding: var(--size-4) 0;
+  padding: var(--size-4);
   margin-bottom: var(--size-4);
   border-bottom: 1px solid var(--surface-3);
   display: flex;
