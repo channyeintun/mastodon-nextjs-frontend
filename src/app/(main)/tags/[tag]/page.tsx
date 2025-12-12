@@ -92,7 +92,7 @@ export default function HashtagPage({
       <div style={{
         background: 'var(--surface-1)',
         zIndex: 10,
-        padding: 'var(--size-4)',
+        padding: 'var(--size-4) 0',
         marginBottom: 'var(--size-4)',
         borderBottom: '1px solid var(--surface-3)',
         flexShrink: 0,
