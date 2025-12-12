@@ -1026,6 +1026,17 @@ body {
   }
 }
 
+/* Show only on mobile (768px breakpoint matches navigation) */
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .mobile-only {
+    display: flex !important;
+  }
+}
+
 /* ====================================
    Account Card Component
    ==================================== */

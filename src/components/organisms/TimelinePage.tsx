@@ -155,8 +155,7 @@ const Container = styled.div`
 
 const Header = styled.div`
     background: var(--surface-1);
-    z-index: 10;
-    padding: var(--size-4) 0;
+    padding: var(--size-4) var(--size-2);
     display: flex;
     justify-content: space-between;
     align-items: center;

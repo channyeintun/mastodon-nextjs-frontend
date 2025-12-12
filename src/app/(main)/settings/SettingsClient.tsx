@@ -3,7 +3,7 @@
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2 } from 'lucide-react';
+import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp } from 'lucide-react';
 import { useCurrentAccount } from '@/api';
 import { Button, IconButton, Card, Avatar, EmojiText, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { ThemeSelector } from '@/components/molecules';
@@ -165,6 +165,11 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
         </h2>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--size-2)' }}>
+          <Link href="/explore" className="settings-link mobile-only">
+            <TrendingUp size={20} className="settings-link-icon" />
+            Explore
+          </Link>
+
           <Link href="/bookmarks" className="settings-link">
             <Bookmark size={20} className="settings-link-icon" />
             Bookmarks

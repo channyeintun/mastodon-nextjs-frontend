@@ -31,10 +31,10 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
-  // Mobile bottom nav is simplified - no bookmarks (accessible via Settings)
+  // Mobile bottom nav is simplified - explore accessible via Settings
   const bottomNavLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/explore', label: 'Explore', icon: TrendingUp },
+    { href: '/search', label: 'Search', icon: Search },
     { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
     { href: '/settings', label: 'Settings', icon: Settings },
