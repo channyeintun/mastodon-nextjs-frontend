@@ -34,7 +34,6 @@ export function ProfileActionButtons({
     isLoading,
     isMutePending,
     isBlockPending,
-    acct,
     onFollowToggle,
     onMuteToggle,
     onBlockToggle,
