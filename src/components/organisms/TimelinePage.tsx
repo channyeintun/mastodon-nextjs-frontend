@@ -85,33 +85,6 @@ export const TimelinePage = observer(() => {
 
     return (
         <Container className="full-height-container">
-            {/* Sticky Header */}
-            <Header>
-                <div>
-                    <Title>Home</Title>
-                    <Subtitle>Your personal timeline</Subtitle>
-                </div>
-                <HeaderActions>
-                    <SearchLink href="/search">
-                        <Search size={20} />
-                    </SearchLink>
-                    {!isLoadingUser && user ? (
-                        <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
-                            <img
-                                src={user.avatar}
-                                alt={user.display_name}
-                                className="profile-pill-avatar"
-                            />
-                            <span className="profile-pill-name">
-                                <EmojiText text={user.display_name} emojis={user.emojis} />
-                            </span>
-                        </Link>
-                    ) : (
-                        <ProfilePillSkeleton />
-                    )}
-                </HeaderActions>
-            </Header>
-
             {/* Virtual scrolling container with scroll restoration */}
             <VirtualizedList<Status>
                 items={uniqueStatuses}
@@ -131,6 +104,33 @@ export const TimelinePage = observer(() => {
                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                 endIndicator="You've reached the end of your timeline"
                 emptyState={<EmptyState title="No posts yet" description="Follow some people to see their posts here." />}
+                header={
+                    <div>
+                        <div className="header-title">
+                            <h1>Home</h1>
+                            <p className="header-subtitle">Your personal timeline</p>
+                        </div>
+                        <div className="header-actions">
+                            <SearchLink href="/search">
+                                <Search size={20} />
+                            </SearchLink>
+                            {!isLoadingUser && user ? (
+                                <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
+                                    <img
+                                        src={user.avatar}
+                                        alt={user.display_name}
+                                        className="profile-pill-avatar"
+                                    />
+                                    <span className="profile-pill-name">
+                                        <EmojiText text={user.display_name} emojis={user.emojis} />
+                                    </span>
+                                </Link>
+                            ) : (
+                                <ProfilePillSkeleton />
+                            )}
+                        </div>
+                    </div>
+                }
             />
         </Container>
     );
@@ -218,5 +218,3 @@ const EmptyMessage = styled.p`
     color: var(--text-2);
     margin-bottom: var(--size-4);
 `;
-
-

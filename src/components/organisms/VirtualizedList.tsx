@@ -86,6 +86,13 @@ interface VirtualizedListProps<T> {
    * If provided, scroll position will be saved and restored
    */
   scrollRestorationKey?: string;
+
+  /**
+   * Optional sticky header element to render inside the scroll container
+   * The header will collapse when user scrolls using CSS scroll-state queries
+   * Header should contain: .header-title, .header-subtitle, .header-actions
+   */
+  header?: ReactNode;
 }
 
 // Global cache for scroll restoration
@@ -113,6 +120,7 @@ export function VirtualizedList<T>({
   height = 'calc(100vh - 140px)',
   style,
   scrollRestorationKey,
+  header,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -181,6 +189,9 @@ export function VirtualizedList<T>({
       $height={height}
       style={style}
     >
+      {/* Sticky header with scroll-state container query support */}
+      {header && <StickyHeaderWrapper>{header}</StickyHeaderWrapper>}
+
       {items.length === 0 && emptyState && emptyState}
 
       {items.length > 0 && (
@@ -223,8 +234,91 @@ const Container = styled.div<{ $height: string }>`
   height: ${props => props.$height};
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  contain: strict;
+  contain: paint;
   position: relative;
+`;
+
+/**
+ * Sticky header wrapper with CSS scroll-state container queries.
+ * When the header becomes stuck at the top, it collapses to a compact form.
+ * 
+ * Expected header structure:
+ * - .header-title: flex container with title and subtitle
+ * - .header-title h1: main title
+ * - .header-subtitle: subtitle text (will be hidden when stuck)
+ * - .header-actions: action buttons container
+ * - .header-actions .btn-text: button text (will be hidden when stuck)
+ */
+const StickyHeaderWrapper = styled.div`
+  container-type: scroll-state;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  /* Direct child is the header content */
+  > * {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--size-4);
+    background: linear-gradient(to bottom, var(--surface-1) 60%, transparent);
+    gap: var(--size-3);
+    flex-wrap: wrap;
+    transition: padding 0.3s ease, gap 0.3s ease;
+  }
+
+  .header-title {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-1);
+    transition: gap 0.3s ease, flex-direction 0.3s ease;
+
+    h1 {
+      font-size: var(--font-size-5);
+      margin: 0;
+      transition: font-size 0.3s ease;
+    }
+  }
+
+  .header-subtitle {
+    font-size: var(--font-size-0);
+    color: var(--text-2);
+    max-height: 2em;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+    flex-shrink: 0;
+  }
+
+  /* When stuck at top, collapse the header */
+  @container scroll-state(stuck: top) {
+    > * {
+      padding: var(--size-2) var(--size-4);
+      gap: var(--size-2);
+      justify-content: flex-end;
+    }
+
+    .header-title {
+      display: none;
+    }
+
+    .header-subtitle {
+      opacity: 0;
+      max-height: 0;
+      margin-top: 0;
+      pointer-events: none;
+    }
+
+    .header-actions .btn-text {
+      display: none;
+    }
+  }
 `;
 
 const VirtualContent = styled.div<{ $height: number }>`
