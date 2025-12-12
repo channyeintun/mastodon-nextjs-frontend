@@ -11,6 +11,11 @@ mastodon-nextjs-client/
 │   ├── next.svg
 │   ├── vercel.svg
 │   └── window.svg
+├── scripts/                    # Build and deployment scripts
+│   └── ignore-build.sh        # Vercel build ignore script
+├── example/                    # Example files and documentation
+│   └── compose/
+│       └── README.md          # Compose feature documentation
 ├── src/
 │   ├── app/                   # Next.js App Router with route groups
 │   │   ├── (main)/           # Main app layout route group
@@ -19,6 +24,7 @@ mastodon-nextjs-client/
 │   │   │   │   │   └── page.tsx
 │   │   │   │   ├── following/
 │   │   │   │   │   └── page.tsx
+│   │   │   │   ├── styles.ts  # Profile page styled components
 │   │   │   │   └── page.tsx
 │   │   │   ├── bookmarks/    # Bookmarks page
 │   │   │   │   └── page.tsx
@@ -31,10 +37,14 @@ mastodon-nextjs-client/
 │   │   │   ├── lists/        # Lists management
 │   │   │   │   ├── [id]/
 │   │   │   │   │   ├── members/
+│   │   │   │   │   │   ├── MemberComponents.tsx  # List member UI components
 │   │   │   │   │   │   └── page.tsx
 │   │   │   │   │   └── page.tsx
+│   │   │   │   ├── ListComponents.tsx  # List UI components
 │   │   │   │   └── page.tsx
 │   │   │   ├── notifications/  # Notifications page
+│   │   │   │   ├── NotificationsV1.tsx  # V1 notifications implementation
+│   │   │   │   ├── NotificationsV2.tsx  # V2 grouped notifications implementation
 │   │   │   │   └── page.tsx
 │   │   │   ├── profile/      # Current user profile
 │   │   │   │   └── edit/
@@ -48,6 +58,10 @@ mastodon-nextjs-client/
 │   │   │   │   │   └── page.tsx
 │   │   │   │   ├── mutes/
 │   │   │   │   │   └── page.tsx
+│   │   │   │   ├── preferences/  # User preferences settings
+│   │   │   │   │   ├── SelectStyles.tsx  # Styled select components
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── SettingsClient.tsx  # Settings client component
 │   │   │   │   └── page.tsx
 │   │   │   ├── status/[id]/  # Status detail pages
 │   │   │   │   ├── edit/
@@ -78,21 +92,24 @@ mastodon-nextjs-client/
 │   │   │   ├── Badge.tsx
 │   │   │   ├── Button.tsx
 │   │   │   ├── Card.tsx
-│   │   │   ├── CheckboxField.tsx         # NEW: Reusable checkbox with label + description
-│   │   │   ├── CircleSkeleton.tsx        # NEW: Circular skeleton loader for icons/avatars
+│   │   │   ├── CheckboxField.tsx         # Reusable checkbox with label + description
+│   │   │   ├── CircleSkeleton.tsx        # Circular skeleton loader for icons/avatars
 │   │   │   ├── ContentWarningInput.tsx
-│   │   │   ├── Dialog.tsx                # NEW: Base dialog/modal with Header, Body, Footer
-│   │   │   ├── EmptyState.tsx            # NEW: Empty state with icon, title, description
+│   │   │   ├── Dialog.tsx                # Base dialog/modal with Header, Body, Footer
+│   │   │   ├── EmptyState.tsx            # Empty state with icon, title, description
 │   │   │   ├── EmojiText.tsx
-│   │   │   ├── FormField.tsx             # NEW: Reusable form field wrapper
+│   │   │   ├── FormField.tsx             # Reusable form field wrapper
 │   │   │   ├── IconButton.tsx
+│   │   │   ├── ImageSkeleton.tsx         # Image skeleton loader
 │   │   │   ├── Input.tsx
 │   │   │   ├── ScheduleInput.tsx
 │   │   │   ├── ScrollToTopButton.tsx
+│   │   │   ├── SensitiveContentButton.tsx # Sensitive media toggle button
 │   │   │   ├── SkipToMain.tsx
 │   │   │   ├── Spinner.tsx
 │   │   │   ├── Tabs.tsx
 │   │   │   ├── TextArea.tsx
+│   │   │   ├── TextSkeleton.tsx          # Text skeleton loader
 │   │   │   ├── TiptapEditor.tsx
 │   │   │   └── index.ts
 │   │   ├── molecules/        # Simple component combinations (max 200 LOC)
@@ -100,40 +117,45 @@ mastodon-nextjs-client/
 │   │   │   ├── AccountProfileSkeleton.tsx
 │   │   │   ├── AuthModalBridge.tsx
 │   │   │   ├── ComposerToolbar.tsx
-│   │   │   ├── ContentWarningSection.tsx  # NEW: Extracted from PostCard
+│   │   │   ├── ContentWarningSection.tsx  # Extracted from PostCard
 │   │   │   ├── DeletePostModal.tsx
 │   │   │   ├── GroupedNotificationCard.tsx
 │   │   │   ├── HandleExplainer.tsx
 │   │   │   ├── ImageCropper.tsx
 │   │   │   ├── LinkPreview.tsx
+│   │   │   ├── ListItemSkeleton.tsx      # List item skeleton loader
 │   │   │   ├── MediaGrid.tsx
+│   │   │   ├── MediaGridSkeleton.tsx     # Media grid skeleton loader
 │   │   │   ├── MediaUpload.tsx
 │   │   │   ├── MentionSuggestions.tsx
 │   │   │   ├── Navigation.tsx
 │   │   │   ├── NotificationCard.tsx
 │   │   │   ├── NotificationSkeleton.tsx
+│   │   │   ├── PageHeaderSkeleton.tsx    # Page header skeleton loader
 │   │   │   ├── PollComposer.tsx
 │   │   │   ├── PostActions.tsx
 │   │   │   ├── PostCardSkeleton.tsx
 │   │   │   ├── PostHeader.tsx
 │   │   │   ├── PostPoll.tsx
-│   │   │   ├── PrivacySettingsForm.tsx    # NEW: Extracted from profile/edit
+│   │   │   ├── PrivacySettingsForm.tsx    # Extracted from profile/edit
 │   │   │   ├── ProfileActionButtons.tsx
 │   │   │   ├── ProfileBio.tsx
-│   │   │   ├── ProfileEditorSkeleton.tsx  # NEW: Extracted from profile/edit
+│   │   │   ├── ProfileEditorSkeleton.tsx  # Extracted from profile/edit
 │   │   │   ├── ProfileFields.tsx
-│   │   │   ├── ProfileFieldsEditor.tsx    # NEW: Extracted from profile/edit
-│   │   │   ├── ProfileImageUploader.tsx   # NEW: Extracted from profile/edit
-│   │   │   ├── ProfilePillSkeleton.tsx    # NEW: Loading skeleton for profile pill
+│   │   │   ├── ProfileFieldsEditor.tsx    # Extracted from profile/edit
+│   │   │   ├── ProfileImageUploader.tsx   # Extracted from profile/edit
+│   │   │   ├── ProfilePillSkeleton.tsx    # Loading skeleton for profile pill
 │   │   │   ├── ProfileStats.tsx
 │   │   │   ├── ReblogIndicator.tsx
 │   │   │   ├── ScheduledCardSkeleton.tsx
+│   │   │   ├── SearchHistory.tsx         # Search history UI component
 │   │   │   ├── StatusContent.tsx
 │   │   │   ├── StatusEditHistory.tsx
 │   │   │   ├── ThemeSelector.tsx
 │   │   │   ├── TrendingLinkCard.tsx
 │   │   │   ├── TrendingTagCard.tsx
 │   │   │   ├── UserCard.tsx
+│   │   │   ├── UserCardSkeleton.tsx      # User card skeleton loader
 │   │   │   ├── VisibilitySettingsModal.tsx
 │   │   │   └── index.ts
 │   │   ├── organisms/        # Complex components (max 350 LOC)
@@ -141,10 +163,14 @@ mastodon-nextjs-client/
 │   │   │   ├── ComposerPanel.tsx
 │   │   │   ├── EmojiPicker.tsx
 │   │   │   ├── NavigationWrapper.tsx
-│   │   │   ├── PostCard.tsx              # MOVED: Now organism with usePostActions hook
+│   │   │   ├── PostCard.tsx              # Now organism with usePostActions hook
+│   │   │   ├── ProfileContent.tsx        # Profile content with tabs
+│   │   │   ├── SearchContent.tsx         # Search results content
+│   │   │   ├── TimelinePage.tsx          # Reusable timeline page component
 │   │   │   ├── TrendingContent.tsx
+│   │   │   ├── TrendingPage.tsx          # Trending page with navigation
 │   │   │   ├── VirtualizedList.tsx
-│   │   │   └── index.ts                  # NEW: Organisms index file
+│   │   │   └── index.ts                  # Organisms index file
 │   │   ├── providers/        # React context providers
 │   │   │   ├── QueryProvider.tsx   # TanStack Query provider
 │   │   │   ├── ScrollRestorationProvider.tsx
@@ -194,8 +220,8 @@ mastodon-nextjs-client/
 ├── .gitignore                # Git ignore rules
 ├── .next/                    # Next.js build output (gitignored)
 ├── .vscode/                  # VS Code configuration
-├── example/                  # Example files and documentation
 ├── node_modules/             # Dependencies
+├── buy-me-coffee.png         # Buy me a coffee badge image
 ├── CLAUDE.md                 # This file - project structure documentation
 ├── README.md                 # Project readme
 ├── eslint.config.js          # ESLint configuration with CSS baseline linting
@@ -203,7 +229,6 @@ mastodon-nextjs-client/
 ├── next.config.ts            # Next.js configuration (with React Compiler)
 ├── package-lock.json         # Lockfile
 ├── package.json              # Dependencies and scripts (type: module)
-├── plan.md                   # Project planning document
 ├── postcss.config.mjs        # PostCSS configuration
 ├── tsconfig.json             # TypeScript configuration
 └── tsconfig.tsbuildinfo      # TypeScript incremental build info (gitignored)
@@ -233,6 +258,7 @@ Next.js App Router with file-based routing using route groups for different layo
 - **`/settings`**: Account settings
 - **`/settings/blocks`**: Blocked accounts
 - **`/settings/mutes`**: Muted accounts
+- **`/settings/preferences`**: User preferences (posting defaults, media, accessibility)
 - **`/lists`**: Lists overview
 - **`/lists/[id]`**: Individual list timeline
 - **`/lists/[id]/members`**: List members management
@@ -257,11 +283,11 @@ Mastodon API client and TanStack Query integration. Contains:
 ### `/src/components/`
 Atomic design pattern components:
 - **atoms/**: Smallest UI building blocks
-  - Avatar, Badge, Button, Card, CircleSkeleton (circular skeleton loader), EmojiText, IconButton, Input, ScrollToTopButton, SkipToMain, Spinner, Tabs, TextArea, TiptapEditor
+  - Avatar, Badge, Button, Card, CheckboxField, CircleSkeleton (circular skeleton loader), ContentWarningInput, Dialog (base modal), EmptyState, EmojiText, FormField, IconButton, ImageSkeleton (image loader), Input, ScheduleInput, ScrollToTopButton, SensitiveContentButton, SkipToMain, Spinner, Tabs, TextArea, TextSkeleton (text loader), TiptapEditor
 - **molecules/**: Simple component combinations
-  - AccountCard, AccountProfileSkeleton, AuthModalBridge, DeletePostModal, ImageCropper (cropperjs-based image cropping modal with zoom, rotate, flip controls), LinkPreview, MediaUpload (media upload with image cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PollComposer, PostCard, PostCardSkeleton, ProfilePillSkeleton (loading skeleton for profile pill), ScheduledCardSkeleton, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, VisibilitySettingsModal
+  - AccountCard, AccountProfileSkeleton, AuthModalBridge, ComposerToolbar, ContentWarningSection, DeletePostModal, GroupedNotificationCard, HandleExplainer, ImageCropper (cropperjs-based image cropping with zoom, rotate, flip), LinkPreview, ListItemSkeleton, MediaGrid, MediaGridSkeleton, MediaUpload (media upload with cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PageHeaderSkeleton, PollComposer, PostActions, PostCardSkeleton, PostHeader, PostPoll, PrivacySettingsForm, ProfileActionButtons, ProfileBio, ProfileEditorSkeleton, ProfileFields, ProfileFieldsEditor, ProfileImageUploader, ProfilePillSkeleton, ProfileStats, ReblogIndicator, ScheduledCardSkeleton, SearchHistory, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, UserCardSkeleton, VisibilitySettingsModal
 - **organisms/**: Complex components
-  - AuthGuard (authentication route protection), ComposerPanel (post composition), EmojiPicker, NavigationWrapper (auth integration), TrendingContent, VirtualizedList (infinite scroll)
+  - AuthGuard (authentication route protection), ComposerPanel (post composition), EmojiPicker, NavigationWrapper (auth integration), PostCard (with usePostActions hook), ProfileContent (profile tabs), SearchContent (search results), TimelinePage (reusable timeline), TrendingContent, TrendingPage (trending with navigation), VirtualizedList (infinite scroll)
 - **templates/**: Page layouts (currently empty, layouts handled by route groups)
 - **providers/**: React context providers
   - QueryProvider (TanStack Query), ScrollRestorationProvider, StoreProvider (MobX), StreamingProvider (real-time updates), ThemeProvider
@@ -269,6 +295,7 @@ Atomic design pattern components:
 ### `/src/hooks/`
 Custom React hooks:
 - **useCropper.ts**: Reusable image cropper state management (used in ComposerPanel and profile edit)
+- **usePostActions.ts**: PostCard mutations and event handlers (extracted from PostCard for reusability)
 - **useStores.ts**: Access MobX stores (useAuthStore, useUserStore, useStreamingStore)
 - **useStreaming.ts**: Real-time Mastodon streaming API integration
 - **useScrollDirection.ts**: Detect scroll direction for UI enhancements
@@ -298,6 +325,14 @@ Utility functions:
 - **tiptapExtensions.ts**: Tiptap editor extension utilities
 - **RAMDA.md**: Comprehensive documentation of Ramda functions used in the project
 - **README.md**: Utils directory overview and documentation index
+
+### `/scripts/`
+Build and deployment scripts:
+- **ignore-build.sh**: Vercel build ignore script (skips builds when no relevant changes detected)
+
+### `/example/`
+Example files and documentation:
+- **compose/README.md**: Documentation for the compose feature and post creation workflow
 
 ## Key Files
 
