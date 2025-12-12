@@ -20,7 +20,7 @@ export const StickyHeaderContainer = styled.div<StickyHeaderContainerProps>`
   --header-padding: var(--size-4) 0;
   --header-padding-stuck: var(--size-1) 0;
   --header-bg: var(--surface-1);
-  --header-bg-stuck: linear-gradient(to bottom, var(--surface-1) 60%, transparent);
+  --header-bg-stuck: linear-gradient(to bottom, color-mix(in srgb, var(--surface-1) 70%, transparent), transparent);
   --header-title-opacity-stuck: 0;
   --header-subtitle-opacity-stuck: 0;
 
