@@ -97,10 +97,10 @@ export default function SignInPage() {
         <Home size={16} />
         Home
       </Link>
-      <h1 style={{ fontSize: 'var(--font-size-6)', marginBottom: 'var(--size-4)', textAlign: 'center' }}>
+      <h1 style={{ fontSize: 'var(--font-size-6)', marginBottom: 'var(--size-4)', textAlign: 'start' }}>
         Sign in to Mastodon
       </h1>
-      <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-6)', textAlign: 'center' }}>
+      <p style={{ color: 'var(--text-2)', marginBottom: 'var(--size-6)', textAlign: 'start' }}>
         Enter your Mastodon instance URL to get started
       </p>
 
