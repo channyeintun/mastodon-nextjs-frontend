@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import { Button } from '@/components/atoms';
+import { formatPollExpiration } from '@/utils/date';
 import type { Poll } from '@/types';
 
 interface PostPollProps {
@@ -108,7 +109,7 @@ export function PostPoll({
                         {poll.expired ? (
                             <ClosedText>Closed</ClosedText>
                         ) : (
-                            `Closes ${new Date(poll.expires_at!).toLocaleString()}`
+                            `Closes ${formatPollExpiration(poll.expires_at!)}`
                         )}
                     </ResultsFooter>
                 </>

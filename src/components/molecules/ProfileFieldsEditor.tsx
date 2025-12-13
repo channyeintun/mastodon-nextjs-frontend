@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { UseFormRegister, Control, FieldErrors, UseFormWatch } from 'react-hook-form';
 import { Check, Copy, ChevronDown } from 'lucide-react';
 import { Card, Input, FormField } from '@/components/atoms';
+import { formatVerificationDate } from '@/utils/date';
 import type { ProfileFormData } from '@/schemas/profileFormSchema';
 
 interface ProfileFieldsEditorProps {
@@ -81,7 +82,7 @@ export function ProfileFieldsEditor({
               <VerificationIcon>
                 {field.verified_at && (
                   <span
-                    title={`Verified on ${new Date(field.verified_at).toLocaleDateString()}`}
+                    title={`Verified on ${formatVerificationDate(field.verified_at)}`}
                   >
                     <GreenCheck size={18} />
                   </span>

@@ -6,7 +6,7 @@
 import styled from '@emotion/styled'
 import { Avatar } from '@/components/atoms/Avatar'
 import { StatusContent } from '@/components/molecules/StatusContent'
-import { formatDistanceToNow } from 'date-fns'
+import { formatTimeAgo } from '@/utils/date'
 import type { Status, MediaAttachment } from '@/types/mastodon'
 
 interface MessageBubbleProps {
@@ -53,7 +53,7 @@ export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true,
           </Bubble>
         )}
         <MessageTimestamp $isLastMessage={isLastMessage} className="message-timestamp">
-          {formatDistanceToNow(new Date(status.created_at), { addSuffix: true })}
+          {formatTimeAgo(status.created_at)}
         </MessageTimestamp>
       </MessageContent>
     </MessageRow>

@@ -12,8 +12,8 @@ import { markConversationAsRead } from '@/api/client'
 import { queryKeys } from '@/api/queryKeys'
 import { useConversationStore } from '@/hooks/useStores'
 import { stripMentions } from '@/utils/conversationUtils'
+import { formatTimeAgo } from '@/utils/date'
 import type { Conversation } from '@/types/mastodon'
-import { formatDistanceToNow } from 'date-fns'
 import type { CSSProperties } from 'react'
 
 interface ConversationCardProps {
@@ -33,7 +33,7 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
 
   const lastStatus = conversation.last_status
   const timestamp = lastStatus?.created_at
-    ? formatDistanceToNow(new Date(lastStatus.created_at), { addSuffix: true })
+    ? formatTimeAgo(lastStatus.created_at)
     : ''
 
   // Get text preview from last status

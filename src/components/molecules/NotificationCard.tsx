@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
 import { StatusContent } from '@/components/molecules';
+import { formatRelativeTime } from '@/utils/date';
 import type { Notification, NotificationType } from '@/types';
 import { useDismissNotification } from '@/api';
 
@@ -23,20 +24,6 @@ interface NotificationCardProps {
     onDismiss?: (id: string) => void;
     style?: React.CSSProperties;
     isNew?: boolean;
-}
-
-// Format relative time
-function formatRelativeTime(dateString: string): string {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (diffInSeconds < 60) return `${diffInSeconds}s`;
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h`;
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d`;
-
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 // Notification type configuration

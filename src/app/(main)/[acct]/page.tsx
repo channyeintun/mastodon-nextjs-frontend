@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
+import { formatJoinDate } from '@/utils/date';
 import { ArrowLeft, Calendar, ExternalLink, Lock } from 'lucide-react';
 import {
   useLookupAccount,
@@ -271,7 +272,7 @@ export default function AccountPage({
                   {account.created_at && (
                     <MetaItem>
                       <Calendar size={14} />
-                      Joined {new Date(account.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      Joined {formatJoinDate(account.created_at)}
                     </MetaItem>
                   )}
                   <MetaLink href={account.url} target="_blank" rel="noopener noreferrer">

@@ -13,6 +13,7 @@ import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
 import { Globe, Lock, Users, Mail, X } from 'lucide-react';
+import { toLocalISOString, parseDate } from '@/utils/date';
 import type { CreateStatusParams } from '@/types';
 import { Spinner } from '@/components/atoms/Spinner';
 import {
@@ -205,9 +206,7 @@ export function ComposerPanel({
         setMedia(scheduledStatusData.media_attachments);
       }
       if (scheduledStatusData.scheduled_at) {
-        const date = new Date(scheduledStatusData.scheduled_at);
-        const localIso = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-        setScheduledAt(localIso);
+        setScheduledAt(toLocalISOString(parseDate(scheduledStatusData.scheduled_at)));
         setShowScheduleInput(true);
       }
     }

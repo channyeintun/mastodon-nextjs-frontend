@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, Trash2, Edit2, Clock } from 'lucide-react';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { ScheduledCardSkeletonList } from '@/components/molecules';
 import { flattenPages } from '@/utils/fp';
+import { formatScheduledDate } from '@/utils/date';
 import type { ScheduledStatus } from '@/types';
 
 export default function ScheduledStatusesPage() {
@@ -41,17 +42,6 @@ export default function ScheduledStatusesPage() {
         router.push(`/compose?scheduled_status_id=${id}`);
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleString(undefined, {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
-
     const allScheduledStatuses = flattenPages(scheduledStatuses?.pages);
 
     const renderItem = (status: ScheduledStatus) => (
@@ -67,7 +57,7 @@ export default function ScheduledStatusesPage() {
                 borderBottom: '1px solid var(--surface-3)'
             }}>
                 <Clock size={16} />
-                <span>Scheduled for {formatDate(status.scheduled_at)}</span>
+                <span>Scheduled for {formatScheduledDate(status.scheduled_at)}</span>
             </div>
 
             <div style={{ marginBottom: 'var(--size-3)' }}>
