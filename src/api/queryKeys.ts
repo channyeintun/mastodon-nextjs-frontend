@@ -109,4 +109,12 @@ export const queryKeys = {
     notifications: () => ['markers', 'notifications'] as const,
     home: () => ['markers', 'home'] as const,
   },
+
+  // Conversations (Direct Messages)
+  conversations: {
+    all: () => ['conversations'] as const,
+    list: (params?: object) => ['conversations', 'list', params] as const,
+    detail: (id: string) => ['conversations', id] as const,
+    unreadCount: () => ['conversations', 'unread_count'] as const,
+  },
 }

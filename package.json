@@ -27,6 +27,7 @@
     "autoprefixer": "^10.4.22",
     "axios": "^1.13.2",
     "cropperjs": "^2.1.0",
+    "date-fns": "^4.1.0",
     "emoji-picker-react": "^4.16.1",
     "lucide-react": "^0.555.0",
     "mobx": "^6.15.0",

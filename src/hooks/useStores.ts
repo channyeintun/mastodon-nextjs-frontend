@@ -4,6 +4,7 @@
 
 import { createContext, useContext } from 'react'
 import type { RootStore } from '../stores'
+import { getConversationStore } from '../stores/conversationStore'
 
 export const StoreContext = createContext<RootStore | null>(null)
 
@@ -23,4 +24,8 @@ export function useAuthStore() {
 export function useUserStore() {
   const { userStore } = useStores()
   return userStore
+}
+
+export function useConversationStore() {
+  return getConversationStore()
 }

@@ -531,3 +531,18 @@ export interface ScheduledStatus {
 export interface ScheduledStatusParams {
   scheduled_at?: string
 }
+
+// Conversations (Direct Messages)
+export interface Conversation {
+  id: string
+  unread: boolean
+  accounts: Account[]
+  last_status: Status | null
+}
+
+export interface ConversationParams {
+  max_id?: string
+  since_id?: string
+  min_id?: string
+  limit?: number
+}

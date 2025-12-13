@@ -3,7 +3,7 @@
 import styled from '@emotion/styled';
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, TrendingUp } from 'lucide-react';
+import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
 import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
 
@@ -26,6 +26,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
     { href: '/explore', label: 'Explore', icon: TrendingUp },
     { href: '/search', label: 'Search', icon: Search },
     { href: '/compose', label: 'Create', icon: PenSquare },
+    { href: '/conversations', label: 'Messages', icon: Mail },
     { href: '/lists', label: 'Lists', icon: List },
     { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
     { href: '/settings', label: 'Settings', icon: Settings },
@@ -34,7 +35,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
   // Mobile bottom nav is simplified - explore accessible via Settings
   const bottomNavLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/search', label: 'Search', icon: Search },
+    { href: '/conversations', label: 'Messages', icon: Mail },
     { href: '/compose', label: 'Create', icon: PenSquare },
     { href: '/notifications', label: 'Notifications', icon: Bell, badge: unreadCount?.count },
     { href: '/settings', label: 'Settings', icon: Settings },

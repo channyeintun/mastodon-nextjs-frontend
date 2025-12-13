@@ -1,10 +1,11 @@
 /**
  * Streaming Store
  * Manages WebSocket connection for real-time Mastodon events
+ * Uses a single WebSocket with multiplexing for notifications and conversations
  */
 
 import { makeAutoObservable, runInAction } from 'mobx'
-import type { Notification } from '../types/mastodon'
+import type { Notification, Conversation } from '../types/mastodon'
 
 export type StreamingStatus = 'disconnected' | 'connecting' | 'connected' | 'error'
 
@@ -20,9 +21,12 @@ export class StreamingStore {
     reconnectAttempts: number = 0
     maxReconnectAttempts: number = 10
 
-    // Event callback (set by useStreaming hook)
+    // Event callbacks (set by useStreaming hooks)
     onNotification: ((notification: Notification) => void) | null = null
+    onConversation: ((conversation: Conversation) => void) | null = null
 
+    // Track which streams are subscribed
+    private subscribedStreams: Set<string> = new Set()
     private streamingUrl: string | null = null
     private accessToken: string | null = null
     private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
@@ -35,6 +39,36 @@ export class StreamingStore {
 
     setOnNotification(callback: ((notification: Notification) => void) | null) {
         this.onNotification = callback
+        // Auto-subscribe to notification stream when callback is set
+        if (callback && this.status === 'connected' && !this.subscribedStreams.has('user:notification')) {
+            this.subscribe('user:notification')
+        }
+    }
+
+    setOnConversation(callback: ((conversation: Conversation) => void) | null) {
+        this.onConversation = callback
+        // Auto-subscribe to direct stream when callback is set
+        if (callback && this.status === 'connected' && !this.subscribedStreams.has('direct')) {
+            this.subscribe('direct')
+        }
+    }
+
+    private subscribe(stream: string) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            const message = JSON.stringify({ type: 'subscribe', stream })
+            this.socket.send(message)
+            this.subscribedStreams.add(stream)
+            console.log(`[Streaming] Subscribed to ${stream}`)
+        }
+    }
+
+    private unsubscribe(stream: string) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            const message = JSON.stringify({ type: 'unsubscribe', stream })
+            this.socket.send(message)
+            this.subscribedStreams.delete(stream)
+            console.log(`[Streaming] Unsubscribed from ${stream}`)
+        }
     }
 
     connect(streamingUrl: string, accessToken: string) {
@@ -64,31 +98,44 @@ export class StreamingStore {
         })
 
         try {
-            // Construct WebSocket URL with auth
+            // Construct WebSocket URL with auth (no stream param - we'll subscribe dynamically)
             const wsUrl = new URL('/api/v1/streaming', streamingUrl)
             wsUrl.protocol = wsUrl.protocol.replace('http', 'ws')
             wsUrl.searchParams.set('access_token', accessToken)
-            wsUrl.searchParams.set('stream', 'user:notification')
 
             const socket = new WebSocket(wsUrl.toString())
 
             socket.onopen = () => {
-                console.log('[Streaming] Connected to notification stream')
+                console.log('[Streaming] Connected to Mastodon streaming API')
                 runInAction(() => {
                     this.status = 'connected'
                     this.reconnectAttempts = 0
                     this.error = null
                 })
+
+                // Subscribe to active streams
+                if (this.onNotification) {
+                    this.subscribe('user:notification')
+                }
+                if (this.onConversation) {
+                    this.subscribe('direct')
+                }
             }
 
             socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data)
 
+                    // Handle different event types
                     if (data.event === 'notification') {
                         const notification: Notification = JSON.parse(data.payload)
                         if (this.onNotification) {
                             this.onNotification(notification)
+                        }
+                    } else if (data.event === 'conversation') {
+                        const conversation: Conversation = JSON.parse(data.payload)
+                        if (this.onConversation) {
+                            this.onConversation(conversation)
                         }
                     }
                 } catch {
@@ -159,6 +206,7 @@ export class StreamingStore {
             this.error = null
             this.streamingUrl = null
             this.accessToken = null
+            this.subscribedStreams.clear()
         })
     }
 }

@@ -3,7 +3,7 @@
  * Uses queryOptions pattern for reusability and type safety
  */
 
-import { useQuery, useInfiniteQuery, queryOptions, infiniteQueryOptions } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, queryOptions, infiniteQueryOptions, keepPreviousData } from '@tanstack/react-query'
 import {
   getHomeTimeline,
   getPublicTimeline,
@@ -43,9 +43,10 @@ import {
   getScheduledStatuses,
   getScheduledStatus,
   getMarkers,
+  getConversations,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, GroupedNotificationsResults, Account, ScheduledStatus, Tag, TrendingLink } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, GroupedNotificationsResults, Account, ScheduledStatus, Tag, TrendingLink, Conversation, ConversationParams } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 // ============================================================================
@@ -627,6 +628,7 @@ export function useStatusContext(id: string) {
   return useQuery({
     ...statusContextOptions(id),
     enabled: !!id,
+    placeholderData: keepPreviousData, // Prevent layout shift during refetch
   })
 }
 
@@ -942,6 +944,31 @@ export function useNotificationMarker() {
   const authStore = useAuthStore()
   return useQuery({
     ...notificationMarkerOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Conversations (Direct Messages)
+export const infiniteConversationsOptions = () =>
+  infiniteQueryOptions({
+    queryKey: queryKeys.conversations.list(),
+    queryFn: ({ pageParam, signal }) => {
+      const params: ConversationParams = { limit: 20 }
+      if (pageParam) params.max_id = pageParam
+      return getConversations(params, signal)
+    },
+    getNextPageParam: (lastPage: Conversation[]) => {
+      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    staleTime: 0, // Always refetch to get new messages
+  })
+
+export function useConversations() {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteConversationsOptions(),
     enabled: authStore.isAuthenticated,
   })
 }
