@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 import { Activity } from 'react';
+import { useMemo } from 'react';
 import { Pin } from 'lucide-react';
 import { PostCard, VirtualizedList } from '@/components/organisms';
 import { PostCardSkeleton, PostCardSkeletonList, MediaGrid, MediaGridSkeleton } from '@/components/molecules';
@@ -16,6 +17,12 @@ const profileTabs: TabItem<ProfileTab>[] = [
     { value: 'posts_replies', label: 'Posts & replies' },
     { value: 'media', label: 'Media' },
 ];
+
+/** Extended Status type with pinned flag */
+interface StatusItem {
+    status: Status;
+    isPinned: boolean;
+}
 
 interface ProfileContentProps {
     /** Account handle for scroll restoration */
@@ -52,6 +59,18 @@ export function ProfileContent({
     hasNextPage,
     isFetchingNextPage,
 }: ProfileContentProps) {
+    // Combine pinned and regular statuses for virtualization
+    const combinedItems = useMemo<StatusItem[]>(() => {
+        const pinned: StatusItem[] = (pinnedStatuses || []).map(status => ({
+            status,
+            isPinned: true,
+        }));
+        const regular: StatusItem[] = statuses.map(status => ({
+            status,
+            isPinned: false,
+        }));
+        return [...pinned, ...regular];
+    }, [pinnedStatuses, statuses]);
 
     return (
         <>
@@ -72,28 +91,26 @@ export function ProfileContent({
                                 <PostCardSkeletonList count={5} />
                             </LoadingContainer>
                         ) : (
-                            <VirtualizedList<Status>
+                            <VirtualizedList<StatusItem>
                                 style={{ padding: 0 }}
-                                items={statuses}
-                                header={pinnedStatuses && pinnedStatuses.length > 0 ? (
-                                    <PinnedSection>
-                                        <PinnedHeader>
-                                            <Pin size={16} />
-                                            Pinned Posts
-                                        </PinnedHeader>
-                                        {pinnedStatuses.map(status => (
-                                            <PostCard
-                                                key={status.id}
-                                                status={status}
-                                                style={{ marginBottom: 'var(--size-3)' }}
-                                            />
-                                        ))}
-                                    </PinnedSection>
-                                ) : undefined}
-                                renderItem={(status) => (
-                                    <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
-                                )}
-                                getItemKey={(status) => status.id}
+                                items={combinedItems}
+                                renderItem={(item, index) => {
+                                    const isFirstPinned = item.isPinned && (index === 0 || !combinedItems[index - 1]?.isPinned);
+                                    const isLastPinned = item.isPinned && (index === combinedItems.length - 1 || !combinedItems[index + 1]?.isPinned);
+
+                                    return (
+                                        <PinnedItemWrapper $isLastPinned={isLastPinned}>
+                                            {isFirstPinned && (
+                                                <PinnedBadge>
+                                                    <Pin size={14} />
+                                                    Pinned
+                                                </PinnedBadge>
+                                            )}
+                                            <PostCard status={item.status} style={{ marginBottom: 'var(--size-3)' }} />
+                                        </PinnedItemWrapper>
+                                    );
+                                }}
+                                getItemKey={(item) => `${item.isPinned ? 'pinned-' : ''}${item.status.id}`}
                                 estimateSize={300}
                                 overscan={5}
                                 onLoadMore={fetchNextPage}
@@ -118,28 +135,26 @@ export function ProfileContent({
                                 <PostCardSkeletonList count={5} />
                             </LoadingContainer>
                         ) : (
-                            <VirtualizedList<Status>
+                            <VirtualizedList<StatusItem>
                                 style={{ padding: 0 }}
-                                items={statuses}
-                                header={pinnedStatuses && pinnedStatuses.length > 0 ? (
-                                    <PinnedSection>
-                                        <PinnedHeader>
-                                            <Pin size={16} />
-                                            Pinned Posts
-                                        </PinnedHeader>
-                                        {pinnedStatuses.map(status => (
-                                            <PostCard
-                                                key={status.id}
-                                                status={status}
-                                                style={{ marginBottom: 'var(--size-3)' }}
-                                            />
-                                        ))}
-                                    </PinnedSection>
-                                ) : undefined}
-                                renderItem={(status) => (
-                                    <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
-                                )}
-                                getItemKey={(status) => status.id}
+                                items={combinedItems}
+                                renderItem={(item, index) => {
+                                    const isFirstPinned = item.isPinned && (index === 0 || !combinedItems[index - 1]?.isPinned);
+                                    const isLastPinned = item.isPinned && (index === combinedItems.length - 1 || !combinedItems[index + 1]?.isPinned);
+
+                                    return (
+                                        <PinnedItemWrapper $isLastPinned={isLastPinned}>
+                                            {isFirstPinned && (
+                                                <PinnedBadge>
+                                                    <Pin size={14} />
+                                                    Pinned
+                                                </PinnedBadge>
+                                            )}
+                                            <PostCard status={item.status} style={{ marginBottom: 'var(--size-3)' }} />
+                                        </PinnedItemWrapper>
+                                    );
+                                }}
+                                getItemKey={(item) => `${item.isPinned ? 'pinned-' : ''}${item.status.id}`}
                                 estimateSize={300}
                                 overscan={5}
                                 onLoadMore={fetchNextPage}
@@ -186,20 +201,30 @@ const TabsContainer = styled.div`
   padding: 0;
 `;
 
-const PinnedSection = styled.div`
-  border-bottom: 1px solid var(--surface-3);
-  margin-bottom: var(--size-4);
+const PinnedItemWrapper = styled.div<{ $isLastPinned: boolean }>`
+  ${({ $isLastPinned }) =>
+    $isLastPinned &&
+    `
+      border-bottom: 1px solid var(--surface-3);
+      padding-bottom: var(--size-4);
+      margin-bottom: var(--size-4);
+    `}
 `;
 
-const PinnedHeader = styled.h3`
-  font-size: var(--font-size-2);
-  font-weight: var(--font-weight-6);
-  margin-bottom: var(--size-3);
-  padding-left: var(--size-4);
-  display: flex;
+const PinnedBadge = styled.div`
+  display: inline-flex;
   align-items: center;
-  gap: var(--size-2);
+  gap: var(--size-1);
+  padding: var(--size-1) var(--size-2);
+  margin-bottom: var(--size-2);
+  margin-left: var(--size-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  font-size: var(--font-size-0);
+  font-weight: var(--font-weight-6);
   color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const ContentSection = styled.div`

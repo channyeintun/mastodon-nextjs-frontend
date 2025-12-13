@@ -82,6 +82,10 @@ export default function AccountPage({
 
   const statusFilters: AccountStatusFilters = getStatusFilters(activeTab);
 
+  // Fetch pinned statuses and current account first
+  const { data: pinnedStatuses } = usePinnedStatuses(accountId || '');
+  const { data: currentAccount } = useCurrentAccount();
+  const isOwnProfile = currentAccount?.id === accountId;
 
   const {
     data: statusPages, isLoading: statusesLoading, fetchNextPage, hasNextPage, isFetchingNextPage,
@@ -89,10 +93,6 @@ export default function AccountPage({
 
   const { data: relationships } = useRelationships(accountId ? [accountId] : []);
   const relationship = relationships?.[0];
-
-  const { data: pinnedStatuses } = usePinnedStatuses(accountId || '');
-  const { data: currentAccount } = useCurrentAccount();
-  const isOwnProfile = currentAccount?.id === accountId;
 
   const followMutation = useFollowAccount();
   const unfollowMutation = useUnfollowAccount();
