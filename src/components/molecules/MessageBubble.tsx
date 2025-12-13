@@ -14,15 +14,17 @@ interface MessageBubbleProps {
   isOwn: boolean
   stripMentions: (html: string) => string
   showAvatar?: boolean
+  isLastMessage?: boolean
+  isConsecutive?: boolean
 }
 
-export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true }: MessageBubbleProps) {
+export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true, isLastMessage = false, isConsecutive = false }: MessageBubbleProps) {
   const hasMedia = status.media_attachments && status.media_attachments.length > 0
   const strippedContent = stripMentions(status.content)
   const hasText = strippedContent && strippedContent !== '<p>&nbsp;</p>'
 
   return (
-    <MessageRow $isOwn={isOwn}>
+    <MessageRow $isOwn={isOwn} $isConsecutive={isConsecutive}>
       {showAvatar ? (
         <Avatar
           src={status.account.avatar}
@@ -33,7 +35,7 @@ export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true 
       ) : (
         <AvatarPlaceholder />
       )}
-      <MessageContent $isOwn={isOwn}>
+      <MessageContent $isOwn={isOwn} tabIndex={0} className="message-content">
         {hasMedia && (
           <MediaContainer $count={status.media_attachments.length}>
             {status.media_attachments.map((media) => (
@@ -50,7 +52,7 @@ export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true 
             />
           </Bubble>
         )}
-        <MessageTimestamp>
+        <MessageTimestamp $isLastMessage={isLastMessage} className="message-timestamp">
           {formatDistanceToNow(new Date(status.created_at), { addSuffix: true })}
         </MessageTimestamp>
       </MessageContent>
@@ -96,11 +98,22 @@ function MediaItem({ media }: { media: MediaAttachment }) {
 }
 
 // Styled Components
-const MessageRow = styled.div<{ $isOwn: boolean }>`
+const MessageTimestamp = styled.span<{ $isLastMessage: boolean }>`
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+  display: block;
+  opacity: ${props => props.$isLastMessage ? 1 : 0};
+  max-height: ${props => props.$isLastMessage ? '20px' : 0};
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.2s ease;
+`
+
+const MessageRow = styled.div<{ $isOwn: boolean; $isConsecutive: boolean }>`
   display: flex;
   gap: var(--size-2);
   flex-direction: ${props => props.$isOwn ? 'row-reverse' : 'row'};
   align-items: flex-start;
+  margin-top: ${props => props.$isConsecutive ? 'calc(var(--size-3) * -1 + var(--size-1))' : '0'};
 `
 
 // Invisible placeholder to maintain layout when avatar is hidden
@@ -116,6 +129,12 @@ const MessageContent = styled.div<{ $isOwn: boolean }>`
   flex-direction: column;
   gap: var(--size-1);
   align-items: ${props => props.$isOwn ? 'flex-end' : 'flex-start'};
+  outline: none;
+
+  &:focus .message-timestamp {
+    opacity: 1;
+    max-height: 20px;
+  }
 `
 
 const MediaContainer = styled.div<{ $count: number }>`
@@ -134,7 +153,7 @@ const MediaImage = styled.img`
   cursor: pointer;
   border-radius: var(--radius-2);
   transition: opacity 0.2s;
-  
+
   &:hover {
     opacity: 0.9;
   }
@@ -158,7 +177,7 @@ const Bubble = styled.div<{ $isOwn: boolean }>`
   color: ${props => props.$isOwn ? 'white' : 'var(--text-1)'};
   word-break: break-word;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  
+
   /* Override link colors for own messages */
   ${props => props.$isOwn && `
     a {
@@ -166,9 +185,4 @@ const Bubble = styled.div<{ $isOwn: boolean }>`
       text-decoration: underline;
     }
   `}
-`
-
-const MessageTimestamp = styled.span`
-  font-size: var(--font-size-0);
-  color: var(--text-3);
 `

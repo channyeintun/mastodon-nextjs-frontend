@@ -190,6 +190,8 @@ function ConversationChatContent() {
                     allStatuses.map((status, index) => {
                         const prevStatus = index > 0 ? allStatuses[index - 1] : null
                         const showAvatar = !prevStatus || prevStatus.account.id !== status.account.id
+                        const isConsecutive = prevStatus && prevStatus.account.id === status.account.id
+                        const isLastMessage = index === allStatuses.length - 1
                         return (
                             <MessageBubble
                                 key={status.id}
@@ -197,6 +199,8 @@ function ConversationChatContent() {
                                 isOwn={status.account.id === currentUserId}
                                 stripMentions={stripMentions}
                                 showAvatar={showAvatar}
+                                isLastMessage={isLastMessage}
+                                isConsecutive={isConsecutive}
                             />
                         )
                     })
