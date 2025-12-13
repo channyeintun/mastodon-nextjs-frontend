@@ -1,10 +1,11 @@
 'use client';
 
 import { use } from 'react';
+import { indexBy, prop } from 'ramda';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { useLookupAccount, useInfiniteFollowing } from '@/api';
+import { useLookupAccount, useInfiniteFollowing, useRelationships } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton, EmojiText, Button, EmptyState } from '@/components/atoms';
@@ -41,6 +42,13 @@ export default function FollowingPage({
     } = useInfiniteFollowing(account?.id || '');
 
     const following = flattenPages(followingPages?.pages);
+
+    // Batch fetch relationships for all loaded accounts
+    const accountIds = following.map((a) => a.id);
+    const { data: relationships } = useRelationships(accountIds);
+
+    // Create a map for quick relationship lookup by account ID
+    const relationshipMap = indexBy(prop('id'), relationships ?? []);
 
     if (accountLoading || followingLoading) {
         return (
@@ -98,7 +106,9 @@ export default function FollowingPage({
                 renderItem={(followedAccount) => (
                     <AccountCard
                         account={followedAccount}
-                        showFollowButton={true}
+                        relationship={relationshipMap[followedAccount.id]}
+                        showFollowButton
+                        skipRelationshipFetch
                         style={{ marginBottom: 'var(--size-2)' }}
                     />
                 )}

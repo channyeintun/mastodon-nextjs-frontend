@@ -70,7 +70,7 @@ export default function FollowRequestsPage() {
                             key={account.id}
                             account={account}
                             showFollowButton={false}
-                            showFollowRequestActions={true}
+                            showFollowRequestActions
                         />
                     ))
                 )}

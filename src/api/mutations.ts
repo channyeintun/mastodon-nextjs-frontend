@@ -44,6 +44,20 @@ import { queryKeys } from './queryKeys'
 import { mapPages, findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
 import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context } from '../types/mastodon'
 
+// Helper function to invalidate all relationship queries that contain a given account ID
+// This is needed because relationships can be batch-fetched with multiple IDs
+function invalidateRelationshipsForAccount(queryClient: QueryClient, accountId: string) {
+  queryClient.invalidateQueries({
+    predicate: (query) => {
+      const key = query.queryKey as readonly unknown[]
+      if (key[0] === 'accounts' && key[1] === 'relationships' && Array.isArray(key[2])) {
+        return (key[2] as string[]).includes(accountId)
+      }
+      return false
+    },
+  })
+}
+
 // Helper to update a status or its nested reblog
 // This function is now a thin wrapper around updateStatusById for backwards compatibility
 function updateStatusOrReblog(
@@ -383,10 +397,12 @@ async function cancelStatusQueries(queryClient: QueryClient, statusId: string) {
     queryClient.cancelQueries({ queryKey: ['accounts'] }),
     queryClient.cancelQueries({ queryKey: queryKeys.trends.statuses() }),
     queryClient.cancelQueries({ queryKey: ['search'] }),
-    queryClient.cancelQueries({ queryKey: ['statuses'], predicate: (query) => {
-      const key = query.queryKey as readonly unknown[]
-      return key[2] === 'context'
-    }}),
+    queryClient.cancelQueries({
+      queryKey: ['statuses'], predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[2] === 'context'
+      }
+    }),
   ])
 }
 
@@ -703,9 +719,7 @@ export function useFollowAccount() {
     mutationFn: (id: string) => followAccount(id),
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.accounts.relationships([id]),
-      })
+      invalidateRelationshipsForAccount(queryClient, id)
     },
   })
 }
@@ -717,9 +731,7 @@ export function useUnfollowAccount() {
     mutationFn: (id: string) => unfollowAccount(id),
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.accounts.relationships([id]),
-      })
+      invalidateRelationshipsForAccount(queryClient, id)
     },
   })
 }
@@ -841,7 +853,7 @@ export function useAcceptFollowRequest() {
       // Invalidate follow requests list
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.followRequests() })
       // Invalidate relationships for the accepted user
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      invalidateRelationshipsForAccount(queryClient, id)
       // Invalidate current user's followers count
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.current() })
     },
@@ -870,7 +882,7 @@ export function useBlockAccount() {
       // Invalidate account detail
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       // Invalidate relationships
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      invalidateRelationshipsForAccount(queryClient, id)
       // Invalidate blocks list
       queryClient.invalidateQueries({ queryKey: queryKeys.blocks.all() })
       // Invalidate timelines (blocked users' posts should disappear)
@@ -888,7 +900,7 @@ export function useUnblockAccount() {
       // Invalidate account detail
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       // Invalidate relationships
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      invalidateRelationshipsForAccount(queryClient, id)
       // Invalidate blocks list
       queryClient.invalidateQueries({ queryKey: queryKeys.blocks.all() })
     },
@@ -905,7 +917,7 @@ export function useMuteAccount() {
       // Invalidate account detail
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       // Invalidate relationships
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      invalidateRelationshipsForAccount(queryClient, id)
       // Invalidate mutes list
       queryClient.invalidateQueries({ queryKey: queryKeys.mutes.all() })
       // Invalidate timelines (muted users' posts should disappear)
@@ -925,7 +937,7 @@ export function useUnmuteAccount() {
       // Invalidate account detail
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       // Invalidate relationships
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.relationships([id]) })
+      invalidateRelationshipsForAccount(queryClient, id)
       // Invalidate mutes list
       queryClient.invalidateQueries({ queryKey: queryKeys.mutes.all() })
     },

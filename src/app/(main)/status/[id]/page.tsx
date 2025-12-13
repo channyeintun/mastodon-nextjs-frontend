@@ -116,7 +116,7 @@ export default function StatusPage({
 
         {/* Main status (highlighted) */}
         <HighlightedPost>
-          <PostCard status={status} showEditHistory={true} />
+          <PostCard status={status} showEditHistory />
           {/* Clickable statistics - separate from action buttons */}
           <StatusStatsWrapper>
             <StatusStats
@@ -136,7 +136,7 @@ export default function StatusPage({
               initialVisibility={status.visibility}
               mentionPrefix={status.account.acct}
               inReplyToId={status.id}
-              isReply={true}
+              isReply
             />
           </ReplyComposerContainer>
         )}

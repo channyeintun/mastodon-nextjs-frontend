@@ -320,11 +320,12 @@ export async function unfollowAccount(id: string): Promise<Relationship> {
 }
 
 export async function getRelationships(ids: string[], signal?: AbortSignal): Promise<Relationship[]> {
-  const { data } = await api.get<Relationship[]>('/api/v1/accounts/relationships', {
-    params: { 'id[]': ids },
-    paramsSerializer: {
-      indexes: null, // Use PHP/Rails style array params (id[]=1&id[]=2)
-    },
+  // Build the query string manually to ensure correct format: id[]=1&id[]=2
+  const params = new URLSearchParams()
+  ids.forEach(id => params.append('id[]', id))
+  params.append('with_suspended', 'true')
+
+  const { data } = await api.get<Relationship[]>(`/api/v1/accounts/relationships?${params.toString()}`, {
     signal,
   })
   return data

@@ -77,7 +77,7 @@ export default function EditStatusPage() {
 
         {/* Composer with initial content */}
         <ComposerPanel
-          editMode={true}
+          editMode
           statusId={status.id}
           initialContent={initialContent}
           initialSpoilerText={source?.spoiler_text || status.spoiler_text}

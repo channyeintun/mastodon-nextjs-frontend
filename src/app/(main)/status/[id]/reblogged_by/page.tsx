@@ -1,9 +1,10 @@
 'use client';
 
 import { use } from 'react';
+import { indexBy, prop } from 'ramda';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Repeat2 } from 'lucide-react';
-import { useStatus, useInfiniteRebloggedBy } from '@/api';
+import { useStatus, useInfiniteRebloggedBy, useRelationships } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton, Button, EmptyState } from '@/components/atoms';
@@ -33,6 +34,14 @@ export default function RebloggedByPage({
     } = useInfiniteRebloggedBy(id);
 
     const accounts = flattenPages(rebloggedByPages?.pages);
+
+    // Batch fetch relationships for all loaded accounts
+    const accountIds = accounts.map((a) => a.id);
+    const { data: relationships } = useRelationships(accountIds);
+
+    // Create a map for quick relationship lookup by account ID
+    const relationshipMap = indexBy(prop('id'), relationships ?? []);
+
     const isLoading = statusLoading || rebloggedByLoading;
 
     if (isLoading) {
@@ -92,7 +101,9 @@ export default function RebloggedByPage({
                 renderItem={(account) => (
                     <AccountCard
                         account={account}
-                        showFollowButton={true}
+                        relationship={relationshipMap[account.id]}
+                        showFollowButton
+                        skipRelationshipFetch
                         style={{ marginBottom: 'var(--size-2)' }}
                     />
                 )}

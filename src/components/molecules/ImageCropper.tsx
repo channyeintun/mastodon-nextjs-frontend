@@ -106,17 +106,17 @@ export function ImageCropper({
             maxHeight: 'calc(100vh - 300px)',
           }}
           aspectRatio={aspectRatio}
-          guides={true}
+          guides
           viewMode={1}
           dragMode="move"
-          cropBoxMovable={true}
-          cropBoxResizable={true}
+          cropBoxMovable
+          cropBoxResizable
           toggleDragModeOnDblclick={false}
           background={false}
-          responsive={true}
+          responsive
           autoCropArea={0.8}
           checkOrientation={false}
-          zoomOnWheel={true}
+          zoomOnWheel
           wheelZoomRatio={0.1}
         />
       </CropperContainer>

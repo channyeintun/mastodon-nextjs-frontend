@@ -5,28 +5,37 @@ import Link from 'next/link';
 import { Check, X, Ban, VolumeX } from 'lucide-react';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
 import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest, useUnblockAccount, useUnmuteAccount, useRelationships, useCurrentAccount } from '@/api';
-import type { Account } from '@/types';
+import type { Account, Relationship } from '@/types';
 
 interface AccountCardProps {
     account: Account;
+    relationship?: Relationship;
     showFollowButton?: boolean;
     showFollowRequestActions?: boolean;
     showUnblockButton?: boolean;
     showUnmuteButton?: boolean;
+    /** When true, skip fetching relationship (parent is handling batch fetching) */
+    skipRelationshipFetch?: boolean;
     style?: React.CSSProperties;
 }
 
 export function AccountCard({
     account,
+    relationship: relationshipProp,
     showFollowButton = true,
     showFollowRequestActions = false,
     showUnblockButton = false,
     showUnmuteButton = false,
+    skipRelationshipFetch = false,
     style,
 }: AccountCardProps) {
     const { data: currentAccount } = useCurrentAccount();
-    const { data: relationships } = useRelationships([account.id]);
-    const relationship = relationships?.[0];
+    // Only fetch relationship if not provided as prop and not skipping (allows batching in parent)
+    const shouldFetch = !relationshipProp && !skipRelationshipFetch;
+    const { data: relationships } = useRelationships(
+        shouldFetch ? [account.id] : []
+    );
+    const relationship = relationshipProp ?? relationships?.[0];
 
     const followMutation = useFollowAccount();
     const unfollowMutation = useUnfollowAccount();
