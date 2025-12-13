@@ -69,7 +69,7 @@ export const infiniteHomeTimelineOptions = () =>
       return getHomeTimeline(params, signal)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -90,7 +90,7 @@ export const infiniteHashtagTimelineOptions = (hashtag: string) =>
       return getHashtagTimeline(hashtag, params, signal)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -130,7 +130,7 @@ export const infiniteFavouritedByOptions = (id: string) =>
       return getFavouritedBy(id, params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -145,7 +145,7 @@ export const infiniteRebloggedByOptions = (id: string) =>
       return getRebloggedBy(id, params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -160,7 +160,7 @@ export const infiniteStatusQuotesOptions = (id: string) =>
       return getStatusQuotes(id, params, signal)
     },
     getNextPageParam: (lastPage: Status[]) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -200,7 +200,7 @@ export const infiniteAccountStatusesOptions = (id: string) =>
       return getAccountStatuses(id, params, signal)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -224,7 +224,7 @@ export const infiniteAccountStatusesWithFiltersOptions = (
       return getAccountStatuses(id, params, signal)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -251,7 +251,7 @@ export const infiniteFollowersOptions = (id: string) =>
       return getFollowers(id, params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -272,7 +272,7 @@ export const infiniteFollowingOptions = (id: string) =>
       return getFollowing(id, params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -287,7 +287,7 @@ export const infiniteFollowRequestsOptions = () =>
       return getFollowRequests(params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -315,7 +315,7 @@ export const infiniteBookmarksOptions = () =>
       return getBookmarks(params, signal)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -429,7 +429,7 @@ export const infiniteNotificationsOptions = () =>
       return getNotifications(params, signal)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -465,7 +465,7 @@ export const infiniteGroupedNotificationsOptions = (params?: Omit<GroupedNotific
       return getGroupedNotifications(queryParams, signal)
     },
     getNextPageParam: (lastPage: GroupedNotificationsResults) => {
-      if (lastPage.notification_groups.length === 0 || lastPage.notification_groups.length < 20) return undefined
+      if (lastPage.notification_groups.length === 0) return undefined
       // Use the most_recent_notification_id of the last group for pagination
       const lastGroup = lastPage.notification_groups[lastPage.notification_groups.length - 1]
       return lastGroup?.most_recent_notification_id
@@ -484,7 +484,7 @@ export const infiniteBlockedAccountsOptions = () =>
       return getBlockedAccounts(params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -499,7 +499,7 @@ export const infiniteMutedAccountsOptions = () =>
       return getMutedAccounts(params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -535,7 +535,7 @@ export const infiniteListAccountsOptions = (id: string) =>
       return getListAccounts(id, params, signal)
     },
     getNextPageParam: (lastPage: Account[]) => {
-      if (lastPage.length === 0 || lastPage.length < 40) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -550,7 +550,7 @@ export const infiniteListTimelineOptions = (id: string) =>
       return getListTimeline(id, params, signal)
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -572,7 +572,7 @@ export const infiniteScheduledStatusesOptions = () =>
       return getScheduledStatuses(params, signal)
     },
     getNextPageParam: (lastPage: ScheduledStatus[]) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
@@ -958,7 +958,7 @@ export const infiniteConversationsOptions = () =>
       return getConversations(params, signal)
     },
     getNextPageParam: (lastPage: Conversation[]) => {
-      if (lastPage.length === 0 || lastPage.length < 20) return undefined
+      if (lastPage.length === 0) return undefined
       return lastPage[lastPage.length - 1]?.id
     },
     initialPageParam: undefined as string | undefined,
