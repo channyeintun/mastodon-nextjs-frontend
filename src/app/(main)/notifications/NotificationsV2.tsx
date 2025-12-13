@@ -158,7 +158,6 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                     items={allGroups}
                     renderItem={(group) => (
                         <GroupedNotificationCard
-                            key={group.group_key}
                             group={group}
                             accounts={accountsMap}
                             statuses={statusesMap}
@@ -166,7 +165,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                             isNew={isGroupNew(group)}
                         />
                     )}
-                    getItemKey={(group) => group.group_key}
+                    getItemKey={(group) => group.most_recent_notification_id}
                     estimateSize={100}
                     onLoadMore={fetchNextPage}
                     isLoadingMore={isFetchingNextPage}

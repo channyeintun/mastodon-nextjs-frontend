@@ -129,7 +129,6 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
                     items={allNotifications}
                     renderItem={(notification) => (
                         <NotificationCard
-                            key={notification.id}
                             notification={notification}
                             style={{ marginBottom: 'var(--size-2)' }}
                             isNew={isNotificationNew(notification.id)}
