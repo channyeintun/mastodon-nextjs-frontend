@@ -182,7 +182,8 @@ mastodon-nextjs-client/
 │   │   │   ├── ScrollRestorationProvider.tsx
 │   │   │   ├── StoreProvider.tsx   # MobX store provider
 │   │   │   ├── StreamingProvider.tsx  # Real-time streaming provider
-│   │   │   └── ThemeProvider.tsx
+│   │   │   ├── ThemeProvider.tsx
+│   │   │   └── VideoSyncProvider.tsx  # Global video sync (one video plays at a time)
 │   │   └── templates/        # Page layouts
 │   ├── contexts/             # React context definitions
 │   │   └── GlobalModalContext.tsx
@@ -277,7 +278,7 @@ Next.js App Router with file-based routing using route groups for different layo
 - **`/auth/callback`**: OAuth callback handler
 
 **Special files:**
-- `layout.tsx`: Root layout with QueryProvider, StoreProvider, ThemeProvider, and StreamingProvider
+- `layout.tsx`: Root layout with QueryProvider, StoreProvider, ThemeProvider, StreamingProvider, and VideoSyncProvider
 - `(main)/layout.tsx`: Main layout with navigation wrapper
 - `(auth)/layout.tsx`: Auth layout without navigation
 - `globals.css`: Global styles using Open Props
@@ -299,7 +300,7 @@ Atomic design pattern components:
   - AuthGuard (authentication route protection), ComposerPanel (post composition), EmojiPicker, NavigationWrapper (auth integration), PostCard (with usePostActions hook), ProfileContent (profile tabs), SearchContent (search results), TimelinePage (reusable timeline), TrendingContent, TrendingPage (trending with navigation), VirtualizedList (infinite scroll)
 - **templates/**: Page layouts (currently empty, layouts handled by route groups)
 - **providers/**: React context providers
-  - QueryProvider (TanStack Query), ScrollRestorationProvider, StoreProvider (MobX), StreamingProvider (real-time updates), ThemeProvider
+  - QueryProvider (TanStack Query), ScrollRestorationProvider, StoreProvider (MobX), StreamingProvider (real-time updates), ThemeProvider, VideoSyncProvider (ensures only one video plays at a time)
 
 ### `/src/hooks/`
 Custom React hooks:

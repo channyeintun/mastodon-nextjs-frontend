@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { VideoSyncProvider } from "@/components/providers/VideoSyncProvider";
 import SkipToMain from "@/components/atoms/SkipToMain";
 
 export const metadata: Metadata = {
@@ -44,7 +45,9 @@ export default async function RootLayout({
         <QueryProvider>
           <StoreProvider initialState={initialState}>
             <ThemeProvider />
-            {children}
+            <VideoSyncProvider>
+              {children}
+            </VideoSyncProvider>
           </StoreProvider>
         </QueryProvider>
       </body>
