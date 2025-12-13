@@ -1,6 +1,5 @@
 'use client';
 
-import styled from '@emotion/styled';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
@@ -13,8 +12,24 @@ import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
-import { Globe, Lock, Users, Mail } from 'lucide-react';
+import { Globe, Lock, Users, Mail, X } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types';
+import { Spinner } from '@/components/atoms/Spinner';
+import {
+  LoadingContainer,
+  DisplayName,
+  VisibilityButtonWrapper,
+  VisibilityButton,
+  VisibilityLabel,
+  InputsContainer,
+  QuotePreview,
+  CompactMediaPreviewContainer,
+  CompactMediaPreviewItem,
+  CompactMediaPreviewImage,
+  CompactMediaPreviewControls,
+  CompactMediaPreviewButton,
+  CompactUploadingIndicator
+} from './ComposerPanelStyles';
 
 const MAX_CHAR_COUNT = 500;
 
@@ -378,15 +393,47 @@ export function ComposerPanel({
         />
       </div>
 
-      {/* Media Upload - Always rendered, handles its own cropper */}
-      <MediaUpload
-        ref={mediaUploadRef}
-        media={media}
-        onMediaAdd={handleMediaAdd}
-        onMediaRemove={handleMediaRemove}
-        onAltTextChange={handleAltTextChange}
-        isUploading={isUploadingMedia}
-      />
+      {/* Media Upload - Compact preview for replies, full for compose */}
+      {isReply ? (
+        <>
+          {/* Compact Media Preview for Reply Mode */}
+          {(media.length > 0 || isUploadingMedia) && (
+            <CompactMediaPreviewContainer>
+              {media.map(m => (
+                <CompactMediaPreviewItem key={m.id}>
+                  <CompactMediaPreviewImage src={m.preview_url || m.url || ''} alt="" />
+                  <CompactMediaPreviewControls className="compact-media-controls">
+                    <CompactMediaPreviewButton onClick={() => handleMediaRemove(m.id)} title="Remove">
+                      <X size={12} />
+                    </CompactMediaPreviewButton>
+                  </CompactMediaPreviewControls>
+                </CompactMediaPreviewItem>
+              ))}
+              {isUploadingMedia && (
+                <CompactUploadingIndicator><Spinner /></CompactUploadingIndicator>
+              )}
+            </CompactMediaPreviewContainer>
+          )}
+          {/* Hidden MediaUpload for cropper functionality */}
+          <MediaUpload
+            ref={mediaUploadRef}
+            media={[]}
+            onMediaAdd={handleMediaAdd}
+            onMediaRemove={handleMediaRemove}
+            onAltTextChange={handleAltTextChange}
+            isUploading={false}
+          />
+        </>
+      ) : (
+        <MediaUpload
+          ref={mediaUploadRef}
+          media={media}
+          onMediaAdd={handleMediaAdd}
+          onMediaRemove={handleMediaRemove}
+          onAltTextChange={handleAltTextChange}
+          isUploading={isUploadingMedia}
+        />
+      )}
 
       {/* Poll Composer */}
       {poll !== null && (
@@ -433,53 +480,3 @@ export function ComposerPanel({
     </div>
   );
 }
-
-// Styled components
-const LoadingContainer = styled.div`
-  padding: var(--size-4);
-  text-align: center;
-  color: var(--text-2);
-`;
-
-const DisplayName = styled.div`
-  font-weight: var(--font-weight-7);
-  font-size: var(--font-size-2);
-`;
-
-const VisibilityButtonWrapper = styled.div`
-  margin-top: 4px;
-`;
-
-const VisibilityButton = styled.button`
-  padding: 0;
-  background: transparent;
-  color: var(--text-2);
-  font-size: var(--font-size-1);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  border: none;
-
-  &:hover {
-    color: var(--text-1);
-  }
-`;
-
-const VisibilityLabel = styled.span`
-  font-weight: 500;
-`;
-
-const InputsContainer = styled.div`
-  margin-bottom: var(--size-3);
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2);
-`;
-
-const QuotePreview = styled.div`
-  margin-top: var(--size-4);
-  pointer-events: none;
-  user-select: none;
-  opacity: 0.8;
-`;

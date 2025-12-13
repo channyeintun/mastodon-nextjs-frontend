@@ -14,7 +14,7 @@ import { markConversationAsRead } from '../api/client'
 import { useAuthStore } from './useStores'
 import { useNotificationSound } from './useNotificationSound'
 import { queryKeys } from '../api/queryKeys'
-import type { Notification, Conversation, Context, Status } from '../types/mastodon'
+import type { Notification, Conversation, Context } from '../types/mastodon'
 
 /**
  * Hook to manage notification streaming connection
