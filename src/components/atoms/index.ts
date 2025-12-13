@@ -1,5 +1,6 @@
 export { Avatar } from './Avatar';
 export { Badge } from './Badge';
+export { default as BuyMeACoffeeIcon } from './BuyMeACoffeeIcon';
 export { Button } from './Button';
 export { Card } from './Card';
 export { CheckboxField } from './CheckboxField';

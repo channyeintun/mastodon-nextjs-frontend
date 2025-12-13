@@ -3,9 +3,9 @@
 import styled from '@emotion/styled';
 import Link, { useLinkStatus } from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, PenSquare, Search, Settings, Coffee, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
+import { Home, PenSquare, Search, Settings, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker } from '@/api';
-import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
+import { CircleSkeleton, TextSkeleton, BuyMeACoffeeIcon } from '@/components/atoms';
 
 interface NavigationProps {
   isAuthenticated: boolean;
@@ -126,7 +126,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
             className="navigation-sidebar-link"
           >
             <div className="navigation-link-icon">
-              <Coffee size={24} />
+              <BuyMeACoffeeIcon size={24} />
             </div>
             <span className="navigation-link-label">Buy me a coffee</span>
           </a>
