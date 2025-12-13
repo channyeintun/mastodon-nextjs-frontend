@@ -225,6 +225,10 @@ mastodon-nextjs-client/
 │   └── proxy.ts              # Proxy configuration
 ├── .claude/                  # Claude Code configuration
 ├── .git/                     # Git repository
+├── .github/                  # GitHub configuration
+│   ├── workflows/            # GitHub Actions workflows
+│   │   └── ci.yml            # CI workflow (lint + build on PRs)
+│   └── PULL_REQUEST_TEMPLATE.md  # PR template for contributors
 ├── .gitignore                # Git ignore rules
 ├── .next/                    # Next.js build output (gitignored)
 ├── .vscode/                  # VS Code configuration
@@ -357,6 +361,28 @@ Build and deployment scripts:
 ### `/example/`
 Example files and documentation:
 - **compose/README.md**: Documentation for the compose feature and post creation workflow
+
+### `/.github/`
+GitHub configuration and workflows:
+
+**workflows/ci.yml** - Continuous Integration workflow:
+- Runs on pull requests and pushes to main branch
+- Executes linting (`npm run lint`) to catch code quality issues
+- Runs build (`npm run build`) to ensure the project compiles successfully
+- Blocks merging if either linting or building fails (requires branch protection rules)
+- Uses Node.js 20 with npm caching for faster builds
+
+**PULL_REQUEST_TEMPLATE.md** - Pull request template for contributors:
+- Structured template to guide contributors when submitting PRs
+- Includes sections for:
+  - Description and type of change (bug fix, feature, breaking change, etc.)
+  - Related issues linking
+  - Testing checklist and instructions
+  - Code quality checklist (coding style, atomic design LOC limits, Emotion styled components)
+  - Screenshots/videos for visual changes
+  - Additional context and reviewer notes
+- Ensures consistent PR format and complete information for reviewers
+- Reminds contributors about project conventions (atomic design, Emotion, linting, building)
 
 ## Key Files
 
