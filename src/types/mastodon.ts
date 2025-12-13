@@ -86,7 +86,7 @@ export interface Account {
   group?: boolean
   discoverable?: boolean
   suspended?: boolean
-  limited?: boolean
+  limited: boolean
 
   // Source
   source?: {

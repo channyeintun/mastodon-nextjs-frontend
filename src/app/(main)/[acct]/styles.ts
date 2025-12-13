@@ -129,3 +129,23 @@ export const LoadingBorder = styled.div`
   padding-top: var(--size-4);
   margin-top: var(--size-4);
 `;
+
+export const LimitedAccountWarning = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--size-8) var(--size-4);
+  text-align: center;
+  background: var(--surface-2);
+  border-radius: var(--radius-3);
+  margin: var(--size-4);
+  gap: var(--size-4);
+`;
+
+export const LimitedAccountMessage = styled.p`
+  color: var(--text-2);
+  font-size: var(--font-size-2);
+  line-height: 1.5;
+  max-width: 400px;
+`;

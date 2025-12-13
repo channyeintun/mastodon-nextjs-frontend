@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, ExternalLink, Lock } from 'lucide-react';
@@ -46,6 +46,8 @@ import {
   MetaLink,
   ErrorContainer,
   ErrorTitle,
+  LimitedAccountWarning,
+  LimitedAccountMessage,
 } from './styles';
 
 type ProfileTab = 'posts' | 'posts_replies' | 'media';
@@ -67,6 +69,14 @@ export default function AccountPage({
   // Data fetching
   const { data: account, isLoading: accountLoading, isError: accountError } = useLookupAccount(acct);
   const accountId = account?.id;
+
+  // State to control whether to show limited profile
+  const [showLimitedProfile, setShowLimitedProfile] = useState(false);
+  useEffect(() => {
+    if (account) {
+      setShowLimitedProfile(account.limited);
+    }
+  }, [account])
 
   const [activeTab, setActiveTab] = useState<ProfileTab>('posts');
 
@@ -114,6 +124,16 @@ export default function AccountPage({
   const isFollowing = relationship?.following || false;
   const isFollowLoading = followMutation.isPending || unfollowMutation.isPending;
 
+  // Get the domain for the warning message
+  const getAccountDomain = () => {
+    if (!account?.url) return 'this server';
+    try {
+      return new URL(account.url).hostname;
+    } catch {
+      return 'this server';
+    }
+  };
+
   // Loading state
   if (accountLoading) {
     return (
@@ -149,86 +169,140 @@ export default function AccountPage({
 
       {/* Scrollable Content */}
       <ScrollableContent className="virtualized-list-container">
-        {/* Profile Section */}
-        <ProfileSection>
-          {/* Header Image */}
-          {account.header && !account.header.includes('missing.png') && (
-            <HeaderImage $url={account.header} />
-          )}
-
-          {/* Profile Details Container */}
-          <ProfileDetails>
-            {/* Avatar and Actions */}
-            <AvatarSection>
-              <Avatar
-                src={account.avatar}
-                alt={account.display_name || account.username}
-                size="xlarge"
-                style={{ border: '4px solid var(--surface-1)' }}
-              />
-              <ProfileActionButtons
-                isOwnProfile={isOwnProfile}
-                isFollowing={isFollowing}
-                isRequested={relationship?.requested}
-                isBlocking={isBlocking}
-                isMuting={isMuting}
-                isLoading={isFollowLoading}
-                isMutePending={muteMutation.isPending || unmuteMutation.isPending}
-                isBlockPending={blockMutation.isPending || unblockMutation.isPending}
-                acct={account.acct}
-                onFollowToggle={handleFollowToggle}
-                onBlockToggle={handleBlockToggle}
-                onMuteToggle={handleMuteToggle}
-              />
-            </AvatarSection>
-
-            {/* Name and Handle */}
-            <NameSection>
-              <DisplayName>
-                <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
-                {account.bot && <BotBadge>BOT</BotBadge>}
-                {account.locked && <LockIcon><Lock size={14} /></LockIcon>}
-              </DisplayName>
-              <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
-            </NameSection>
-
-            {/* Bio */}
-            <ProfileBio note={account.note} />
-
-            {/* Stats */}
-            <ProfileStats acct={account.acct} postsCount={account.statuses_count} followingCount={account.following_count} followersCount={account.followers_count} />
-
-            {/* Joined Date & External Link */}
-            <MetaSection>
-              {account.created_at && (
-                <MetaItem>
-                  <Calendar size={14} />
-                  Joined {new Date(account.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                </MetaItem>
+        {showLimitedProfile ? (
+          /* Limited Account - show header, avatar placeholder, actions, and warning */
+          <>
+            <ProfileSection>
+              {/* Header Image (blurred) */}
+              {account.header && !account.header.includes('missing.png') && (
+                <HeaderImage $url={account.header} style={{ filter: 'blur(8px)', opacity: 0.5 }} />
               )}
-              <MetaLink href={account.url} target="_blank" rel="noopener noreferrer">
-                <ExternalLink size={14} />
-                View on instance
-              </MetaLink>
-            </MetaSection>
 
-            {/* Custom Fields */}
-            <ProfileFields fields={account.fields} />
-          </ProfileDetails>
-        </ProfileSection>
+              {/* Profile Details Container */}
+              <ProfileDetails>
+                {/* Avatar (blurred) and Actions */}
+                <AvatarSection>
+                  <Avatar
+                    src={account.avatar}
+                    alt={account.display_name || account.username}
+                    size="xlarge"
+                    style={{ border: '4px solid var(--surface-1)', filter: 'blur(4px)', opacity: 0.5 }}
+                  />
+                  <ProfileActionButtons
+                    isOwnProfile={isOwnProfile}
+                    isFollowing={isFollowing}
+                    isRequested={relationship?.requested}
+                    isBlocking={isBlocking}
+                    isMuting={isMuting}
+                    isLoading={isFollowLoading}
+                    isMutePending={muteMutation.isPending || unmuteMutation.isPending}
+                    isBlockPending={blockMutation.isPending || unblockMutation.isPending}
+                    acct={account.acct}
+                    onFollowToggle={handleFollowToggle}
+                    onBlockToggle={handleBlockToggle}
+                    onMuteToggle={handleMuteToggle}
+                  />
+                </AvatarSection>
+              </ProfileDetails>
+            </ProfileSection>
 
-        {/* Profile Content */}
-        <ProfileContent
-          acct={acct}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          pinnedStatuses={pinnedStatuses}
-          statuses={uniqueStatuses}
-          isLoading={statusesLoading}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage ?? false}
-          isFetchingNextPage={isFetchingNextPage}
-        />
+            {/* Limited Account Warning */}
+            <LimitedAccountWarning>
+              <LimitedAccountMessage>
+                This profile has been hidden by the moderators of {getAccountDomain()}.
+              </LimitedAccountMessage>
+              <Button
+                variant="secondary"
+                onClick={() => setShowLimitedProfile(false)}
+              >
+                Show profile anyway
+              </Button>
+            </LimitedAccountWarning>
+          </>
+        ) : (
+          <>
+            {/* Profile Section */}
+            <ProfileSection>
+              {/* Header Image */}
+              {account.header && !account.header.includes('missing.png') && (
+                <HeaderImage $url={account.header} />
+              )}
+
+              {/* Profile Details Container */}
+              <ProfileDetails>
+                {/* Avatar and Actions */}
+                <AvatarSection>
+                  <Avatar
+                    src={account.avatar}
+                    alt={account.display_name || account.username}
+                    size="xlarge"
+                    style={{ border: '4px solid var(--surface-1)' }}
+                  />
+                  <ProfileActionButtons
+                    isOwnProfile={isOwnProfile}
+                    isFollowing={isFollowing}
+                    isRequested={relationship?.requested}
+                    isBlocking={isBlocking}
+                    isMuting={isMuting}
+                    isLoading={isFollowLoading}
+                    isMutePending={muteMutation.isPending || unmuteMutation.isPending}
+                    isBlockPending={blockMutation.isPending || unblockMutation.isPending}
+                    acct={account.acct}
+                    onFollowToggle={handleFollowToggle}
+                    onBlockToggle={handleBlockToggle}
+                    onMuteToggle={handleMuteToggle}
+                  />
+                </AvatarSection>
+
+                {/* Name and Handle */}
+                <NameSection>
+                  <DisplayName>
+                    <EmojiText text={account.display_name || account.username} emojis={account.emojis} />
+                    {account.bot && <BotBadge>BOT</BotBadge>}
+                    {account.locked && <LockIcon><Lock size={14} /></LockIcon>}
+                  </DisplayName>
+                  <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
+                </NameSection>
+
+                {/* Bio */}
+                <ProfileBio note={account.note} />
+
+                {/* Stats */}
+                <ProfileStats acct={account.acct} postsCount={account.statuses_count} followingCount={account.following_count} followersCount={account.followers_count} />
+
+                {/* Joined Date & External Link */}
+                <MetaSection>
+                  {account.created_at && (
+                    <MetaItem>
+                      <Calendar size={14} />
+                      Joined {new Date(account.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </MetaItem>
+                  )}
+                  <MetaLink href={account.url} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink size={14} />
+                    View on instance
+                  </MetaLink>
+                </MetaSection>
+
+                {/* Custom Fields */}
+                <ProfileFields fields={account.fields} />
+              </ProfileDetails>
+            </ProfileSection>
+
+            {/* Profile Content */}
+            <ProfileContent
+              acct={acct}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              pinnedStatuses={pinnedStatuses}
+              statuses={uniqueStatuses}
+              isLoading={statusesLoading}
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage ?? false}
+              isFetchingNextPage={isFetchingNextPage}
+            />
+          </>
+        )}
       </ScrollableContent>
     </PageContainer>
   );

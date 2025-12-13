@@ -144,6 +144,15 @@ export function AccountCard({
         }
 
         if (showFollowButton && !isOwnProfile) {
+            // For limited accounts that are not followed, show "Request to follow"
+            const isLimited = account.limited === true;
+            const getButtonText = () => {
+                if (relationship?.requested) return 'Requested';
+                if (isFollowing) return 'Following';
+                if (isLimited) return 'Request to follow';
+                return 'Follow';
+            };
+
             return (
                 <Button
                     variant={isFollowing || relationship?.requested ? 'secondary' : 'primary'}
@@ -152,7 +161,7 @@ export function AccountCard({
                     disabled={isLoading}
                     isLoading={isLoading}
                 >
-                    {relationship?.requested ? 'Requested' : (isFollowing ? 'Following' : 'Follow')}
+                    {getButtonText()}
                 </Button>
             );
         }
