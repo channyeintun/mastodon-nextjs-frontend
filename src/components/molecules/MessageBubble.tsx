@@ -1,0 +1,174 @@
+/**
+ * Message bubble component for chat conversations
+ * Supports text content, media attachments, and custom emojis
+ */
+
+import styled from '@emotion/styled'
+import { Avatar } from '@/components/atoms/Avatar'
+import { StatusContent } from '@/components/molecules/StatusContent'
+import { formatDistanceToNow } from 'date-fns'
+import type { Status, MediaAttachment } from '@/types/mastodon'
+
+interface MessageBubbleProps {
+  status: Status
+  isOwn: boolean
+  stripMentions: (html: string) => string
+  showAvatar?: boolean
+}
+
+export function MessageBubble({ status, isOwn, stripMentions, showAvatar = true }: MessageBubbleProps) {
+  const hasMedia = status.media_attachments && status.media_attachments.length > 0
+  const strippedContent = stripMentions(status.content)
+  const hasText = strippedContent && strippedContent !== '<p>&nbsp;</p>'
+
+  return (
+    <MessageRow $isOwn={isOwn}>
+      {showAvatar ? (
+        <Avatar
+          src={status.account.avatar}
+          alt={status.account.display_name || status.account.username}
+          size="small"
+          style={{ marginTop: 'var(--size-1)' }}
+        />
+      ) : (
+        <AvatarPlaceholder />
+      )}
+      <MessageContent $isOwn={isOwn}>
+        {hasMedia && (
+          <MediaContainer $count={status.media_attachments.length}>
+            {status.media_attachments.map((media) => (
+              <MediaItem key={media.id} media={media} />
+            ))}
+          </MediaContainer>
+        )}
+        {hasText && (
+          <Bubble $isOwn={isOwn}>
+            <StatusContent
+              html={strippedContent}
+              emojis={status.emojis}
+              style={{ fontSize: 'var(--font-size-2)', lineHeight: '1.5' }}
+            />
+          </Bubble>
+        )}
+        <MessageTimestamp>
+          {formatDistanceToNow(new Date(status.created_at), { addSuffix: true })}
+        </MessageTimestamp>
+      </MessageContent>
+    </MessageRow>
+  )
+}
+
+function MediaItem({ media }: { media: MediaAttachment }) {
+  const handleClick = () => {
+    if (media.url) {
+      window.open(media.url, '_blank')
+    }
+  }
+
+  if (media.type === 'image' || media.type === 'gifv') {
+    return (
+      <MediaImage
+        src={media.preview_url || media.url || ''}
+        alt={media.description || ''}
+        onClick={handleClick}
+        loading="lazy"
+      />
+    )
+  }
+
+  if (media.type === 'video') {
+    return (
+      <MediaVideo controls preload="metadata">
+        <source src={media.url || ''} />
+      </MediaVideo>
+    )
+  }
+
+  if (media.type === 'audio') {
+    return (
+      <MediaAudio controls>
+        <source src={media.url || ''} />
+      </MediaAudio>
+    )
+  }
+
+  return null
+}
+
+// Styled Components
+const MessageRow = styled.div<{ $isOwn: boolean }>`
+  display: flex;
+  gap: var(--size-2);
+  flex-direction: ${props => props.$isOwn ? 'row-reverse' : 'row'};
+  align-items: flex-start;
+`
+
+// Invisible placeholder to maintain layout when avatar is hidden
+const AvatarPlaceholder = styled.div`
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+`
+
+const MessageContent = styled.div<{ $isOwn: boolean }>`
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1);
+  align-items: ${props => props.$isOwn ? 'flex-end' : 'flex-start'};
+`
+
+const MediaContainer = styled.div<{ $count: number }>`
+  display: grid;
+  grid-template-columns: ${props => props.$count === 1 ? '1fr' : 'repeat(2, 1fr)'};
+  gap: var(--size-1);
+  max-width: 300px;
+  border-radius: var(--radius-3);
+  overflow: hidden;
+`
+
+const MediaImage = styled.img`
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: var(--radius-2);
+  transition: opacity 0.2s;
+  
+  &:hover {
+    opacity: 0.9;
+  }
+`
+
+const MediaVideo = styled.video`
+  width: 100%;
+  max-height: 250px;
+  border-radius: var(--radius-2);
+`
+
+const MediaAudio = styled.audio`
+  width: 100%;
+  border-radius: var(--radius-2);
+`
+
+const Bubble = styled.div<{ $isOwn: boolean }>`
+  padding: var(--size-3) var(--size-4);
+  border-radius: ${props => props.$isOwn ? '20px 20px 4px 20px' : '20px 20px 20px 4px'};
+  background: ${props => props.$isOwn ? 'var(--blue-9)' : 'var(--surface-3)'};
+  color: ${props => props.$isOwn ? 'white' : 'var(--text-1)'};
+  word-break: break-word;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  
+  /* Override link colors for own messages */
+  ${props => props.$isOwn && `
+    a {
+      color: white;
+      text-decoration: underline;
+    }
+  `}
+`
+
+const MessageTimestamp = styled.span`
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+`

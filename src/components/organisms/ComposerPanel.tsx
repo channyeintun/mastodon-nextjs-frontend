@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
 import { PostCard } from '@/components/organisms';
-import { MediaUpload, PollComposer, VisibilitySettingsModal, ImageCropper, ComposerToolbar } from '@/components/molecules';
+import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, type MediaUploadHandle } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
 import { Avatar, EmojiText, TiptapEditor, ContentWarningInput, ScheduleInput } from '@/components/atoms';
@@ -13,7 +13,6 @@ import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { uploadMedia, updateMedia } from '@/api/client';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
-import { useCropper } from '@/hooks/useCropper';
 import { Globe, Lock, Users, Mail } from 'lucide-react';
 import type { CreateStatusParams, MediaAttachment } from '@/types';
 
@@ -111,8 +110,7 @@ export function ComposerPanel({
   const [poll, setPoll] = useState<PollData | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isUploadingMedia, setIsUploadingMedia] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { cropperImage, openCropper, closeCropper, handleCropComplete } = useCropper();
+  const mediaUploadRef = useRef<MediaUploadHandle>(null);
 
   const charCount = textContent.length;
   const isOverLimit = charCount > MAX_CHAR_COUNT;
@@ -152,24 +150,6 @@ export function ComposerPanel({
     }
   };
 
-  const onFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (openCropper(file)) {
-        break;
-      } else {
-        await handleMediaAdd(file);
-      }
-    }
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
   const handleMediaRemove = (id: string) => {
     setMedia((prev) => prev.filter((m) => m.id !== id));
   };
@@ -195,15 +175,8 @@ export function ComposerPanel({
     const remainingSlots = 4 - media.length;
     if (remainingSlots <= 0 || poll !== null) return;
 
-    const filesToUpload = files.slice(0, remainingSlots);
-    for (const file of filesToUpload) {
-      // Try to open cropper for images, otherwise upload directly
-      if (openCropper(file)) {
-        break; // Cropper handles one image at a time
-      } else {
-        await handleMediaAdd(file);
-      }
-    }
+    // Process pasted files through MediaUpload's cropper
+    mediaUploadRef.current?.processFiles(files);
   };
 
   // Handle URLs pasted into the editor (for potential link card creation)
@@ -323,16 +296,6 @@ export function ComposerPanel({
 
   return (
     <div>
-      {/* Image Cropper Modal */}
-      {cropperImage && (
-        <ImageCropper
-          image={cropperImage}
-          onCropComplete={(blob) => handleCropComplete(blob, handleMediaAdd)}
-          onCancel={closeCropper}
-          aspectRatio={16 / 9}
-        />
-      )}
-
       {/* Header with avatar and visibility - Only show if not a reply */}
       {!isReply && (
         <div className="compose-header">
@@ -415,30 +378,20 @@ export function ComposerPanel({
         />
       </div>
 
-      {/* Media Upload */}
-      {(media.length > 0 || isUploadingMedia) && (
-        <MediaUpload
-          media={media}
-          onMediaAdd={handleMediaAdd}
-          onMediaRemove={handleMediaRemove}
-          onAltTextChange={handleAltTextChange}
-          isUploading={isUploadingMedia}
-        />
-      )}
+      {/* Media Upload - Always rendered, handles its own cropper */}
+      <MediaUpload
+        ref={mediaUploadRef}
+        media={media}
+        onMediaAdd={handleMediaAdd}
+        onMediaRemove={handleMediaRemove}
+        onAltTextChange={handleAltTextChange}
+        isUploading={isUploadingMedia}
+      />
 
       {/* Poll Composer */}
       {poll !== null && (
         <PollComposer poll={poll} onPollChange={setPoll} />
       )}
-
-      {/* Hidden File Input */}
-      <HiddenInput
-        ref={fileInputRef}
-        type="file"
-        accept="image/*,video/*"
-        multiple
-        onChange={onFileInputChange}
-      />
 
       {/* Toolbar */}
       <ComposerToolbar
@@ -457,7 +410,7 @@ export function ComposerPanel({
         canPost={canPost}
         submitLabel={submitLabel}
         onEmojiToggle={() => setShowEmojiPicker(!showEmojiPicker)}
-        onMediaClick={() => fileInputRef.current?.click()}
+        onMediaClick={() => mediaUploadRef.current?.openFileInput()}
         onPollClick={() => setPoll({ options: ['', ''], expiresIn: 86400, multiple: false })}
         onCWToggle={() => setShowCWInput(!showCWInput)}
         onScheduleToggle={() => setShowScheduleInput(!showScheduleInput)}
@@ -522,10 +475,6 @@ const InputsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--size-2);
-`;
-
-const HiddenInput = styled.input`
-  display: none;
 `;
 
 const QuotePreview = styled.div`

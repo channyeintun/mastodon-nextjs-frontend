@@ -1,11 +1,18 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState, useRef } from 'react';
+import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import { X, Edit2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '../atoms/Button';
 import { IconButton } from '../atoms/IconButton';
+import { ImageCropper } from './ImageCropper';
+import { useCropper } from '@/hooks/useCropper';
 import type { MediaAttachment } from '@/types/mastodon';
+
+export interface MediaUploadHandle {
+  openFileInput: () => void;
+  processFiles: (files: File[]) => void;
+}
 
 interface MediaUploadProps {
   media: MediaAttachment[];
@@ -16,30 +23,99 @@ interface MediaUploadProps {
   maxMedia?: number;
 }
 
-export function MediaUpload({
+export const MediaUpload = forwardRef<MediaUploadHandle, MediaUploadProps>(function MediaUpload({
   media,
   onMediaAdd,
   onMediaRemove,
   onAltTextChange,
   isUploading,
   maxMedia = 4,
-}: MediaUploadProps) {
+}, ref) {
   const [editingAlt, setEditingAlt] = useState<string | null>(null);
   const [altText, setAltText] = useState<string>('');
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { cropperImage, openCropper, closeCropper, handleCropComplete } = useCropper();
+
+  // Process files through the cropper queue
+  const startProcessingFiles = async (filesToProcess: File[]) => {
+    if (filesToProcess.length === 0) return;
+
+    // Take the first file and queue the rest
+    const [firstFile, ...restFiles] = filesToProcess;
+    setPendingFiles(restFiles);
+
+    // Try to open cropper for the first image
+    if (!openCropper(firstFile)) {
+      // Non-image file, upload directly
+      await onMediaAdd(firstFile);
+      // Process next file if any
+      processQueue(restFiles);
+    }
+  };
+
+  // Expose methods to parent components
+  useImperativeHandle(ref, () => ({
+    openFileInput: () => {
+      fileInputRef.current?.click();
+    },
+    processFiles: (files: File[]) => {
+      const remainingSlots = maxMedia - media.length;
+      if (remainingSlots <= 0) return;
+
+      const filesToProcess = files.slice(0, remainingSlots);
+      startProcessingFiles(filesToProcess);
+    },
+  }));
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
-    for (let i = 0; i < files.length && media.length + i < maxMedia; i++) {
-      await onMediaAdd(files[i]);
+    const remainingSlots = maxMedia - media.length;
+    const filesToProcess: File[] = [];
+
+    for (let i = 0; i < files.length && i < remainingSlots; i++) {
+      filesToProcess.push(files[i]);
     }
+
+    if (filesToProcess.length === 0) {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    await startProcessingFiles(filesToProcess);
 
     // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  const processQueue = async (queue: File[]) => {
+    if (queue.length === 0) return;
+
+    const [nextFile, ...rest] = queue;
+    setPendingFiles(rest);
+
+    if (!openCropper(nextFile)) {
+      await onMediaAdd(nextFile);
+      processQueue(rest);
+    }
+  };
+
+  const onCropComplete = async (croppedBlob: Blob) => {
+    handleCropComplete(croppedBlob, async (file) => {
+      await onMediaAdd(file);
+      // Process next file in queue after crop
+      processQueue(pendingFiles);
+    });
+  };
+
+  const handleCropCancel = () => {
+    closeCropper();
+    // Clear the queue when canceling
+    setPendingFiles([]);
   };
 
   const handleAltEdit = (attachment: MediaAttachment) => {
@@ -55,12 +131,11 @@ export function MediaUpload({
     }
   };
 
-  if (media.length === 0 && !isUploading) {
-    return null;
-  }
+  const hasVisibleContent = media.length > 0 || isUploading;
 
   return (
-    <div>
+    <>
+      {/* Hidden file input - always rendered so ref works */}
       <HiddenInput
         ref={fileInputRef}
         type="file"
@@ -69,90 +144,105 @@ export function MediaUpload({
         onChange={handleFileChange}
       />
 
-      {/* Alt Text Editor - Above Media Grid */}
-      {editingAlt && (
-        <AltEditor>
-          <AltEditorHeader>
-            <AltLabel>Alt Text</AltLabel>
-            <CloseButton
-              onClick={() => {
-                setEditingAlt(null);
-                setAltText('');
-              }}
-            >
-              <X size={16} />
-            </CloseButton>
-          </AltEditorHeader>
-          <AltTextarea
-            value={altText}
-            onChange={(e) => setAltText(e.target.value)}
-            placeholder="Describe this media for visually impaired users..."
-            maxLength={1500}
-            rows={3}
-          />
-          <AltFooter>
-            <CharCount>{altText.length} / 1500</CharCount>
-            <Button size="small" onClick={handleAltSave}>
-              Save
-            </Button>
-          </AltFooter>
-        </AltEditor>
+      {/* Image Cropper Modal */}
+      {cropperImage && (
+        <ImageCropper
+          image={cropperImage}
+          onCropComplete={onCropComplete}
+          onCancel={handleCropCancel}
+          aspectRatio={16 / 9}
+        />
       )}
 
-      {/* Media Grid */}
-      <MediaGrid $columns={media.length === 1 ? 1 : 2}>
-        {media.map((attachment) => (
-          <MediaItem key={attachment.id}>
-            {/* Media Preview */}
-            {attachment.type === 'image' && attachment.preview_url && (
-              <MediaPreview
-                src={attachment.preview_url}
-                alt={attachment.description || ''}
+      {/* Visible content - only shown when there's media or uploading */}
+      {hasVisibleContent && (
+        <div>
+          {/* Alt Text Editor - Above Media Grid */}
+          {editingAlt && (
+            <AltEditor>
+              <AltEditorHeader>
+                <AltLabel>Alt Text</AltLabel>
+                <CloseButton
+                  onClick={() => {
+                    setEditingAlt(null);
+                    setAltText('');
+                  }}
+                >
+                  <X size={16} />
+                </CloseButton>
+              </AltEditorHeader>
+              <AltTextarea
+                value={altText}
+                onChange={(e) => setAltText(e.target.value)}
+                placeholder="Describe this media for visually impaired users..."
+                maxLength={1500}
+                rows={3}
               />
+              <AltFooter>
+                <CharCount>{altText.length} / 1500</CharCount>
+                <Button size="small" onClick={handleAltSave}>
+                  Save
+                </Button>
+              </AltFooter>
+            </AltEditor>
+          )}
+
+          {/* Media Grid */}
+          <MediaGrid $columns={media.length === 1 ? 1 : 2}>
+            {media.map((attachment) => (
+              <MediaItem key={attachment.id}>
+                {/* Media Preview */}
+                {attachment.type === 'image' && attachment.preview_url && (
+                  <MediaPreview
+                    src={attachment.preview_url}
+                    alt={attachment.description || ''}
+                  />
+                )}
+                {attachment.type === 'video' && attachment.url && (
+                  <VideoPreview src={attachment.url} />
+                )}
+
+                {/* Controls */}
+                <MediaControls>
+                  <OverlayButton
+                    size="small"
+                    onClick={() => handleAltEdit(attachment)}
+                    title="Edit alt text"
+                  >
+                    <Edit2 size={14} />
+                  </OverlayButton>
+                  <OverlayButton
+                    size="small"
+                    onClick={() => onMediaRemove(attachment.id)}
+                    title="Remove"
+                  >
+                    <X size={14} />
+                  </OverlayButton>
+                </MediaControls>
+
+                {/* Alt text indicator */}
+                {attachment.description && (
+                  <AltBadge>ALT</AltBadge>
+                )}
+              </MediaItem>
+            ))}
+
+            {/* Add more button */}
+            {media.length < maxMedia && !isUploading && (
+              <AddButton onClick={() => fileInputRef.current?.click()}>
+                <ImageIcon size={32} />
+              </AddButton>
             )}
-            {attachment.type === 'video' && attachment.url && (
-              <VideoPreview src={attachment.url} />
-            )}
+          </MediaGrid>
 
-            {/* Controls */}
-            <MediaControls>
-              <OverlayButton
-                size="small"
-                onClick={() => handleAltEdit(attachment)}
-                title="Edit alt text"
-              >
-                <Edit2 size={14} />
-              </OverlayButton>
-              <OverlayButton
-                size="small"
-                onClick={() => onMediaRemove(attachment.id)}
-                title="Remove"
-              >
-                <X size={14} />
-              </OverlayButton>
-            </MediaControls>
-
-            {/* Alt text indicator */}
-            {attachment.description && (
-              <AltBadge>ALT</AltBadge>
-            )}
-          </MediaItem>
-        ))}
-
-        {/* Add more button */}
-        {media.length < maxMedia && !isUploading && (
-          <AddButton onClick={() => fileInputRef.current?.click()}>
-            <ImageIcon size={32} />
-          </AddButton>
-        )}
-      </MediaGrid>
-
-      {isUploading && (
-        <UploadingText>Uploading...</UploadingText>
+          {isUploading && (
+            <UploadingText>Uploading...</UploadingText>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
-}
+});
 
 // Styled components
 const HiddenInput = styled.input`

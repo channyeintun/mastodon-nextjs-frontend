@@ -30,6 +30,10 @@ mastodon-nextjs-client/
 │   │   │   │   └── page.tsx
 │   │   │   ├── compose/      # Create post page
 │   │   │   │   └── page.tsx
+│   │   │   ├── conversations/  # Direct messages (conversations)
+│   │   │   │   ├── [id]/
+│   │   │   │   │   └── page.tsx  # Conversation thread with messages
+│   │   │   │   └── page.tsx     # Conversations list
 │   │   │   ├── explore/      # Explore/discover page
 │   │   │   │   └── page.tsx
 │   │   │   ├── follow-requests/  # Follow requests management
@@ -118,6 +122,7 @@ mastodon-nextjs-client/
 │   │   │   ├── AuthModalBridge.tsx
 │   │   │   ├── ComposerToolbar.tsx
 │   │   │   ├── ContentWarningSection.tsx  # Extracted from PostCard
+│   │   │   ├── ConversationCard.tsx       # Conversation list item with unread indicator
 │   │   │   ├── DeletePostModal.tsx
 │   │   │   ├── GroupedNotificationCard.tsx
 │   │   │   ├── HandleExplainer.tsx
@@ -187,7 +192,7 @@ mastodon-nextjs-client/
 │   │   ├── useScrollDirection.ts
 │   │   ├── useSearchHistory.ts
 │   │   ├── useStores.ts      # MobX store hooks
-│   │   ├── useStreaming.ts   # Real-time streaming hooks
+│   │   ├── useStreaming.ts   # Real-time streaming hooks (notifications + conversations)
 │   │   └── README.md
 │   ├── lib/                  # Library code and extensions
 │   │   └── tiptap/           # Tiptap extensions and configurations
@@ -205,10 +210,11 @@ mastodon-nextjs-client/
 │   │   ├── index.ts          # Store exports
 │   │   └── README.md
 │   ├── types/                # TypeScript type definitions
-│   │   ├── mastodon.ts       # Mastodon API types (includes Emoji array in Status)
+│   │   ├── mastodon.ts       # Mastodon API types (includes Conversation, Emoji array in Status)
 │   │   └── index.ts          # Type exports
 │   ├── utils/                # Utility functions
 │   │   ├── account.ts        # Account helper functions
+│   │   ├── conversationUtils.ts  # Conversation utilities (find, build message lists, strip mentions)
 │   │   ├── cookies.ts        # Cookie management utilities
 │   │   ├── fp.ts             # Ramda-based functional programming utilities
 │   │   ├── oauth.ts          # OAuth flow helpers
@@ -246,6 +252,8 @@ Next.js App Router with file-based routing using route groups for different layo
 - **`/status/[id]`**: Status detail with thread context
 - **`/status/[id]/edit`**: Edit existing status
 - **`/bookmarks`**: Bookmarked posts
+- **`/conversations`**: Direct messages (conversations) list
+- **`/conversations/[id]`**: Individual conversation thread with real-time updates
 - **`/explore`**: Explore/discover page with trending content
 - **`/notifications`**: Notifications page
 - **`/scheduled`**: Scheduled posts management
@@ -286,7 +294,7 @@ Atomic design pattern components:
 - **atoms/**: Smallest UI building blocks
   - Avatar, Badge, Button, Card, CheckboxField, CircleSkeleton (circular skeleton loader), ContentWarningInput, Dialog (base modal), EmptyState, EmojiText, FormField, IconButton, ImageSkeleton (image loader), Input, ScheduleInput, ScrollToTopButton, SensitiveContentButton, SkipToMain, Spinner, Tabs, TextArea, TextSkeleton (text loader), TiptapEditor
 - **molecules/**: Simple component combinations
-  - AccountCard, AccountProfileSkeleton, AuthModalBridge, ComposerToolbar, ContentWarningSection, DeletePostModal, GroupedNotificationCard, HandleExplainer, ImageCropper (cropperjs-based image cropping with zoom, rotate, flip), LinkPreview, ListItemSkeleton, MediaGrid, MediaGridSkeleton, MediaModal (fullscreen media viewer with keyboard navigation), MediaUpload (media upload with cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PageHeaderSkeleton, PollComposer, PostActions, PostCardSkeleton, PostHeader, PostPoll, PrivacySettingsForm, ProfileActionButtons, ProfileBio, ProfileEditorSkeleton, ProfileFields, ProfileFieldsEditor, ProfileImageUploader, ProfilePillSkeleton, ProfileStats, ReblogIndicator, ScheduledCardSkeleton, SearchHistory, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, UserCardSkeleton, VisibilitySettingsModal
+  - AccountCard, AccountProfileSkeleton, AuthModalBridge, ComposerToolbar, ContentWarningSection, ConversationCard (conversation list item with unread indicator and actions), DeletePostModal, GroupedNotificationCard, HandleExplainer, ImageCropper (cropperjs-based image cropping with zoom, rotate, flip), LinkPreview, ListItemSkeleton, MediaGrid, MediaGridSkeleton, MediaModal (fullscreen media viewer with keyboard navigation), MediaUpload (media upload with cropping), MentionSuggestions, Navigation, NotificationCard, NotificationSkeleton, PageHeaderSkeleton, PollComposer, PostActions, PostCardSkeleton, PostHeader, PostPoll, PrivacySettingsForm, ProfileActionButtons, ProfileBio, ProfileEditorSkeleton, ProfileFields, ProfileFieldsEditor, ProfileImageUploader, ProfilePillSkeleton, ProfileStats, ReblogIndicator, ScheduledCardSkeleton, SearchHistory, StatusContent, StatusEditHistory, ThemeSelector, TrendingLinkCard, TrendingTagCard, UserCard, UserCardSkeleton, VisibilitySettingsModal
 - **organisms/**: Complex components
   - AuthGuard (authentication route protection), ComposerPanel (post composition), EmojiPicker, NavigationWrapper (auth integration), PostCard (with usePostActions hook), ProfileContent (profile tabs), SearchContent (search results), TimelinePage (reusable timeline), TrendingContent, TrendingPage (trending with navigation), VirtualizedList (infinite scroll)
 - **templates/**: Page layouts (currently empty, layouts handled by route groups)
@@ -299,6 +307,8 @@ Custom React hooks:
 - **usePostActions.ts**: PostCard mutations and event handlers (extracted from PostCard for reusability)
 - **useStores.ts**: Access MobX stores (useAuthStore, useUserStore, useStreamingStore)
 - **useStreaming.ts**: Real-time Mastodon streaming API integration
+  - **useNotificationStream()**: Real-time notification updates via WebSocket
+  - **useConversationStream()**: Real-time direct message updates via WebSocket
 - **useScrollDirection.ts**: Detect scroll direction for UI enhancements
 - **useSearchHistory.ts**: Manage search history in localStorage
 
@@ -306,7 +316,11 @@ Custom React hooks:
 MobX stores for global state management:
 - **authStore.ts**: Authentication (access token, instance URL, client credentials)
 - **userStore.ts**: Current user profile and data
-- **streamingStore.ts**: Real-time streaming state and WebSocket connections
+- **streamingStore.ts**: Real-time streaming state with single multiplexed WebSocket connection
+  - Single WebSocket connection with dynamic stream subscriptions (JSON multiplexing)
+  - Subscribes to multiple streams: `user:notification` and `direct`
+  - Automatic reconnection with exponential backoff
+  - Event handlers: `onNotification`, `onConversation`
 - **rootStore.ts**: Combines all stores into singleton
 
 ### `/src/contexts/`
@@ -315,10 +329,14 @@ React context definitions:
 
 ### `/src/types/`
 TypeScript type definitions:
-- **mastodon.ts**: Comprehensive types for Mastodon API entities (Status, Account, Context, etc.)
+- **mastodon.ts**: Comprehensive types for Mastodon API entities
+  - Core types: Status, Account, Context, Notification, etc.
+  - Conversation types: Conversation, ConversationParams
+  - Request/response types for all API endpoints
 
 ### `/src/utils/`
 Utility functions:
+- **conversationUtils.ts**: Conversation-related utilities (find conversations, build message lists, strip mentions from HTML)
 - **fp.ts**: Ramda-based functional programming utilities for data transformation (deduplication, nested maps, status helpers)
 - **oauth.ts**: OAuth flow helpers (URL generation, token exchange)
 - **account.ts**: Account-related utility functions

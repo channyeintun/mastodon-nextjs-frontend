@@ -9,6 +9,8 @@ import type {
   Account,
   Application,
   Context,
+  Conversation,
+  ConversationParams,
   CreateAppParams,
   CreateListParams,
   CreateStatusParams,
@@ -658,4 +660,19 @@ export async function updateScheduledStatus(id: string, params: ScheduledStatusP
 
 export async function deleteScheduledStatus(id: string): Promise<void> {
   await api.delete(`/api/v1/scheduled_statuses/${id}`)
+}
+
+// Conversations (Direct Messages)
+export async function getConversations(params?: ConversationParams, signal?: AbortSignal): Promise<Conversation[]> {
+  const { data } = await api.get<Conversation[]>('/api/v1/conversations', { params, signal })
+  return data
+}
+
+export async function deleteConversation(id: string): Promise<void> {
+  await api.delete(`/api/v1/conversations/${id}`)
+}
+
+export async function markConversationAsRead(id: string): Promise<Conversation> {
+  const { data } = await api.post<Conversation>(`/api/v1/conversations/${id}/read`)
+  return data
 }

@@ -39,10 +39,12 @@ import {
   unpinStatus,
   updateScheduledStatus,
   deleteScheduledStatus,
+  deleteConversation,
+  markConversationAsRead,
 } from './client'
 import { queryKeys } from './queryKeys'
 import { mapPages, findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation } from '../types/mastodon'
 
 // Helper function to invalidate all relationship queries that contain a given account ID
 // This is needed because relationships can be batch-fetched with multiple IDs
@@ -423,9 +425,29 @@ export function useCreateStatus() {
         })
       }
 
-      // If this is a reply, invalidate the status context to show the new reply
+      // If this is a reply, optimistically update the context cache to show the new reply
+      // This prevents layout shift by immediately adding the message instead of refetching
       if (params.in_reply_to_id) {
+        queryClient.setQueryData<Context>(
+          queryKeys.statuses.context(params.in_reply_to_id),
+          (old) => {
+            if (!old) return old
+            // Check if the message already exists (avoid duplicates)
+            const exists = old.descendants.some(s => s.id === data.id)
+            if (exists) return old
+            return {
+              ...old,
+              descendants: [...old.descendants, data],
+            }
+          }
+        )
+        // Also invalidate to ensure consistency with server
         queryClient.invalidateQueries({ queryKey: queryKeys.statuses.context(params.in_reply_to_id) })
+      }
+
+      // Also update conversations list for direct messages
+      if (params.visibility === 'direct') {
+        queryClient.invalidateQueries({ queryKey: queryKeys.conversations.list() })
       }
     },
   })
@@ -1085,6 +1107,89 @@ export function useDeleteScheduledStatus() {
     onSuccess: (_data, id) => {
       queryClient.removeQueries({ queryKey: queryKeys.scheduledStatuses.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.scheduledStatuses.all() })
+    },
+  })
+}
+
+// Conversations (Direct Messages)
+export function useMarkConversationAsRead() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => markConversationAsRead(id),
+    onMutate: async (id) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.conversations.list() })
+
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData<InfiniteData<Conversation[]>>(
+        queryKeys.conversations.list()
+      )
+
+      // Optimistically update
+      if (previousData?.pages) {
+        queryClient.setQueryData<InfiniteData<Conversation[]>>(
+          queryKeys.conversations.list(),
+          {
+            ...previousData,
+            pages: previousData.pages.map(page =>
+              page.map(conv => conv.id === id ? { ...conv, unread: false } : conv)
+            ),
+          }
+        )
+      }
+
+      return { previousData }
+    },
+    onError: (_err, _id, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKeys.conversations.list(), context.previousData)
+      }
+    },
+    onSettled: () => {
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.conversations.unreadCount() })
+    },
+  })
+}
+
+export function useDeleteConversation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => deleteConversation(id),
+    onMutate: async (id) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.conversations.list() })
+
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData<InfiniteData<Conversation[]>>(
+        queryKeys.conversations.list()
+      )
+
+      // Optimistically remove conversation
+      if (previousData?.pages) {
+        queryClient.setQueryData<InfiniteData<Conversation[]>>(
+          queryKeys.conversations.list(),
+          {
+            ...previousData,
+            pages: previousData.pages.map(page =>
+              page.filter(conv => conv.id !== id)
+            ),
+          }
+        )
+      }
+
+      return { previousData }
+    },
+    onError: (_err, _id, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKeys.conversations.list(), context.previousData)
+      }
+    },
+    onSettled: () => {
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.conversations.unreadCount() })
     },
   })
 }
