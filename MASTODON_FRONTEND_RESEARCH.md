@@ -425,6 +425,41 @@ Currently we always use lookup API. To optimize:
 2. **Add Quote State Handling** - Show pending/revoked states
 3. **Implement Drag-and-Drop** for media reordering
 4. **Add Filters v2 Support** - Content filtering
+5. **Implement `accountsMap` Cache** - Avoid lookup API on every profile visit
+
+### 🎨 UX Polish Tasks
+
+Based on patterns from official Mastodon:
+
+| Task | Description | Reference |
+|------|-------------|-----------|
+| **Hashtag Autosuggest** | Add #hashtag autocomplete (already have @mention and :emoji) | `autosuggest_textarea.jsx` |
+| **Drag-and-Drop Media** | Allow reordering uploaded media attachments | `upload_form.tsx` with `@dnd-kit` |
+| **Quote States UI** | Show "Post pending", "Post removed by author", "Post unavailable" states | `status_quoted.tsx` |
+| **Character Counter** | Use `stringz` for accurate Unicode/emoji counting | `character_counter.tsx` |
+| **Language Selector** | Add language dropdown for multilingual posts | `language_dropdown.tsx` |
+| **Reply/Edit Indicators** | Show what you're replying to or editing in compose | `reply_indicator.jsx`, `edit_indicator.jsx` |
+| **Keyboard Shortcuts** | `Ctrl+Enter` to submit, `Escape` to blur, arrow keys in suggestions | `compose_form.jsx` |
+| **Hover Cards** | Show account preview on hover over avatars/names | `hover_card_account.tsx` |
+| **Animated Numbers** | Animate count changes (likes, boosts) | `animated_number.tsx` |
+| **Content Warnings** | Improved spoiler/CW input UX | `warning.tsx` |
+
+### ♿ Accessibility Tasks
+
+Patterns from Mastodon's excellent a11y:
+
+| Task | Description | Reference |
+|------|-------------|-----------|
+| **Screen Reader Announcements** | Announce drag-and-drop actions | `upload_form.tsx` accessibility object |
+| **ARIA Labels** | Add `aria-label`, `aria-autocomplete`, `aria-live` regions | Throughout components |
+| **Focus Management** | Auto-focus compose after submission, manage focus in modals | `compose_form.jsx` |
+| **Keyboard Navigation** | Arrow keys in suggestion lists, Enter/Tab to select | `autosuggest_textarea.jsx` |
+| **Language Attribute** | Set `lang` attribute on posts for screen readers | `lang` prop in compose |
+| **Alt Text Modal** | Dedicated modal for entering image descriptions | `alt_text_modal/` feature |
+| **Skip Links** | Add skip-to-content links for keyboard users | Navigation component |
+| **Reduced Motion** | Respect `prefers-reduced-motion` for animations | CSS media queries |
+| **High Contrast** | Ensure sufficient color contrast ratios | CSS variables |
+| **Button States** | Clear disabled/loading states with visual + text indicators | `Button` component |
 
 ---
 
