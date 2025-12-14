@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentAccount, useCustomEmojis, useStatus, usePreferences, useScheduledStatus, useCreateStatus, useUpdateStatus, useDeleteScheduledStatus } from '@/api';
 import { PostCard } from '@/components/organisms';
-import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, type MediaUploadHandle } from '@/components/molecules';
+import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, LanguageDropdown, type MediaUploadHandle } from '@/components/molecules';
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
 import { Avatar, EmojiText, TiptapEditor, ContentWarningInput, ScheduleInput } from '@/components/atoms';
@@ -93,6 +93,7 @@ export function ComposerPanel({
   const [visibility, setVisibility] = useState<Visibility>(initialVisibility);
   const [quoteVisibility, setQuoteVisibility] = useState<QuoteVisibility>('public');
   const [hasInitializedQuotePolicy, setHasInitializedQuotePolicy] = useState(false);
+  const [language, setLanguage] = useState<string>('');
 
   const { data: quotedStatus } = useStatus(quotedStatusId || '');
 
@@ -106,6 +107,9 @@ export function ComposerPanel({
       }
       if (preferences['posting:default:sensitive']) {
         setSensitive(preferences['posting:default:sensitive']);
+      }
+      if (preferences['posting:default:language']) {
+        setLanguage(preferences['posting:default:language']);
       }
       setHasInitializedFromPreferences(true);
     }
@@ -223,6 +227,7 @@ export function ComposerPanel({
       quote_approval_policy: quoteVisibility,
       in_reply_to_id: inReplyToId,
       quoted_status_id: quotedStatusId,
+      language: language || undefined,
     };
 
     if (showCWInput && contentWarning.trim()) {
@@ -313,18 +318,29 @@ export function ComposerPanel({
                 />
               </DisplayName>
 
-              {/* Visibility Settings Trigger Button */}
-              <VisibilityButtonWrapper>
-                <VisibilityButton
-                  className="compose-visibility-selector"
-                  onClick={handleOpenVisibilitySettings}
-                  title="Adjust visibility and interaction"
-                  type="button"
-                >
-                  <VisibilityIcon size={16} />
-                  <VisibilityLabel>{currentVisibility?.label}</VisibilityLabel>
-                </VisibilityButton>
-              </VisibilityButtonWrapper>
+              {/* Controls row - visibility and language */}
+              <div className="compose-controls">
+                {/* Visibility Settings Trigger Button */}
+                <VisibilityButtonWrapper>
+                  <VisibilityButton
+                    className="compose-visibility-selector"
+                    onClick={editMode ? undefined : handleOpenVisibilitySettings}
+                    title={editMode ? "Visibility cannot be changed when editing" : "Adjust visibility and interaction"}
+                    type="button"
+                    disabled={editMode}
+                    style={editMode ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
+                  >
+                    <VisibilityIcon size={16} />
+                    <VisibilityLabel>{currentVisibility?.label}</VisibilityLabel>
+                  </VisibilityButton>
+                </VisibilityButtonWrapper>
+
+                {/* Language Selector */}
+                <LanguageDropdown
+                  value={language}
+                  onChange={setLanguage}
+                />
+              </div>
             </div>
           </div>
         </div>

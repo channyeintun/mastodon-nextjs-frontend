@@ -18,6 +18,7 @@ import type {
   GroupedNotificationParams,
   GroupedNotificationsResults,
   Instance,
+  Language,
   List,
   MediaAttachment,
   MuteAccountParams,
@@ -39,12 +40,14 @@ import type {
   Tag,
   TimelineParams,
   Token,
+  Translation,
   TrendingLink,
   UnreadCount,
   UpdateAccountParams,
   UpdateListParams,
   UpdateNotificationPolicyParams,
 } from '../types/mastodon'
+
 
 
 // Create axios instance with default base URL
@@ -722,5 +725,25 @@ export async function updateNotificationPolicy(
   params: UpdateNotificationPolicyParams
 ): Promise<NotificationPolicy> {
   const { data } = await api.put<NotificationPolicy>('/api/v1/notifications/policy', params)
+  return data
+}
+
+// Languages
+export async function getInstanceLanguages(signal?: AbortSignal): Promise<Language[]> {
+  const { data } = await api.get<Language[]>('/api/v1/instance/languages', { signal })
+  return data
+}
+
+// Translation
+export async function translateStatus(id: string): Promise<Translation> {
+  const { data } = await api.post<Translation>(`/api/v1/statuses/${id}/translate`)
+  return data
+}
+
+// Translation Languages - returns a map of source language -> array of target languages
+export type TranslationLanguagesMap = Record<string, string[]>
+
+export async function getTranslationLanguages(signal?: AbortSignal): Promise<TranslationLanguagesMap> {
+  const { data } = await api.get<TranslationLanguagesMap>('/api/v1/instance/translation_languages', { signal })
   return data
 }

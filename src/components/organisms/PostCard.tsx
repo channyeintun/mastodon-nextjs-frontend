@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useState } from 'react';
 import { Card, SensitiveContentButton } from '@/components/atoms';
 import {
   StatusContent,
@@ -13,8 +14,9 @@ import {
   ContentWarningSection,
   DeletePostModal,
   MediaModal,
+  TranslateButton,
 } from '@/components/molecules';
-import type { Status } from '@/types';
+import type { Status, Translation } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { removeQuotePrefix } from '@/utils/fp';
@@ -58,6 +60,9 @@ export function PostCard({
 
   const actions = usePostActions(status, handleDeleteClick);
 
+  // Translation state - content to display when translated
+  const [translatedContent, setTranslatedContent] = useState<string | null>(null);
+
   const {
     displayStatus,
     isReblog,
@@ -90,6 +95,17 @@ export function PostCard({
   const contentToDisplay = displayStatus.quote?.quoted_status
     ? removeQuotePrefix(displayStatus.content)
     : displayStatus.content;
+
+  // Use translated content if available
+  const displayContent = translatedContent ?? contentToDisplay;
+
+  const handleTranslated = (translation: Translation) => {
+    setTranslatedContent(translation.content);
+  };
+
+  const handleShowOriginal = () => {
+    setTranslatedContent(null);
+  };
 
   return (
     <Card as="article" padding="medium" style={style} onClick={handleCardClick}>
@@ -135,12 +151,23 @@ export function PostCard({
 
         {/* Post content */}
         {(!hasContentWarning || showCWContent) &&
-          contentToDisplay && (
+          displayContent && (
             <StyledStatusContent
-              html={contentToDisplay}
+              html={displayContent}
               emojis={displayStatus.emojis}
             />
           )}
+
+        {/* Translation button */}
+        {(!hasContentWarning || showCWContent) && (
+          <TranslationContainer>
+            <TranslateButton
+              status={displayStatus}
+              onTranslated={handleTranslated}
+              onShowOriginal={handleShowOriginal}
+            />
+          </TranslationContainer>
+        )}
 
         {/* Media attachments */}
         {(!hasContentWarning || showCWContent) &&
@@ -311,4 +338,9 @@ const StyledLinkPreview = styled(LinkPreview)`
 
 const QuotedPostWrapper = styled.div`
   margin-top: var(--size-3);
+`;
+
+const TranslationContainer = styled.div`
+  margin-top: var(--size-2);
+  padding-top: var(--size-2);
 `;

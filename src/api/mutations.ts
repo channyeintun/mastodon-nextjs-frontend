@@ -46,6 +46,7 @@ import {
   acceptNotificationRequests,
   dismissNotificationRequests,
   updateNotificationPolicy,
+  translateStatus,
 } from './client'
 import { queryKeys } from './queryKeys'
 import { mapPages, findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
@@ -1386,5 +1387,12 @@ export function useUpdateNotificationPolicy() {
       // Update the policy in cache
       queryClient.setQueryData(queryKeys.notificationPolicy.all(), data)
     },
+  })
+}
+
+// Translation mutation
+export function useTranslateStatus() {
+  return useMutation({
+    mutationFn: (id: string) => translateStatus(id),
   })
 }

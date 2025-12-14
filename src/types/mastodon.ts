@@ -586,3 +586,26 @@ export interface UpdateNotificationPolicyParams {
   for_private_mentions?: NotificationPolicyValue
   for_limited_accounts?: NotificationPolicyValue
 }
+
+// Language - for language selection dropdown
+export interface Language {
+  code: string
+  name: string
+}
+
+// Translation - response from POST /api/v1/statuses/{id}/translate
+export interface Translation {
+  content: string
+  spoiler_text: string
+  detected_source_language: string
+  language: string
+  provider: string
+  poll?: {
+    id: string
+    options: Array<{ title: string }>
+  }
+  media_attachments?: Array<{
+    id: string
+    description: string
+  }>
+}

@@ -47,6 +47,8 @@ import {
   getNotificationRequests,
   getNotificationRequest,
   getNotificationPolicy,
+  getInstanceLanguages,
+  getTranslationLanguages,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, GroupedNotificationsResults, Account, ScheduledStatus, Tag, TrendingLink, Conversation, ConversationParams, NotificationRequest, NotificationRequestParams } from '../types/mastodon'
@@ -1031,4 +1033,30 @@ export function useNotificationPolicy() {
     ...notificationPolicyOptions(),
     enabled: authStore.isAuthenticated,
   })
+}
+
+// Instance Languages Options
+export const instanceLanguagesOptions = () =>
+  queryOptions({
+    queryKey: ['instance', 'languages'] as const,
+    queryFn: ({ signal }) => getInstanceLanguages(signal),
+    staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+  })
+
+// Instance Languages Hook
+export function useInstanceLanguages() {
+  return useQuery(instanceLanguagesOptions())
+}
+
+// Translation Languages Options
+export const translationLanguagesOptions = () =>
+  queryOptions({
+    queryKey: ['instance', 'translation_languages'] as const,
+    queryFn: ({ signal }) => getTranslationLanguages(signal),
+    staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+  })
+
+// Translation Languages Hook
+export function useTranslationLanguages() {
+  return useQuery(translationLanguagesOptions())
 }
