@@ -51,7 +51,7 @@ import {
   getTranslationLanguages,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, GroupedNotificationsResults, Account, ScheduledStatus, Tag, TrendingLink, Conversation, ConversationParams, NotificationRequest, NotificationRequestParams } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
 
 
