@@ -41,10 +41,16 @@ import {
   deleteScheduledStatus,
   deleteConversation,
   markConversationAsRead,
+  acceptNotificationRequest,
+  dismissNotificationRequest,
+  acceptNotificationRequests,
+  dismissNotificationRequests,
+  updateNotificationPolicy,
 } from './client'
 import { queryKeys } from './queryKeys'
 import { mapPages, findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams } from '../types/mastodon'
+
 
 // Helper function to invalidate all relationship queries that contain a given account ID
 // This is needed because relationships can be batch-fetched with multiple IDs
@@ -1190,6 +1196,195 @@ export function useDeleteConversation() {
     onSettled: () => {
       // Invalidate to ensure consistency
       queryClient.invalidateQueries({ queryKey: queryKeys.conversations.unreadCount() })
+    },
+  })
+}
+
+// Notification Request mutations
+export function useAcceptNotificationRequest() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => acceptNotificationRequest(id),
+    onMutate: async (id) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.notificationRequests.list() })
+
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData<InfiniteData<NotificationRequest[]>>(
+        queryKeys.notificationRequests.list()
+      )
+
+      // Optimistically remove the request from the list
+      if (previousData?.pages) {
+        queryClient.setQueryData<InfiniteData<NotificationRequest[]>>(
+          queryKeys.notificationRequests.list(),
+          {
+            ...previousData,
+            pages: previousData.pages.map(page =>
+              page.filter(request => request.id !== id)
+            ),
+          }
+        )
+      }
+
+      return { previousData }
+    },
+    onError: (_err, _id, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKeys.notificationRequests.list(), context.previousData)
+      }
+    },
+    onSettled: () => {
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.notificationRequests.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.notificationPolicy.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+    },
+  })
+}
+
+export function useDismissNotificationRequest() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => dismissNotificationRequest(id),
+    onMutate: async (id) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.notificationRequests.list() })
+
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData<InfiniteData<NotificationRequest[]>>(
+        queryKeys.notificationRequests.list()
+      )
+
+      // Optimistically remove the request from the list
+      if (previousData?.pages) {
+        queryClient.setQueryData<InfiniteData<NotificationRequest[]>>(
+          queryKeys.notificationRequests.list(),
+          {
+            ...previousData,
+            pages: previousData.pages.map(page =>
+              page.filter(request => request.id !== id)
+            ),
+          }
+        )
+      }
+
+      return { previousData }
+    },
+    onError: (_err, _id, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKeys.notificationRequests.list(), context.previousData)
+      }
+    },
+    onSettled: () => {
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.notificationRequests.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.notificationPolicy.all() })
+    },
+  })
+}
+
+export function useAcceptNotificationRequests() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (ids: string[]) => acceptNotificationRequests(ids),
+    onMutate: async (ids) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.notificationRequests.list() })
+
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData<InfiniteData<NotificationRequest[]>>(
+        queryKeys.notificationRequests.list()
+      )
+
+      // Optimistically remove the requests from the list
+      if (previousData?.pages) {
+        const idsSet = new Set(ids)
+        queryClient.setQueryData<InfiniteData<NotificationRequest[]>>(
+          queryKeys.notificationRequests.list(),
+          {
+            ...previousData,
+            pages: previousData.pages.map(page =>
+              page.filter(request => !idsSet.has(request.id))
+            ),
+          }
+        )
+      }
+
+      return { previousData }
+    },
+    onError: (_err, _ids, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKeys.notificationRequests.list(), context.previousData)
+      }
+    },
+    onSettled: () => {
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.notificationRequests.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.notificationPolicy.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+    },
+  })
+}
+
+export function useDismissNotificationRequests() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (ids: string[]) => dismissNotificationRequests(ids),
+    onMutate: async (ids) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.notificationRequests.list() })
+
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData<InfiniteData<NotificationRequest[]>>(
+        queryKeys.notificationRequests.list()
+      )
+
+      // Optimistically remove the requests from the list
+      if (previousData?.pages) {
+        const idsSet = new Set(ids)
+        queryClient.setQueryData<InfiniteData<NotificationRequest[]>>(
+          queryKeys.notificationRequests.list(),
+          {
+            ...previousData,
+            pages: previousData.pages.map(page =>
+              page.filter(request => !idsSet.has(request.id))
+            ),
+          }
+        )
+      }
+
+      return { previousData }
+    },
+    onError: (_err, _ids, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKeys.notificationRequests.list(), context.previousData)
+      }
+    },
+    onSettled: () => {
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.notificationRequests.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.notificationPolicy.all() })
+    },
+  })
+}
+
+export function useUpdateNotificationPolicy() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (params: UpdateNotificationPolicyParams) => updateNotificationPolicy(params),
+    onSuccess: (data) => {
+      // Update the policy in cache
+      queryClient.setQueryData(queryKeys.notificationPolicy.all(), data)
     },
   })
 }

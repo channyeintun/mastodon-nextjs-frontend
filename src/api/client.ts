@@ -23,6 +23,9 @@ import type {
   MuteAccountParams,
   Notification,
   NotificationParams,
+  NotificationPolicy,
+  NotificationRequest,
+  NotificationRequestParams,
   Poll,
   Preferences,
   Relationship,
@@ -40,7 +43,9 @@ import type {
   UnreadCount,
   UpdateAccountParams,
   UpdateListParams,
+  UpdateNotificationPolicyParams,
 } from '../types/mastodon'
+
 
 // Create axios instance with default base URL
 const api: AxiosInstance = axios.create({
@@ -674,5 +679,48 @@ export async function deleteConversation(id: string): Promise<void> {
 
 export async function markConversationAsRead(id: string): Promise<Conversation> {
   const { data } = await api.post<Conversation>(`/api/v1/conversations/${id}/read`)
+  return data
+}
+
+// Notification Requests
+export async function getNotificationRequests(
+  params?: NotificationRequestParams,
+  signal?: AbortSignal
+): Promise<NotificationRequest[]> {
+  const { data } = await api.get<NotificationRequest[]>('/api/v1/notifications/requests', { params, signal })
+  return data
+}
+
+export async function getNotificationRequest(id: string, signal?: AbortSignal): Promise<NotificationRequest> {
+  const { data } = await api.get<NotificationRequest>(`/api/v1/notifications/requests/${id}`, { signal })
+  return data
+}
+
+export async function acceptNotificationRequest(id: string): Promise<void> {
+  await api.post(`/api/v1/notifications/requests/${id}/accept`)
+}
+
+export async function dismissNotificationRequest(id: string): Promise<void> {
+  await api.post(`/api/v1/notifications/requests/${id}/dismiss`)
+}
+
+export async function acceptNotificationRequests(ids: string[]): Promise<void> {
+  await api.post('/api/v1/notifications/requests/accept', { id: ids })
+}
+
+export async function dismissNotificationRequests(ids: string[]): Promise<void> {
+  await api.post('/api/v1/notifications/requests/dismiss', { id: ids })
+}
+
+// Notification Policy
+export async function getNotificationPolicy(signal?: AbortSignal): Promise<NotificationPolicy> {
+  const { data } = await api.get<NotificationPolicy>('/api/v1/notifications/policy', { signal })
+  return data
+}
+
+export async function updateNotificationPolicy(
+  params: UpdateNotificationPolicyParams
+): Promise<NotificationPolicy> {
+  const { data } = await api.put<NotificationPolicy>('/api/v1/notifications/policy', params)
   return data
 }

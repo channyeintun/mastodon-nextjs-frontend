@@ -117,4 +117,16 @@ export const queryKeys = {
     detail: (id: string) => ['conversations', id] as const,
     unreadCount: () => ['conversations', 'unread_count'] as const,
   },
+
+  // Notification Requests
+  notificationRequests: {
+    all: () => ['notificationRequests'] as const,
+    list: (params?: object) => ['notificationRequests', 'list', params] as const,
+    detail: (id: string) => ['notificationRequests', id] as const,
+  },
+
+  // Notification Policy
+  notificationPolicy: {
+    all: () => ['notificationPolicy'] as const,
+  },
 }

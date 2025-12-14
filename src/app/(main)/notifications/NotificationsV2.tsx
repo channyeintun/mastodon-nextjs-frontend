@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useMemo } from 'react';
-import { Bell, Trash2, Check } from 'lucide-react';
+import Link from 'next/link';
+import { Bell, Trash2, Check, Filter } from 'lucide-react';
 import { GroupedNotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button } from '@/components/atoms';
-import { useInfiniteGroupedNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker } from '@/api';
+import { useInfiniteGroupedNotifications, useClearNotifications, useMarkNotificationsAsRead, useNotificationMarker, useNotificationPolicy } from '@/api';
 import type { NotificationGroup, Account, PartialAccountWithAvatar, Status } from '@/types';
 
 interface NotificationsV2Props {
@@ -25,6 +26,10 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
 
     const clearMutation = useClearNotifications();
     const markAsReadMutation = useMarkNotificationsAsRead();
+
+    // Fetch notification policy to show pending requests banner
+    const { data: policyData } = useNotificationPolicy();
+    const pendingRequestsCount = policyData?.summary?.pending_requests_count ?? 0;
 
     // Fetch the notification marker to determine which notifications are "new"
     const { data: markerData } = useNotificationMarker();
@@ -140,6 +145,31 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
                     </div>
                 )}
             </div>
+
+            {/* Pending notification requests banner */}
+            {pendingRequestsCount > 0 && (
+                <Link
+                    href="/notifications/requests"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--size-2)',
+                        padding: 'var(--size-3) var(--size-4)',
+                        margin: '0 var(--size-4) var(--size-4)',
+                        background: 'var(--blue-2)',
+                        borderRadius: 'var(--radius-2)',
+                        color: 'var(--blue-9)',
+                        textDecoration: 'none',
+                        fontSize: 'var(--font-size-1)',
+                        fontWeight: 'var(--font-weight-5)',
+                    }}
+                >
+                    <Filter size={16} />
+                    <span>
+                        {pendingRequestsCount} filtered {pendingRequestsCount === 1 ? 'notification' : 'notifications'} from accounts you don&apos;t follow
+                    </span>
+                </Link>
+            )}
 
             {isLoading && (
                 <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>

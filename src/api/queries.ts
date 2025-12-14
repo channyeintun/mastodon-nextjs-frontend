@@ -44,10 +44,14 @@ import {
   getScheduledStatus,
   getMarkers,
   getConversations,
+  getNotificationRequests,
+  getNotificationRequest,
+  getNotificationPolicy,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, GroupedNotificationsResults, Account, ScheduledStatus, Tag, TrendingLink, Conversation, ConversationParams } from '../types/mastodon'
+import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, GroupedNotificationsResults, Account, ScheduledStatus, Tag, TrendingLink, Conversation, ConversationParams, NotificationRequest, NotificationRequestParams } from '../types/mastodon'
 import { useAuthStore } from '../hooks/useStores'
+
 
 // ============================================================================
 // QUERY OPTIONS - Reusable query configurations
@@ -969,6 +973,62 @@ export function useConversations() {
   const authStore = useAuthStore()
   return useInfiniteQuery({
     ...infiniteConversationsOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+// Notification Requests Options
+export const infiniteNotificationRequestsOptions = () =>
+  infiniteQueryOptions({
+    queryKey: queryKeys.notificationRequests.list(),
+    queryFn: ({ pageParam, signal }) => {
+      const params: NotificationRequestParams = { limit: 20 }
+      if (pageParam) params.max_id = pageParam
+      return getNotificationRequests(params, signal)
+    },
+    getNextPageParam: (lastPage: NotificationRequest[]) => {
+      if (lastPage.length === 0) return undefined
+      return lastPage[lastPage.length - 1]?.id
+    },
+    initialPageParam: undefined as string | undefined,
+    staleTime: 0, // Always refetch to get latest requests
+  })
+
+export const notificationRequestOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.notificationRequests.detail(id),
+    queryFn: ({ signal }) => getNotificationRequest(id, signal),
+  })
+
+// Notification Policy Options
+export const notificationPolicyOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.notificationPolicy.all(),
+    queryFn: ({ signal }) => getNotificationPolicy(signal),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  })
+
+// Notification Requests Hooks
+export function useNotificationRequests() {
+  const authStore = useAuthStore()
+  return useInfiniteQuery({
+    ...infiniteNotificationRequestsOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useNotificationRequest(id: string) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...notificationRequestOptions(id),
+    enabled: !!id && authStore.isAuthenticated,
+  })
+}
+
+export function useNotificationPolicy() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...notificationPolicyOptions(),
     enabled: authStore.isAuthenticated,
   })
 }

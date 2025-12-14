@@ -546,3 +546,43 @@ export interface ConversationParams {
   min_id?: string
   limit?: number
 }
+
+// Notification Requests
+export interface NotificationRequest {
+  id: string
+  created_at: string
+  updated_at: string
+  notifications_count: number
+  account: Account
+  last_status?: Status
+}
+
+export interface NotificationRequestParams {
+  max_id?: string
+  since_id?: string
+  min_id?: string
+  limit?: number
+}
+
+// Notification Policy
+export type NotificationPolicyValue = 'accept' | 'filter' | 'drop'
+
+export interface NotificationPolicy {
+  for_not_following: NotificationPolicyValue
+  for_not_followers: NotificationPolicyValue
+  for_new_accounts: NotificationPolicyValue
+  for_private_mentions: NotificationPolicyValue
+  for_limited_accounts: NotificationPolicyValue
+  summary: {
+    pending_requests_count: number
+    pending_notifications_count: number
+  }
+}
+
+export interface UpdateNotificationPolicyParams {
+  for_not_following?: NotificationPolicyValue
+  for_not_followers?: NotificationPolicyValue
+  for_new_accounts?: NotificationPolicyValue
+  for_private_mentions?: NotificationPolicyValue
+  for_limited_accounts?: NotificationPolicyValue
+}

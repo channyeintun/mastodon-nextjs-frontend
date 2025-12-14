@@ -17,6 +17,7 @@ export { MediaUpload, type MediaUploadHandle } from './MediaUpload';
 export { MentionSuggestions } from './MentionSuggestions';
 export { default as Navigation } from './Navigation';
 export { NotificationCard } from './NotificationCard';
+export { NotificationRequestCard } from './NotificationRequestCard';
 export { NotificationSkeletonList } from './NotificationSkeleton';
 export { PageHeaderSkeleton } from './PageHeaderSkeleton';
 export { PollComposer } from './PollComposer';
