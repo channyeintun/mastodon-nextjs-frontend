@@ -198,10 +198,10 @@ export function PostCard({
                       />
                     )}
                     {media.type === 'video' && media.url && (
-                      <MediaVideo src={media.url} controls />
+                      <MediaVideo src={media.url} controls playsInline />
                     )}
                     {media.type === 'gifv' && media.url && (
-                      <MediaVideo src={media.url} autoPlay loop muted />
+                      <MediaVideo src={media.url} autoPlay loop muted playsInline />
                     )}
                   </MediaItem>
                 ))}

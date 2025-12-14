@@ -85,6 +85,7 @@ export function MediaModal({
             src={currentMedia.url || ''}
             controls
             autoPlay
+            playsInline
           />
         )}
         {currentMedia.type === 'gifv' && (
@@ -93,6 +94,7 @@ export function MediaModal({
             autoPlay
             loop
             muted
+            playsInline
           />
         )}
       </MediaContent>
