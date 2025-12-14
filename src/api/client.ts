@@ -13,6 +13,7 @@ import type {
   ConversationParams,
   CreateAppParams,
   CreateListParams,
+  CreatePushSubscriptionParams,
   CreateStatusParams,
   Emoji,
   GroupedNotificationParams,
@@ -46,6 +47,8 @@ import type {
   UpdateAccountParams,
   UpdateListParams,
   UpdateNotificationPolicyParams,
+  UpdatePushSubscriptionParams,
+  WebPushSubscription,
 } from '../types/mastodon'
 import { getNextMaxId } from './parseLinkHeader'
 
@@ -816,3 +819,24 @@ export async function getTranslationLanguages(signal?: AbortSignal): Promise<Tra
   const { data } = await api.get<TranslationLanguagesMap>('/api/v1/instance/translation_languages', { signal })
   return data
 }
+
+// Push Subscriptions
+export async function getPushSubscription(signal?: AbortSignal): Promise<WebPushSubscription> {
+  const { data } = await api.get<WebPushSubscription>('/api/v1/push/subscription', { signal })
+  return data
+}
+
+export async function createPushSubscription(params: CreatePushSubscriptionParams): Promise<WebPushSubscription> {
+  const { data } = await api.post<WebPushSubscription>('/api/v1/push/subscription', params)
+  return data
+}
+
+export async function updatePushSubscription(params: UpdatePushSubscriptionParams): Promise<WebPushSubscription> {
+  const { data } = await api.put<WebPushSubscription>('/api/v1/push/subscription', params)
+  return data
+}
+
+export async function deletePushSubscription(): Promise<void> {
+  await api.delete('/api/v1/push/subscription')
+}
+

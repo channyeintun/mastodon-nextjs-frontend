@@ -49,6 +49,7 @@ import {
   getNotificationPolicy,
   getInstanceLanguages,
   getTranslationLanguages,
+  getPushSubscription,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams } from '../types/mastodon'
@@ -1010,4 +1011,22 @@ export const translationLanguagesOptions = () =>
 // Translation Languages Hook
 export function useTranslationLanguages() {
   return useQuery(translationLanguagesOptions())
+}
+
+// Push Subscription Options
+export const pushSubscriptionOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.pushSubscription.all(),
+    queryFn: ({ signal }) => getPushSubscription(signal),
+  })
+
+// Push Subscription Hook
+export function usePushSubscription() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...pushSubscriptionOptions(),
+    enabled: authStore.isAuthenticated,
+    retry: false, // Don't retry on 404 (no subscription)
+    throwOnError: false,
+  })
 }

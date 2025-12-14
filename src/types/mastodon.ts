@@ -609,3 +609,46 @@ export interface Translation {
     description: string
   }>
 }
+
+// Web Push Subscriptions
+export interface PushAlerts {
+  follow: boolean
+  favourite: boolean
+  reblog: boolean
+  mention: boolean
+  poll: boolean
+  status?: boolean
+  update?: boolean
+}
+
+export interface WebPushSubscription {
+  id: string
+  endpoint: string
+  standard: boolean
+  server_key: string
+  alerts: PushAlerts
+}
+
+export type PushPolicy = 'all' | 'followed' | 'follower' | 'none'
+
+export interface CreatePushSubscriptionParams {
+  subscription: {
+    endpoint: string
+    keys: {
+      p256dh: string
+      auth: string
+    }
+  }
+  data?: {
+    alerts?: Partial<PushAlerts>
+    policy?: PushPolicy
+  }
+}
+
+export interface UpdatePushSubscriptionParams {
+  data: {
+    alerts?: Partial<PushAlerts>
+    policy?: PushPolicy
+  }
+}
+

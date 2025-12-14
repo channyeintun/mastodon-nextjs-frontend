@@ -47,10 +47,13 @@ import {
   dismissNotificationRequests,
   updateNotificationPolicy,
   translateStatus,
+  createPushSubscription,
+  updatePushSubscription,
+  deletePushSubscription,
 } from './client'
 import { queryKeys } from './queryKeys'
 import { mapPages, findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, CreatePushSubscriptionParams, UpdatePushSubscriptionParams } from '../types/mastodon'
 
 
 // Helper function to invalidate all relationship queries that contain a given account ID
@@ -1513,5 +1516,39 @@ export function useUpdateNotificationPolicy() {
 export function useTranslateStatus() {
   return useMutation({
     mutationFn: (id: string) => translateStatus(id),
+  })
+}
+
+// Push Subscription mutations
+export function useCreatePushSubscription() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (params: CreatePushSubscriptionParams) => createPushSubscription(params),
+    onSuccess: (data) => {
+      queryClient.setQueryData(queryKeys.pushSubscription.all(), data)
+    },
+  })
+}
+
+export function useUpdatePushSubscription() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (params: UpdatePushSubscriptionParams) => updatePushSubscription(params),
+    onSuccess: (data) => {
+      queryClient.setQueryData(queryKeys.pushSubscription.all(), data)
+    },
+  })
+}
+
+export function useDeletePushSubscription() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => deletePushSubscription(),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: queryKeys.pushSubscription.all() })
+    },
   })
 }

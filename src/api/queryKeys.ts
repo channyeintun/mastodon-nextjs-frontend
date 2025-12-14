@@ -129,4 +129,10 @@ export const queryKeys = {
   notificationPolicy: {
     all: () => ['notificationPolicy'] as const,
   },
+
+  // Push Subscription
+  pushSubscription: {
+    all: () => ['pushSubscription'] as const,
+  },
 }
+

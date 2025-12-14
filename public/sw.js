@@ -138,3 +138,75 @@ self.addEventListener('fetch', (event) => {
         })
     );
 });
+
+// Push notification event - handle incoming push messages from Mastodon
+self.addEventListener('push', (event) => {
+    if (!event.data) return;
+
+    event.waitUntil(
+        // Check if any app window is focused before showing notification
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+            // Skip notification if app is already focused (user will see it in-app)
+            const isAppFocused = clientList.some(client => client.focused);
+            if (isAppFocused) {
+                return;
+            }
+
+            try {
+                const data = event.data.json();
+
+                // Mastodon sends notifications in a specific format
+                const options = {
+                    body: data.body || data.message || 'New notification',
+                    icon: data.icon || '/icons/icon-192.png',
+                    badge: '/icons/icon-192.png',
+                    tag: data.notification_id || data.tag || 'mastodon-notification',
+                    data: {
+                        url: data.url || data.notification_url || '/',
+                        notification_id: data.notification_id,
+                        type: data.notification_type || data.type,
+                    },
+                    vibrate: [100, 50, 100],
+                    requireInteraction: false,
+                };
+
+                const title = data.title || 'Mastodon';
+
+                return self.registration.showNotification(title, options);
+            } catch (error) {
+                // If JSON parsing fails, try to show a generic notification
+                console.error('[SW] Error parsing push data:', error);
+                return self.registration.showNotification('Mastodon', {
+                    body: 'You have a new notification',
+                    icon: '/icons/icon-192.png',
+                    badge: '/icons/icon-192.png',
+                });
+            }
+        })
+    );
+});
+
+// Notification click event - handle user clicks on notifications
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+
+    const url = event.notification.data?.url || '/notifications';
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+            // Try to focus an existing window
+            for (const client of clientList) {
+                if (client.url.includes(self.location.origin) && 'focus' in client) {
+                    client.focus();
+                    client.navigate(url);
+                    return;
+                }
+            }
+            // If no existing window, open a new one
+            if (clients.openWindow) {
+                return clients.openWindow(url);
+            }
+        })
+    );
+});
+
