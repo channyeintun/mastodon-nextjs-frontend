@@ -16,6 +16,7 @@
   --app-max-width: 1200px;
   --app-sidebar-width: 280px;
   --app-bottom-nav-height: 64px;
+  --app-tabs-height: 48px;
 }
 
 body {
@@ -175,6 +176,10 @@ input[type="radio"] {
 @media (max-width: 767px) {
   .full-height-container:is(:not(.guest)) {
     height: calc(100dvh - var(--app-bottom-nav-height));
+  }
+
+  .full-height-container.guest {
+    height: calc(100dvh - var(--app-tabs-height));
   }
 
   /* Remove border radius from header images on mobile */
