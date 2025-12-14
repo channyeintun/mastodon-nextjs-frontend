@@ -69,7 +69,9 @@ export function SearchHistory({
 }
 
 // Styled components
-const Container = styled.div``;
+const Container = styled.div`
+    padding: 0 var(--size-2);
+`;
 
 const Header = styled.div`
     display: flex;
