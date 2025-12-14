@@ -7,15 +7,20 @@ import { Button } from '@/components/atoms';
 interface DeletePostModalProps {
     postId: string;
     onClose: () => void;
+    onSuccess?: () => void;
 }
 
-export function DeletePostModal({ postId, onClose }: DeletePostModalProps) {
+export function DeletePostModal({ postId, onClose, onSuccess }: DeletePostModalProps) {
     const deleteStatusMutation = useDeleteStatus();
 
     const handleDelete = async () => {
         try {
             await deleteStatusMutation.mutateAsync(postId);
             onClose();
+            // Call the success callback if provided (e.g., for navigation)
+            if (onSuccess) {
+                onSuccess();
+            }
         } catch (error) {
             console.error('Failed to delete post:', error);
         }

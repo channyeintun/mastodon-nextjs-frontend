@@ -264,6 +264,120 @@ function updateStatusInCaches(
   )
 }
 
+// Helper function to filter pages (remove matching statuses)
+function filterPages(pages: Status[][], statusId: string): Status[][] {
+  return pages.map(page => page.filter(status =>
+    status.id !== statusId && status.reblog?.id !== statusId
+  ))
+}
+
+// Helper function to remove status from all caches (for delete operations)
+function removeStatusFromCaches(
+  queryClient: QueryClient,
+  statusId: string
+) {
+  // Remove from all timeline types (home, public, list, hashtag, etc.)
+  updateInfiniteStatusCache(
+    queryClient,
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'timelines'
+      }
+    },
+    (pages) => filterPages(pages, statusId)
+  )
+
+  // Remove from bookmarks
+  updateInfiniteStatusCache(
+    queryClient,
+    { queryKey: queryKeys.bookmarks.all() },
+    (pages) => filterPages(pages, statusId)
+  )
+
+  // Remove from account statuses
+  updateInfiniteStatusCache(
+    queryClient,
+    { queryKey: ['accounts'] },
+    (pages) => filterPages(pages, statusId)
+  )
+
+  // Remove from trending statuses
+  updateInfiniteStatusCache(
+    queryClient,
+    { queryKey: queryKeys.trends.statuses() },
+    (pages) => filterPages(pages, statusId)
+  )
+
+  // Remove from search results - infinite search (Statuses, Accounts, Hashtags tabs)
+  queryClient.setQueriesData<InfiniteData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>>(
+    { queryKey: ['search'], predicate: (query) => query.queryKey.includes('infinite') },
+    (old) => {
+      if (!old?.pages) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          statuses: page.statuses.filter((status) =>
+            status.id !== statusId && status.reblog?.id !== statusId
+          ),
+        })),
+      }
+    }
+  )
+
+  // Remove from search results - regular search (All tab)
+  queryClient.setQueriesData<{ accounts: unknown[]; statuses: Status[]; hashtags: unknown[] }>(
+    { queryKey: ['search'], predicate: (query) => !query.queryKey.includes('infinite') },
+    (old) => {
+      if (!old?.statuses) return old
+      return {
+        ...old,
+        statuses: old.statuses.filter((status) =>
+          status.id !== statusId && status.reblog?.id !== statusId
+        ),
+      }
+    }
+  )
+
+  // Remove from pinned statuses (flat array)
+  queryClient.setQueriesData<Status[]>(
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'accounts' && key[2] === 'pinned_statuses'
+      },
+    },
+    (old) => {
+      if (!Array.isArray(old)) return old
+      return old.filter((status) =>
+        status.id !== statusId && status.reblog?.id !== statusId
+      )
+    }
+  )
+
+  // Remove from status context caches (ancestors/descendants in thread views)
+  queryClient.setQueriesData<Context>(
+    {
+      predicate: (query) => {
+        const key = query.queryKey as readonly unknown[]
+        return key[0] === 'statuses' && key[2] === 'context'
+      }
+    },
+    (old) => {
+      if (!old || !('ancestors' in old)) return old
+      return {
+        ancestors: old.ancestors.filter((status) =>
+          status.id !== statusId && status.reblog?.id !== statusId
+        ),
+        descendants: old.descendants.filter((status) =>
+          status.id !== statusId && status.reblog?.id !== statusId
+        ),
+      }
+    }
+  )
+}
+
 // Helper function to update poll in all statuses that contain it
 function updatePollInCaches(
   queryClient: QueryClient,
@@ -466,16 +580,21 @@ export function useDeleteStatus() {
   return useMutation({
     mutationFn: (id: string) => deleteStatus(id),
     onSuccess: (_data, id) => {
-      // Remove from cache
+      // Remove from status detail cache
       queryClient.removeQueries({ queryKey: queryKeys.statuses.detail(id) })
-      // Invalidate context (thread views)
-      queryClient.invalidateQueries({ queryKey: queryKeys.statuses.context(id) })
-      // Invalidate all context queries since this status may appear in other threads
-      queryClient.invalidateQueries({ queryKey: ['statuses', 'context'] })
-      // Invalidate timelines
-      queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
-      queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks.all() })
-      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+
+      // Remove the deleted status from all caches
+      removeStatusFromCaches(queryClient, id)
+
+      // Invalidate ALL context queries (not just the deleted status's context)
+      // This ensures that if the deleted status is an ancestor or descendant in any thread,
+      // those threads will refetch and show the updated context without the deleted status
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey as readonly unknown[]
+          return key[0] === 'statuses' && key[2] === 'context'
+        }
+      })
     },
   })
 }

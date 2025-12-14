@@ -34,6 +34,11 @@ export default function StatusPage({
   const authStore = useAuthStore();
   const router = useRouter();
 
+  // Handle deletion of the current post - redirect to home
+  const handlePostDeleted = () => {
+    router.push('/');
+  };
+
   const isLoading = statusLoading || contextLoading;
   const isError = statusError || contextError;
 
@@ -116,7 +121,11 @@ export default function StatusPage({
 
         {/* Main status (highlighted) */}
         <HighlightedPost>
-          <PostCard status={status} showEditHistory />
+          <PostCard
+            status={status}
+            showEditHistory
+            onDeleteSuccess={handlePostDeleted}
+          />
           {/* Clickable statistics - separate from action buttons */}
           <StatusStatsWrapper>
             <StatusStats

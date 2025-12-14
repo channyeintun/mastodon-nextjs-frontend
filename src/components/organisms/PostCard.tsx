@@ -27,6 +27,7 @@ interface PostCardProps {
   style?: CSSProperties;
   hideActions?: boolean;
   showEditHistory?: boolean;
+  onDeleteSuccess?: () => void;
 }
 
 /**
@@ -38,12 +39,17 @@ export function PostCard({
   style,
   hideActions = false,
   showEditHistory = false,
+  onDeleteSuccess,
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
 
   const handleDeleteClick = (postId: string) => {
     openModal(
-      <DeletePostModal postId={postId} onClose={closeModal} />
+      <DeletePostModal
+        postId={postId}
+        onClose={closeModal}
+        onSuccess={onDeleteSuccess}
+      />
     );
   };
 
