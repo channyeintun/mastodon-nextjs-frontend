@@ -10,6 +10,7 @@ import type { Visibility, QuoteVisibility } from '@/components/molecules/Visibil
 import { Avatar, EmojiText, TiptapEditor, ContentWarningInput, ScheduleInput } from '@/components/atoms';
 import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
+import { length as unicodeLength } from 'stringz';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
 import { Globe, Lock, Users, Mail, X } from 'lucide-react';
@@ -137,7 +138,8 @@ export function ComposerPanel({
     clearMedia,
   } = useMediaUpload();
 
-  const charCount = textContent.length;
+  // Use stringz length() for accurate Unicode/emoji character counting
+  const charCount = unicodeLength(textContent);
   const isOverLimit = charCount > MAX_CHAR_COUNT;
   const isPending = editMode ? updateStatusMutation.isPending : createStatusMutation.isPending;
   const canPost = charCount > 0 && !isOverLimit && !isPending && (media.length > 0 || poll !== null || textContent.trim().length > 0);
