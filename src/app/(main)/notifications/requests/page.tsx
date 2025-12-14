@@ -51,7 +51,7 @@ export default function NotificationRequestsPage() {
                 <IconButton onClick={() => router.back()} aria-label="Go back">
                     <ArrowLeft size={20} />
                 </IconButton>
-                <HeaderTitle>Filtered Notifications</HeaderTitle>
+                <HeaderTitle>Filtered notifications</HeaderTitle>
             </Header>
 
             {isLoading && (

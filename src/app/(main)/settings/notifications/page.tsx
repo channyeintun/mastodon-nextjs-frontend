@@ -162,7 +162,7 @@ export default function NotificationPolicyPage() {
                 </IconButton>
                 <h1>
                     <Bell size={24} />
-                    Notification Filtering
+                    Notification filtering
                 </h1>
             </Header>
 
@@ -218,7 +218,7 @@ export default function NotificationPolicyPage() {
                         disabled={!hasChanges || updateMutation.isPending}
                         isLoading={updateMutation.isPending}
                     >
-                        Save Changes
+                        Save changes
                     </Button>
                 </ButtonRow>
             </form>

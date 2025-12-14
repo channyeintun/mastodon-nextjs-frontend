@@ -153,7 +153,7 @@ export default function PreferencesPage() {
 
                 <div style={{ display: 'flex', gap: 'var(--size-3)', justifyContent: 'flex-end' }}>
                     <Button type="button" variant="ghost" onClick={() => router.back()} disabled={updateAccountMutation.isPending}>Cancel</Button>
-                    <Button type="submit" disabled={!hasChanges || updateAccountMutation.isPending} isLoading={updateAccountMutation.isPending}>Save Changes</Button>
+                    <Button type="submit" disabled={!hasChanges || updateAccountMutation.isPending} isLoading={updateAccountMutation.isPending}>Save changes</Button>
                 </div>
             </form>
         </div>

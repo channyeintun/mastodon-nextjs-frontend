@@ -238,7 +238,7 @@ export default function ProfileEditPage() {
                         disabled={updateAccountMutation.isPending}
                         isLoading={updateAccountMutation.isPending}
                     >
-                        Save Changes
+                        Save changes
                     </Button>
                 </div>
             </form>
