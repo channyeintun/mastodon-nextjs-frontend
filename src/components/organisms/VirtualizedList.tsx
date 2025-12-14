@@ -93,6 +93,11 @@ interface VirtualizedListProps<T> {
    * Header should contain: .header-title, .header-subtitle, .header-actions
    */
   header?: ReactNode;
+
+  /**
+   * Additional class name for the container
+   */
+  className?: string;
 }
 
 // Global cache for scroll restoration
@@ -121,6 +126,7 @@ export function VirtualizedList<T>({
   style,
   scrollRestorationKey,
   header,
+  className,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -185,7 +191,7 @@ export function VirtualizedList<T>({
   return (
     <Container
       ref={parentRef}
-      className="virtualized-list-container"
+      className={`virtualized-list-container${className ? ` ${className}` : ''}`}
       $height={height}
       style={style}
     >

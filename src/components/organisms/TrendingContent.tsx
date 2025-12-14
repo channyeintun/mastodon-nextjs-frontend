@@ -111,6 +111,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             loadMoreThreshold={1}
                             height="100%"
                             style={{ height: '100%' }}
+                            className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-posts`}
                             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                             endIndicator="You've reached the end of trending posts"
@@ -148,6 +149,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             loadMoreThreshold={1}
                             height="100%"
                             style={{ height: '100%' }}
+                            className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-tags`}
                             loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
                             endIndicator="You've reached the end of trending tags"
@@ -185,6 +187,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             loadMoreThreshold={1}
                             height="100%"
                             style={{ height: '100%' }}
+                            className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-links`}
                             loadingIndicator={<TrendingLinkCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
                             endIndicator="You've reached the end of trending news"

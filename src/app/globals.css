@@ -177,6 +177,11 @@ input[type="radio"] {
     height: calc(100dvh - var(--app-bottom-nav-height));
   }
 
+  /* Adjust VirtualizedList height for guest users (no bottom nav, but has tabs) */
+  .virtualized-list-container.guest-list {
+    height: calc(100dvh - 48px) !important;
+  }
+
   /* Remove border radius from header images on mobile */
   .profile-header-image {
     border-radius: 0 !important;
