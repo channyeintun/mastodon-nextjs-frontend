@@ -199,7 +199,6 @@ const Title = styled.h1`
 const HighlightedPost = styled.div`
   border: 2px solid var(--blue-6);
   border-radius: var(--radius-3);
-  overflow: hidden;
   margin-bottom: var(--size-3);
 `;
 
