@@ -12,6 +12,7 @@ import type { TabItem } from '@/components/atoms/Tabs';
 import { Hash, Newspaper, FileText } from 'lucide-react';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink } from '@/types';
+import { useAuthStore } from '@/hooks/useStores';
 
 type TrendingTab = 'posts' | 'tags' | 'links';
 
@@ -28,6 +29,7 @@ interface TrendingContentProps {
 
 export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'trending' }: TrendingContentProps) => {
     const [activeTab, setActiveTab] = useState<TrendingTab>('posts');
+    const authStore = useAuthStore();
 
     // Fetch data for all tabs
     const {
@@ -63,8 +65,10 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     const uniqueTags = flattenAndUniqByKey<Tag>('name')(tagsData?.pages);
     const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages);
 
+    const containerClasses = `full-height-container${authStore.isAuthenticated ? '' : ' guest'}`;
+
     return (
-        <Container className="full-height-container">
+        <Container className={containerClasses}>
             {/* Header */}
             {header && header}
 

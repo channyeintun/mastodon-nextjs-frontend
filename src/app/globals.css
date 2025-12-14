@@ -173,7 +173,7 @@ input[type="radio"] {
 }
 
 @media (max-width: 767px) {
-  .full-height-container {
+  .full-height-container:is(:not(.guest)) {
     height: calc(100dvh - var(--app-bottom-nav-height));
   }
 
