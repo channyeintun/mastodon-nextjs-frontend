@@ -36,6 +36,7 @@ interface TiptapEditorProps {
  * - Hashtag and custom emoji support
  * - File paste/drop support for media uploads
  */
+// eslint-disable-next-line max-lines-per-function
 export function TiptapEditor({
   content = '',
   placeholder = "What's on your mind?",
@@ -145,8 +146,7 @@ export function TiptapEditor({
         onUpdate(html, text);
       }
     }
-    // Only run once when editor is first created
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Only run once when editor is first created, intentionally omitting onUpdate
   }, [editor]);
 
   // Update content when prop changes

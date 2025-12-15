@@ -55,6 +55,35 @@ const archetypeDescriptions: Record<ArchetypeType, { self: string; public: strin
     },
 }
 
+// localStorage key for persisting reveal state
+const ARCHETYPE_REVEALED_KEY = 'wrapstodon_archetype_revealed'
+
+// Helper to get reveal state from localStorage
+function getRevealedState(year: number): boolean {
+    if (typeof window === 'undefined') return false
+    try {
+        const stored = localStorage.getItem(ARCHETYPE_REVEALED_KEY)
+        if (!stored) return false
+        const data = JSON.parse(stored) as Record<string, boolean>
+        return data[year.toString()] === true
+    } catch {
+        return false
+    }
+}
+
+// Helper to save reveal state to localStorage
+function setRevealedState(year: number): void {
+    if (typeof window === 'undefined') return
+    try {
+        const stored = localStorage.getItem(ARCHETYPE_REVEALED_KEY)
+        const data = stored ? (JSON.parse(stored) as Record<string, boolean>) : {}
+        data[year.toString()] = true
+        localStorage.setItem(ARCHETYPE_REVEALED_KEY, JSON.stringify(data))
+    } catch {
+        // Ignore storage errors
+    }
+}
+
 interface ArchetypeProps {
     report: AnnualReport
     account?: Account
@@ -63,13 +92,18 @@ interface ArchetypeProps {
 }
 
 export function Archetype({ report, account, context, onClose }: ArchetypeProps) {
-    const [isRevealed, setIsRevealed] = useState(context === 'standalone')
     const isSelfView = context === 'modal'
+
+    // Initialize from localStorage if in modal (self view), otherwise always revealed for standalone
+    const [isRevealed, setIsRevealed] = useState(() => {
+        if (context === 'standalone') return true
+        return getRevealedState(report.year)
+    })
 
     const reveal = useCallback(() => {
         setIsRevealed(true)
-        // In a real implementation, we'd persist this to localStorage
-    }, [])
+        setRevealedState(report.year)
+    }, [report.year])
 
     const archetype = report.data.archetype
     const name = account?.display_name || account?.username || 'User'

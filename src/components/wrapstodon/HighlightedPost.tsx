@@ -16,7 +16,7 @@ interface HighlightedPostProps {
 }
 
 export function HighlightedPost({ data, status, context }: HighlightedPostProps) {
-    const { by_reblogs, by_favourites, by_replies } = data
+    const { by_reblogs, by_favourites, by_replies: _by_replies } = data
 
     if (!status) {
         return <div className="wrapstodon-box wrapstodon-most-boosted-post" />
