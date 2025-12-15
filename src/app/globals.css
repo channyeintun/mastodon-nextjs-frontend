@@ -1673,3 +1673,62 @@ details[open] .details-chevron {
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }
+
+/* ====================================
+   Sonner Toast Styles (Mastodon-like)
+   ==================================== */
+[data-sonner-toaster] {
+  font-family: var(--font-sans) !important;
+}
+
+[data-sonner-toast] {
+  background: var(--gray-9) !important;
+  color: var(--gray-0) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.2),
+    0 4px 6px -4px rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 15px !important;
+  font-size: 15px !important;
+  line-height: 21px !important;
+  gap: 10px !important;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] [data-sonner-toast] {
+  background: var(--gray-8) !important;
+  color: var(--gray-0) !important;
+}
+
+[data-sonner-toast] [data-title] {
+  font-weight: 700 !important;
+  margin-inline-end: 5px !important;
+}
+
+[data-sonner-toast] [data-button] {
+  background: none !important;
+  color: var(--blue-4) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+}
+
+[data-sonner-toast] [data-button]:hover,
+[data-sonner-toast] [data-button]:focus {
+  text-decoration: underline !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Hide the default sonner icons since we use a minimal style */
+[data-sonner-toast] [data-icon] {
+  display: none !important;
+}

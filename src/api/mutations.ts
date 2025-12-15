@@ -4,6 +4,7 @@
  */
 
 import { useMutation, useQueryClient, type QueryClient, type InfiniteData } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import {
   createStatus,
   deleteStatus,
@@ -593,6 +594,16 @@ export function useCreateStatus() {
       // Also update conversations list for direct messages
       if (params.visibility === 'direct') {
         queryClient.invalidateQueries({ queryKey: queryKeys.conversations.list() })
+      } else {
+        // Show success toast for non-direct messages with link to view post
+        toast.success('Post published.', {
+          action: {
+            label: 'OPEN',
+            onClick: () => {
+              window.location.href = `/status/${data.id}`
+            },
+          },
+        })
       }
     },
   })
@@ -619,6 +630,9 @@ export function useDeleteStatus() {
           return key[0] === 'statuses' && key[2] === 'context'
         }
       })
+
+      // Show success toast
+      toast.success('Post deleted.')
     },
   })
 }
