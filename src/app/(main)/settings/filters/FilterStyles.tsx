@@ -6,6 +6,7 @@ export const FiltersContainer = styled.div`
   max-width: 600px;
   margin: 0 auto;
   padding: var(--size-4) var(--size-2);
+  overflow-anchor: none;
 `;
 
 export const FiltersHeader = styled.div`
