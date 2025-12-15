@@ -11,14 +11,6 @@ import { ServiceWorkerRegister } from "@/components/atoms/ServiceWorkerRegister"
 export const metadata: Metadata = {
   title: "Mastodon",
   description: "A minimal, performant social media frontend for Mastodon",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Mastodon",
-  },
-  formatDetection: {
-    telephone: false,
-  },
 };
 
 export default async function RootLayout({
@@ -51,7 +43,6 @@ export default async function RootLayout({
     <html lang="en" data-theme={dataTheme}>
       <head>
         <meta name="theme-color" content="#6364ff" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body>
         <SkipToMain />

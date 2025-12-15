@@ -13,17 +13,8 @@ export function ServiceWorkerRegister() {
                 .catch((error) => {
                     console.log('SW registration failed:', error)
                 })
-
-            // Listen for messages from the service worker
-            navigator.serviceWorker.addEventListener('message', (event) => {
-                if (event.data?.type === 'RELOAD_PAGE') {
-                    console.log('New deployment detected, reloading page...')
-                    window.location.reload()
-                }
-            })
         }
     }, [])
 
     return null
 }
-
