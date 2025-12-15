@@ -263,8 +263,7 @@ self.addEventListener('push', (event) => {
     );
 });
 
-const openUrl = url => self.clients.claim()
-    .then(() => self.clients.matchAll({ type: 'window' }))
+const openUrl = url => self.clients.matchAll({ type: 'window' })
     .then(clientList => {
         if (clientList.length !== 0 && 'navigate' in clientList[0]) { // Chrome 42-48 does not support navigate
             const client = findBestClient(clientList);
