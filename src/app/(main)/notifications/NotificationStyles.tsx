@@ -21,26 +21,36 @@ export const NotificationTitleRow = styled.div`
 export const NotificationSettingsToggle = styled.button`
     display: flex;
     align-items: center;
-    gap: var(--size-1);
+    justify-content: center;
     padding: var(--size-2);
     background: transparent;
-    border: 1px solid var(--surface-3);
-    border-radius: var(--radius-2);
+    border: none;
+    outline: none;
+    box-shadow: none;
     color: var(--text-2);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: color 0.15s ease;
 
     &:hover {
-        background: var(--surface-2);
-        color: var(--text-1);
+        color: var(--brand);
+    }
+
+    &:focus {
+        outline: none;
     }
 `;
 
 export const NotificationSettingsPanelWrapper = styled.div<{ $isOpen: boolean }>`
-    display: ${props => props.$isOpen ? 'block' : 'none'};
+    display: grid;
+    grid-template-rows: ${props => props.$isOpen ? '1fr' : '0fr'};
+    transition: grid-template-rows 300ms ease;
 `;
 
 export const NotificationSettingsPanel = styled.div`
+    overflow: hidden;
+`;
+
+export const NotificationSettingsPanelContent = styled.div`
     background: var(--surface-2);
     border-bottom: 1px solid var(--surface-3);
     padding: var(--size-3) var(--size-4);

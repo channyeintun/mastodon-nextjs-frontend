@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Bell, Trash2, Check, Filter } from 'lucide-react';
+import { Bell, Filter } from 'lucide-react';
 import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi';
+import { IoCheckmarkDoneSharp } from 'react-icons/io5';
+import { TiDelete } from 'react-icons/ti';
 import { NotificationCard, NotificationSkeletonList } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Button, Tabs, type TabItem } from '@/components/atoms';
@@ -15,6 +17,7 @@ import {
     NotificationSettingsToggle,
     NotificationSettingsPanelWrapper,
     NotificationSettingsPanel,
+    NotificationSettingsPanelContent,
     NotificationSettingsSectionTitle,
     NotificationActionsRow,
     NotificationFilterRow,
@@ -130,7 +133,6 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
                         {streamingStatus === 'connected' && (
                             <span style={{ fontSize: 'var(--font-size-0)', color: 'var(--green-6)', display: 'flex', alignItems: 'center', gap: 'var(--size-1)' }}>
                                 <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--green-6)' }} />
-                                Live
                             </span>
                         )}
                     </div>
@@ -147,42 +149,44 @@ export function NotificationsV1({ streamingStatus }: NotificationsV1Props) {
             {/* Collapsible Settings Area */}
             <NotificationSettingsPanelWrapper $isOpen={isSettingsOpen}>
                 <NotificationSettingsPanel>
-                    {/* Actions */}
-                    <NotificationSettingsSectionTitle>Actions</NotificationSettingsSectionTitle>
-                    <NotificationActionsRow>
-                        <Button variant="ghost" size="small" onClick={handleMarkAsRead} disabled={allNotifications.length === 0}>
-                            <Check size={16} />
-                            Mark all as read
-                        </Button>
-                        <Button variant="ghost" size="small" onClick={handleClearAll} disabled={allNotifications.length === 0}>
-                            <Trash2 size={16} />
-                            Clear all
-                        </Button>
-                    </NotificationActionsRow>
+                    <NotificationSettingsPanelContent>
+                        {/* Actions */}
+                        <NotificationSettingsSectionTitle>Actions</NotificationSettingsSectionTitle>
+                        <NotificationActionsRow>
+                            <Button variant="ghost" size="small" onClick={handleMarkAsRead} disabled={allNotifications.length === 0}>
+                                <IoCheckmarkDoneSharp size={16} />
+                                Mark all as read
+                            </Button>
+                            <Button variant="ghost" size="small" onClick={handleClearAll} disabled={allNotifications.length === 0}>
+                                <TiDelete size={16} />
+                                Clear all
+                            </Button>
+                        </NotificationActionsRow>
 
-                    {/* Filters - V1 uses boolean toggles */}
-                    <NotificationSettingsSectionTitle style={{ marginTop: 'var(--size-3)' }}>Filters</NotificationSettingsSectionTitle>
-                    {policyCategoriesV1.map((category) => (
-                        <NotificationFilterRow key={category.key}>
-                            <NotificationFilterLabel>{category.label}</NotificationFilterLabel>
-                            <NotificationFilterToggle
-                                type="checkbox"
-                                checked={policyData?.[category.key] ?? false}
-                                onChange={() => handleFilterToggle(category.key)}
-                                disabled={updatePolicyMutation.isPending}
-                            />
-                        </NotificationFilterRow>
-                    ))}
+                        {/* Filters - V1 uses boolean toggles */}
+                        <NotificationSettingsSectionTitle style={{ marginTop: 'var(--size-3)' }}>Filters</NotificationSettingsSectionTitle>
+                        {policyCategoriesV1.map((category) => (
+                            <NotificationFilterRow key={category.key}>
+                                <NotificationFilterLabel>{category.label}</NotificationFilterLabel>
+                                <NotificationFilterToggle
+                                    type="checkbox"
+                                    checked={policyData?.[category.key] ?? false}
+                                    onChange={() => handleFilterToggle(category.key)}
+                                    disabled={updatePolicyMutation.isPending}
+                                />
+                            </NotificationFilterRow>
+                        ))}
 
-                    {/* Pending requests link */}
-                    {pendingRequestsCount > 0 && (
-                        <NotificationPendingLink href="/notifications/requests">
-                            <Filter size={16} />
-                            <span>
-                                {pendingRequestsCount} filtered {pendingRequestsCount === 1 ? 'notification' : 'notifications'}
-                            </span>
-                        </NotificationPendingLink>
-                    )}
+                        {/* Pending requests link */}
+                        {pendingRequestsCount > 0 && (
+                            <NotificationPendingLink href="/notifications/requests">
+                                <Filter size={16} />
+                                <span>
+                                    {pendingRequestsCount} filtered {pendingRequestsCount === 1 ? 'notification' : 'notifications'}
+                                </span>
+                            </NotificationPendingLink>
+                        )}
+                    </NotificationSettingsPanelContent>
                 </NotificationSettingsPanel>
             </NotificationSettingsPanelWrapper>
 
