@@ -3,7 +3,7 @@
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp, Search, Bell } from 'lucide-react';
+import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp, Search, Bell, Filter } from 'lucide-react';
 import { useCurrentAccount } from '@/api';
 import { Button, IconButton, Card, Avatar, EmojiText, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { ThemeSelector } from '@/components/molecules';
@@ -219,6 +219,11 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
           <Link href="/settings/mutes" className="settings-link">
             <VolumeX size={20} className="settings-link-icon" />
             Muted accounts
+          </Link>
+
+          <Link href="/settings/filters" className="settings-link">
+            <Filter size={20} className="settings-link-icon" />
+            Filters
           </Link>
 
           <Link href="/settings/notifications" className="settings-link">
