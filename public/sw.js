@@ -147,17 +147,24 @@ self.addEventListener('fetch', (event) => {
  * @param {string} accessToken - The access token
  * @returns {Promise<Object>} The notification object
  */
-const fetchNotification = (notificationId, accessToken) => {
-    return fetch(`/api/v1/notifications/${notificationId}`, {
+const fetchNotification = async (notificationId, accessToken) => {
+    // Get instance URL from cookie
+    const cookie = await cookieStore.get('instanceURL');
+    const instanceURL = cookie?.value;
+
+    if (!instanceURL) {
+        throw new Error('No instance URL found');
+    }
+
+    const res = await fetch(`${instanceURL}/api/v1/notifications/${notificationId}`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
-        credentials: 'include',
-    }).then(res => {
-        if (!res.ok) throw new Error(res.status);
-        return res.json();
     });
+
+    if (!res.ok) throw new Error(res.status);
+    return res.json();
 };
 
 /**
