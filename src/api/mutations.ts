@@ -52,11 +52,14 @@ import {
   createPushSubscription,
   updatePushSubscription,
   deletePushSubscription,
+  createFilter,
+  updateFilter,
+  deleteFilter,
   type PaginatedResponse,
 } from './client'
 import { queryKeys } from './queryKeys'
 import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams } from '../types/mastodon'
+import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams } from '../types/mastodon'
 
 
 // Helper function to invalidate all relationship queries that contain a given account ID
@@ -1604,6 +1607,43 @@ export function useDeletePushSubscription() {
     mutationFn: () => deletePushSubscription(),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: queryKeys.pushSubscription.all() })
+    },
+  })
+}
+
+// Filter mutations
+export function useCreateFilter() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (params: CreateFilterParams) => createFilter(params),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.filters.all() })
+    },
+  })
+}
+
+export function useUpdateFilter() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, params }: { id: string; params: UpdateFilterParams }) =>
+      updateFilter(id, params),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.filters.all() })
+      queryClient.setQueryData(queryKeys.filters.detail(data.id), data)
+    },
+  })
+}
+
+export function useDeleteFilter() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => deleteFilter(id),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.filters.all() })
+      queryClient.removeQueries({ queryKey: queryKeys.filters.detail(id) })
     },
   })
 }

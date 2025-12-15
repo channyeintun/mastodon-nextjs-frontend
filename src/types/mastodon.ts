@@ -671,3 +671,67 @@ export interface UpdatePushSubscriptionParams {
   }
 }
 
+// Filters (v2 API)
+
+// Filter context where the filter applies
+export type FilterContext = 'home' | 'notifications' | 'public' | 'thread' | 'account'
+
+// Filter action when a match is found
+export type FilterAction = 'warn' | 'hide' | 'blur'
+
+// Keyword within a filter
+export interface FilterKeyword {
+  id: string
+  keyword: string
+  whole_word: boolean
+}
+
+// Status within a filter (for filtering specific statuses)
+export interface FilterStatus {
+  id: string
+  status_id: string
+}
+
+// Filter entity (v2 API)
+export interface Filter {
+  id: string
+  title: string
+  context: FilterContext[]
+  expires_at: string | null
+  filter_action: FilterAction
+  keywords: FilterKeyword[]
+  statuses: FilterStatus[]
+}
+
+// Filter result attached to a status when it matches filters
+export interface FilterResult {
+  filter: Filter
+  keyword_matches: string[] | null
+  status_matches: string[] | null
+}
+
+// Parameters for creating/updating a filter keyword
+export interface FilterKeywordParams {
+  id?: string           // Include to update existing keyword
+  keyword: string
+  whole_word?: boolean
+  _destroy?: boolean    // Set to true to remove the keyword
+}
+
+// Parameters for creating a filter
+export interface CreateFilterParams {
+  title: string
+  context: FilterContext[]
+  filter_action?: FilterAction
+  expires_in?: number   // Seconds until expiration, or null for never
+  keywords_attributes?: FilterKeywordParams[]
+}
+
+// Parameters for updating a filter
+export interface UpdateFilterParams {
+  title?: string
+  context?: FilterContext[]
+  filter_action?: FilterAction
+  expires_in?: number
+  keywords_attributes?: FilterKeywordParams[]
+}

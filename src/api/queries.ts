@@ -51,6 +51,8 @@ import {
   getInstanceLanguages,
   getTranslationLanguages,
   getPushSubscription,
+  getFilters,
+  getFilter,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
@@ -1048,5 +1050,35 @@ export function usePushSubscription() {
     enabled: authStore.isAuthenticated,
     retry: false, // Don't retry on 404 (no subscription)
     throwOnError: false,
+  })
+}
+
+// Filter Options (v2)
+export const filtersOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.filters.all(),
+    queryFn: ({ signal }) => getFilters(signal),
+  })
+
+export const filterOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.filters.detail(id),
+    queryFn: ({ signal }) => getFilter(id, signal),
+  })
+
+// Filter Hooks
+export function useFilters() {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...filtersOptions(),
+    enabled: authStore.isAuthenticated,
+  })
+}
+
+export function useFilter(id: string) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...filterOptions(id),
+    enabled: authStore.isAuthenticated && !!id,
   })
 }

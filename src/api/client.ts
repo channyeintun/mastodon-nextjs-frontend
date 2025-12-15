@@ -51,6 +51,9 @@ import type {
   UpdateNotificationPolicyV1Params,
   UpdatePushSubscriptionParams,
   WebPushSubscription,
+  Filter,
+  CreateFilterParams,
+  UpdateFilterParams,
 } from '../types/mastodon'
 import { getNextMaxId } from './parseLinkHeader'
 
@@ -863,3 +866,27 @@ export async function deletePushSubscription(): Promise<void> {
   await api.delete('/api/v1/push/subscription')
 }
 
+// Filters (v2)
+export async function getFilters(signal?: AbortSignal): Promise<Filter[]> {
+  const { data } = await api.get<Filter[]>('/api/v2/filters', { signal })
+  return data
+}
+
+export async function getFilter(id: string, signal?: AbortSignal): Promise<Filter> {
+  const { data } = await api.get<Filter>(`/api/v2/filters/${id}`, { signal })
+  return data
+}
+
+export async function createFilter(params: CreateFilterParams): Promise<Filter> {
+  const { data } = await api.post<Filter>('/api/v2/filters', params)
+  return data
+}
+
+export async function updateFilter(id: string, params: UpdateFilterParams): Promise<Filter> {
+  const { data } = await api.put<Filter>(`/api/v2/filters/${id}`, params)
+  return data
+}
+
+export async function deleteFilter(id: string): Promise<void> {
+  await api.delete(`/api/v2/filters/${id}`)
+}

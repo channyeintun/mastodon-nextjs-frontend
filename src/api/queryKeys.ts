@@ -134,5 +134,12 @@ export const queryKeys = {
   pushSubscription: {
     all: () => ['pushSubscription'] as const,
   },
+
+  // Filters
+  filters: {
+    all: () => ['filters'] as const,
+    detail: (id: string) => ['filters', id] as const,
+  },
 }
+
 
