@@ -11,8 +11,6 @@ mastodon-nextjs-client/
 │   ├── next.svg
 │   ├── vercel.svg
 │   └── window.svg
-├── scripts/                    # Build and deployment scripts
-│   └── ignore-build.sh        # Vercel build ignore script
 ├── example/                    # Example files and documentation
 │   └── compose/
 │       └── README.md          # Compose feature documentation
@@ -360,10 +358,6 @@ Utility functions:
 - **tiptapExtensions.ts**: Tiptap editor extension utilities
 - **RAMDA.md**: Comprehensive documentation of Ramda functions used in the project
 - **README.md**: Utils directory overview and documentation index
-
-### `/scripts/`
-Build and deployment scripts:
-- **ignore-build.sh**: Vercel build ignore script (skips builds when no relevant changes detected)
 
 ### `/example/`
 Example files and documentation:

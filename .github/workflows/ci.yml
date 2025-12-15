@@ -28,9 +28,17 @@ jobs:
       - name: Run linting
         run: bun run lint
 
-      - name: Build project
+      - name: Build project (PR validation)
+        if: github.event_name == 'pull_request'
         run: bun run build
 
-      - name: Deploy to Vercel
+      - name: Build for Vercel
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+        run: |
+          npm i -g vercel
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy prebuilt to Vercel
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
