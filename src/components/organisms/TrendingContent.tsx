@@ -1,15 +1,16 @@
 'use client';
 
 import styled from '@emotion/styled';
+import Link from 'next/link';
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { Button, Tabs, EmptyState } from '@/components/atoms';
+import { IconButton, Tabs, EmptyState, Button } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
-import { Hash, Newspaper, FileText } from 'lucide-react';
+import { Hash, Newspaper, FileText, LogIn } from 'lucide-react';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink } from '@/types';
 import { useAuthStore } from '@/hooks/useStores';
@@ -195,6 +196,13 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     )}
                 </TabContentWithPadding>
             </Activity>
+
+            {/* Floating Login Button for guests */}
+            {!authStore.isAuthenticated && (
+                <FloatingLoginButton href="/auth/signin">
+                    <LogIn size={24} />
+                </FloatingLoginButton>
+            )}
         </Container>
     );
 });
@@ -204,6 +212,38 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
 const Container = styled.div`
     max-width: 600px;
     margin: 0 auto;
+    position: relative;
+`;
+
+const FloatingLoginButton = styled(Link)`
+    position: fixed;
+    bottom: var(--size-5);
+    right: var(--size-4);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--blue-6);
+    color: white;
+    box-shadow: var(--shadow-4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-5);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+
+    /* Hide on desktop - sidebar has sign-in button */
+    @media (min-width: 768px) {
+        display: none;
+    }
 `;
 
 const TabContent = styled.div`
