@@ -30,3 +30,7 @@ jobs:
 
       - name: Build project
         run: bun run build
+
+      - name: Deploy to Vercel
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
