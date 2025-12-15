@@ -73,6 +73,7 @@ export interface PaginatedResponse<T> {
   nextMaxId?: string
 }
 
+const test = 'unused'
 
 
 // Create axios instance with default base URL
