@@ -138,8 +138,9 @@ export function WindowVirtualizedList<T>({
         initialMeasurementsCache: savedState?.measurements,
         onChange: (instance) => {
             if (scrollRestorationKey && !instance.isScrolling) {
+                const offset = instance.scrollOffset || 0;
                 scrollStateCache.set(scrollRestorationKey, {
-                    offset: instance.scrollOffset || 0,
+                    offset,
                     measurements: instance.measurementsCache,
                 });
             }
@@ -148,7 +149,9 @@ export function WindowVirtualizedList<T>({
 
     // Measure scrollMargin and restore scroll position before paint
     useLayoutEffect(() => {
-        parentOffsetRef.current = listRef.current?.offsetTop ?? 0;
+        const scrollMargin = listRef.current?.offsetTop ?? 0;
+        parentOffsetRef.current = scrollMargin;
+
 
         // Restore scroll position if we have saved state
         if (savedState?.offset) {
