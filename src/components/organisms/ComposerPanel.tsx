@@ -11,6 +11,7 @@ import { Avatar, EmojiText, TiptapEditor, ContentWarningInput, ScheduleInput } f
 import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { length as unicodeLength } from 'stringz';
+import { countableText } from '@/utils/counter';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { useMediaUpload } from '@/hooks/useMediaUpload';
 import { Globe, Lock, Users, Mail, X } from 'lucide-react';
@@ -143,7 +144,8 @@ export function ComposerPanel({
   } = useMediaUpload();
 
   // Use stringz length() for accurate Unicode/emoji character counting
-  const charCount = unicodeLength(textContent);
+  // Apply countableText to normalize URLs (23 chars) and remote mentions
+  const charCount = unicodeLength(countableText(textContent));
   const isOverLimit = charCount > MAX_CHAR_COUNT;
   const isPending = editMode ? updateStatusMutation.isPending : createStatusMutation.isPending;
   const canPost = charCount > 0 && !isOverLimit && !isPending && (media.length > 0 || poll !== null || textContent.trim().length > 0);
