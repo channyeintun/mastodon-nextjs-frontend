@@ -1306,11 +1306,23 @@ dialog::backdrop {
   flex: 1;
 }
 
+.tabs--sticky {
+  position: sticky;
+  top: 0;
+  background: var(--surface-1);
+  z-index: 10;
+}
+
 /* Underline variant */
 .tabs--underline {
   position: relative;
   border-bottom: 1px solid var(--surface-3);
   margin-bottom: var(--size-3);
+}
+
+/* Ensure sticky overrides underline's relative position */
+.tabs--sticky.tabs--underline {
+  position: sticky;
 }
 
 .tab--underline {

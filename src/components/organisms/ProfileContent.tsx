@@ -75,13 +75,12 @@ export function ProfileContent({
 
     return (
         <>
-            <TabsContainer>
-                <Tabs
-                    tabs={profileTabs}
-                    activeTab={activeTab}
-                    onTabChange={onTabChange}
-                />
-            </TabsContainer>
+            <Tabs
+                tabs={profileTabs}
+                activeTab={activeTab}
+                onTabChange={onTabChange}
+                sticky
+            />
 
             <ContentSection>
                 {/* Posts Tab Content */}
@@ -196,10 +195,6 @@ export function ProfileContent({
 }
 
 // Styled components
-const TabsContainer = styled.div`
-  padding: 0;
-`;
-
 const PinnedItemWrapper = styled.div<{ $isLastPinned: boolean }>`
   ${({ $isLastPinned }) =>
         $isLastPinned &&

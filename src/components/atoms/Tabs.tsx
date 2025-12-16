@@ -14,6 +14,7 @@ export interface TabsProps<T extends string> {
     onTabChange: (tab: T) => void;
     variant?: 'underline' | 'pill';
     fullWidth?: boolean;
+    sticky?: boolean;
     style?: CSSProperties;
     className?: string;
 }
@@ -24,6 +25,7 @@ export function Tabs<T extends string>({
     onTabChange,
     variant = 'underline',
     fullWidth = variant === 'underline',
+    sticky = false,
     style,
     className = '',
 }: TabsProps<T>) {
@@ -31,6 +33,7 @@ export function Tabs<T extends string>({
         'tabs',
         `tabs--${variant}`,
         fullWidth ? 'tabs--full-width' : '',
+        sticky ? 'tabs--sticky' : '',
         className,
     ].filter(Boolean).join(' ');
 

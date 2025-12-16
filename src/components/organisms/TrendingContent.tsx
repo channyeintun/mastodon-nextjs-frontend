@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api';
-import { PostCard, SuggestionsSection } from '@/components/organisms';
+import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
 import { WindowVirtualizedList } from '@/components/organisms/WindowVirtualizedList';
 import { Tabs, EmptyState, Button } from '@/components/atoms';
@@ -73,15 +73,14 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
             {/* Header */}
             {header && header}
 
-            {/* Who to follow - horizontal scroll suggestions for authenticated users */}
-            <SuggestionsSection />
-
             {/* Tab Navigation */}
-            <StyledTabs
+            <Tabs
                 tabs={trendingTabs}
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
                 variant="underline"
+                sticky
+                style={{ padding: '0 var(--size-4)' }}
             />
 
             {/* Tab Content - using Activity for toggling */}
@@ -210,6 +209,10 @@ const Container = styled.div`
     max-width: 600px;
     margin: 0 auto;
     position: relative;
+
+    @media (max-width: 767px) {
+        padding: 0 var(--size-2);
+    }
 `;
 
 const FloatingLoginButton = styled(Link)`
@@ -275,9 +278,3 @@ const ErrorText = styled.p`
     color: var(--red-6);
     margin-bottom: var(--size-3);
 `;
-
-
-
-const StyledTabs = styled(Tabs)`
-    padding: 0 var(--size-4);
-` as typeof Tabs;

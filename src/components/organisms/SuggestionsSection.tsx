@@ -2,13 +2,15 @@
 
 import styled from '@emotion/styled';
 import Link from 'next/link';
-import { useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, X, Info, Check } from 'lucide-react';
+import { useRef, useCallback, useState } from 'react';
+import { X, Info, Check } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
 import { useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount } from '@/api';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
 import { useAuthStore } from '@/hooks/useStores';
 import type { Field } from '@/types';
+
+const SUGGESTIONS_DISMISSED_KEY = 'mastodon_suggestions_dismissed';
 
 interface SuggestionsSectionProps {
     /** Maximum number of suggestions to display */
@@ -64,6 +66,17 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    // Dismissed state with localStorage persistence
+    const [isDismissed, setIsDismissed] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        return localStorage.getItem(SUGGESTIONS_DISMISSED_KEY) === 'true';
+    });
+
+    const handleDismiss = useCallback(() => {
+        localStorage.setItem(SUGGESTIONS_DISMISSED_KEY, 'true');
+        setIsDismissed(true);
+    }, []);
+
     // Get relationships for all suggested accounts
     const accountIds = suggestions?.map(s => s.account.id) ?? [];
     const { data: relationships } = useRelationships(accountIds);
@@ -81,7 +94,8 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
         scrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
     }, []);
 
-    if (!authStore.isAuthenticated) {
+    // Don't show if dismissed or not authenticated
+    if (isDismissed || !authStore.isAuthenticated) {
         return null;
     }
 
@@ -117,7 +131,16 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
         <Container>
             <Header>
                 <Title>Who to follow</Title>
-                <ViewAllLink href="/explore/suggestions">View all</ViewAllLink>
+                <HeaderActions>
+                    <ViewAllLink href="/explore/suggestions">View all</ViewAllLink>
+                    <DismissSectionButton
+                        onClick={handleDismiss}
+                        title="Dismiss suggestions"
+                        aria-label="Dismiss suggestions"
+                    >
+                        <X size={18} />
+                    </DismissSectionButton>
+                </HeaderActions>
             </Header>
             <BodyWrapper>
                 <ScrollContainer ref={scrollRef} id="suggestions-scroller">
@@ -156,14 +179,18 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                         />
                                     </CardLink>
 
-                                    <CardName>
-                                        <EmojiText
-                                            text={suggestion.account.display_name || suggestion.account.username}
-                                            emojis={suggestion.account.emojis}
-                                        />
-                                    </CardName>
+                                    <CardLink href={`/@${suggestion.account.acct}`}>
+                                        <CardName>
+                                            <EmojiText
+                                                text={suggestion.account.display_name || suggestion.account.username}
+                                                emojis={suggestion.account.emojis}
+                                            />
+                                        </CardName>
+                                    </CardLink>
 
-                                    <CardHandle>@{suggestion.account.acct}</CardHandle>
+                                    <CardLink href={`/@${suggestion.account.acct}`}>
+                                        <CardHandle>@{suggestion.account.acct}</CardHandle>
+                                    </CardLink>
 
                                     <BadgeWrapper>
                                         {verifiedField ? (
@@ -213,7 +240,6 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
 
 // Styled components with scroll state query support
 const Container = styled.div`
-    border-bottom: 1px solid var(--surface-3);
     padding-bottom: var(--size-4);
 `;
 
@@ -238,6 +264,30 @@ const ViewAllLink = styled(Link)`
 
     &:hover {
         text-decoration: underline;
+    }
+`;
+
+const HeaderActions = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+`;
+
+const DismissSectionButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--size-1);
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    cursor: pointer;
+    border-radius: var(--radius-round);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: var(--surface-3);
+        color: var(--text-1);
     }
 `;
 
@@ -326,6 +376,7 @@ const SourceLabel = styled.div`
 const VerifiedBadge = styled.div`
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--size-1);
     font-size: var(--font-size-0);
     color: var(--green-6);

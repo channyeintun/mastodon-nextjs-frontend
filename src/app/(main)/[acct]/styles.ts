@@ -6,13 +6,17 @@ export const PageContainer = styled.div`
   padding: 0;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 767px) {
+    padding: 0 var(--size-2);
+  }
 `;
 
 export const FixedBackButton = styled.div`
   position: fixed;
   top: var(--size-4);
   left: var(--size-4);
-  z-index: 100;
+  z-index: 5; /* Lower than sticky tabs (z-index: 10) so tabs cover it when sticky */
 
   /* On desktop, account for sidebar and centered content */
   @media (min-width: 768px) {
