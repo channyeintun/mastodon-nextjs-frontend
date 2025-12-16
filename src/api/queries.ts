@@ -55,6 +55,7 @@ import {
   getFilter,
   getAnnualReportState,
   getAnnualReport,
+  getSuggestions,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
@@ -1212,5 +1213,26 @@ export function useAnnualReport(year: number, options?: { enabled?: boolean }) {
   return useQuery({
     ...annualReportOptions(year),
     enabled: (options?.enabled ?? true) && authStore.isAuthenticated && year > 0,
+  })
+}
+
+// ============================================================================
+// SUGGESTIONS (FOLLOW RECOMMENDATIONS)
+// ============================================================================
+
+// Suggestions Query Options
+export const suggestionsOptions = (params?: { limit?: number }) =>
+  queryOptions({
+    queryKey: queryKeys.suggestions.list(params),
+    queryFn: ({ signal }) => getSuggestions(params, signal),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  })
+
+// Suggestions Hook
+export function useSuggestions(params?: { limit?: number }) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...suggestionsOptions(params),
+    enabled: authStore.isAuthenticated,
   })
 }

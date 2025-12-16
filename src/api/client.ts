@@ -62,6 +62,7 @@ import type {
   ExtendedDescription,
   AnnualReportStateResponse,
   AnnualReportResponse,
+  Suggestion,
 } from '../types/mastodon'
 import { getNextMaxId } from './parseLinkHeader'
 
@@ -939,4 +940,14 @@ export async function generateAnnualReport(year: number): Promise<void> {
 export async function getAnnualReport(year: number, signal?: AbortSignal): Promise<AnnualReportResponse> {
   const { data } = await api.get<AnnualReportResponse>(`/api/v1/annual_reports/${year}`, { signal })
   return data
+}
+
+// Suggestions (Follow Recommendations)
+export async function getSuggestions(params?: { limit?: number }, signal?: AbortSignal): Promise<Suggestion[]> {
+  const { data } = await api.get<Suggestion[]>('/api/v2/suggestions', { params, signal })
+  return data
+}
+
+export async function deleteSuggestion(accountId: string): Promise<void> {
+  await api.delete(`/api/v1/suggestions/${accountId}`)
 }

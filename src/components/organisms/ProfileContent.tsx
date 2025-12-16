@@ -4,7 +4,8 @@ import styled from '@emotion/styled';
 import { Activity } from 'react';
 import { useMemo } from 'react';
 import { Pin } from 'lucide-react';
-import { PostCard, VirtualizedList } from '@/components/organisms';
+import { PostCard } from '@/components/organisms';
+import { WindowVirtualizedList } from '@/components/organisms/WindowVirtualizedList';
 import { PostCardSkeleton, PostCardSkeletonList, MediaGrid, MediaGridSkeleton } from '@/components/molecules';
 import { Tabs, EmptyState } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
@@ -91,7 +92,7 @@ export function ProfileContent({
                                 <PostCardSkeletonList count={5} />
                             </LoadingContainer>
                         ) : (
-                            <VirtualizedList<StatusItem>
+                            <WindowVirtualizedList<StatusItem>
                                 style={{ padding: 0 }}
                                 items={combinedItems}
                                 renderItem={(item, index) => {
@@ -117,7 +118,6 @@ export function ProfileContent({
                                 isLoadingMore={isFetchingNextPage}
                                 hasMore={hasNextPage}
                                 loadMoreThreshold={1}
-                                height="100dvh"
                                 scrollRestorationKey={`account-${acct}-posts`}
                                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                                 endIndicator="No more posts"
@@ -135,7 +135,7 @@ export function ProfileContent({
                                 <PostCardSkeletonList count={5} />
                             </LoadingContainer>
                         ) : (
-                            <VirtualizedList<StatusItem>
+                            <WindowVirtualizedList<StatusItem>
                                 style={{ padding: 0 }}
                                 items={combinedItems}
                                 renderItem={(item, index) => {
@@ -161,7 +161,6 @@ export function ProfileContent({
                                 isLoadingMore={isFetchingNextPage}
                                 hasMore={hasNextPage}
                                 loadMoreThreshold={1}
-                                height="100dvh"
                                 scrollRestorationKey={`account-${acct}-posts_replies`}
                                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                                 endIndicator="No more posts"
@@ -203,8 +202,8 @@ const TabsContainer = styled.div`
 
 const PinnedItemWrapper = styled.div<{ $isLastPinned: boolean }>`
   ${({ $isLastPinned }) =>
-    $isLastPinned &&
-    `
+        $isLastPinned &&
+        `
       border-bottom: 1px solid var(--surface-3);
       padding-bottom: var(--size-4);
       margin-bottom: var(--size-4);

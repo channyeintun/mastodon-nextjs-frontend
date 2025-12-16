@@ -33,7 +33,6 @@ import { flattenAndUniqById, getStatusFilters } from '@/utils/fp';
 import {
   PageContainer,
   FixedBackButton,
-  ScrollableContent,
   HeaderImage,
   ProfileSection,
   ProfileDetails,
@@ -138,7 +137,7 @@ export default function AccountPage({
   // Loading state
   if (accountLoading) {
     return (
-      <PageContainer className="full-height-container">
+      <PageContainer className="window-scroll-container">
         <FixedBackButton>
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
@@ -160,7 +159,7 @@ export default function AccountPage({
   }
 
   return (
-    <PageContainer className="full-height-container">
+    <PageContainer className="window-scroll-container">
       {/* Fixed Back Button */}
       <FixedBackButton>
         <IconButton onClick={() => router.back()}>
@@ -168,8 +167,8 @@ export default function AccountPage({
         </IconButton>
       </FixedBackButton>
 
-      {/* Scrollable Content */}
-      <ScrollableContent className="virtualized-list-container">
+      {/* Scrollable Content - now uses window scrolling */}
+      <div>
         {showLimitedProfile ? (
           /* Limited Account - show header, avatar placeholder, actions, and warning */
           <>
@@ -300,7 +299,7 @@ export default function AccountPage({
             />
           </>
         )}
-      </ScrollableContent>
+      </div>
     </PageContainer>
   );
 }

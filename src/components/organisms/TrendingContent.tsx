@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useState, Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks } from '@/api';
-import { PostCard } from '@/components/organisms';
+import { PostCard, SuggestionsSection } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton } from '@/components/molecules';
-import { VirtualizedList } from '@/components/organisms/VirtualizedList';
+import { WindowVirtualizedList } from '@/components/organisms/WindowVirtualizedList';
 import { Tabs, EmptyState, Button } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { Hash, Newspaper, FileText, LogIn } from 'lucide-react';
@@ -66,12 +66,15 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     const uniqueTags = flattenAndUniqByKey<Tag>('name')(tagsData?.pages);
     const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages);
 
-    const containerClasses = `full-height-container${authStore.isAuthenticated ? '' : ' guest'}`;
+    const containerClasses = `window-scroll-container${authStore.isAuthenticated ? '' : ' guest'}`;
 
     return (
         <Container className={containerClasses}>
             {/* Header */}
             {header && header}
+
+            {/* Who to follow - horizontal scroll suggestions for authenticated users */}
+            <SuggestionsSection />
 
             {/* Tab Navigation */}
             <StyledTabs
@@ -98,7 +101,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     ) : uniqueStatuses.length === 0 ? (
                         <EmptyState title="No trending posts at the moment" />
                     ) : (
-                        <VirtualizedList<Status>
+                        <WindowVirtualizedList<Status>
                             items={uniqueStatuses}
                             renderItem={(status) => (
                                 <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
@@ -110,8 +113,6 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             isLoadingMore={isFetchingNextPage}
                             hasMore={hasNextPage}
                             loadMoreThreshold={1}
-                            height="100%"
-                            style={{ height: '100%' }}
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-posts`}
                             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
@@ -136,7 +137,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     ) : uniqueTags.length === 0 ? (
                         <EmptyState title="No trending tags at the moment" />
                     ) : (
-                        <VirtualizedList<Tag>
+                        <WindowVirtualizedList<Tag>
                             items={uniqueTags}
                             renderItem={(tag) => (
                                 <TrendingTagCard tag={tag} style={{ marginBottom: 'var(--size-2)' }} />
@@ -148,8 +149,6 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             isLoadingMore={isFetchingNextTags}
                             hasMore={hasMoreTags}
                             loadMoreThreshold={1}
-                            height="100%"
-                            style={{ height: '100%' }}
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-tags`}
                             loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
@@ -174,7 +173,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     ) : uniqueLinks.length === 0 ? (
                         <EmptyState title="No trending news at the moment" />
                     ) : (
-                        <VirtualizedList<TrendingLink>
+                        <WindowVirtualizedList<TrendingLink>
                             items={uniqueLinks}
                             renderItem={(link) => (
                                 <TrendingLinkCard link={link} style={{ marginBottom: 'var(--size-2)' }} />
@@ -186,8 +185,6 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             isLoadingMore={isFetchingNextLinks}
                             hasMore={hasMoreLinks}
                             loadMoreThreshold={1}
-                            height="100%"
-                            style={{ height: '100%' }}
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-links`}
                             loadingIndicator={<TrendingLinkCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}

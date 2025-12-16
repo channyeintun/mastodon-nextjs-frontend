@@ -1678,3 +1678,43 @@ export function useCreateReport() {
   })
 }
 
+// Suggestion mutations
+export function useDeleteSuggestion() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (accountId: string) => {
+      const { deleteSuggestion } = await import('./client')
+      return deleteSuggestion(accountId)
+    },
+    onMutate: async (accountId) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.suggestions.all() })
+
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData<import('../types/mastodon').Suggestion[]>(
+        queryKeys.suggestions.list()
+      )
+
+      // Optimistically remove the suggestion from the list
+      if (previousData) {
+        queryClient.setQueryData<import('../types/mastodon').Suggestion[]>(
+          queryKeys.suggestions.list(),
+          previousData.filter(suggestion => suggestion.account.id !== accountId)
+        )
+      }
+
+      return { previousData }
+    },
+    onError: (_err, _accountId, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKeys.suggestions.list(), context.previousData)
+      }
+    },
+    onSettled: () => {
+      // Invalidate to ensure consistency
+      queryClient.invalidateQueries({ queryKey: queryKeys.suggestions.all() })
+    },
+  })
+}

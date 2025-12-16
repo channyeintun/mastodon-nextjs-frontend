@@ -837,3 +837,12 @@ export interface AnnualReportResponse {
 export interface AnnualReportStateResponse {
   state: AnnualReportState
 }
+
+// Suggestions (v2 API)
+export type SuggestionSource = 'staff' | 'global' | 'past_interactions'
+
+export interface Suggestion {
+  source: SuggestionSource
+  sources: string[]
+  account: Account
+}

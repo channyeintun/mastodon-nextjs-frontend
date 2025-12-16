@@ -150,6 +150,12 @@ export const queryKeys = {
     state: (year: number) => ['annualReports', year, 'state'] as const,
     detail: (year: number) => ['annualReports', year] as const,
   },
+
+  // Suggestions (Follow Recommendations)
+  suggestions: {
+    all: () => ['suggestions'] as const,
+    list: (params?: object) => ['suggestions', 'list', params] as const,
+  },
 }
 
 
