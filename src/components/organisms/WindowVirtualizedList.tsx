@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useRef, useEffect, useLayoutEffect, type CSSProperties, type ReactNode } from 'react';
+import { useRef, useState, useEffect, useLayoutEffect, type CSSProperties, type ReactNode } from 'react';
 import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useWindowScrollDirection } from '@/hooks/useWindowScrollDirection';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
@@ -127,6 +127,10 @@ export function WindowVirtualizedList<T>({
         ? scrollStateCache.get(scrollRestorationKey)
         : undefined;
 
+    // Track if scroll restoration is complete to prevent flash
+    // If there's no saved offset, we're already "restored"
+    const [isRestored, setIsRestored] = useState(!savedState?.offset);
+
     // Setup window virtualizer (pattern from TanStack GridVirtualizerDynamic)
     const virtualizer = useWindowVirtualizer({
         count: items.length,
@@ -134,7 +138,8 @@ export function WindowVirtualizedList<T>({
         overscan,
         scrollMargin: parentOffsetRef.current,
         getItemKey: (index) => getItemKey(items[index], index),
-        // Don't use initialOffset - we restore scroll imperatively after mount
+        // Tell virtualizer the initial offset so it calculates correct virtual items from start
+        initialOffset: savedState?.offset ?? 0,
         initialMeasurementsCache: savedState?.measurements,
         onChange: (instance) => {
             if (scrollRestorationKey && !instance.isScrolling) {
@@ -152,10 +157,11 @@ export function WindowVirtualizedList<T>({
         const scrollMargin = listRef.current?.offsetTop ?? 0;
         parentOffsetRef.current = scrollMargin;
 
-
         // Restore scroll position if we have saved state
         if (savedState?.offset) {
             window.scrollTo({ top: savedState.offset, behavior: 'instant' });
+            // Mark as restored after scroll is set
+            setIsRestored(true);
         }
     }, []);
 
@@ -204,7 +210,11 @@ export function WindowVirtualizedList<T>({
         <Container
             ref={listRef}
             className={`window-virtualized-list${className ? ` ${className}` : ''}`}
-            style={style}
+            style={{
+                ...style,
+                // Hide content until scroll restoration is complete to prevent flash
+                visibility: isRestored ? 'visible' : 'hidden',
+            }}
         >
             {items.length === 0 && emptyState && emptyState}
 
