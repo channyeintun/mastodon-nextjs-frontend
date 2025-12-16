@@ -8,7 +8,7 @@ import { useStatus, useStatusContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, StatusStats } from '@/components/molecules';
-import { Button, IconButton, TextSkeleton } from '@/components/atoms';
+import { Button, IconButton } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 
 export default function StatusPage({
@@ -221,10 +221,6 @@ const RepliesHeader = styled.h2`
   font-weight: var(--font-weight-6);
   margin-bottom: var(--size-4);
   color: var(--text-2);
-`;
-
-const SkeletonWrapper = styled.div`
-  margin-bottom: var(--size-3);
 `;
 
 const ThreadLineContainer = styled.div`
