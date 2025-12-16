@@ -117,9 +117,10 @@ const MessageRow = styled.div<{ $isOwn: boolean; $isConsecutive: boolean }>`
 `
 
 // Invisible placeholder to maintain layout when avatar is hidden
+// Uses var(--size-6) to match Avatar component's "small" size
 const AvatarPlaceholder = styled.div`
-  width: 36px;
-  height: 36px;
+  width: var(--size-6);
+  height: var(--size-6);
   flex-shrink: 0;
 `
 
