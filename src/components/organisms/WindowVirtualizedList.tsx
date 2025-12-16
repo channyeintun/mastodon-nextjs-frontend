@@ -122,11 +122,6 @@ export function WindowVirtualizedList<T>({
     // Scroll direction detection for scroll-to-top button
     const { showScrollTop, hideScrollTop } = useWindowScrollDirection();
 
-    // Measure offset in useLayoutEffect (pattern from TanStack example)
-    useLayoutEffect(() => {
-        parentOffsetRef.current = listRef.current?.offsetTop ?? 0;
-    }, []);
-
     // Get saved scroll state if available
     const savedState = scrollRestorationKey
         ? scrollStateCache.get(scrollRestorationKey)
@@ -139,7 +134,7 @@ export function WindowVirtualizedList<T>({
         overscan,
         scrollMargin: parentOffsetRef.current,
         getItemKey: (index) => getItemKey(items[index], index),
-        initialOffset: savedState?.offset,
+        // Don't use initialOffset - we restore scroll imperatively after mount
         initialMeasurementsCache: savedState?.measurements,
         onChange: (instance) => {
             if (scrollRestorationKey && !instance.isScrolling) {
@@ -150,6 +145,16 @@ export function WindowVirtualizedList<T>({
             }
         },
     });
+
+    // Measure scrollMargin and restore scroll position before paint
+    useLayoutEffect(() => {
+        parentOffsetRef.current = listRef.current?.offsetTop ?? 0;
+
+        // Restore scroll position if we have saved state
+        if (savedState?.offset) {
+            window.scrollTo({ top: savedState.offset, behavior: 'instant' });
+        }
+    }, []);
 
     const virtualItems = virtualizer.getVirtualItems();
 
