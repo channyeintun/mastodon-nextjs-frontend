@@ -45,7 +45,6 @@ export const TimelinePage = observer(() => {
     const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
 
-    const headerRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
     const [showScrollTop, setShowScrollTop] = useState(false);
@@ -55,10 +54,10 @@ export const TimelinePage = observer(() => {
     // Get cached state on initial render
     const [cachedState] = useState(() => scrollStateCache.get(SCROLL_CACHE_KEY));
 
-    // Measure header height for scrollMargin
+    // Measure scroll margin from list element's position
     useLayoutEffect(() => {
-        if (headerRef.current) {
-            setScrollMargin(headerRef.current.offsetHeight);
+        if (listRef.current) {
+            setScrollMargin(listRef.current.offsetTop);
         }
     }, []);
 
@@ -200,35 +199,33 @@ export const TimelinePage = observer(() => {
     return (
         <Container>
             {/* Sticky Header */}
-            <div ref={headerRef}>
-                <StickyHeaderContainer>
-                    <StickyHeaderContent>
-                        <StickyHeaderTitle>
-                            <h1>Home</h1>
-                            <StickyHeaderSubtitle>Your personal timeline</StickyHeaderSubtitle>
-                        </StickyHeaderTitle>
-                        <StickyHeaderActions>
-                            <SearchLink href="/search">
-                                <Search size={20} />
-                            </SearchLink>
-                            {!isLoadingUser && user ? (
-                                <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
-                                    <img
-                                        src={user.avatar}
-                                        alt={user.display_name}
-                                        className="profile-pill-avatar"
-                                    />
-                                    <span className="profile-pill-name">
-                                        <EmojiText text={user.display_name} emojis={user.emojis} />
-                                    </span>
-                                </Link>
-                            ) : (
-                                <ProfilePillSkeleton />
-                            )}
-                        </StickyHeaderActions>
-                    </StickyHeaderContent>
-                </StickyHeaderContainer>
-            </div>
+            <StickyHeaderContainer>
+                <StickyHeaderContent>
+                    <StickyHeaderTitle>
+                        <h1>Home</h1>
+                        <StickyHeaderSubtitle>Your personal timeline</StickyHeaderSubtitle>
+                    </StickyHeaderTitle>
+                    <StickyHeaderActions>
+                        <SearchLink href="/search">
+                            <Search size={20} />
+                        </SearchLink>
+                        {!isLoadingUser && user ? (
+                            <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
+                                <img
+                                    src={user.avatar}
+                                    alt={user.display_name}
+                                    className="profile-pill-avatar"
+                                />
+                                <span className="profile-pill-name">
+                                    <EmojiText text={user.display_name} emojis={user.emojis} />
+                                </span>
+                            </Link>
+                        ) : (
+                            <ProfilePillSkeleton />
+                        )}
+                    </StickyHeaderActions>
+                </StickyHeaderContent>
+            </StickyHeaderContainer>
 
             {/* Virtualized List */}
             <div ref={listRef}>
