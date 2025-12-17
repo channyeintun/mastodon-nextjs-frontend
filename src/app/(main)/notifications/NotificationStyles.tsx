@@ -8,7 +8,7 @@ import Link from 'next/link';
 export const NotificationHeaderContainer = styled.div`
     background: var(--surface-1);
     z-index: 10;
-    padding: var(--size-4);
+    padding: var(--size-4) var(--size-4) 0;
     flex-shrink: 0;
 `;
 

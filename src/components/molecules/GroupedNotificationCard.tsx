@@ -231,9 +231,11 @@ export function GroupedNotificationCard({
                                 <X size={14} />
                             </DismissButton>
                         </HeaderRow>
+                    </ContentColumn>
 
-                        {/* Status content rendered using PostCard */}
-                        {relatedStatus && (
+                    {/* Status content rendered using PostCard - spans 2 columns on mobile */}
+                    {relatedStatus && (
+                        <StatusContent>
                             <PostCard
                                 status={relatedStatus}
                                 hideActions
@@ -241,8 +243,8 @@ export function GroupedNotificationCard({
                                 hideOptions
                                 depth={1}
                             />
-                        )}
-                    </ContentColumn>
+                        </StatusContent>
+                    )}
                 </ContentWrapper>
             </CardComponent>
         </div>
@@ -251,8 +253,9 @@ export function GroupedNotificationCard({
 
 // Styled components
 const ContentWrapper = styled.div`
-    display: flex;
-    gap: var(--size-3);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: var(--size-3);
 `;
 
 const IconColumn = styled.div`
@@ -276,6 +279,14 @@ const IconCircle = styled.div<{ $color: string }>`
 const ContentColumn = styled.div`
     flex: 1;
     min-width: 0;
+`;
+
+const StatusContent = styled.div`
+    grid-column: 2;
+
+    @media (max-width: 767px) {
+        grid-column: span 2;
+    }
 `;
 
 const HeaderRow = styled.div`
