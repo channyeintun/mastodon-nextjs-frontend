@@ -960,10 +960,28 @@ body {
   background: var(--surface-2);
   border-radius: var(--radius-2);
   box-shadow: var(--shadow-4);
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-3);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.12),
+    0 8px 32px rgba(0, 0, 0, 0.08);
   padding: var(--size-2);
   min-width: 200px;
   z-index: 50;
-  gap: 2px;
+  transform-origin: bottom right;
+  animation: optionsMenuIn 0.2s ease-out;
+}
+
+@keyframes optionsMenuIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Show options menu when button wrapper has focus-within */
@@ -981,28 +999,58 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--size-2);
-  padding: var(--size-2);
+  justify-content: flex-start;
+  gap: var(--size-3);
+  padding: var(--size-3);
   border: none;
   background: transparent;
   border-radius: var(--radius-2);
   cursor: pointer;
   color: var(--text-1);
   font-size: var(--font-size-1);
+  font-weight: var(--font-weight-5);
+  letter-spacing: -0.01em;
   text-align: left;
   white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+/* Icon wrapper for consistent alignment */
+.options-menu-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--text-2);
+  transition: color 0.15s ease;
 }
 
 .options-menu-item:hover {
   background: var(--surface-3);
 }
 
+.options-menu-item:hover svg {
+  color: var(--text-1);
+}
+
+.options-menu-item:active {
+  background: var(--surface-4);
+}
+
+/* Danger variant */
 .options-menu-item.danger {
+  color: var(--red-6);
+}
+
+.options-menu-item.danger svg {
   color: var(--red-6);
 }
 
 .options-menu-item.danger:hover {
   background: var(--red-2);
+}
+
+.options-menu-item.danger:hover svg {
+  color: var(--red-7);
 }
 
 /* ====================================
