@@ -239,13 +239,14 @@ export function PostCard({
                       <MediaImage
                         src={media.preview_url}
                         alt={media.description || ''}
+                        loading="lazy"
                       />
                     )}
                     {media.type === 'video' && media.url && (
-                      <MediaVideo src={media.url} controls playsInline />
+                      <MediaVideo src={media.url} controls playsInline preload="metadata" />
                     )}
                     {media.type === 'gifv' && media.url && (
-                      <MediaVideo src={media.url} autoPlay loop muted playsInline />
+                      <MediaVideo src={media.url} autoPlay loop muted playsInline preload="metadata" />
                     )}
                   </MediaItem>
                 ))}

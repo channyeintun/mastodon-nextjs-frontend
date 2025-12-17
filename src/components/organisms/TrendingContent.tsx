@@ -118,10 +118,8 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     const uniqueTags = flattenAndUniqByKey<Tag>('name')(tagsData?.pages);
     const uniqueLinks = flattenAndUniqByKey<TrendingLink>('url')(linksData?.pages);
 
-    const containerClasses = `window-scroll-container${authStore.isAuthenticated ? '' : ' guest'}`;
-
     return (
-        <Container className={containerClasses}>
+        <Container className="full-height-container">
             {/* Header */}
             {header && header}
 
@@ -164,6 +162,8 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             isLoadingMore={isFetchingNextPage}
                             hasMore={hasNextPage}
                             loadMoreThreshold={1}
+                            height="auto"
+                            style={{ flex: 1, minHeight: 0 }}
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-posts`}
                             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
@@ -201,6 +201,8 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             isLoadingMore={isFetchingNextTags}
                             hasMore={hasMoreTags}
                             loadMoreThreshold={1}
+                            height="auto"
+                            style={{ flex: 1, minHeight: 0 }}
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-tags`}
                             loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
@@ -238,6 +240,8 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             isLoadingMore={isFetchingNextLinks}
                             hasMore={hasMoreLinks}
                             loadMoreThreshold={1}
+                            height="auto"
+                            style={{ flex: 1, minHeight: 0 }}
                             className={authStore.isAuthenticated ? undefined : 'guest-list'}
                             scrollRestorationKey={`${scrollRestorationPrefix}-links`}
                             loadingIndicator={<TrendingLinkCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}

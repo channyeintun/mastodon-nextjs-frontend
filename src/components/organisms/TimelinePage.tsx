@@ -5,7 +5,6 @@ import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
 import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api';
 import { PostCard } from './PostCard';
-import { SuggestionsSection } from './SuggestionsSection';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
 import { VirtualizedList } from './VirtualizedList';
 import {
@@ -94,9 +93,9 @@ export const TimelinePage = observer(() => {
     }
 
     return (
-        <Container>
+        <Container className="full-height-container">
             {/* Suggestions Section at the top */}
-            <SuggestionsSection />
+            {/* <SuggestionsSection /> */}
 
             {/* Virtual scrolling list */}
             <VirtualizedList<Status>
@@ -111,6 +110,8 @@ export const TimelinePage = observer(() => {
                 isLoadingMore={isFetchingNextPage}
                 hasMore={hasNextPage}
                 loadMoreThreshold={1}
+                height="auto"
+                style={{ flex: 1, minHeight: 0 }}
                 scrollRestorationKey="home-timeline"
                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                 endIndicator="You've reached the end of your timeline"

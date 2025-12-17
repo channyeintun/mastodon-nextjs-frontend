@@ -137,7 +137,7 @@ export default function AccountPage({
   // Loading state
   if (accountLoading) {
     return (
-      <PageContainer className="window-scroll-container">
+      <PageContainer>
         <FixedBackButton>
           <IconButton onClick={() => router.back()}>
             <ArrowLeft size={20} />
@@ -159,7 +159,7 @@ export default function AccountPage({
   }
 
   return (
-    <PageContainer className="window-scroll-container">
+    <PageContainer>
       {/* Fixed Back Button */}
       <FixedBackButton>
         <IconButton onClick={() => router.back()}>

@@ -172,16 +172,6 @@ input[type="radio"] {
   padding: 0;
 }
 
-/* Container for pages using window virtualization (useWindowVirtualizer)
-   Unlike full-height-container, this allows natural page scrolling */
-.window-scroll-container {
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  /* No fixed height or overflow - allows window scrolling */
-  min-height: 100dvh;
-}
-
 @media (max-width: 767px) {
   .full-height-container:is(:not(.guest)) {
     height: calc(100dvh - var(--app-bottom-nav-height));

@@ -92,7 +92,6 @@ export function ProfileContent({
                             </LoadingContainer>
                         ) : (
                             <VirtualizedList<StatusItem>
-                                style={{ padding: 0 }}
                                 items={combinedItems}
                                 renderItem={(item, index) => {
                                     const isFirstPinned = item.isPinned && (index === 0 || !combinedItems[index - 1]?.isPinned);
@@ -117,6 +116,8 @@ export function ProfileContent({
                                 isLoadingMore={isFetchingNextPage}
                                 hasMore={hasNextPage}
                                 loadMoreThreshold={1}
+                                height="auto"
+                                style={{ flex: 1, minHeight: 0 }}
                                 scrollRestorationKey={`account-${acct}-posts`}
                                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                                 endIndicator="No more posts"
@@ -136,7 +137,6 @@ export function ProfileContent({
                             </LoadingContainer>
                         ) : (
                             <VirtualizedList<StatusItem>
-                                style={{ padding: 0 }}
                                 items={combinedItems}
                                 renderItem={(item, index) => {
                                     const isFirstPinned = item.isPinned && (index === 0 || !combinedItems[index - 1]?.isPinned);
@@ -161,6 +161,8 @@ export function ProfileContent({
                                 isLoadingMore={isFetchingNextPage}
                                 hasMore={hasNextPage}
                                 loadMoreThreshold={1}
+                                height="auto"
+                                style={{ flex: 1, minHeight: 0 }}
                                 scrollRestorationKey={`account-${acct}-posts_replies`}
                                 loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                                 endIndicator="No more posts"
