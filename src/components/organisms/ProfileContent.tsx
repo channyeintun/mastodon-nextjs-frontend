@@ -5,7 +5,7 @@ import { Activity } from 'react';
 import { useMemo } from 'react';
 import { Pin } from 'lucide-react';
 import { PostCard } from '@/components/organisms';
-import { WindowVirtualizedList } from '@/components/organisms/WindowVirtualizedList';
+import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { PostCardSkeleton, PostCardSkeletonList, MediaGrid, MediaGridSkeleton } from '@/components/molecules';
 import { Tabs, EmptyState } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
@@ -91,7 +91,7 @@ export function ProfileContent({
                                 <PostCardSkeletonList count={5} />
                             </LoadingContainer>
                         ) : (
-                            <WindowVirtualizedList<StatusItem>
+                            <VirtualizedList<StatusItem>
                                 style={{ padding: 0 }}
                                 items={combinedItems}
                                 renderItem={(item, index) => {
@@ -122,6 +122,7 @@ export function ProfileContent({
                                 endIndicator="No more posts"
                                 emptyState={<EmptyState title="No posts yet" />}
                             />
+
                         )}
                     </TabContent>
                 </Activity>
@@ -134,7 +135,7 @@ export function ProfileContent({
                                 <PostCardSkeletonList count={5} />
                             </LoadingContainer>
                         ) : (
-                            <WindowVirtualizedList<StatusItem>
+                            <VirtualizedList<StatusItem>
                                 style={{ padding: 0 }}
                                 items={combinedItems}
                                 renderItem={(item, index) => {
@@ -165,6 +166,7 @@ export function ProfileContent({
                                 endIndicator="No more posts"
                                 emptyState={<EmptyState title="No posts yet" />}
                             />
+
                         )}
                     </TabContent>
                 </Activity>

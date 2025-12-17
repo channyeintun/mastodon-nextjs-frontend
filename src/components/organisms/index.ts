@@ -8,6 +8,5 @@ export { SearchContent } from './SearchContent';
 export { SuggestionsSection } from './SuggestionsSection';
 export { TrendingContent } from './TrendingContent';
 export { VirtualizedList } from './VirtualizedList';
-export { WindowVirtualizedList } from './WindowVirtualizedList';
 export { TimelinePage } from './TimelinePage';
 export { TrendingPage } from './TrendingPage';

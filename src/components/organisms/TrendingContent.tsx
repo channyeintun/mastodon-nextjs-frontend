@@ -8,7 +8,7 @@ import { Check, Info, X, Hash, Newspaper, FileText, LogIn, UserPlus } from 'luci
 import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks, useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount } from '@/api';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton, AccountCardSkeleton } from '@/components/molecules';
-import { WindowVirtualizedList } from '@/components/organisms/WindowVirtualizedList';
+import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { Tabs, EmptyState, Button, Avatar, EmojiText } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
@@ -152,7 +152,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     ) : uniqueStatuses.length === 0 ? (
                         <EmptyState title="No trending posts at the moment" />
                     ) : (
-                        <WindowVirtualizedList<Status>
+                        <VirtualizedList<Status>
                             items={uniqueStatuses}
                             renderItem={(status) => (
                                 <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
@@ -169,6 +169,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
                             endIndicator="You've reached the end of trending posts"
                         />
+
                     )}
                 </TabContent>
             </Activity>
@@ -188,7 +189,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     ) : uniqueTags.length === 0 ? (
                         <EmptyState title="No trending tags at the moment" />
                     ) : (
-                        <WindowVirtualizedList<Tag>
+                        <VirtualizedList<Tag>
                             items={uniqueTags}
                             renderItem={(tag) => (
                                 <TrendingTagCard tag={tag} style={{ marginBottom: 'var(--size-2)' }} />
@@ -205,6 +206,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             loadingIndicator={<TrendingTagCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
                             endIndicator="You've reached the end of trending tags"
                         />
+
                     )}
                 </TabContentWithPadding>
             </Activity>
@@ -224,7 +226,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                     ) : uniqueLinks.length === 0 ? (
                         <EmptyState title="No trending news at the moment" />
                     ) : (
-                        <WindowVirtualizedList<TrendingLink>
+                        <VirtualizedList<TrendingLink>
                             items={uniqueLinks}
                             renderItem={(link) => (
                                 <TrendingLinkCard link={link} style={{ marginBottom: 'var(--size-2)' }} />
@@ -241,6 +243,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             loadingIndicator={<TrendingLinkCardSkeleton style={{ marginBottom: 'var(--size-2)' }} />}
                             endIndicator="You've reached the end of trending news"
                         />
+
                     )}
                 </TabContentWithPadding>
             </Activity>
