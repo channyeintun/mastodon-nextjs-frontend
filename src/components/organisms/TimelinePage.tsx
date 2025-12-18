@@ -210,7 +210,7 @@ export const TimelinePage = observer(() => {
                             <Search size={20} />
                         </SearchLink>
                         {!isLoadingUser && user ? (
-                            <Link href={`/@${user.acct}`} className="profile-pill profile-pill-static">
+                            <Link scroll={false} href={`/@${user.acct}`} className="profile-pill profile-pill-static">
                                 <img
                                     src={user.avatar}
                                     alt={user.display_name}
