@@ -222,6 +222,7 @@ function NavigationLink({ href, icon: Icon, label, isActive, variant, badge, tex
       className={className}
       aria-label={label}
       aria-current={isActive ? 'page' : undefined}
+      scroll={false}
     >
       <IconWrapper className="navigation-link-icon">
         <Icon size={variant === 'sidebar' ? 24 : 22} />
