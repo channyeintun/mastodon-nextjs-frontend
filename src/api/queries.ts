@@ -1260,10 +1260,29 @@ export const annualReportOptions = (year: number) =>
 // Annual Report State Hook
 export function useAnnualReportState(year: number, options?: { enabled?: boolean }) {
   const authStore = useAuthStore()
-  return useQuery({
+  const query = useQuery({
     ...annualReportStateOptions(year),
     enabled: (options?.enabled ?? true) && authStore.isAuthenticated && year > 0,
   })
+
+  // Sync state and year to cookies for SSR
+  useEffect(() => {
+    if (query.data?.state && year > 0) {
+      import('../utils/cookies').then(({ setCookie }) => {
+        setCookie('annualReportState', query.data.state, {
+          expires: 7, // 7 days
+          sameSite: 'lax',
+        })
+        // Also store the year so Navigation can render during SSR
+        setCookie('wrapstodonYear', String(year), {
+          expires: 7, // 7 days
+          sameSite: 'lax',
+        })
+      })
+    }
+  }, [query.data?.state, year])
+
+  return query
 }
 
 // Annual Report Data Hook

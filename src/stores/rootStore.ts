@@ -6,20 +6,27 @@
 import { AuthStore, type AuthState } from './authStore'
 import { UserStore } from './userStore'
 import { AccountStore } from './accountStore'
+import type { AnnualReportState } from '@/types/mastodon'
 
 export interface RootStoreInitialState {
   auth?: Partial<AuthState>
+  annualReportState?: AnnualReportState
+  wrapstodonYear?: number
 }
 
 export class RootStore {
   authStore: AuthStore
   userStore: UserStore
   accountStore: AccountStore
+  initialAnnualReportState?: AnnualReportState
+  initialWrapstodonYear?: number
 
   constructor(initialState?: RootStoreInitialState) {
     this.authStore = new AuthStore(initialState?.auth)
     this.userStore = new UserStore()
     this.accountStore = new AccountStore()
+    this.initialAnnualReportState = initialState?.annualReportState
+    this.initialWrapstodonYear = initialState?.wrapstodonYear
   }
 
   // Helper method to reset all stores (e.g., on logout)

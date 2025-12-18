@@ -10,6 +10,7 @@ import { SiBuymeacoffee } from 'react-icons/si';
 import { GiRingedPlanet } from 'react-icons/gi';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
+import { useStores } from '@/hooks/useStores';
 
 interface NavigationProps {
   isAuthenticated: boolean;
@@ -20,9 +21,11 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
   const pathname = usePathname();
   const { data: instance, isLoading: isLoadingInstance } = useInstance();
   const { data: unreadCount } = useUnreadNotificationCount();
+  const { initialAnnualReportState, initialWrapstodonYear } = useStores();
 
   // Get Wrapstodon year from instance - the server tells us which year is available
-  const wrapstodonYear = instance?.wrapstodon;
+  // Use SSR initial year as fallback while instance is loading
+  const wrapstodonYear = instance?.wrapstodon ?? initialWrapstodonYear;
 
   // Get current year to check if wrapstodon is for the current year
   const currentYear = new Date().getFullYear();
@@ -33,9 +36,11 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
     enabled: isAuthenticated && !!wrapstodonYear && isCurrentYear,
   });
 
-  // Show Wrapstodon link if server has current year and user is eligible, generating, or has available report
-  const showWrapstodon = isCurrentYear && annualReportState?.state && annualReportState.state !== 'ineligible';
+  // Use SSR initial state as fallback while loading
+  const effectiveState = annualReportState?.state ?? initialAnnualReportState;
 
+  // Show Wrapstodon link if server has current year and user is eligible, generating, or has available report
+  const showWrapstodon = isCurrentYear && effectiveState && effectiveState !== 'ineligible';
 
   // Prefetch notification marker globally so it's available immediately when visiting notifications
   useNotificationMarker();
@@ -129,12 +134,12 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
               );
             })}
 
-            {/* Wrapstodon - shown dynamically based on API state */}
+            {/* Wrapstodon - shown dynamically based on API state or SSR cookie */}
             {showWrapstodon && wrapstodonYear && (
               <WrapstodonButton
                 year={wrapstodonYear}
-                highlight={annualReportState?.state === 'available'}
-                textBadge={annualReportState?.state === 'available' ? 'New' : undefined}
+                highlight={effectiveState === 'available'}
+                textBadge={effectiveState === 'available' ? 'New' : undefined}
               />
             )}
           </nav>

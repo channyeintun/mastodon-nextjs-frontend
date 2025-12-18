@@ -26,6 +26,11 @@ export default async function RootLayout({
   const clientSecret = cookieStore.get('clientSecret')?.value ?? null;
   const theme = cookieStore.get('theme')?.value as 'light' | 'dark' | 'auto' | undefined;
 
+  // Read annualReportState and wrapstodonYear for SSR Wrapstodon
+  const annualReportState = cookieStore.get('annualReportState')?.value as 'available' | 'generating' | 'eligible' | 'ineligible' | undefined;
+  const wrapstodonYearCookie = cookieStore.get('wrapstodonYear')?.value;
+  const wrapstodonYear = wrapstodonYearCookie ? parseInt(wrapstodonYearCookie, 10) : undefined;
+
   // For SSR: only set data-theme if user explicitly chose light or dark
   // If auto or undefined, let client handle it to avoid forcing wrong default
   const dataTheme = theme === 'light' || theme === 'dark' ? theme : undefined;
@@ -37,6 +42,8 @@ export default async function RootLayout({
       clientId,
       clientSecret,
     },
+    annualReportState,
+    wrapstodonYear,
   };
 
   return (
