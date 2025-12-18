@@ -61,6 +61,7 @@ import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
 import { useAuthStore, useAccountStore } from '../hooks/useStores'
 import { useEffect } from 'react'
+import { idbQueryPersister } from '../lib/idbPersister'
 
 
 
@@ -332,11 +333,14 @@ export const infiniteSearchOptions = (params: SearchParams) =>
   })
 
 // Custom Emojis Options
+// Persisted to IndexedDB for offline access and faster initial load
 export const customEmojisOptions = () =>
   queryOptions({
     queryKey: ['customEmojis'] as const,
     queryFn: ({ signal }) => getCustomEmojis(signal),
-    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+    staleTime: 1000 * 60 * 60, // Consider fresh for 1 hour
+    gcTime: 1000 * 60 * 60 * 24 * 7, // Keep in memory for 7 days (must be >= persister maxAge)
+    persister: idbQueryPersister,
   })
 
 // Trends Options
