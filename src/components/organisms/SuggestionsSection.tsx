@@ -132,13 +132,16 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
         <Container>
             <Header>
                 <Title>Who to follow</Title>
-                <DismissSectionButton
-                    onClick={handleDismiss}
-                    title="Dismiss suggestions"
-                    aria-label="Dismiss suggestions"
-                >
-                    <X size={18} />
-                </DismissSectionButton>
+                <HeaderActions>
+                    <ViewAllLink href="/explore?tab=people">View all</ViewAllLink>
+                    <DismissSectionButton
+                        onClick={handleDismiss}
+                        title="Dismiss suggestions"
+                        aria-label="Dismiss suggestions"
+                    >
+                        <X size={18} />
+                    </DismissSectionButton>
+                </HeaderActions>
             </Header>
             <BodyWrapper>
                 <ScrollContainer ref={scrollRef} id="suggestions-scroller">
@@ -265,6 +268,22 @@ const Title = styled.h3`
     font-weight: 600;
     color: var(--text-1);
     margin: 0;
+`;
+
+const HeaderActions = styled.div`
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+`;
+
+const ViewAllLink = styled(Link)`
+    font-size: var(--font-size-1);
+    color: var(--link);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
 `;
 
 const DismissSectionButton = styled.button`
