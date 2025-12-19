@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --bun next dev -p 9003",
+    "dev": "bun --bun next dev -p 9003 --inspect",
     "build": "bun --bun next build",
     "start": "next start -p 9003",
     "lint": "eslint .",
