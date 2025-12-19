@@ -1,64 +1,49 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, Search as SearchIcon, X } from 'lucide-react';
 import { useSearch, useInfiniteSearch } from '@/api';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { SearchHistory } from '@/components/molecules';
 import { SearchContent } from '@/components/organisms';
 import { Input, IconButton } from '@/components/atoms';
+import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
 
 type TabType = 'all' | 'accounts' | 'statuses' | 'hashtags';
+const VALID_TABS = ['all', 'accounts', 'statuses', 'hashtags'] as const;
 
 export default function SearchPage() {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const query = searchParams.get('q') || '';
-  const activeTab = (searchParams.get('type') as TabType) || (query.startsWith('#') ? 'hashtags' : 'all');
-
-  const [inputValue, setInputValue] = useState(query);
   const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
+
+  // URL state for query and tab
+  const [query, setQuery] = useQueryState('q', { defaultValue: '' });
+  const [activeTab, setActiveTab] = useQueryState('type', {
+    defaultValue: (query.startsWith('#') ? 'hashtags' : 'all') as TabType,
+    parser: parseAsStringLiteral(VALID_TABS, 'all'),
+  });
+
+  // Local input state (synced from URL query)
+  const [inputValue, setInputValue] = useState(query);
 
   // Sync input value when URL query changes (e.g., back/forward navigation)
   useEffect(() => {
     setInputValue(query);
   }, [query]);
 
-  const updateURL = (newQuery: string, newTab?: TabType, shouldAddToHistory = false) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (newQuery) {
-      params.set('q', newQuery);
-      // Add to history only when explicitly requested (user typing or selecting from history)
-      if (shouldAddToHistory) {
-        addToHistory(newQuery);
-      }
-    } else {
-      params.delete('q');
+  const handleSearch = useCallback(() => {
+    const trimmed = inputValue.trim();
+    if (trimmed) {
+      setQuery(trimmed);
+      addToHistory(trimmed);
     }
+  }, [inputValue, setQuery, addToHistory]);
 
-    const tabToUse = newTab || activeTab;
-    if (tabToUse && tabToUse !== 'all') {
-      params.set('type', tabToUse);
-    } else {
-      params.delete('type');
-    }
-
-    router.replace(`${pathname}?${params.toString()}`);
-  };
-
-  const handleSearch = () => {
-    if (inputValue.trim()) {
-      updateURL(inputValue.trim(), undefined, true);
-    }
-  };
-
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setInputValue('');
-    updateURL('', undefined, false);
-  };
+    setQuery('');
+  }, [setQuery]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -67,7 +52,7 @@ export default function SearchPage() {
   };
 
   const handleTabChange = (tab: TabType) => {
-    updateURL(query, tab);
+    setActiveTab(tab);
   };
 
   // --- Data Fetching ---
@@ -180,7 +165,8 @@ export default function SearchPage() {
             history={history}
             onSelect={(selectedQuery) => {
               setInputValue(selectedQuery);
-              updateURL(selectedQuery, undefined, true);
+              setQuery(selectedQuery);
+              addToHistory(selectedQuery);
             }}
             onRemove={removeFromHistory}
             onClear={clearHistory}

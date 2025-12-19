@@ -2,8 +2,7 @@
 
 import styled from '@emotion/styled';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useState, Activity, type ReactNode } from 'react';
+import { Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Check, Info, X, Hash, Newspaper, FileText, LogIn, UserPlus } from 'lucide-react';
 import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks, useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount } from '@/api';
@@ -15,8 +14,16 @@ import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink, Field } from '@/types';
 import { useAuthStore, useAccountStore } from '@/hooks/useStores';
+import { useQueryState, createMappedParser } from '@/hooks/useQueryState';
 
 type TrendingTab = 'posts' | 'tags' | 'links' | 'foryou';
+
+const trendingTabParser = createMappedParser({
+    validValues: ['posts', 'tags', 'links', 'foryou'] as const,
+    defaultValue: 'posts' as TrendingTab,
+    urlToValue: { 'people': 'foryou' as TrendingTab },
+    valueToUrl: { 'foryou': 'people' },
+});
 
 // Get localized source label based on suggestion source
 const getSourceLabel = (sources: string[]): { label: string; hint: string } | null => {
@@ -69,17 +76,11 @@ interface TrendingContentProps {
 }
 
 export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'trending' }: TrendingContentProps) => {
-    const searchParams = useSearchParams();
+    const [activeTab, setActiveTab] = useQueryState('tab', {
+        defaultValue: 'posts' as TrendingTab,
+        parser: trendingTabParser,
+    });
 
-    // Map URL tab param to internal tab value
-    const getInitialTab = (): TrendingTab => {
-        const tabParam = searchParams.get('tab');
-        if (tabParam === 'people') return 'foryou';
-        if (tabParam === 'posts' || tabParam === 'tags' || tabParam === 'links') return tabParam;
-        return 'posts';
-    };
-
-    const [activeTab, setActiveTab] = useState<TrendingTab>(getInitialTab);
     const authStore = useAuthStore();
     const accountStore = useAccountStore();
 

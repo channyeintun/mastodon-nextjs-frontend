@@ -1,7 +1,7 @@
 'use client';
 
-import { Activity, use, useEffect, useState, useCallback } from 'react';
-import { useRouter, useSearchParams, notFound } from 'next/navigation';
+import { Activity, use, useEffect, useState } from 'react';
+import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import {
@@ -25,9 +25,10 @@ import { flattenAndUniqById } from '@/utils/fp';
 import { PageContainer, FixedBackButton, ErrorContainer, ErrorTitle } from './styles';
 import { ProfileTabContent, MediaTabContent, ContentSection } from './ProfileTabContent';
 import { ProfileHeader, LimitedProfileHeader } from './ProfileHeader';
+import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
 
 type ProfileTab = 'posts' | 'posts_replies' | 'media';
-const VALID_TABS: ProfileTab[] = ['posts', 'posts_replies', 'media'];
+const VALID_TABS = ['posts', 'posts_replies', 'media'] as const;
 
 const profileTabs: TabItem<ProfileTab>[] = [
   { value: 'posts', label: 'Posts' },
@@ -41,7 +42,6 @@ const MEDIA_FILTERS = { only_media: true } as const;
 
 export default function AccountPage({ params }: { params: Promise<{ acct: string }> }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { acct: acctParam } = use(params);
 
   const decodedAcct = decodeURIComponent(acctParam);
@@ -56,22 +56,11 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
     if (account) setShowLimitedProfile(account.limited);
   }, [account]);
 
-  // Read initial tab from URL or default to 'posts'
-  const tabParam = searchParams.get('tab') as ProfileTab | null;
-  const initialTab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'posts';
-  const [activeTab, setActiveTab] = useState<ProfileTab>(initialTab);
-
-  // Sync tab changes to URL
-  const handleTabChange = useCallback((tab: ProfileTab) => {
-    setActiveTab(tab);
-    const url = new URL(window.location.href);
-    if (tab === 'posts') {
-      url.searchParams.delete('tab');
-    } else {
-      url.searchParams.set('tab', tab);
-    }
-    router.replace(url.pathname + url.search, { scroll: false });
-  }, [router]);
+  // Tab state synced with URL using useQueryState
+  const [activeTab, setActiveTab] = useQueryState('tab', {
+    defaultValue: 'posts' as ProfileTab,
+    parser: parseAsStringLiteral(VALID_TABS, 'posts'),
+  });
 
   const { data: pinnedStatuses } = usePinnedStatuses(accountId || '');
   const { data: currentAccount } = useCurrentAccount();
@@ -167,7 +156,7 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
         ) : (
           <>
             <ProfileHeader {...commonHeaderProps} />
-            <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={handleTabChange} sticky />
+            <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={setActiveTab} sticky />
             <ContentSection>
               <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
                 <ProfileTabContent
