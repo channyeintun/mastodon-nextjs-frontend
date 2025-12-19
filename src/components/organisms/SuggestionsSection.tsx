@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { useRef, useCallback, useState } from 'react';
 import { X, Info, Check } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
-import { useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount } from '@/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount, prefillAccountCache } from '@/api';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
-import { useAuthStore, useAccountStore } from '@/hooks/useStores';
-import type { Field } from '@/types';
+import { useAuthStore } from '@/hooks/useStores';
+import type { Field, Account } from '@/types';
 
 const SUGGESTIONS_DISMISSED_KEY = 'mastodon_suggestions_dismissed';
 
@@ -59,7 +60,7 @@ const extractLinkText = (html: string): string => {
 
 export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionProps) => {
     const authStore = useAuthStore();
-    const accountStore = useAccountStore();
+    const queryClient = useQueryClient();
     const { data: suggestions, isLoading, isError } = useSuggestions({ limit });
     const deleteSuggestion = useDeleteSuggestion();
     const followMutation = useFollowAccount();
@@ -94,6 +95,11 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
         if (!scrollRef.current) return;
         scrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
     }, []);
+
+    // Pre-populate account cache before navigation
+    const handleAccountClick = (account: Account) => () => {
+        prefillAccountCache(queryClient, account);
+    };
 
     // Don't show if dismissed or not authenticated
     if (isDismissed || !authStore.isAuthenticated) {
@@ -177,7 +183,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
 
                                     <CardLink
                                         href={`/@${suggestion.account.acct}`}
-                                        onClick={() => accountStore.cacheAccount(suggestion.account)}
+                                        onClick={handleAccountClick(suggestion.account)}
                                     >
                                         <Avatar
                                             src={suggestion.account.avatar}
@@ -188,7 +194,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
 
                                     <CardLink
                                         href={`/@${suggestion.account.acct}`}
-                                        onClick={() => accountStore.cacheAccount(suggestion.account)}
+                                        onClick={handleAccountClick(suggestion.account)}
                                     >
                                         <div className="suggestion-card-name text-truncate">
                                             <EmojiText
@@ -200,7 +206,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
 
                                     <CardLink
                                         href={`/@${suggestion.account.acct}`}
-                                        onClick={() => accountStore.cacheAccount(suggestion.account)}
+                                        onClick={handleAccountClick(suggestion.account)}
                                     >
                                         <div className="suggestion-card-handle text-truncate">@{suggestion.account.acct}</div>
                                     </CardLink>

@@ -4,10 +4,10 @@ import styled from '@emotion/styled';
 import { type CSSProperties } from 'react';
 import Link from 'next/link';
 import { Lock } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, Card, Button, EmojiText } from '@/components/atoms';
 import type { Account } from '@/types';
-import { useFollowAccount, useUnfollowAccount, useRelationships } from '@/api';
-import { useAccountStore } from '@/hooks/useStores';
+import { useFollowAccount, useUnfollowAccount, useRelationships, prefillAccountCache } from '@/api';
 
 interface UserCardProps {
   account: Account;
@@ -24,7 +24,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   const unfollowMutation = useUnfollowAccount();
   const { data: relationships } = useRelationships([account.id]);
   const relationship = relationships?.[0];
-  const accountStore = useAccountStore();
+  const queryClient = useQueryClient();
 
   const handleFollowToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -40,9 +40,14 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
   const isFollowing = relationship?.following || false;
   const isLoading = followMutation.isPending || unfollowMutation.isPending;
 
+  // Pre-populate account cache before navigation  
+  const handleProfileClick = () => {
+    prefillAccountCache(queryClient, account);
+  };
+
   return (
     <Card padding="medium" hoverable style={style}>
-      <StyledLink href={`/@${account.acct}`} onClick={() => accountStore.cacheAccount(account)}>
+      <StyledLink href={`/@${account.acct}`} onClick={handleProfileClick}>
         <ContentContainer>
           <Avatar
             src={account.avatar}

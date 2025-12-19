@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { Activity, type ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Check, Info, X, Hash, Newspaper, FileText, LogIn, UserPlus } from 'lucide-react';
-import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks, useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount } from '@/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendingLinks, useSuggestions, useDeleteSuggestion, useRelationships, useFollowAccount, useUnfollowAccount, prefillAccountCache } from '@/api';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton, AccountCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
@@ -13,7 +14,7 @@ import { Tabs, EmptyState, Button, Avatar, EmojiText } from '@/components/atoms'
 import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink, Field } from '@/types';
-import { useAuthStore, useAccountStore } from '@/hooks/useStores';
+import { useAuthStore } from '@/hooks/useStores';
 import { useQueryState, createMappedParser } from '@/hooks/useQueryState';
 
 type TrendingTab = 'posts' | 'tags' | 'links' | 'foryou';
@@ -82,7 +83,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
     });
 
     const authStore = useAuthStore();
-    const accountStore = useAccountStore();
+    const queryClient = useQueryClient();
 
     // Fetch data for all tabs
     const {
@@ -295,7 +296,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                     <SuggestionCard key={suggestion.account.id}>
                                         <CardContent
                                             href={`/@${suggestion.account.acct}`}
-                                            onClick={() => accountStore.cacheAccount(suggestion.account)}
+                                            onClick={() => prefillAccountCache(queryClient, suggestion.account)}
                                         >
                                             <Avatar
                                                 src={suggestion.account.avatar}

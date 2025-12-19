@@ -13,12 +13,12 @@ import {
     Bell,
     X,
 } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
 import { PostCard } from '@/components/organisms';
 import { formatRelativeTime } from '@/utils/date';
 import type { Notification, NotificationType } from '@/types';
-import { useDismissNotification } from '@/api';
-import { useAccountStore } from '@/hooks/useStores';
+import { useDismissNotification, queryKeys, prefillAccountCache } from '@/api';
 
 interface NotificationCardProps {
     notification: Notification;
@@ -98,7 +98,7 @@ const NOTIFICATION_CONFIG: Record<NotificationType, {
 export function NotificationCard({ notification, onDismiss, style, isNew }: NotificationCardProps) {
     const router = useRouter();
     const dismissMutation = useDismissNotification();
-    const accountStore = useAccountStore();
+    const queryClient = useQueryClient();
 
     const config = NOTIFICATION_CONFIG[notification.type];
     const account = notification.account;
@@ -113,10 +113,19 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
 
         // Navigate based on notification type
         if (notification.status) {
+            // Pre-populate status cache before navigation
+            queryClient.setQueryData(queryKeys.statuses.detail(notification.status.id), notification.status);
             router.push(`/status/${notification.status.id}`);
         } else {
+            // Pre-populate account cache before navigation
+            prefillAccountCache(queryClient, account);
             router.push(`/@${account.acct}`);
         }
+    };
+
+    const handleAccountClick = () => {
+        // Pre-populate account cache before navigation
+        prefillAccountCache(queryClient, account);
     };
 
     const handleDismiss = (e: React.MouseEvent) => {
@@ -145,7 +154,7 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
                         <HeaderRow>
                             <AvatarLink
                                 href={`/@${account.acct}`}
-                                onClick={() => accountStore.cacheAccount(account)}
+                                onClick={handleAccountClick}
                             >
                                 <Avatar
                                     src={account.avatar}
@@ -158,7 +167,7 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
                                 <MessageText>
                                     <AccountLink
                                         href={`/@${account.acct}`}
-                                        onClick={() => accountStore.cacheAccount(account)}
+                                        onClick={handleAccountClick}
                                     >
                                         <EmojiText text={displayName} emojis={account.emojis} />
                                     </AccountLink>

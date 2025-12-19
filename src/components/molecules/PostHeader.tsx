@@ -16,9 +16,10 @@ import {
     VolumeX,
     Flag,
 } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, IconButton, EmojiText } from '@/components/atoms';
 import { formatRelativeTime } from '@/utils/date';
-import { useAccountStore } from '@/hooks/useStores';
+import { prefillAccountCache } from '@/api';
 import type { Account } from '@/types';
 
 type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
@@ -63,10 +64,11 @@ export function PostHeader({
     onMute,
     onReport,
 }: PostHeaderProps) {
-    const accountStore = useAccountStore();
+    const queryClient = useQueryClient();
 
     const handleProfileClick = () => {
-        accountStore.cacheAccount(account);
+        // Pre-populate account cache before navigation to avoid refetch
+        prefillAccountCache(queryClient, account);
     };
 
     return (

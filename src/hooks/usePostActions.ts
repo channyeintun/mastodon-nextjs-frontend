@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   useFavouriteStatus,
   useUnfavouriteStatus,
@@ -13,12 +14,14 @@ import {
   useUnpinStatus,
   useVotePoll,
   useCurrentAccount,
+  queryKeys,
 } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import type { Status } from '@/types';
 
 export function usePostActions(status: Status, onDeleteClick?: (postId: string) => void) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const authStore = useAuthStore();
 
   const [showCWContent, setShowCWContent] = useState(false);
@@ -172,6 +175,8 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
     if (window.location.pathname === `/status/${displayStatus.id}`) {
       return;
     }
+    // Pre-populate status cache before navigation to avoid refetch
+    queryClient.setQueryData(queryKeys.statuses.detail(displayStatus.id), displayStatus);
     router.push(`/status/${displayStatus.id}`);
   };
 
@@ -203,6 +208,8 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
     e.preventDefault();
     e.stopPropagation();
     if (window.location.pathname !== `/status/${displayStatus.id}`) {
+      // Pre-populate status cache before navigation to avoid refetch
+      queryClient.setQueryData(queryKeys.statuses.detail(displayStatus.id), displayStatus);
       router.push(`/status/${displayStatus.id}`);
     }
   };

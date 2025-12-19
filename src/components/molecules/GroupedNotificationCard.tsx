@@ -13,12 +13,12 @@ import {
     Bell,
     X,
 } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
 import { PostCard } from '@/components/organisms';
 import { formatRelativeTime } from '@/utils/date';
 import type { NotificationGroup, Account, PartialAccountWithAvatar, Status, NotificationType } from '@/types';
-import { useDismissNotificationGroup } from '@/api';
-import { useAccountStore } from '@/hooks/useStores';
+import { useDismissNotificationGroup, queryKeys, prefillAccountCache } from '@/api';
 
 interface GroupedNotificationCardProps {
     group: NotificationGroup;
@@ -120,7 +120,7 @@ export function GroupedNotificationCard({
 }: GroupedNotificationCardProps) {
     const router = useRouter();
     const dismissMutation = useDismissNotificationGroup();
-    const accountStore = useAccountStore();
+    const queryClient = useQueryClient();
 
     const config = NOTIFICATION_CONFIG[group.type];
 
@@ -137,6 +137,13 @@ export function GroupedNotificationCard({
     // Get status if applicable
     const relatedStatus = group.status_id ? statuses.get(group.status_id) : undefined;
 
+    // Pre-populate account cache before navigation
+    const handleAccountClick = (account: Account | PartialAccountWithAvatar) => () => {
+        if (isFullAccount(account)) {
+            prefillAccountCache(queryClient, account);
+        }
+    };
+
     const handleCardClick = (e: React.MouseEvent) => {
         // Don't navigate if clicking on interactive elements
         const target = e.target as HTMLElement;
@@ -146,8 +153,14 @@ export function GroupedNotificationCard({
 
         // Navigate based on notification type
         if (relatedStatus) {
+            // Pre-populate status cache before navigation
+            queryClient.setQueryData(queryKeys.statuses.detail(relatedStatus.id), relatedStatus);
             router.push(`/status/${relatedStatus.id}`);
         } else if (primaryAccount) {
+            // Pre-populate account cache before navigation
+            if (isFullAccount(primaryAccount)) {
+                prefillAccountCache(queryClient, primaryAccount);
+            }
             router.push(`/@${primaryAccount.acct}`);
         }
     };
@@ -174,7 +187,7 @@ export function GroupedNotificationCard({
                     >
                         <StackedAvatarLink
                             href={`/@${account.acct}`}
-                            onClick={() => isFullAccount(account) && accountStore.cacheAccount(account)}
+                            onClick={handleAccountClick(account)}
                         >
                             <AvatarWithBorder
                                 src={account.avatar}
@@ -216,7 +229,7 @@ export function GroupedNotificationCard({
                                         <>
                                             <AccountLink
                                                 href={`/@${primaryAccount.acct}`}
-                                                onClick={() => accountStore.cacheAccount(primaryAccount)}
+                                                onClick={handleAccountClick(primaryAccount)}
                                             >
                                                 <EmojiText text={primaryDisplayName} emojis={primaryAccount.emojis} />
                                             </AccountLink>

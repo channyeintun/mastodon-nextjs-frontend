@@ -3,9 +3,9 @@
 import styled from '@emotion/styled';
 import Link from 'next/link';
 import { Check, X, Ban, VolumeX } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
-import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest, useUnblockAccount, useUnmuteAccount, useRelationships, useCurrentAccount } from '@/api';
-import { useAccountStore } from '@/hooks/useStores';
+import { useFollowAccount, useUnfollowAccount, useAcceptFollowRequest, useRejectFollowRequest, useUnblockAccount, useUnmuteAccount, useRelationships, useCurrentAccount, prefillAccountCache } from '@/api';
 import type { Account, Relationship } from '@/types';
 
 interface AccountCardProps {
@@ -40,7 +40,7 @@ export function AccountCard({
         shouldFetch ? [account.id] : []
     );
     const relationship = relationshipProp ?? relationships?.[0];
-    const accountStore = useAccountStore();
+    const queryClient = useQueryClient();
 
     const followMutation = useFollowAccount();
     const unfollowMutation = useUnfollowAccount();
@@ -91,8 +91,8 @@ export function AccountCard({
     };
 
     const handleCardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        // Cache account data for faster loading on profile page
-        accountStore.cacheAccount(account);
+        // Pre-populate account cache before navigation to avoid refetch
+        prefillAccountCache(queryClient, account);
         if (onClick) {
             e.preventDefault();
             onClick(account);

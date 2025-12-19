@@ -3,7 +3,7 @@
  * Uses queryOptions pattern for reusability and type safety
  */
 
-import { useQuery, useQueries, useInfiniteQuery, queryOptions, infiniteQueryOptions, keepPreviousData } from '@tanstack/react-query'
+import { useQuery, useQueries, useInfiniteQuery, queryOptions, infiniteQueryOptions, keepPreviousData, type QueryClient } from '@tanstack/react-query'
 import {
   getHomeTimeline,
   getPublicTimeline,
@@ -65,8 +65,8 @@ import {
   getFamiliarFollowers,
 } from './client'
 import { queryKeys } from './queryKeys'
-import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
-import { useAuthStore, useAccountStore } from '../hooks/useStores'
+import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType, Account } from '../types/mastodon'
+import { useAuthStore } from '../hooks/useStores'
 import { useEffect } from 'react'
 import { idbQueryPersister } from '../lib/idbPersister'
 import { setCookie } from '../utils/cookies'
@@ -699,58 +699,77 @@ export function useLookupAccount(acct: string) {
   })
 }
 
+// SessionStorage key for persisting acct → id mappings
+const ACCT_TO_ID_STORAGE_KEY = 'mastodon_acct_to_id'
+
+// Helper functions for ID persistence
+function getPersistedId(acct: string): string | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const mappings = JSON.parse(sessionStorage.getItem(ACCT_TO_ID_STORAGE_KEY) || '{}')
+    return mappings[acct] || null
+  } catch (error) {
+    console.error('Failed to read acct→id mapping from sessionStorage:', error)
+    return null
+  }
+}
+
+function persistId(acct: string, id: string): void {
+  if (typeof window === 'undefined') return
+  try {
+    const mappings = JSON.parse(sessionStorage.getItem(ACCT_TO_ID_STORAGE_KEY) || '{}')
+    mappings[acct] = id
+    sessionStorage.setItem(ACCT_TO_ID_STORAGE_KEY, JSON.stringify(mappings))
+  } catch (error) {
+    console.error('Failed to persist acct→id mapping to sessionStorage:', error)
+  }
+}
+
 /**
- * Optimized account fetching hook with priority:
- * 1. Cached account data → return immediately, NO fetch
- * 2. Cached ID → fetch using /accounts/:id (faster)  
- * 3. No ID → fetch using /accounts/lookup (slower)
+ * Pre-populate account cache for both lookup and detail query keys.
+ * This ensures cache hit regardless of which query strategy useAccountWithCache uses.
+ * Also persists the acct→id mapping for future cold starts.
+ */
+export function prefillAccountCache(queryClient: QueryClient, account: Account): void {
+  // Set data for lookup query key (used when no persisted ID)
+  queryClient.setQueryData(queryKeys.accounts.lookup(account.acct), account)
+  // Set data for detail query key (used when persisted ID exists)  
+  queryClient.setQueryData(queryKeys.accounts.detail(account.id), account)
+  // Persist the ID mapping for future cold starts
+  persistId(account.acct, account.id)
+}
+
+/**
+ * Account fetching hook with ID persistence optimization:
+ * 1. Check TanStack Query cache first (from pre-population)
+ * 2. Check sessionStorage for persisted ID → use /accounts/:id (faster)
+ * 3. Fall back to /accounts/lookup (slower)
  */
 export function useAccountWithCache(acct: string) {
-  const accountStore = useAccountStore()
+  // Check for persisted ID (allows faster /accounts/:id endpoint on cold starts)
+  const persistedId = acct ? getPersistedId(acct) : null
 
-  // Priority 1: Check for cached account data (in-memory)
-  const cachedAccount = acct ? accountStore.getAccountByAcct(acct) : undefined
-
-  // Priority 2: Check for cached ID (persisted in localStorage)
-  const cachedId = acct ? accountStore.getAccountIdByAcct(acct) : undefined
-
-  // Determine fetch strategy
-  const hasCachedData = !!cachedAccount
-  const hasCachedId = !!cachedId && !hasCachedData
-  const needsLookup = !!acct && !hasCachedData && !cachedId
-
-  // Query using ID (only if we have ID but no cached data)
+  // Use ID-based fetch if we have a persisted ID
   const idQuery = useQuery({
-    ...accountOptions(cachedId || ''),
-    enabled: hasCachedId,
+    ...accountOptions(persistedId || ''),
+    enabled: !!persistedId && !!acct,
   })
 
-  // Query using lookup (only if no ID and no cached data)
+  // Use lookup as fallback if no persisted ID
   const lookupQuery = useQuery({
     ...lookupAccountOptions(acct),
-    enabled: needsLookup,
+    enabled: !!acct && !persistedId,
   })
 
-  // Cache results from API calls
+  // Persist ID when we get data from either query
   useEffect(() => {
-    const fetchedData = idQuery.data || lookupQuery.data
-    if (fetchedData && !hasCachedData) {
-      accountStore.cacheAccount(fetchedData)
+    const data = idQuery.data || lookupQuery.data
+    if (data && acct) {
+      persistId(acct, data.id)
     }
-  }, [idQuery.data, lookupQuery.data, accountStore, hasCachedData])
+  }, [idQuery.data, lookupQuery.data, acct])
 
-  // Return the appropriate result
-  if (hasCachedData) {
-    // Return cached data as a query-like object
-    return {
-      data: cachedAccount,
-      isLoading: false,
-      isError: false,
-      error: null,
-    }
-  }
-
-  return hasCachedId ? idQuery : lookupQuery
+  return persistedId ? idQuery : lookupQuery
 }
 
 

@@ -5,8 +5,8 @@ import { observer } from 'mobx-react-lite';
 import Link from 'next/link';
 import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
-import { useInfiniteHomeTimeline, useCurrentAccount } from '@/api';
-import { useAccountStore } from '@/hooks/useStores';
+import { useQueryClient } from '@tanstack/react-query';
+import { useInfiniteHomeTimeline, useCurrentAccount, prefillAccountCache } from '@/api';
 import { PostCard } from './PostCard';
 import { SuggestionsSection } from './SuggestionsSection';
 import { PostCardSkeletonList, PostCardSkeleton, ProfilePillSkeleton } from '@/components/molecules';
@@ -45,7 +45,7 @@ type ListItem =
 export const TimelinePage = observer(() => {
     const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
-    const accountStore = useAccountStore();
+    const queryClient = useQueryClient();
 
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
@@ -133,6 +133,13 @@ export const TimelinePage = observer(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    // Pre-populate account cache before navigation
+    const handleProfileClick = () => {
+        if (user) {
+            prefillAccountCache(queryClient, user);
+        }
+    };
+
     // Loading state - only show if no cached data
     if (isLoading && uniqueStatuses.length === 0) {
         return (
@@ -216,7 +223,7 @@ export const TimelinePage = observer(() => {
                                 scroll={false}
                                 href={`/@${user.acct}`}
                                 className="profile-pill profile-pill-static"
-                                onClick={() => accountStore.cacheAccount(user)}
+                                onClick={handleProfileClick}
                             >
                                 <img
                                     src={user.avatar}
