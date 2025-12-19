@@ -144,7 +144,7 @@ export function ProfileTabContent({
     if (isLoading && statuses.length === 0 && (!pinnedStatuses || pinnedStatuses.length === 0)) {
         return (
             <LoadingContainer>
-                <PostCardSkeletonList count={5} />
+                <PostCardSkeletonList count={1} />
             </LoadingContainer>
         );
     }
