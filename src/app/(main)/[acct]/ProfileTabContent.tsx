@@ -78,9 +78,19 @@ export function ProfileTabContent({
         return [...pinned, ...regular];
     }, [pinnedStatuses, statuses]);
 
+    // Include an extra item for the "end indicator" when we've reached the end
+    const showEndIndicator = !hasNextPage && combinedItems.length > 0 && !isFetchingNextPage;
+    const totalItemCount = combinedItems.length + (showEndIndicator ? 1 : 0);
+
     const virtualizer = useWindowVirtualizer({
-        count: combinedItems.length,
-        estimateSize: () => 300,
+        count: totalItemCount,
+        estimateSize: (index) => {
+            // End indicator is smaller than posts
+            if (showEndIndicator && index === combinedItems.length) {
+                return 60;
+            }
+            return 300;
+        },
         overscan: 5,
         scrollMargin,
         initialOffset: cachedState?.offset,
@@ -149,6 +159,24 @@ export function ProfileTabContent({
             <div ref={listRef}>
                 <VirtualContent style={{ height: `${virtualizer.getTotalSize()}px` }}>
                     {virtualItems.map((virtualRow) => {
+                        const isEndIndicator = showEndIndicator && virtualRow.index === combinedItems.length;
+
+                        if (isEndIndicator) {
+                            return (
+                                <VirtualItemWrapper
+                                    key="end-indicator"
+                                    data-index={virtualRow.index}
+                                    ref={virtualizer.measureElement}
+                                    className="window-virtual-item"
+                                    style={{
+                                        transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
+                                    }}
+                                >
+                                    <EndIndicator>No more posts</EndIndicator>
+                                </VirtualItemWrapper>
+                            );
+                        }
+
                         const item = combinedItems[virtualRow.index];
                         if (!item) return null;
 
@@ -184,10 +212,6 @@ export function ProfileTabContent({
                     <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
                 )}
 
-                {/* End of list indicator */}
-                {!hasNextPage && combinedItems.length > 0 && (
-                    <EndIndicator>No more posts</EndIndicator>
-                )}
             </div>
 
             {/* Scroll to top button */}
@@ -285,6 +309,8 @@ const PinnedBadge = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.5px;
 `;
+
+
 
 const EndIndicator = styled.div`
   text-align: center;

@@ -40,7 +40,8 @@ const SUGGESTIONS_INSERT_INDEX = 5;
 // Item types for mixed rendering
 type ListItem =
     | { type: 'status'; data: Status }
-    | { type: 'suggestions' };
+    | { type: 'suggestions' }
+    | { type: 'endIndicator' };
 
 export const TimelinePage = observer(() => {
     const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
@@ -79,12 +80,20 @@ export const TimelinePage = observer(() => {
         mixedItems.push({ type: 'suggestions' });
     }
 
+    // Include an extra item for the "end indicator" when we've reached the end
+    const showEndIndicator = !hasNextPage && uniqueStatuses.length > 0 && !isFetchingNextPage;
+    if (showEndIndicator) {
+        mixedItems.push({ type: 'endIndicator' });
+    }
+
     const virtualizer = useWindowVirtualizer({
         count: mixedItems.length,
         estimateSize: (index) => {
             const item = mixedItems[index];
-            // Suggestions section is typically taller
-            return item?.type === 'suggestions' ? 300 : 200;
+            // End indicator is smaller, suggestions are taller
+            if (item?.type === 'endIndicator') return 60;
+            if (item?.type === 'suggestions') return 300;
+            return 200;
         },
         overscan: 5,
         scrollMargin,
@@ -257,7 +266,9 @@ export const TimelinePage = observer(() => {
                                     transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
                                 }}
                             >
-                                {item.type === 'suggestions' ? (
+                                {item.type === 'endIndicator' ? (
+                                    <EndIndicator>You've reached the end of your timeline</EndIndicator>
+                                ) : item.type === 'suggestions' ? (
                                     <SuggestionsSection />
                                 ) : (
                                     <PostCard status={item.data} style={{ marginBottom: 'var(--size-3)' }} />
@@ -270,11 +281,6 @@ export const TimelinePage = observer(() => {
                 {/* Loading indicator */}
                 {isFetchingNextPage && (
                     <PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />
-                )}
-
-                {/* End of list indicator */}
-                {!hasNextPage && uniqueStatuses.length > 0 && (
-                    <EndIndicator>You've reached the end of your timeline</EndIndicator>
                 )}
             </div>
 
