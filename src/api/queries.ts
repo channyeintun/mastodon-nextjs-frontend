@@ -1093,11 +1093,14 @@ export function useNotificationPolicyV1() {
 }
 
 // Instance Languages Options
+// Persisted to IndexedDB for offline access and faster initial load
 export const instanceLanguagesOptions = () =>
   queryOptions({
     queryKey: ['instance', 'languages'] as const,
     queryFn: ({ signal }) => getInstanceLanguages(signal),
-    staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+    staleTime: 1000 * 60 * 60 * 24, // Consider fresh for 24 hours
+    gcTime: 1000 * 60 * 60 * 24, // Keep in memory for 24 hours (matches persister maxAge)
+    persister: idbQueryPersister,
   })
 
 // Instance Languages Hook
