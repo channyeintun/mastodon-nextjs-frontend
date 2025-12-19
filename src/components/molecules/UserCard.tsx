@@ -54,7 +54,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
             {/* Name and username */}
             <HeaderRow>
               <NameContainer>
-                <DisplayNameRow>
+                <div className="usercard-display-name text-truncate">
                   <EmojiText
                     text={account.display_name || account.username}
                     emojis={account.emojis}
@@ -69,10 +69,10 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
                       <Lock size={12} />
                     </LockIcon>
                   )}
-                </DisplayNameRow>
-                <Username>
+                </div>
+                <div className="usercard-username text-truncate">
                   @{account.acct}
-                </Username>
+                </div>
               </NameContainer>
 
               {/* Follow button */}
@@ -151,14 +151,7 @@ const NameContainer = styled.div`
   flex: 1;
 `;
 
-const DisplayNameRow = styled.div`
-  font-weight: var(--font-weight-6);
-  color: var(--text-1);
-  font-size: var(--font-size-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
+/* DisplayNameRow and Username moved to globals.css as .usercard-display-name and .usercard-username */
 
 const BotBadge = styled.span`
   margin-left: var(--size-2);
@@ -172,14 +165,6 @@ const BotBadge = styled.span`
 const LockIcon = styled.span`
   margin-left: var(--size-2);
   font-size: var(--font-size-0);
-`;
-
-const Username = styled.div`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 const StyledButton = styled(Button)`

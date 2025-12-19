@@ -83,15 +83,15 @@ export function PostHeader({
                 <HeaderRow>
                     <NameSection>
                         <ProfileLink scroll={false} href={`/@${account.acct}`} onClick={handleProfileClick}>
-                            <DisplayName>
+                            <div className="post-header-display-name text-truncate">
                                 <EmojiText
                                     text={account.display_name || account.username}
                                     emojis={account.emojis}
                                 />
-                            </DisplayName>
-                            <Handle>
+                            </div>
+                            <div className="post-header-handle text-truncate">
                                 @{account.acct}
-                            </Handle>
+                            </div>
                         </ProfileLink>
                     </NameSection>
 
@@ -244,21 +244,7 @@ const ProfileLink = styled(Link)`
   text-decoration: none;
 `;
 
-const DisplayName = styled.div`
-  font-weight: var(--font-weight-6);
-  color: var(--text-1);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const Handle = styled.div`
-  font-size: var(--font-size-0);
-  color: var(--text-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
+/* DisplayName and Handle moved to globals.css as .post-header-display-name and .post-header-handle */
 
 const MetaSection = styled.div`
   display: flex;

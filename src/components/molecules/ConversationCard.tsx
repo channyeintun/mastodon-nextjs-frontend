@@ -113,16 +113,16 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
 
       <ChatContent>
         <TopRow>
-          <NameWrapper $unread={conversation.unread}>
+          <div className={`conversation-card-name text-truncate ${conversation.unread ? 'unread' : ''}`}>
             <EmojiText
               text={accountNames}
               emojis={conversation.accounts.flatMap(acc => acc.emojis)}
             />
-          </NameWrapper>
+          </div>
           {timestamp && <Timestamp $unread={conversation.unread}>{timestamp}</Timestamp>}
         </TopRow>
 
-        <Preview $unread={conversation.unread}>{getTextPreview()}</Preview>
+        <div className={`conversation-card-preview text-truncate ${conversation.unread ? 'unread' : ''}`}>{getTextPreview()}</div>
       </ChatContent>
 
       <DeleteButton className="delete-button">
@@ -139,7 +139,7 @@ export function ConversationCard({ conversation, style }: ConversationCardProps)
           <Trash2 size={16} />
         </IconButton>
       </DeleteButton>
-    </ChatListItem>
+    </ChatListItem >
   )
 }
 
@@ -202,32 +202,13 @@ const TopRow = styled.div`
   gap: var(--size-2);
 `
 
-const NameWrapper = styled.div<{ $unread?: boolean }>`
-  font-weight: ${props => props.$unread ? '700' : '500'};
-  font-size: var(--font-size-2);
-  color: var(--text-1);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  min-width: 0;
-`
+/* NameWrapper and Preview moved to globals.css as .conversation-card-name and .conversation-card-preview */
 
 const Timestamp = styled.time<{ $unread?: boolean }>`
   font-size: var(--font-size-0);
   color: ${props => props.$unread ? 'var(--blue-9)' : 'var(--text-3)'};
   flex-shrink: 0;
   font-weight: ${props => props.$unread ? '600' : '400'};
-`
-
-const Preview = styled.div<{ $unread?: boolean }>`
-  font-size: var(--font-size-1);
-  color: ${props => props.$unread ? 'var(--text-1)' : 'var(--text-2)'};
-  font-weight: ${props => props.$unread ? '500' : '400'};
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  line-height: 1.4;
 `
 
 const DeleteButton = styled.div`

@@ -27,7 +27,7 @@ export function TrendingTagCard({ tag, style }: TrendingTagCardProps) {
                 <Hash size={20} />
             </div>
             <div className="trending-tag-content">
-                <div className="trending-tag-name">
+                <div className="trending-tag-name text-truncate">
                     #{tag.name}
                 </div>
                 <div className="trending-tag-stats">

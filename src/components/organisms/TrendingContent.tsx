@@ -302,13 +302,13 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                                 size="large"
                                             />
                                             <AccountInfo>
-                                                <AccountName>
+                                                <div className="trending-account-name text-truncate">
                                                     <EmojiText
                                                         text={suggestion.account.display_name || suggestion.account.username}
                                                         emojis={suggestion.account.emojis}
                                                     />
-                                                </AccountName>
-                                                <AccountHandle>@{suggestion.account.acct}</AccountHandle>
+                                                </div>
+                                                <div className="trending-account-handle text-truncate">@{suggestion.account.acct}</div>
                                                 {(() => {
                                                     const verifiedField = getVerifiedField(suggestion.account.fields);
                                                     return verifiedField ? (
@@ -477,22 +477,7 @@ const AccountInfo = styled.div`
     min-width: 0;
 `;
 
-const AccountName = styled.div`
-    font-weight: 600;
-    font-size: var(--font-size-2);
-    color: var(--text-1);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
-
-const AccountHandle = styled.div`
-    font-size: var(--font-size-1);
-    color: var(--text-3);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
+/* AccountName and AccountHandle moved to globals.css as .trending-account-name and .trending-account-handle */
 
 const SourceLabel = styled.div`
     display: flex;

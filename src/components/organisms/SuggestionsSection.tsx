@@ -190,26 +190,26 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                         href={`/@${suggestion.account.acct}`}
                                         onClick={() => accountStore.cacheAccount(suggestion.account)}
                                     >
-                                        <CardName>
+                                        <div className="suggestion-card-name text-truncate">
                                             <EmojiText
                                                 text={suggestion.account.display_name || suggestion.account.username}
                                                 emojis={suggestion.account.emojis}
                                             />
-                                        </CardName>
+                                        </div>
                                     </CardLink>
 
                                     <CardLink
                                         href={`/@${suggestion.account.acct}`}
                                         onClick={() => accountStore.cacheAccount(suggestion.account)}
                                     >
-                                        <CardHandle>@{suggestion.account.acct}</CardHandle>
+                                        <div className="suggestion-card-handle text-truncate">@{suggestion.account.acct}</div>
                                     </CardLink>
 
                                     <BadgeWrapper>
                                         {verifiedField ? (
                                             <VerifiedBadge title={`Verified ${verifiedField.name}`}>
                                                 <Check size={12} />
-                                                <EllipsisText>{extractLinkText(verifiedField.value)}</EllipsisText>
+                                                <span className="text-truncate">{extractLinkText(verifiedField.value)}</span>
                                             </VerifiedBadge>
                                         ) : sourceInfo ? (
                                             <SourceLabel title={sourceInfo.hint}>
@@ -353,25 +353,7 @@ const CardLink = styled(Link)`
     color: inherit;
 `;
 
-const CardName = styled.div`
-    font-weight: 600;
-    font-size: var(--font-size-2);
-    color: var(--text-1);
-    text-align: center;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
-
-const CardHandle = styled.div`
-    font-size: var(--font-size-1);
-    color: var(--text-3);
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
+/* CardName and CardHandle moved to globals.css as .suggestion-card-name and .suggestion-card-handle */
 
 const SourceLabel = styled.div`
     display: flex;
@@ -396,9 +378,6 @@ const VerifiedBadge = styled.div`
     cursor: help;
     width: 100%;
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 
     svg {
         flex-shrink: 0;
@@ -414,11 +393,7 @@ const BadgeWrapper = styled.div`
     overflow: hidden;
 `;
 
-const EllipsisText = styled.span`
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
+/* EllipsisText removed - use .text-truncate utility class instead */
 
 const DismissButton = styled.button`
     position: absolute;

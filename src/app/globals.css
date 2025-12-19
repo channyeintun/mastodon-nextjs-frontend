@@ -472,17 +472,11 @@ input[type="radio"] {
 .navigation-sidebar-instance-title {
   font-weight: var(--font-weight-6);
   color: var(--text-1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .navigation-sidebar-instance-domain {
   font-size: var(--font-size-0);
   color: var(--text-3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .navigation-sidebar-signin {
@@ -974,9 +968,6 @@ body {
   font-weight: var(--font-weight-6);
   color: var(--text-1);
   max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
@@ -1156,6 +1147,124 @@ body {
 }
 
 /* ====================================
+   Suggestion Card Component
+   ==================================== */
+.suggestion-card-name {
+  font-weight: 600;
+  font-size: var(--font-size-2);
+  color: var(--text-1);
+  text-align: center;
+  max-width: 100%;
+}
+
+.suggestion-card-handle {
+  font-size: var(--font-size-1);
+  color: var(--text-3);
+  max-width: 100%;
+}
+
+/* ====================================
+   Trending Account Card Component
+   ==================================== */
+.trending-account-name {
+  font-weight: 600;
+  font-size: var(--font-size-2);
+  color: var(--text-1);
+}
+
+.trending-account-handle {
+  font-size: var(--font-size-1);
+  color: var(--text-3);
+}
+
+/* ====================================
+   Mention Suggestions Component
+   ==================================== */
+.mention-display-name {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-1);
+}
+
+.mention-handle {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+/* ====================================
+   User Card Component
+   ==================================== */
+.usercard-display-name {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+  font-size: var(--font-size-2);
+}
+
+.usercard-username {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+/* ====================================
+   Notification Request Card Component
+   ==================================== */
+.notification-request-name {
+  text-decoration: none;
+  color: var(--text-1);
+  font-weight: var(--font-weight-6);
+  display: block;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.notification-request-username {
+  font-size: var(--font-size-0);
+  color: var(--text-3);
+}
+
+/* ====================================
+   Post Header Component
+   ==================================== */
+.post-header-display-name {
+  font-weight: var(--font-weight-6);
+  color: var(--text-1);
+}
+
+.post-header-handle {
+  font-size: var(--font-size-0);
+  color: var(--text-2);
+}
+
+/* ====================================
+   Conversation Card Component
+   ==================================== */
+.conversation-card-name {
+  font-weight: 500;
+  font-size: var(--font-size-2);
+  color: var(--text-1);
+  flex: 1;
+  min-width: 0;
+
+  &.unread {
+    font-weight: 700;
+  }
+}
+
+.conversation-card-preview {
+  font-size: var(--font-size-1);
+  color: var(--text-2);
+  font-weight: 400;
+  line-height: 1.4;
+
+  &.unread {
+    color: var(--text-1);
+    font-weight: 500;
+  }
+}
+
+/* ====================================
    Account Card Component
    ==================================== */
 .account-card {
@@ -1184,9 +1293,6 @@ body {
   font-weight: var(--font-weight-6);
   color: var(--text-1);
   font-size: var(--font-size-1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: flex;
   align-items: center;
   gap: var(--size-2);
@@ -1204,9 +1310,6 @@ body {
 .account-card-handle {
   font-size: var(--font-size-0);
   color: var(--text-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .account-card-actions {
@@ -1519,9 +1622,6 @@ dialog::backdrop {
   font-size: var(--font-size-2);
   font-weight: var(--font-weight-6);
   color: var(--blue-6);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .trending-tag-stats {

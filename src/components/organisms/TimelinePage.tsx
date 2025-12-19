@@ -223,7 +223,7 @@ export const TimelinePage = observer(() => {
                                     alt={user.display_name}
                                     className="profile-pill-avatar"
                                 />
-                                <span className="profile-pill-name">
+                                <span className="profile-pill-name text-truncate">
                                     <EmojiText text={user.display_name} emojis={user.emojis} />
                                 </span>
                             </Link>

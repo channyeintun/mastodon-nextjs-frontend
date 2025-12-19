@@ -97,8 +97,8 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
                   </div>
                 )}
                 <div className="navigation-sidebar-instance-info">
-                  <span className="navigation-sidebar-instance-title">{instance.title}</span>
-                  <span className="navigation-sidebar-instance-domain">{instance.domain}</span>
+                  <span className="navigation-sidebar-instance-title text-truncate">{instance.title}</span>
+                  <span className="navigation-sidebar-instance-domain text-truncate">{instance.domain}</span>
                 </div>
               </>
             ) : (

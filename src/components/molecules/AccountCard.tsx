@@ -197,7 +197,7 @@ export function AccountCard({
             />
 
             <div className="account-card-info">
-                <div className="account-card-name">
+                <div className="account-card-name text-truncate">
                     <EmojiText
                         text={account.display_name || account.username}
                         emojis={account.emojis}
@@ -206,7 +206,7 @@ export function AccountCard({
                         <span className="account-card-badge">BOT</span>
                     )}
                 </div>
-                <div className="account-card-handle">@{account.acct}</div>
+                <div className="account-card-handle text-truncate">@{account.acct}</div>
             </div>
 
             <div className="account-card-actions">

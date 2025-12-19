@@ -56,10 +56,10 @@ export function NotificationRequestCard({ request, style }: NotificationRequestC
                         {/* Header with name and time */}
                         <HeaderRow>
                             <InfoWrapper>
-                                <NameLink href={`/@${account.acct}`}>
+                                <Link href={`/@${account.acct}`} className="notification-request-name text-truncate">
                                     <EmojiText text={displayName} emojis={account.emojis} />
-                                </NameLink>
-                                <Username>@{account.acct}</Username>
+                                </Link>
+                                <div className="notification-request-username text-truncate">@{account.acct}</div>
                             </InfoWrapper>
                             <TimeText>
                                 {formatRelativeTime(request.updated_at)}
@@ -157,27 +157,7 @@ const InfoWrapper = styled.div`
     min-width: 0;
 `;
 
-const NameLink = styled(Link)`
-    text-decoration: none;
-    color: var(--text-1);
-    font-weight: var(--font-weight-6);
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    &:hover {
-        text-decoration: underline;
-    }
-`;
-
-const Username = styled.div`
-    font-size: var(--font-size-0);
-    color: var(--text-3);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
+/* NameLink and Username moved to globals.css as .notification-request-name and .notification-request-username */
 
 const TimeText = styled.div`
     font-size: var(--font-size-0);
