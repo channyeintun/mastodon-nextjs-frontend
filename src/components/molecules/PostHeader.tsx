@@ -73,7 +73,7 @@ export function PostHeader({
 
     return (
         <Container>
-            <AvatarLink scroll={false} href={`/@${account.acct}`} onClick={handleProfileClick}>
+            <AvatarLink href={`/@${account.acct}`} onClick={handleProfileClick}>
                 <Avatar
                     src={account.avatar}
                     alt={account.display_name || account.username}
@@ -84,7 +84,7 @@ export function PostHeader({
             <ContentSection>
                 <HeaderRow>
                     <NameSection>
-                        <ProfileLink scroll={false} href={`/@${account.acct}`} onClick={handleProfileClick}>
+                        <ProfileLink href={`/@${account.acct}`} onClick={handleProfileClick}>
                             <div className="post-header-display-name text-truncate">
                                 <EmojiText
                                     text={account.display_name || account.username}

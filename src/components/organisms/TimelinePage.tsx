@@ -220,7 +220,6 @@ export const TimelinePage = observer(() => {
                         </SearchLink>
                         {!isLoadingUser && user ? (
                             <Link
-                                scroll={false}
                                 href={`/@${user.acct}`}
                                 className="profile-pill profile-pill-static"
                                 onClick={handleProfileClick}
