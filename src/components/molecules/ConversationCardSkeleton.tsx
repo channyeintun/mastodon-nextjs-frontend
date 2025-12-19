@@ -45,7 +45,7 @@ const SkeletonListItem = styled.div`
   align-items: center;
   gap: var(--size-3);
   padding: var(--size-3) var(--size-4);
-  margin: var(--size-2) var(--size-3);
+  margin: var(--size-2);
   background: var(--surface-2);
   border-radius: 8px;
   box-shadow: var(--shadow-1);
