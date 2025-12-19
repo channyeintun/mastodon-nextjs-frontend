@@ -287,7 +287,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                 const relationship = relationshipMap.get(suggestion.account.id);
                                 const isFollowing = relationship?.following || relationship?.requested;
                                 const isMutating =
-                                    (followMutation.isPending && followMutation.variables === suggestion.account.id) ||
+                                    (followMutation.isPending && followMutation.variables?.id === suggestion.account.id) ||
                                     (unfollowMutation.isPending && unfollowMutation.variables === suggestion.account.id);
                                 const sourceInfo = getSourceLabel(suggestion.sources);
 
@@ -344,7 +344,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                                     if (isFollowing) {
                                                         unfollowMutation.mutate(suggestion.account.id);
                                                     } else {
-                                                        followMutation.mutate(suggestion.account.id);
+                                                        followMutation.mutate({ id: suggestion.account.id });
                                                     }
                                                 }}
                                                 disabled={isMutating}

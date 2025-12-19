@@ -6,6 +6,7 @@ export { ContentWarningSection } from './ContentWarningSection';
 export { ConversationCard } from './ConversationCard';
 export { ConversationCardSkeleton } from './ConversationCardSkeleton';
 export { DeletePostModal } from './DeletePostModal';
+export { FamiliarFollowers } from './FamiliarFollowers';
 export { GroupedNotificationCard } from './GroupedNotificationCard';
 export { HandleExplainer } from './HandleExplainer';
 export { ImageCropper } from './ImageCropper';

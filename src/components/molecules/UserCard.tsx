@@ -33,7 +33,7 @@ export function UserCard({ account, showFollowButton = true, style }: UserCardPr
     if (relationship?.following) {
       unfollowMutation.mutate(account.id);
     } else {
-      followMutation.mutate(account.id);
+      followMutation.mutate({ id: account.id });
     }
   };
 

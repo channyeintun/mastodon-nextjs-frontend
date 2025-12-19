@@ -128,8 +128,13 @@ export async function getFollowing(id: string, params?: { max_id?: string; limit
     return wrapPaginatedResponse(response.data, response.headers.link)
 }
 
-export async function followAccount(id: string): Promise<Relationship> {
-    const { data } = await api.post<Relationship>(`/api/v1/accounts/${id}/follow`)
+export interface FollowAccountParams {
+    notify?: boolean
+    reblogs?: boolean
+}
+
+export async function followAccount(id: string, params?: FollowAccountParams): Promise<Relationship> {
+    const { data } = await api.post<Relationship>(`/api/v1/accounts/${id}/follow`, params)
     return data
 }
 
@@ -201,5 +206,18 @@ export async function getMutedAccounts(params?: { max_id?: string; limit?: numbe
 // Account lists
 export async function getAccountLists(accountId: string, signal?: AbortSignal): Promise<List[]> {
     const { data } = await api.get<List[]>(`/api/v1/accounts/${accountId}/lists`, { signal })
+    return data
+}
+
+// Familiar Followers
+export interface FamiliarFollowersResult {
+    id: string
+    accounts: Account[]
+}
+
+export async function getFamiliarFollowers(id: string, signal?: AbortSignal): Promise<FamiliarFollowersResult[]> {
+    const params = new URLSearchParams()
+    params.append('id[]', id)
+    const { data } = await api.get<FamiliarFollowersResult[]>(`/api/v1/accounts/familiar_followers?${params.toString()}`, { signal })
     return data
 }

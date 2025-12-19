@@ -62,6 +62,7 @@ import {
   getPrivacyPolicy,
   getTermsOfService,
   getExtendedDescription,
+  getFamiliarFollowers,
 } from './client'
 import { queryKeys } from './queryKeys'
 import type { TimelineParams, SearchParams, Status, NotificationParams, GroupedNotificationParams, Tag, TrendingLink, ConversationParams, NotificationRequestParams, NotificationType } from '../types/mastodon'
@@ -835,6 +836,22 @@ export function useRelationships(ids: string[]) {
   return useQuery({
     ...relationshipsOptions(ids),
     enabled: ids.length > 0 && authStore.isAuthenticated,
+  })
+}
+
+// Familiar Followers Options
+export const familiarFollowersOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.accounts.familiarFollowers(id),
+    queryFn: ({ signal }) => getFamiliarFollowers(id, signal),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  })
+
+export function useFamiliarFollowers(accountId: string | undefined) {
+  const authStore = useAuthStore()
+  return useQuery({
+    ...familiarFollowersOptions(accountId || ''),
+    enabled: !!accountId && authStore.isAuthenticated,
   })
 }
 

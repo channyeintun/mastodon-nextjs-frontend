@@ -45,6 +45,7 @@ export const queryKeys = {
     relationships: (ids: string[]) => ['accounts', 'relationships', ids] as const,
     current: () => ['accounts', 'current'] as const,
     followRequests: () => ['accounts', 'follow_requests'] as const,
+    familiarFollowers: (id: string) => ['accounts', id, 'familiar_followers'] as const,
   },
 
   // Bookmarks

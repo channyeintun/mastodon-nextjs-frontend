@@ -16,6 +16,7 @@ import {
   useUnblockAccount,
   useMuteAccount,
   useUnmuteAccount,
+  useUpdateAccountNotifications,
 } from '@/api';
 
 import { AccountProfileSkeleton } from '@/components/molecules';
@@ -87,7 +88,7 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
 
   const handleFollowToggle = () => {
     if (!accountId) return;
-    relationship?.following || relationship?.requested ? unfollowMutation.mutate(accountId) : followMutation.mutate(accountId);
+    relationship?.following || relationship?.requested ? unfollowMutation.mutate(accountId) : followMutation.mutate({ id: accountId });
   };
 
   const handleBlockToggle = () => {
@@ -98,6 +99,13 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
   const handleMuteToggle = () => {
     if (!accountId) return;
     relationship?.muting ? unmuteMutation.mutate(accountId) : muteMutation.mutate({ id: accountId });
+  };
+
+  const notifyMutation = useUpdateAccountNotifications();
+
+  const handleNotifyToggle = () => {
+    if (!accountId) return;
+    notifyMutation.mutate({ id: accountId, notify: !relationship?.notifying });
   };
 
   const isFollowing = relationship?.following || false;
@@ -136,9 +144,11 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
     isFollowLoading,
     isMutePending: muteMutation.isPending || unmuteMutation.isPending,
     isBlockPending: blockMutation.isPending || unblockMutation.isPending,
+    isNotifyPending: notifyMutation.isPending,
     onFollowToggle: handleFollowToggle,
     onBlockToggle: handleBlockToggle,
     onMuteToggle: handleMuteToggle,
+    onNotifyToggle: handleNotifyToggle,
   };
 
   return (

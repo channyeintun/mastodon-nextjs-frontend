@@ -16,6 +16,7 @@ import {
   bookmarkStatus,
   unbookmarkStatus,
   followAccount,
+  type FollowAccountParams,
   unfollowAccount,
   blockAccount,
   unblockAccount,
@@ -921,8 +922,8 @@ export function useFollowAccount() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => followAccount(id),
-    onSuccess: (_data, id) => {
+    mutationFn: ({ id, params }: { id: string; params?: FollowAccountParams }) => followAccount(id, params),
+    onSuccess: (_data, { id }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
       invalidateRelationshipsForAccount(queryClient, id)
     },
@@ -936,6 +937,17 @@ export function useUnfollowAccount() {
     mutationFn: (id: string) => unfollowAccount(id),
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.detail(id) })
+      invalidateRelationshipsForAccount(queryClient, id)
+    },
+  })
+}
+
+export function useUpdateAccountNotifications() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, notify }: { id: string; notify: boolean }) => followAccount(id, { notify }),
+    onSuccess: (_data, { id }) => {
       invalidateRelationshipsForAccount(queryClient, id)
     },
   })

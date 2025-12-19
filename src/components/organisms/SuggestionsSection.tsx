@@ -156,7 +156,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                             const isFollowing = relationship?.following || relationship?.requested;
                             // Only show loading for the specific card being followed/unfollowed
                             const isLoading =
-                                (followMutation.isPending && followMutation.variables === suggestion.account.id) ||
+                                (followMutation.isPending && followMutation.variables?.id === suggestion.account.id) ||
                                 (unfollowMutation.isPending && unfollowMutation.variables === suggestion.account.id);
                             const verifiedField = getVerifiedField(suggestion.account.fields);
                             const sourceInfo = getSourceLabel(suggestion.sources);
@@ -228,7 +228,7 @@ export const SuggestionsSection = observer(({ limit = 10 }: SuggestionsSectionPr
                                             if (isFollowing) {
                                                 unfollowMutation.mutate(suggestion.account.id);
                                             } else {
-                                                followMutation.mutate(suggestion.account.id);
+                                                followMutation.mutate({ id: suggestion.account.id });
                                             }
                                         }}
                                         disabled={isLoading}

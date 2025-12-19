@@ -2,7 +2,7 @@
 
 import { formatJoinDate } from '@/utils/date';
 import { Calendar, ExternalLink, Lock } from 'lucide-react';
-import { ProfileStats, ProfileBio, ProfileFields, ProfileActionButtons, HandleExplainer } from '@/components/molecules';
+import { ProfileStats, ProfileBio, ProfileFields, ProfileActionButtons, HandleExplainer, FamiliarFollowers } from '@/components/molecules';
 import { Avatar, Button, EmojiText } from '@/components/atoms';
 import type { Account, Relationship } from '@/types';
 import {
@@ -29,9 +29,11 @@ interface ProfileHeaderProps {
     isFollowLoading: boolean;
     isMutePending: boolean;
     isBlockPending: boolean;
+    isNotifyPending?: boolean;
     onFollowToggle: () => void;
     onBlockToggle: () => void;
     onMuteToggle: () => void;
+    onNotifyToggle?: () => void;
 }
 
 export function ProfileHeader({
@@ -42,9 +44,11 @@ export function ProfileHeader({
     isFollowLoading,
     isMutePending,
     isBlockPending,
+    isNotifyPending,
     onFollowToggle,
     onBlockToggle,
     onMuteToggle,
+    onNotifyToggle,
 }: ProfileHeaderProps) {
     return (
         <ProfileSection>
@@ -63,13 +67,16 @@ export function ProfileHeader({
                         isRequested={relationship?.requested}
                         isBlocking={relationship?.blocking || false}
                         isMuting={relationship?.muting || false}
+                        isNotifying={relationship?.notifying}
                         isLoading={isFollowLoading}
                         isMutePending={isMutePending}
                         isBlockPending={isBlockPending}
+                        isNotifyPending={isNotifyPending}
                         acct={account.acct}
                         onFollowToggle={onFollowToggle}
                         onBlockToggle={onBlockToggle}
                         onMuteToggle={onMuteToggle}
+                        onNotifyToggle={onNotifyToggle}
                     />
                 </AvatarSection>
                 <NameSection>
@@ -79,6 +86,7 @@ export function ProfileHeader({
                         {account.locked && <LockIcon><Lock size={14} /></LockIcon>}
                     </DisplayName>
                     <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
+                    <FamiliarFollowers accountId={account.id} isOwnProfile={isOwnProfile} />
                 </NameSection>
                 <ProfileBio note={account.note} />
                 <ProfileStats acct={account.acct} postsCount={account.statuses_count} followingCount={account.following_count} followersCount={account.followers_count} />
@@ -108,9 +116,11 @@ interface LimitedProfileHeaderProps {
     isFollowLoading: boolean;
     isMutePending: boolean;
     isBlockPending: boolean;
+    isNotifyPending?: boolean;
     onFollowToggle: () => void;
     onBlockToggle: () => void;
     onMuteToggle: () => void;
+    onNotifyToggle?: () => void;
     onShowProfile: () => void;
     domain: string;
 }
@@ -123,9 +133,11 @@ export function LimitedProfileHeader({
     isFollowLoading,
     isMutePending,
     isBlockPending,
+    isNotifyPending,
     onFollowToggle,
     onBlockToggle,
     onMuteToggle,
+    onNotifyToggle,
     onShowProfile,
     domain,
 }: LimitedProfileHeaderProps) {
@@ -147,13 +159,16 @@ export function LimitedProfileHeader({
                             isRequested={relationship?.requested}
                             isBlocking={relationship?.blocking || false}
                             isMuting={relationship?.muting || false}
+                            isNotifying={relationship?.notifying}
                             isLoading={isFollowLoading}
                             isMutePending={isMutePending}
                             isBlockPending={isBlockPending}
+                            isNotifyPending={isNotifyPending}
                             acct={account.acct}
                             onFollowToggle={onFollowToggle}
                             onBlockToggle={onBlockToggle}
                             onMuteToggle={onMuteToggle}
+                            onNotifyToggle={onNotifyToggle}
                         />
                     </AvatarSection>
                 </ProfileDetails>

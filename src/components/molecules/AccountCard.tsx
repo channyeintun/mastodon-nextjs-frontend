@@ -62,7 +62,7 @@ export function AccountCard({
         if (isFollowing || relationship?.requested) {
             unfollowMutation.mutate(account.id);
         } else {
-            followMutation.mutate(account.id);
+            followMutation.mutate({ id: account.id });
         }
     };
 

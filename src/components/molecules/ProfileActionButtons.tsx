@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 import Link from 'next/link';
-import { MoreHorizontal, Ban, VolumeX, Volume2 } from 'lucide-react';
+import { MoreHorizontal, Ban, VolumeX, Volume2, Bell, BellRing } from 'lucide-react';
 import { Button, IconButton } from '@/components/atoms';
 import { useRef, useEffect, useState } from 'react';
 
@@ -12,18 +12,21 @@ interface ProfileActionButtonsProps {
     isMuting: boolean;
     isFollowing: boolean;
     isRequested?: boolean;
+    isNotifying?: boolean;
     isLoading: boolean;
     isMutePending: boolean;
     isBlockPending: boolean;
+    isNotifyPending?: boolean;
     acct: string;
     onFollowToggle: () => void;
     onMuteToggle: () => void;
     onBlockToggle: () => void;
+    onNotifyToggle?: () => void;
 }
 
 /**
  * Presentation component for profile action buttons
- * (edit profile, follow/unfollow, mute/block menu).
+ * (edit profile, follow/unfollow, notification toggle, mute/block menu).
  */
 export function ProfileActionButtons({
     isOwnProfile,
@@ -31,12 +34,16 @@ export function ProfileActionButtons({
     isMuting,
     isFollowing,
     isRequested,
+    isNotifying,
     isLoading,
     isMutePending,
     isBlockPending,
+    isNotifyPending,
+    acct,
     onFollowToggle,
     onMuteToggle,
     onBlockToggle,
+    onNotifyToggle,
 }: ProfileActionButtonsProps) {
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -77,6 +84,18 @@ export function ProfileActionButtons({
                 >
                     {isRequested ? 'Requested' : (isFollowing ? 'Following' : 'Follow')}
                 </Button>
+            )}
+
+            {/* Notification toggle - only show when following */}
+            {isFollowing && onNotifyToggle && (
+                <NotifyButton
+                    onClick={onNotifyToggle}
+                    title={isNotifying ? `Stop notifying me when @${acct} posts` : `Notify me when @${acct} posts`}
+                    disabled={isNotifyPending}
+                    $isActive={isNotifying}
+                >
+                    {isNotifying ? <BellRing size={20} /> : <Bell size={20} />}
+                </NotifyButton>
             )}
 
             {/* More actions menu */}
@@ -171,6 +190,22 @@ const MenuItem = styled.button<{ $isDestructive?: boolean }>`
   transition: background 0.2s ease;
 
   &:hover {
+    background: var(--surface-3);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+const NotifyButton = styled(IconButton) <{ $isActive?: boolean }>`
+  border: 1px solid var(--surface-3);
+  border-radius: var(--radius-round);
+  color: ${({ $isActive }) => ($isActive ? 'var(--brand)' : 'var(--text-2)')};
+  
+  &:hover {
+    color: var(--brand);
     background: var(--surface-3);
   }
 

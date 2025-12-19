@@ -60,7 +60,10 @@ export {
     muteAccount,
     unmuteAccount,
     getMutedAccounts,
-    getAccountLists
+    getAccountLists,
+    getFamiliarFollowers,
+    type FollowAccountParams,
+    type FamiliarFollowersResult
 } from './accounts'
 
 // Notifications
