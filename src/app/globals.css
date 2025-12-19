@@ -1575,6 +1575,13 @@ dialog::backdrop {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Mobile: hide tab icons in full-width tabs to save space */
+  .tabs--full-width & {
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }
 }
 
 /* ====================================

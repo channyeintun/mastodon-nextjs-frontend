@@ -15,16 +15,11 @@ import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
 import type { Status, Tag, TrendingLink, Field } from '@/types';
 import { useAuthStore } from '@/hooks/useStores';
-import { useQueryState, createMappedParser } from '@/hooks/useQueryState';
+import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
 
-type TrendingTab = 'posts' | 'tags' | 'links' | 'foryou';
+type TrendingTab = 'posts' | 'tags' | 'links' | 'people';
 
-const trendingTabParser = createMappedParser({
-    validValues: ['posts', 'tags', 'links', 'foryou'] as const,
-    defaultValue: 'posts' as TrendingTab,
-    urlToValue: { 'people': 'foryou' as TrendingTab },
-    valueToUrl: { 'foryou': 'people' },
-});
+const VALID_TABS = ['posts', 'tags', 'links', 'people'] as const;
 
 // Get localized source label based on suggestion source
 const getSourceLabel = (sources: string[]): { label: string; hint: string } | null => {
@@ -67,7 +62,7 @@ const extractLinkText = (html: string): string => {
 const trendingTabs: TabItem<TrendingTab>[] = [
     { value: 'posts', label: 'Posts', icon: <FileText size={18} /> },
     { value: 'tags', label: 'Tags', icon: <Hash size={18} /> },
-    { value: 'foryou', label: 'People', icon: <UserPlus size={18} /> },
+    { value: 'people', label: 'People', icon: <UserPlus size={18} /> },
     { value: 'links', label: 'News', icon: <Newspaper size={18} /> },
 ];
 
@@ -79,7 +74,7 @@ interface TrendingContentProps {
 export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'trending' }: TrendingContentProps) => {
     const [activeTab, setActiveTab] = useQueryState('tab', {
         defaultValue: 'posts' as TrendingTab,
-        parser: trendingTabParser,
+        parser: parseAsStringLiteral(VALID_TABS, 'posts'),
     });
 
     const authStore = useAuthStore();
@@ -151,7 +146,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
             <Activity mode={activeTab === 'posts' ? 'visible' : 'hidden'}>
                 <TabContent>
                     {statusesLoading ? (
-                        <ListContainer className="virtualized-list-container">
+                        <ListContainer>
                             <PostCardSkeletonList count={5} />
                         </ListContainer>
                     ) : statusesError ? (
@@ -189,7 +184,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
             </Activity>
 
             <Activity mode={activeTab === 'tags' ? 'visible' : 'hidden'}>
-                <TabContentWithPadding>
+                <TabContent>
                     {tagsLoading ? (
                         <ListContainer className="virtualized-list-container">
                             <SkeletonList>
@@ -224,11 +219,11 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                         />
 
                     )}
-                </TabContentWithPadding>
+                </TabContent>
             </Activity>
 
             <Activity mode={activeTab === 'links' ? 'visible' : 'hidden'}>
-                <TabContentWithPadding>
+                <TabContent>
                     {linksLoading ? (
                         <ListContainer className="virtualized-list-container">
                             <SkeletonList>
@@ -263,11 +258,11 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                         />
 
                     )}
-                </TabContentWithPadding>
+                </TabContent>
             </Activity>
 
-            <Activity mode={activeTab === 'foryou' ? 'visible' : 'hidden'}>
-                <TabContentWithPadding>
+            <Activity mode={activeTab === 'people' ? 'visible' : 'hidden'}>
+                <TabContent>
                     {!authStore.isAuthenticated ? (
                         <EmptyState title="Sign in to see suggestions" />
                     ) : suggestionsLoading ? (
@@ -359,7 +354,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             })}
                         </SuggestionsList>
                     )}
-                </TabContentWithPadding>
+                </TabContent>
             </Activity>
 
             {/* Floating Login Button for guests */}
@@ -423,10 +418,6 @@ const TabContent = styled.div`
     height: 100%;
 `;
 
-const TabContentWithPadding = styled(TabContent)`
-    padding: 0 var(--size-4);
-`;
-
 const ListContainer = styled.div`
     flex: 1;
     overflow: auto;
@@ -453,6 +444,7 @@ const SuggestionsList = styled.div`
     display: flex;
     flex-direction: column;
     gap: var(--size-3);
+    padding-inline: var(--size-2);
 `;
 
 const SuggestionCard = styled.div`
