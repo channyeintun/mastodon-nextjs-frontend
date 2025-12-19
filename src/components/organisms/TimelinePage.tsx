@@ -252,6 +252,7 @@ export const TimelinePage = observer(() => {
                                 key={virtualRow.key}
                                 data-index={virtualRow.index}
                                 ref={virtualizer.measureElement}
+                                className="window-virtual-item"
                                 style={{
                                     transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
                                 }}
