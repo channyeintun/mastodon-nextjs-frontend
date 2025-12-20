@@ -26,6 +26,7 @@ import { flattenAndUniqById } from '@/utils/fp';
 import { PageContainer, FixedBackButton, ErrorContainer, ErrorTitle } from './styles';
 import { ProfileTabContent, MediaTabContent, ContentSection } from './ProfileTabContent';
 import { ProfileHeader, LimitedProfileHeader } from './ProfileHeader';
+import { PinnedPostsSection } from './PinnedPostsSection';
 import { useQueryState, parseAsStringLiteral } from '@/hooks/useQueryState';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
 
@@ -173,11 +174,13 @@ export default function AccountPage({ params }: { params: Promise<{ acct: string
             <ProfileHeader {...commonHeaderProps} />
             <Tabs tabs={profileTabs} activeTab={activeTab} onTabChange={setActiveTab} sticky />
             <ContentSection>
+              {(activeTab === 'posts' || activeTab === 'posts_replies') && pinnedStatuses && pinnedStatuses.length > 0 && (
+                <PinnedPostsSection pinnedStatuses={pinnedStatuses} />
+              )}
               {activeTab === 'posts' && (
                 <ProfileTabContent
                   acct={acct}
                   tabKey="posts"
-                  pinnedStatuses={pinnedStatuses}
                   statuses={postsStatuses}
                   isLoading={postsQuery.isLoading}
                   fetchNextPage={postsQuery.fetchNextPage}

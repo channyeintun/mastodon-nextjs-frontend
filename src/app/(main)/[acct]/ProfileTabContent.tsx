@@ -3,18 +3,12 @@
 import styled from '@emotion/styled';
 import { useEffect, useState, useMemo, useRef, useLayoutEffect } from 'react';
 import { useWindowVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
-import { Pin } from 'lucide-react';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, PostCardSkeletonList, MediaGrid, MediaGridSkeleton } from '@/components/molecules';
 import { EmptyState } from '@/components/atoms';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 import type { Status } from '@/types';
 
-/** Extended Status type with pinned flag */
-interface StatusItem {
-    status: Status;
-    isPinned: boolean;
-}
 
 // Scroll restoration cache - per tab
 interface ScrollState {
@@ -30,7 +24,6 @@ const scrollStateCache = new Map<string, ScrollState>();
 export interface ProfileTabContentProps {
     acct: string;
     tabKey: 'posts' | 'posts_replies';
-    pinnedStatuses?: Status[];
     statuses: Status[];
     isLoading: boolean;
     fetchNextPage: () => void;
@@ -41,7 +34,6 @@ export interface ProfileTabContentProps {
 export function ProfileTabContent({
     acct,
     tabKey,
-    pinnedStatuses,
     statuses,
     isLoading,
     fetchNextPage,
@@ -65,28 +57,15 @@ export function ProfileTabContent({
         }
     }, []);
 
-    // Combine pinned and regular statuses
-    const combinedItems = useMemo<StatusItem[]>(() => {
-        const pinned: StatusItem[] = (pinnedStatuses || []).map(status => ({
-            status,
-            isPinned: true,
-        }));
-        const regular: StatusItem[] = statuses.map(status => ({
-            status,
-            isPinned: false,
-        }));
-        return [...pinned, ...regular];
-    }, [pinnedStatuses, statuses]);
-
     // Include an extra item for the "end indicator" when we've reached the end
-    const showEndIndicator = !hasNextPage && combinedItems.length > 0 && !isFetchingNextPage;
-    const totalItemCount = combinedItems.length + (showEndIndicator ? 1 : 0);
+    const showEndIndicator = !hasNextPage && statuses.length > 0 && !isFetchingNextPage;
+    const totalItemCount = statuses.length + (showEndIndicator ? 1 : 0);
 
     const virtualizer = useWindowVirtualizer({
         count: totalItemCount,
         estimateSize: (index) => {
             // End indicator is smaller than posts
-            if (showEndIndicator && index === combinedItems.length) {
+            if (showEndIndicator && index === statuses.length) {
                 return 60;
             }
             return 300;
@@ -107,13 +86,13 @@ export function ProfileTabContent({
         if (!lastItem) return;
 
         if (
-            lastItem.index >= combinedItems.length - 5 &&
+            lastItem.index >= statuses.length - 5 &&
             hasNextPage &&
             !isFetchingNextPage
         ) {
             fetchNextPage();
         }
-    }, [virtualItems, combinedItems.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [virtualItems, statuses.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     // Cache scroll state on unmount
     useEffect(() => {
@@ -139,9 +118,7 @@ export function ProfileTabContent({
     };
 
     // Loading state - only show skeleton if we have no data at all
-    // Check both statuses AND pinnedStatuses to avoid skeleton flash
-    // when account data loads but status query is still initializing
-    if (isLoading && statuses.length === 0 && (!pinnedStatuses || pinnedStatuses.length === 0)) {
+    if (isLoading && statuses.length === 0) {
         return (
             <LoadingContainer>
                 <PostCardSkeletonList count={1} />
@@ -150,7 +127,7 @@ export function ProfileTabContent({
     }
 
     // Empty state
-    if (combinedItems.length === 0) {
+    if (statuses.length === 0) {
         return <EmptyState title="No posts yet" />;
     }
 
@@ -159,7 +136,7 @@ export function ProfileTabContent({
             <div ref={listRef}>
                 <VirtualContent style={{ height: `${virtualizer.getTotalSize()}px` }}>
                     {virtualItems.map((virtualRow) => {
-                        const isEndIndicator = showEndIndicator && virtualRow.index === combinedItems.length;
+                        const isEndIndicator = showEndIndicator && virtualRow.index === statuses.length;
 
                         if (isEndIndicator) {
                             return (
@@ -177,15 +154,12 @@ export function ProfileTabContent({
                             );
                         }
 
-                        const item = combinedItems[virtualRow.index];
-                        if (!item) return null;
-
-                        const isFirstPinned = item.isPinned && (virtualRow.index === 0 || !combinedItems[virtualRow.index - 1]?.isPinned);
-                        const isLastPinned = item.isPinned && (virtualRow.index === combinedItems.length - 1 || !combinedItems[virtualRow.index + 1]?.isPinned);
+                        const status = statuses[virtualRow.index];
+                        if (!status) return null;
 
                         return (
                             <VirtualItemWrapper
-                                key={`${item.isPinned ? 'pinned-' : ''}${item.status.id}`}
+                                key={status.id}
                                 data-index={virtualRow.index}
                                 ref={virtualizer.measureElement}
                                 className="window-virtual-item"
@@ -193,15 +167,7 @@ export function ProfileTabContent({
                                     transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
                                 }}
                             >
-                                <PinnedItemWrapper $isLastPinned={isLastPinned}>
-                                    {isFirstPinned && (
-                                        <PinnedBadge>
-                                            <Pin size={14} />
-                                            Pinned
-                                        </PinnedBadge>
-                                    )}
-                                    <PostCard status={item.status} style={{ marginBottom: 'var(--size-3)' }} />
-                                </PinnedItemWrapper>
+                                <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                             </VirtualItemWrapper>
                         );
                     })}
@@ -283,33 +249,6 @@ const VirtualItemWrapper = styled.div`
   left: 0;
   width: 100%;
 `;
-
-const PinnedItemWrapper = styled.div<{ $isLastPinned: boolean }>`
-  ${({ $isLastPinned }) =>
-        $isLastPinned &&
-        `
-      border-bottom: 1px solid var(--surface-3);
-      padding-bottom: var(--size-4);
-      margin-bottom: var(--size-4);
-    `}
-`;
-
-const PinnedBadge = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: var(--size-1);
-  padding: var(--size-1) var(--size-2);
-  margin-bottom: var(--size-2);
-  margin-left: var(--size-4);
-  background: var(--surface-2);
-  border-radius: var(--radius-2);
-  font-size: var(--font-size-0);
-  font-weight: var(--font-weight-6);
-  color: var(--text-2);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
-
 
 
 const EndIndicator = styled.div`
