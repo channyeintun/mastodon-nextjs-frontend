@@ -102,7 +102,7 @@ export function ProfileHeader({
                         View on instance
                     </MetaLink>
                 </MetaSection>
-                <ProfileFields fields={account.fields} />
+                <ProfileFields fields={account.fields} emojis={account.emojis} />
             </ProfileDetails>
         </ProfileSection>
     );

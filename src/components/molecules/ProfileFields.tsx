@@ -1,6 +1,8 @@
 'use client';
 
 import styled from '@emotion/styled';
+import type { Emoji } from '@/types/mastodon';
+import { EmojiText } from '@/components/atoms';
 
 interface ProfileField {
     name: string;
@@ -10,6 +12,7 @@ interface ProfileField {
 
 interface ProfileFieldsProps {
     fields: ProfileField[];
+    emojis: Emoji[];
 }
 
 const Container = styled.div`
@@ -39,7 +42,7 @@ const FieldValue = styled.div`
 /**
  * Presentation component for profile custom metadata fields.
  */
-export function ProfileFields({ fields }: ProfileFieldsProps) {
+export function ProfileFields({ fields, emojis }: ProfileFieldsProps) {
     if (fields.length === 0) return null;
 
     return (
@@ -47,7 +50,7 @@ export function ProfileFields({ fields }: ProfileFieldsProps) {
             {fields.map((field, index) => (
                 <FieldRow key={index} $isLast={index === fields.length - 1}>
                     <FieldName>
-                        {field.name}
+                        <EmojiText text={field.name} emojis={emojis} />
                     </FieldName>
                     <FieldValue
                         dangerouslySetInnerHTML={{ __html: field.value }}
