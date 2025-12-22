@@ -21,7 +21,7 @@ const Container = styled.div`
 
 const FieldRow = styled.div<{ $isLast: boolean }>`
   display: grid;
-  grid-template-columns: 160px 1fr;
+  grid-template-columns: max-content 1fr;
   gap: var(--size-2);
   padding: var(--size-2) 0;
   border-bottom: ${({ $isLast }) => ($isLast ? 'none' : '1px solid var(--surface-3)')};
@@ -31,6 +31,7 @@ const FieldRow = styled.div<{ $isLast: boolean }>`
 const FieldName = styled.div`
   font-weight: var(--font-weight-6);
   color: var(--text-2);
+  max-width: 160px;
 `;
 
 const FieldValue = styled.div`
@@ -52,9 +53,9 @@ export function ProfileFields({ fields, emojis }: ProfileFieldsProps) {
                     <FieldName>
                         <EmojiText text={field.name} emojis={emojis} />
                     </FieldName>
-                    <FieldValue
-                        dangerouslySetInnerHTML={{ __html: field.value }}
-                    />
+                    <FieldValue>
+                        <EmojiText text={field.value} emojis={emojis} html />
+                    </FieldValue>
                 </FieldRow>
             ))}
         </Container>

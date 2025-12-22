@@ -17,15 +17,31 @@ interface EmojiTextProps {
   emojis: Emoji[];
   style?: CSSProperties;
   className?: string;
+  html?: boolean;
 }
 
 /**
  * Renders text with custom Mastodon emojis replaced by images
  * Example: "Hello :custom_emoji:" -> "Hello <img src="..." />"
+ * @param html - If true, treats text as HTML and returns processed HTML string for dangerouslySetInnerHTML
  */
-export function EmojiText({ text, emojis, style, className }: EmojiTextProps) {
+export function EmojiText({ text, emojis, style, className, html = false }: EmojiTextProps) {
   if (!emojis || emojis.length === 0) {
+    if (html) {
+      return <span style={style} className={className} dangerouslySetInnerHTML={{ __html: text }} />;
+    }
     return <span style={style} className={className}>{text}</span>;
+  }
+  
+  // If HTML mode, process and return as dangerouslySetInnerHTML
+  if (html) {
+    let processedHtml = text;
+    emojis.forEach(emoji => {
+      const shortcodePattern = new RegExp(`:${emoji.shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:`, 'g');
+      const emojiImg = `<img src="${emoji.url}" alt=":${emoji.shortcode}:" title=":${emoji.shortcode}:" style="height: 1.25em; width: 1.25em; vertical-align: middle; object-fit: contain; display: inline-block; margin: 0 0.1em;" loading="lazy" />`;
+      processedHtml = processedHtml.replace(shortcodePattern, emojiImg);
+    });
+    return <span style={style} className={className} dangerouslySetInnerHTML={{ __html: processedHtml }} />;
   }
 
   // Split text by emoji shortcodes and replace with images
