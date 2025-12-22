@@ -1,9 +1,12 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { EmojiText } from '@/components/atoms';
+import type { Emoji } from '@/types/mastodon';
 
 interface ProfileBioProps {
     note: string;
+    emojis: Emoji[];
 }
 
 const BioContainer = styled.div`
@@ -16,12 +19,12 @@ const BioContainer = styled.div`
  * Presentation component for profile bio/note.
  * Renders HTML content with emoji support.
  */
-export function ProfileBio({ note }: ProfileBioProps) {
+export function ProfileBio({ note, emojis }: ProfileBioProps) {
     if (!note) return null;
 
     return (
-        <BioContainer
-            dangerouslySetInnerHTML={{ __html: note }}
-        />
+        <BioContainer>
+            <EmojiText text={note} emojis={emojis} html />
+        </BioContainer>
     );
 }

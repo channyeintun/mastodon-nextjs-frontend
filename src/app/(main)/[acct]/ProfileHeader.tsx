@@ -88,7 +88,7 @@ export function ProfileHeader({
                     <HandleExplainer username={account.username} server={new URL(account.url).hostname} />
                     <FamiliarFollowers accountId={account.id} isOwnProfile={isOwnProfile} />
                 </NameSection>
-                <ProfileBio note={account.note} />
+                <ProfileBio note={account.note} emojis={account.emojis} />
                 <ProfileStats acct={account.acct} postsCount={account.statuses_count} followingCount={account.following_count} followersCount={account.followers_count} />
                 <MetaSection>
                     {account.created_at && (
