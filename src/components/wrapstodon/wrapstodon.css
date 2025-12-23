@@ -440,6 +440,8 @@ dialog:has(.wrapstodon-modal-wrapper) {
     background: transparent;
     box-shadow: none;
     overflow: visible;
+    border: none;
+    outline: none;
 }
 
 dialog:has(.wrapstodon-modal-wrapper)::backdrop {
