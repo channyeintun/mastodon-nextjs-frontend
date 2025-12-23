@@ -84,6 +84,45 @@ export const DragHandle = styled.div`
   &:active {
     cursor: grabbing;
   }
+
+  /* Hide on touch devices where drag doesn't work */
+  @media (pointer: coarse) {
+    display: none;
+  }
+`;
+
+export const MoveButtonsContainer = styled.div`
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+
+  /* Show on touch devices */
+  @media (pointer: coarse) {
+    display: flex;
+  }
+`;
+
+export const MoveButton = styled.button<{ $disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 2px;
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
+  color: ${props => props.$disabled ? 'var(--text-4)' : 'var(--text-3)'};
+  opacity: ${props => props.$disabled ? 0.4 : 1};
+  border-radius: var(--radius-1);
+  transition: background 0.15s, color 0.15s;
+
+  &:hover:not(:disabled) {
+    background: var(--surface-3);
+    color: var(--text-1);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--surface-4);
+  }
 `;
 
 export const DropIndicator = styled.div`

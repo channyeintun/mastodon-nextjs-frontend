@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { UseFormRegister, Control, FieldErrors, UseFormWatch, UseFormSetValue } from 'react-hook-form';
-import { Copy, ChevronDown, GripVertical } from 'lucide-react';
+import { Copy, ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
 import { Input, FormField } from '@/components/atoms';
 import { formatVerificationDate } from '@/utils/date';
 import type { ProfileFormData, ProfileField } from '@/schemas/profileFormSchema';
@@ -14,6 +14,8 @@ import {
   FieldsContainer,
   FieldRow,
   DragHandle,
+  MoveButtonsContainer,
+  MoveButton,
   DropIndicator,
   FieldInput,
   VerificationIcon,
@@ -110,6 +112,16 @@ export function ProfileFieldsEditor({
     setDropIndicatorIndex(null);
   };
 
+  // Move field up or down (for mobile touch devices)
+  const moveField = (index: number, direction: -1 | 1) => {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= fields.length) return;
+
+    const newFields = [...fields];
+    [newFields[index], newFields[newIndex]] = [newFields[newIndex], newFields[index]];
+    setValue('fields', newFields as [ProfileField, ProfileField, ProfileField, ProfileField]);
+  };
+
   return (
     <>
       {/* Profile Information */}
@@ -174,6 +186,24 @@ export function ProfileFieldsEditor({
                 <DragHandle>
                   <GripVertical size={18} />
                 </DragHandle>
+                <MoveButtonsContainer>
+                  <MoveButton
+                    type="button"
+                    $disabled={index === 0}
+                    onClick={() => moveField(index, -1)}
+                    aria-label="Move up"
+                  >
+                    <ChevronUp size={16} />
+                  </MoveButton>
+                  <MoveButton
+                    type="button"
+                    $disabled={index === fields.length - 1}
+                    onClick={() => moveField(index, 1)}
+                    aria-label="Move down"
+                  >
+                    <ChevronDown size={16} />
+                  </MoveButton>
+                </MoveButtonsContainer>
                 <FieldInput
                   type="text"
                   placeholder={`Label ${index + 1}`}
