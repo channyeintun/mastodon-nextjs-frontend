@@ -197,7 +197,7 @@ export function PostHeader({
                                 <div className="options-menu-popover">
                                     <button
                                         className="options-menu-item danger"
-                                        onClick={(e) => {
+                                        onMouseDown={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             onReport();
