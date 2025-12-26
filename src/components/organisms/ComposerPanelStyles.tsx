@@ -13,22 +13,34 @@ export const DisplayName = styled.div`
 `;
 
 export const VisibilityButtonWrapper = styled.div`
-  margin-top: 4px;
+  display: inline-flex;
 `;
 
 export const VisibilityButton = styled.button`
-  padding: 0;
-  background: transparent;
-  color: var(--text-2);
-  font-size: var(--font-size-1);
   display: flex;
   align-items: center;
-  gap: 6px;
-  cursor: pointer;
+  gap: var(--size-1);
+  padding: var(--size-1) var(--size-3);
+  background: var(--surface-2);
   border: none;
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: var(--font-size-0);
+  cursor: pointer;
+  transition: all 0.15s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
+    background: var(--surface-3);
     color: var(--text-1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    flex-shrink: 0;
   }
 `;
 

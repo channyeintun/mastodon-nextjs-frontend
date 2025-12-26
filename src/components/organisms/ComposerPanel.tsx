@@ -328,12 +328,10 @@ export function ComposerPanel({
                 {/* Visibility Settings Trigger Button */}
                 <VisibilityButtonWrapper>
                   <VisibilityButton
-                    className="compose-visibility-selector"
                     onClick={editMode ? undefined : handleOpenVisibilitySettings}
                     title={editMode ? "Visibility cannot be changed when editing" : "Adjust visibility and interaction"}
                     type="button"
                     disabled={editMode}
-                    style={editMode ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
                   >
                     <VisibilityIcon size={16} />
                     <VisibilityLabel>{currentVisibility?.label}</VisibilityLabel>

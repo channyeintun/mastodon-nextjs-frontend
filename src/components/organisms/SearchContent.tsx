@@ -278,7 +278,7 @@ const ResultSection = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-    font-size: var(--font-size-3);
+    font-size: var(--font-size-fluid-1);
     font-weight: var(--font-weight-6);
     margin-bottom: var(--size-4);
     color: var(--text-1);

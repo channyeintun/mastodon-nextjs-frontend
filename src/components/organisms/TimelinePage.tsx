@@ -305,7 +305,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-    font-size: var(--font-size-5);
+    font-size: var(--font-size-fluid-2);
     margin-bottom: var(--size-1);
 `;
 

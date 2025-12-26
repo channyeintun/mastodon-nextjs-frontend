@@ -168,7 +168,7 @@ export async function acceptFollowRequest(id: string): Promise<Relationship> {
 }
 
 export async function rejectFollowRequest(id: string): Promise<void> {
-    await api.post(`/api/v1/follow_requests/${id}/reject`)
+    await api.post(`/api/v1/follow_requests/${id}/reject`);
 }
 
 // Block/Unblock
