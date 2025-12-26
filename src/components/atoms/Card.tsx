@@ -26,7 +26,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     background: 'var(--surface-2)',
     borderRadius: 'var(--radius-3)',
     padding: paddingMap[padding],
-    boxShadow: 'var(--shadow-2)',
+    boxShadow: 'var(--shadow-3)',
     transition: 'all 0.2s ease',
     cursor: onClick ? 'pointer' : 'default',
     scrollMarginTop: 'calc(var(--size-4) * 2 + var(--size-9) + 1px)',
@@ -42,13 +42,13 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       onClick={onClick}
       onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
         if (hoverable) {
-          e.currentTarget.style.boxShadow = 'var(--shadow-4)';
+          e.currentTarget.style.boxShadow = 'var(--shadow-5)';
           e.currentTarget.style.transform = 'translateY(-2px)';
         }
       }}
       onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
         if (hoverable) {
-          e.currentTarget.style.boxShadow = 'var(--shadow-2)';
+          e.currentTarget.style.boxShadow = 'var(--shadow-3)';
           e.currentTarget.style.transform = 'translateY(0)';
         }
       }}

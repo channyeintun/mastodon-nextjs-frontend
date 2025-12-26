@@ -238,6 +238,7 @@ const ContentColumn = styled.div`
 
 const StatusContent = styled.div`
     grid-column: 2;
+    margin-top: var(--size-2);
 
     @media (max-width: 767px) {
         grid-column: span 2;
