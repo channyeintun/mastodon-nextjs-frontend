@@ -897,8 +897,17 @@ body {
 .emoji-picker {
   position: absolute;
   position-anchor: --emoji-anchor;
-  position-area: top;
-  position-try-fallbacks: bottom;
+  position-try: flip-block;
+  position-area: top center;
+  transform: translateX(-80px);
+
+  em-emoji-picker {
+    width: 300px;
+    height: 350px;
+    max-height: 60dvh;
+    border-radius: var(--radius-3);
+    box-shadow: var(--shadow-4);
+  }
 }
 
 /* ====================================

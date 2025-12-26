@@ -12,6 +12,7 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
@@ -29,7 +30,7 @@
     "axios": "^1.13.2",
     "cropperjs": "^2.1.0",
     "date-fns": "^4.1.0",
-    "emoji-picker-react": "^4.16.1",
+    "emoji-mart": "^5.6.0",
     "idb-keyval": "^6.2.2",
     "lucide-react": "^0.555.0",
     "mobx": "^6.15.0",
