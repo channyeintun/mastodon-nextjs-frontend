@@ -73,7 +73,9 @@ export default function HashtagPage({
         </div>
 
         {/* Skeleton loading */}
-        <PostCardSkeletonList count={5} />
+        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+          <PostCardSkeletonList count={5} />
+        </div>
       </div>
     );
   }
