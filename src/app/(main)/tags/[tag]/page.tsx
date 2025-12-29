@@ -1,160 +1,83 @@
-'use client';
+import PostList from '@/components/post/PostList';
+import { getHashtagTimeline } from '@/lib/mastodon/actions';
+import PostCardSkeletonList from '@/components/post/PostCardSkeletonList';
+import { Suspense } from 'react';
+import { Metadata } from 'next';
 
-import { use } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, Hash } from 'lucide-react';
-import { useInfiniteHashtagTimeline } from '@/api';
-import { PostCard } from '@/components/organisms';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules';
-import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton } from '@/components/atoms';
-import { flattenAndUniqById } from '@/utils/fp';
-import type { Status } from '@/types';
+interface PageProps {
+  params: Promise<{
+    tag: string;
+  }>;
+}
 
-export default function HashtagPage({
+export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ tag: string }>;
-}) {
-  const { tag } = use(params);
-  const router = useRouter();
-
-  // Decode URL parameter
+}: PageProps): Promise<Metadata> {
+  const { tag } = await params;
   const decodedTag = decodeURIComponent(tag);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteHashtagTimeline(decodedTag);
+  return {
+    title: `#${decodedTag}`,
+    description: `Posts tagged with #${decodedTag}`,
+  };
+}
 
-  // Flatten and deduplicate statuses using FP utility
-  const uniqueStatuses = flattenAndUniqById(data?.pages);
-
-  if (isLoading) {
-    return (
-      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{
-          position: 'sticky',
-          top: 0,
-          background: 'var(--surface-1)',
-          zIndex: 10,
-          padding: 'var(--size-4) 0',
-          marginBottom: 'var(--size-4)',
-          borderBottom: '1px solid var(--surface-3)',
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-3)',
-          }}>
-            <IconButton onClick={() => router.back()}>
-              <ArrowLeft size={20} />
-            </IconButton>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--size-2)',
-            }}>
-              <Hash size={24} style={{ color: 'var(--indigo-6)' }} />
-              <h1 style={{
-                fontSize: 'var(--font-size-4)',
-                fontWeight: 'var(--font-weight-6)',
-                color: 'var(--text-1)',
-              }}>
-                {decodedTag}
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        {/* Skeleton loading */}
-        <PostCardSkeletonList count={5} />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-        <p style={{ color: 'var(--red-6)' }}>Failed to load hashtag timeline</p>
-      </div>
-    );
-  }
+async function HashtagTimeline({ tag }: { tag: string }) {
+  const decodedTag = decodeURIComponent(tag);
+  const posts = await getHashtagTimeline(decodedTag);
 
   return (
-    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{
-        background: 'var(--surface-1)',
-        zIndex: 10,
-        padding: 'var(--size-4) 0',
-        marginBottom: 'var(--size-4)',
-        borderBottom: '1px solid var(--surface-3)',
-        flexShrink: 0,
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--size-3)',
-        }}>
-          <IconButton onClick={() => router.back()}>
-            <ArrowLeft size={20} />
-          </IconButton>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-2)',
-          }}>
-            <Hash size={24} style={{ color: 'var(--indigo-6)' }} />
-            <h1 style={{
-              fontSize: 'var(--font-size-4)',
-              fontWeight: 'var(--font-weight-6)',
-              color: 'var(--text-1)',
-            }}>
-              {decodedTag}
-            </h1>
-          </div>
+    <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+      <PostList
+        initialData={posts}
+        queryKey={['hashtagTimeline', decodedTag]}
+        loadMorePosts={async (maxId) => {
+          'use server';
+          return await getHashtagTimeline(decodedTag, maxId);
+        }}
+      />
+    </div>
+  );
+}
+
+export default async function HashtagPage({ params }: PageProps) {
+  const { tag } = await params;
+  const decodedTag = decodeURIComponent(tag);
+
+  return (
+    <>
+      <div className="sticky top-0 z-10 bg-background border-b">
+        <div className="px-4 py-3">
+          <h1 className="text-xl font-bold">#{decodedTag}</h1>
         </div>
       </div>
 
-      {/* Timeline with scroll restoration */}
-      <VirtualizedList<Status>
-        items={uniqueStatuses}
-        renderItem={(status) => (
-          <PostCard
-            status={status}
-            style={{ marginBottom: 'var(--size-3)' }}
-          />
-        )}
-        getItemKey={(status) => status.id}
-        estimateSize={300}
-        overscan={5}
-        onLoadMore={fetchNextPage}
-        isLoadingMore={isFetchingNextPage}
-        hasMore={hasNextPage}
-        loadMoreThreshold={3}
-
-        height="auto"
-        style={{ flex: 1, minHeight: 0 }}
-        scrollRestorationKey={`hashtag-${decodedTag}`}
-        loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
-        endIndicator="You've reached the end"
-        emptyState={
-          <div style={{
-            textAlign: 'center',
-            marginTop: 'var(--size-8)',
-            color: 'var(--text-2)',
-          }}>
-            <Hash size={48} style={{ marginBottom: 'var(--size-4)' }} />
-            <p>No posts found for this hashtag</p>
+      <div className="flex flex-col min-h-0" style={{ flex: 1 }}>
+        <div className="border-b">
+          <div className="flex">
+            <button className="flex-1 px-4 py-3 text-sm font-medium border-b-2 border-primary">
+              Posts
+            </button>
+            <button className="flex-1 px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent">
+              People
+            </button>
           </div>
-        }
-      />
-    </div>
+        </div>
+
+        <div className="min-h-0" style={{ flex: 1 }}>
+          <Suspense
+            fallback={
+              <>
+        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
+          <PostCardSkeletonList count={5} />
+        </div>
+              </>
+            }
+          >
+            <HashtagTimeline tag={tag} />
+          </Suspense>
+        </div>
+      </div>
+    </>
   );
 }
