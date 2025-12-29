@@ -42,7 +42,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
 
     if (isLoadingList) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <PageHeaderSkeleton titleWidth={150} subtitleWidth={100} />
                 {Array.from({ length: 5 }).map((_, i) => <AccountCardSkeleton key={i} />)}
             </div>
@@ -51,7 +51,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
 
     if (!list) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', padding: 'var(--size-4)', borderBottom: '1px solid var(--surface-3)' }}>
                     <IconButton onClick={() => router.back()}><ArrowLeft size={20} /></IconButton>
                     <h1 style={{ fontSize: 'var(--font-size-4)' }}>List not found</h1>
@@ -61,7 +61,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
     }
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',

@@ -120,7 +120,7 @@ export default function ScheduledStatusesPage() {
     );
 
     return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 background: 'var(--surface-1)',

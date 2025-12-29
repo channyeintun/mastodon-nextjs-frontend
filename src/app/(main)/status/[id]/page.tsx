@@ -180,7 +180,7 @@ export default function StatusPage({
 
 // Styled components
 const Container = styled.div`
-  max-width: 600px;
+  max-width: 680px;
   margin: 0 auto;
 `;
 

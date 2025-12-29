@@ -370,7 +370,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
 
 // Styled components
 const Container = styled.div`
-    max-width: 600px;
+    max-width: 680px;
     margin: 0 auto;
     position: relative;
 

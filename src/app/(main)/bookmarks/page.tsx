@@ -28,7 +28,7 @@ export default function BookmarksPage() {
 
   if (isLoading) {
     return (
-      <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{
           background: 'var(--surface-1)',
@@ -75,7 +75,7 @@ export default function BookmarksPage() {
 
   if (uniqueStatuses.length === 0) {
     return (
-      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '680px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{
           position: 'sticky',
@@ -113,7 +113,7 @@ export default function BookmarksPage() {
   }
 
   return (
-    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+    <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{
         background: 'var(--surface-1)',

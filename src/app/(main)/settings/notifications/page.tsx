@@ -24,7 +24,7 @@ export default function NotificationSettingsPage() {
     if (!authStore.isAuthenticated) return null;
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto', padding: 'var(--size-4) var(--size-2)' }}>
             <Header>
                 <IconButton onClick={() => router.back()} aria-label="Go back">
                     <ArrowLeft size={20} />

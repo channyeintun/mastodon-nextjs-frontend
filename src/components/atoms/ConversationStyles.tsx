@@ -6,7 +6,7 @@ import styled from '@emotion/styled'
 import { IconButton } from '@/components/atoms/IconButton'
 
 export const PageContainer = styled.div`
-  max-width: 600px;
+  max-width: 680px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;

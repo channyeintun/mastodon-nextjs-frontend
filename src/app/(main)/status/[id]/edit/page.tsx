@@ -20,7 +20,7 @@ export default function EditStatusPage() {
   if (isLoading) {
     return (
       <div style={{
-        maxWidth: '600px',
+        maxWidth: '680px',
         margin: '0 auto',
         padding: 'var(--size-4)',
       }}>
@@ -38,7 +38,7 @@ export default function EditStatusPage() {
   if (error || !status) {
     return (
       <div style={{
-        maxWidth: '600px',
+        maxWidth: '680px',
         margin: '0 auto',
         padding: 'var(--size-4)',
       }}>

@@ -23,7 +23,7 @@ export default function BlockedAccountsPage() {
 
     if (isLoading) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <PageHeaderSkeleton />
                 {Array.from({ length: 5 }).map((_, i) => (
                     <AccountCardSkeleton key={i} />
@@ -33,7 +33,7 @@ export default function BlockedAccountsPage() {
     }
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex',

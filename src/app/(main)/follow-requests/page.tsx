@@ -22,7 +22,7 @@ export default function FollowRequestsPage() {
 
     if (isLoading) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 {/* Header */}
                 <PageHeaderSkeleton />
                 {Array.from({ length: 3 }).map((_, i) => (
@@ -33,7 +33,7 @@ export default function FollowRequestsPage() {
     }
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex',

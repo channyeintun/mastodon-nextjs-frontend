@@ -50,7 +50,7 @@ export default function NotificationsPage() {
     // Show skeleton while loading instance data (prevents notification queries from firing)
     if (isLoadingInstance) {
         return (
-            <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
                 {/* Header skeleton */}
                 <div style={{ padding: 'var(--size-3) var(--size-4)', display: 'flex', alignItems: 'center', gap: 'var(--size-2)' }}>
                     <Bell size={24} />

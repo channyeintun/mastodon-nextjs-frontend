@@ -3,7 +3,7 @@
 import styled from '@emotion/styled';
 
 export const FiltersContainer = styled.div`
-  max-width: 600px;
+  max-width: 680px;
   margin: 0 auto;
   padding: var(--size-4) var(--size-2);
   overflow-anchor: none;

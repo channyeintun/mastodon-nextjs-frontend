@@ -30,7 +30,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
 
     if (isLoadingList) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <PageHeaderSkeleton
                     titleWidth={150}
                     subtitleWidth={100}
@@ -45,7 +45,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
 
     if (!list) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <div
                     style={{
                         display: 'flex',
@@ -77,7 +77,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
     }
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
             {/* ... Header ... */}
             <div
                 style={{

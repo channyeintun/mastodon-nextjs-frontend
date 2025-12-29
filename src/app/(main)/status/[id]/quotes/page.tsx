@@ -37,7 +37,7 @@ export default function QuotesPage({
 
     if (isLoading) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <PageHeaderSkeleton />
                 {Array.from({ length: 3 }).map((_, i) => (
                     <PostCardSkeleton key={i} />
@@ -58,7 +58,7 @@ export default function QuotesPage({
     }
 
     return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex',

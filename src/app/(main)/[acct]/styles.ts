@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const PageContainer = styled.div`
-  max-width: 600px;
+  max-width: 680px;
   margin: 0 auto;
   padding: 0;
   display: flex;
@@ -21,7 +21,7 @@ export const FixedBackButton = styled.div`
   /* On desktop, account for sidebar and centered content */
   @media (min-width: 768px) {
     /* Sidebar width + half of remaining space - half of content width + padding */
-    left: calc(var(--app-sidebar-width) + (100vw - var(--app-sidebar-width) - 600px) / 2 + var(--size-4));
+    left: calc(var(--app-sidebar-width) + (100vw - var(--app-sidebar-width) - 680px) / 2 + var(--size-4));
   }
 
   button {

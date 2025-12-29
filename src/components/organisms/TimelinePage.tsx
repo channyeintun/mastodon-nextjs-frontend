@@ -291,7 +291,7 @@ export const TimelinePage = observer(() => {
 
 // Styled components
 const Container = styled.div`
-    max-width: 600px;
+    max-width: 680px;
     margin: 0 auto;
 
     @media (max-width: 767px) {

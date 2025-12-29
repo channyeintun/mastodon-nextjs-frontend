@@ -29,7 +29,7 @@ export const Content = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: var(--size-4);
-  max-width: 600px;
+  max-width: 680px;
   margin: 0 auto;
   width: 100%;
 `;

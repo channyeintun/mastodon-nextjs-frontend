@@ -157,7 +157,7 @@ export function NotificationsV2({ streamingStatus }: NotificationsV2Props) {
     };
 
     return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
             {/* Header */}
             <NotificationHeaderContainer>
                 <NotificationTitleRow>

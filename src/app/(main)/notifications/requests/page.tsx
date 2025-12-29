@@ -46,7 +46,7 @@ export default function NotificationRequestsPage() {
     };
 
     return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
             <Header>
                 <IconButton onClick={() => router.back()} aria-label="Go back">
                     <ArrowLeft size={20} />

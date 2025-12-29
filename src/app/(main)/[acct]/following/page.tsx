@@ -52,7 +52,7 @@ export default function FollowingPage({
 
     if (accountLoading || followingLoading) {
         return (
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto' }}>
                 <PageHeaderSkeleton />
                 {Array.from({ length: 5 }).map((_, i) => (
                     <AccountCardSkeleton key={i} />
@@ -75,7 +75,7 @@ export default function FollowingPage({
     }
 
     return (
-        <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="full-height-container" style={{ maxWidth: '680px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{
                 display: 'flex',
