@@ -1,162 +1,110 @@
-'use client';
+import { Box, Flex, Heading, Tabs } from '@radix-ui/themes';
+import { notFound } from 'next/navigation';
+import { getHashtag } from '@/services/hashtag';
+import { getStatusesByHashtag } from '@/services/timeline';
+import { Metadata } from 'next';
+import StatusList from '@/components/StatusList';
+import BackButton from '@/components/BackButton';
+import FollowHashtagButton from '@/components/FollowHashtagButton';
 
-import { use } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, Hash } from 'lucide-react';
-import { useInfiniteHashtagTimeline } from '@/api';
-import { PostCard } from '@/components/organisms';
-import { PostCardSkeletonList, PostCardSkeleton } from '@/components/molecules';
-import { VirtualizedList } from '@/components/organisms/VirtualizedList';
-import { IconButton } from '@/components/atoms';
-import { flattenAndUniqById } from '@/utils/fp';
-import type { Status } from '@/types';
-
-export default function HashtagPage({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ tag: string }>;
+}): Promise<Metadata> {
+  const tag = (await params).tag;
+  return {
+    title: `#${tag}`,
+  };
+}
+
+export default async function HashtagPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ tag: string }>;
+  searchParams: Promise<{ view?: string }>;
 }) {
-  const { tag } = use(params);
-  const router = useRouter();
+  const tag = (await params).tag;
+  const view = (await searchParams).view || 'all';
+  const hashtag = await getHashtag(tag);
 
-  // Decode URL parameter
-  const decodedTag = decodeURIComponent(tag);
-
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteHashtagTimeline(decodedTag);
-
-  // Flatten and deduplicate statuses using FP utility
-  const uniqueStatuses = flattenAndUniqById(data?.pages);
-
-  if (isLoading) {
-    return (
-      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{
-          position: 'sticky',
-          top: 0,
-          background: 'var(--surface-1)',
-          zIndex: 10,
-          padding: 'var(--size-4) 0',
-          marginBottom: 'var(--size-4)',
-          borderBottom: '1px solid var(--surface-3)',
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-3)',
-          }}>
-            <IconButton onClick={() => router.back()}>
-              <ArrowLeft size={20} />
-            </IconButton>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--size-2)',
-            }}>
-              <Hash size={24} style={{ color: 'var(--indigo-6)' }} />
-              <h1 style={{
-                fontSize: 'var(--font-size-4)',
-                fontWeight: 'var(--font-weight-6)',
-                color: 'var(--text-1)',
-              }}>
-                {decodedTag}
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        {/* Skeleton loading */}
-        <div className="virtualized-list-container" style={{ flex: 1, overflow: 'auto' }}>
-          <PostCardSkeletonList count={5} />
-        </div>
-      </div>
-    );
+  if (!hashtag) {
+    notFound();
   }
 
-  if (isError) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: 'var(--size-8)' }}>
-        <p style={{ color: 'var(--red-6)' }}>Failed to load hashtag timeline</p>
-      </div>
-    );
-  }
+  const statuses = await getStatusesByHashtag(tag, view);
 
   return (
-    <div className="full-height-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{
-        background: 'var(--surface-1)',
-        zIndex: 10,
-        padding: 'var(--size-4) 0',
-        marginBottom: 'var(--size-4)',
-        borderBottom: '1px solid var(--surface-3)',
-        flexShrink: 0,
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--size-3)',
-        }}>
-          <IconButton onClick={() => router.back()}>
-            <ArrowLeft size={20} />
-          </IconButton>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--size-2)',
-          }}>
-            <Hash size={24} style={{ color: 'var(--indigo-6)' }} />
-            <h1 style={{
-              fontSize: 'var(--font-size-4)',
-              fontWeight: 'var(--font-weight-6)',
-              color: 'var(--text-1)',
-            }}>
-              {decodedTag}
-            </h1>
-          </div>
-        </div>
-      </div>
+    <Box>
+      <Flex
+        direction="column"
+        gap="4"
+        style={{
+          borderBottom: '1px solid var(--gray-a5)',
+          padding: 'var(--size-4)',
+          position: 'sticky',
+          top: 0,
+          backgroundColor: 'var(--color-background)',
+          zIndex: 10,
+        }}
+      >
+        <Flex justify="between" align="center">
+          <Flex align="center" gap="4">
+            <BackButton />
+            <Heading size="5" weight="bold">
+              #{hashtag.name}
+            </Heading>
+          </Flex>
+          <FollowHashtagButton hashtag={hashtag} />
+        </Flex>
 
-      {/* Timeline with scroll restoration */}
-      <VirtualizedList<Status>
-        items={uniqueStatuses}
-        renderItem={(status) => (
-          <PostCard
-            status={status}
-            style={{ marginBottom: 'var(--size-3)' }}
-          />
-        )}
-        getItemKey={(status) => status.id}
-        estimateSize={300}
-        overscan={5}
-        onLoadMore={fetchNextPage}
-        isLoadingMore={isFetchingNextPage}
-        hasMore={hasNextPage}
-        loadMoreThreshold={3}
+        <Flex direction="column" gap="1">
+          <Box>
+            <strong>{hashtag.history?.[0]?.accounts || 0}</strong> people
+          </Box>
+          <Box color="gray">
+            {hashtag.history?.[0]?.uses || 0} posts in the last 24 hours
+          </Box>
+        </Flex>
+      </Flex>
 
-        height="auto"
-        style={{ flex: 1, minHeight: 0 }}
-        scrollRestorationKey={`hashtag-${decodedTag}`}
-        loadingIndicator={<PostCardSkeleton style={{ marginBottom: 'var(--size-3)' }} />}
-        endIndicator="You've reached the end"
-        emptyState={
-          <div style={{
-            textAlign: 'center',
-            marginTop: 'var(--size-8)',
-            color: 'var(--text-2)',
-          }}>
-            <Hash size={48} style={{ marginBottom: 'var(--size-4)' }} />
-            <p>No posts found for this hashtag</p>
-          </div>
-        }
-      />
-    </div>
+      <Tabs.Root defaultValue={view}>
+        <Tabs.List
+          style={{
+            borderBottom: '1px solid var(--gray-a5)',
+            position: 'sticky',
+            top: 'var(--header-height)',
+            backgroundColor: 'var(--color-background)',
+            zIndex: 9,
+          }}
+        >
+          <Tabs.Trigger value="all" asChild>
+            <a
+              href={`/tags/${tag}`}
+              style={{ flex: 1, textAlign: 'center' }}
+            >
+              All
+            </a>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="local" asChild>
+            <a
+              href={`/tags/${tag}?view=local`}
+              style={{ flex: 1, textAlign: 'center' }}
+            >
+              Local
+            </a>
+          </Tabs.Trigger>
+        </Tabs.List>
+
+        <Box
+          style={{
+            padding: 'var(--size-4)',
+          }}
+        >
+          <StatusList initialStatuses={statuses} />
+        </Box>
+      </Tabs.Root>
+    </Box>
   );
 }
