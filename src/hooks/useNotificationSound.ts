@@ -1,5 +1,7 @@
 'use client';
 
+import { useRef } from 'react';
+
 interface AudioSource {
     src: string;
     type: string;
@@ -40,18 +42,33 @@ class NotificationSound {
     }
 }
 
+const DEFAULT_DEBOUNCE_DELAY = 1000;
+
 /**
- * Hook to get notification sound controls.
+ * Hook to get notification sound controls with debouncing.
  * Returns a play function that creates audio, plays it, then cleans up.
+ * If multiple notifications arrive within the debounce delay, only the last one will play a sound.
+ * @param debounceDelay - The debounce delay in milliseconds (default: 1000ms)
  */
-export function useNotificationSound() {
-    const play = async (): Promise<void> => {
-        const sound = new NotificationSound([
-            { src: '/boop.ogg', type: 'audio/ogg' },
-            { src: '/boop.mp3', type: 'audio/mpeg' },
-        ]);
-        await sound.play();
-        sound.destroy();
+export function useNotificationSound(debounceDelay: number = DEFAULT_DEBOUNCE_DELAY) {
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const play = (): void => {
+        // Clear any existing timeout
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        // Set a new timeout
+        timeoutRef.current = setTimeout(async () => {
+            const sound = new NotificationSound([
+                { src: '/boop.ogg', type: 'audio/ogg' },
+                { src: '/boop.mp3', type: 'audio/mpeg' },
+            ]);
+            await sound.play();
+            sound.destroy();
+            timeoutRef.current = null;
+        }, debounceDelay);
     };
 
     return { play };
