@@ -446,6 +446,10 @@ const NavButton = styled.button`
     transition: scale 0.2s ease, background 0.2s ease, opacity 0.2s ease, visibility 0.2s ease;
     z-index: 2;
 
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+
     svg {
         width: 100%;
         height: 100%;

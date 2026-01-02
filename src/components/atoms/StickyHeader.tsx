@@ -53,6 +53,10 @@ export const StickyHeaderContent = styled.div`
     padding 0.3s ease, 
     gap 0.3s ease, 
     background 0.3s ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 /**
@@ -70,6 +74,10 @@ export const StickyHeaderTitle = styled.div`
     visibility 0.2s ease, 
     gap 0.3s ease;
   transition-behavior: allow-discrete;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 
   h1 {
     font-size: var(--font-size-5);
@@ -111,6 +119,10 @@ export const StickyHeaderSubtitle = styled.p`
     margin-top 0.3s ease;
   transition-behavior: allow-discrete;
 
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
   /* Respond to stuck state */
   @container style(--header-stuck: 1) {
     opacity: var(--header-subtitle-opacity-stuck);
@@ -139,6 +151,10 @@ export const StickyHeaderButtonText = styled.span`
   opacity: 1;
   transition: opacity 0.2s ease, display 0.2s ease;
   transition-behavior: allow-discrete;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
   
   @container style(--header-stuck: 1) {
     opacity: 0;
@@ -155,6 +171,10 @@ export const StickyHeaderRow = styled.div<{ $hideWhenStuck?: boolean }>`
   visibility: visible;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   transition-behavior: allow-discrete;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
   
   ${props => props.$hideWhenStuck && `
     @container style(--header-stuck: 1) {
