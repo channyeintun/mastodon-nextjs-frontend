@@ -343,16 +343,15 @@ const StyledStatusContent = styled(StatusContent)`
 
 const MediaContainer = styled.div`
   margin-top: var(--size-3);
+  margin-inline: calc(-1 * var(--size-4));
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-2);
 `;
 
 const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
   display: grid;
   grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
   gap: var(--size-2);
-  border-radius: var(--radius-2);
   overflow: hidden;
   filter: ${props => props.$blurred ? 'blur(32px)' : 'none'};
   transition: filter 0.2s ease;

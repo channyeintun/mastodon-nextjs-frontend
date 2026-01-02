@@ -192,7 +192,7 @@ const MediaVideo = styled.video`
 
 const MediaCounter = styled.div`
   position: absolute;
-  bottom: calc(var(--size-3) + (var(--size-3) * 3));
+  top: var(--size-3);
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.7);
