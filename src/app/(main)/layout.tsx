@@ -8,8 +8,10 @@ import { AuthModalBridge } from '@/components/molecules';
 
 export default function MainLayout({
     children,
+    compose,
 }: {
     children: React.ReactNode;
+    compose: React.ReactNode;
 }) {
     return (
         <StreamingProvider>
@@ -19,8 +21,10 @@ export default function MainLayout({
                 <main id="main-content">
                     {children}
                 </main>
+                {compose}
                 <AuthModalBridge />
             </GlobalModalProvider>
         </StreamingProvider>
     );
 }
+
