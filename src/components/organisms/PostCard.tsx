@@ -157,7 +157,7 @@ export function PostCard({
     : (style || {});
 
   return (
-    <Card as="article" padding="medium" style={cardStyle} onClick={handleCardClick} id={id}>
+    <Card as="article" padding="medium" style={cardStyle} onClick={handleCardClick} id={id} className="post-card">
       {/* Reblog indicator */}
       {isReblog && <ReblogIndicator account={status.account} />}
 
