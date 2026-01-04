@@ -58,7 +58,6 @@ export function useDynamicBottomSpacer({ anchorRef, deps = [] }: UseDynamicBotto
             window.removeEventListener('resize', calculate);
             resizeObserver.disconnect();
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [anchorRef, ...deps]);
 
     return { headerRef, contentBelowRef, height };
