@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import styled from '@emotion/styled';
-import { Languages, Search, X, ChevronDown } from 'lucide-react';
+import { useMemo } from 'react';
+import Select, { StylesConfig } from 'react-select';
+import { Languages } from 'lucide-react';
 import { useInstanceLanguages } from '@/api';
 
 interface LanguageDropdownProps {
@@ -11,294 +11,149 @@ interface LanguageDropdownProps {
   disabled?: boolean;
 }
 
+interface LanguageOption {
+  value: string;
+  label: string;
+}
+
+// Compact styles for the language dropdown
+const customStyles: StylesConfig<LanguageOption, false> = {
+  control: (base, state) => ({
+    ...base,
+    background: 'var(--surface-2)',
+    border: 'none',
+    borderRadius: '999px',
+    padding: '0 2px 0 8px',
+    minHeight: '28px',
+    height: '28px',
+    boxShadow: 'var(--shadow-2), 0 1px var(--surface-3)',
+    cursor: state.isDisabled ? 'not-allowed' : 'pointer',
+    opacity: state.isDisabled ? 0.5 : 1,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '2px',
+    fontSize: 'var(--font-size-0)',
+    transition: 'all 0.15s ease',
+    '&:hover': {
+      background: 'var(--surface-3)',
+    }
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    padding: '0 4px',
+  }),
+  menu: (base) => ({
+    ...base,
+    background: 'var(--surface-2)',
+    border: '1px solid var(--gray-4)',
+    borderRadius: 'var(--radius-2)',
+    boxShadow: 'var(--shadow-4)',
+    zIndex: 10000,
+    width: 'min(220px, calc(100vw - 32px))',
+    right: 0,
+    left: 'auto',
+  }),
+  menuPortal: (base) => ({
+    ...base,
+    zIndex: 10000,
+  }),
+  menuList: (base) => ({
+    ...base,
+    maxHeight: '280px',
+  }),
+  option: (base, state) => ({
+    ...base,
+    background: state.isSelected ? 'var(--blue-6)' : state.isFocused ? 'var(--surface-3)' : 'transparent',
+    color: state.isSelected ? 'white' : 'var(--text-1)',
+    padding: '8px 12px',
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: 'var(--font-size-1)',
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: 'var(--text-2)',
+    fontSize: 'var(--font-size-0)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+  }),
+  input: (base) => ({
+    ...base,
+    color: 'var(--text-1)',
+    fontSize: 'var(--font-size-1)',
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: 'var(--text-3)',
+  }),
+  dropdownIndicator: (base) => ({
+    ...base,
+    color: 'var(--text-2)',
+    padding: '0 4px',
+    '&:hover': {
+      color: 'var(--text-1)',
+    }
+  }),
+  indicatorSeparator: () => ({
+    display: 'none',
+  }),
+};
+
+// Custom format for the selected value to show icon + language name
+const formatOptionLabel = (option: LanguageOption, { context }: { context: 'menu' | 'value' }) => {
+  if (context === 'value') {
+    return (
+      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <Languages size={14} />
+        {option.label}
+      </span>
+    );
+  }
+  return (
+    <span style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+      <span>{option.label}</span>
+      <span style={{ color: 'var(--text-3)', fontSize: 'var(--font-size-0)', textTransform: 'uppercase' }}>
+        {option.value}
+      </span>
+    </span>
+  );
+};
+
 /**
  * Language selection dropdown for the composer.
- * Allows users to select the language of their post.
+ * Uses react-select with portal for proper positioning in modals.
  */
 export function LanguageDropdown({ value, onChange, disabled }: LanguageDropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
   const { data: languages = [] } = useInstanceLanguages();
 
-  // Fallback language names for when the API hasn't loaded yet
-  const fallbackLanguages: Record<string, string> = {
-    en: 'English',
-  };
+  // Convert languages to react-select format
+  const options: LanguageOption[] = useMemo(() => {
+    return languages.map((lang) => ({
+      value: lang.code,
+      label: lang.name,
+    }));
+  }, [languages]);
 
-  // Get the current language name
-  const currentLanguage = languages.find((l) => l.code === value);
-  const displayName = currentLanguage?.name || fallbackLanguages[value];
-
-  // Filter languages based on search query
-  const filteredLanguages = languages.filter((lang) => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      lang.name.toLowerCase().includes(query) ||
-      lang.code.toLowerCase().includes(query)
-    );
-  });
-
-  // Sort languages: put selected first, then by name
-  const sortedLanguages = [...filteredLanguages].sort((a, b) => {
-    if (a.code === value) return -1;
-    if (b.code === value) return 1;
-    return a.name.localeCompare(b.name);
-  });
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        setSearchQuery('');
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
-  // Focus search input when dropdown opens
-  useEffect(() => {
-    if (isOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [isOpen]);
-
-  const handleToggle = () => {
-    if (!disabled) {
-      setIsOpen(!isOpen);
-      if (isOpen) {
-        setSearchQuery('');
-      }
-    }
-  };
-
-  const handleSelect = (code: string) => {
-    onChange(code);
-    setIsOpen(false);
-    setSearchQuery('');
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setIsOpen(false);
-      setSearchQuery('');
-    }
+  // Find current value
+  const selectedOption = options.find((opt) => opt.value === value) || {
+    value: value,
+    label: value === 'en' ? 'English' : value,
   };
 
   return (
-    <Container ref={dropdownRef} onKeyDown={handleKeyDown}>
-      <TriggerButton
-        type="button"
-        onClick={handleToggle}
-        disabled={disabled}
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-        title="Select post language"
-      >
-        <Languages size={16} />
-        <ButtonLabel>{displayName}</ButtonLabel>
-        <ChevronDown size={14} className={isOpen ? 'rotate' : ''} />
-      </TriggerButton>
-
-      {isOpen && (
-        <DropdownMenu role="listbox">
-          <SearchContainer>
-            <Search size={14} />
-            <SearchInput
-              ref={searchInputRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search languages..."
-              aria-label="Search languages"
-            />
-            {searchQuery && (
-              <ClearButton
-                type="button"
-                onClick={() => setSearchQuery('')}
-                aria-label="Clear search"
-              >
-                <X size={14} />
-              </ClearButton>
-            )}
-          </SearchContainer>
-
-          <LanguageList>
-            {sortedLanguages.length === 0 ? (
-              <NoResults>No languages found</NoResults>
-            ) : (
-              sortedLanguages.map((lang) => (
-                <LanguageOption
-                  key={lang.code}
-                  role="option"
-                  aria-selected={lang.code === value}
-                  $isSelected={lang.code === value}
-                  onClick={() => handleSelect(lang.code)}
-                >
-                  <LanguageName>{lang.name}</LanguageName>
-                  <LanguageCode>{lang.code}</LanguageCode>
-                </LanguageOption>
-              ))
-            )}
-          </LanguageList>
-        </DropdownMenu>
-      )}
-    </Container>
+    <Select
+      value={selectedOption}
+      onChange={(option) => option && onChange(option.value)}
+      options={options}
+      styles={customStyles}
+      formatOptionLabel={formatOptionLabel}
+      isDisabled={disabled}
+      isSearchable
+      placeholder="Language..."
+      menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+      menuPlacement="auto"
+    />
   );
 }
-
-// Styled components
-const Container = styled.div`
-  position: relative;
-  display: inline-flex;
-`;
-
-const TriggerButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: var(--size-1);
-  padding: var(--size-1) var(--size-3);
-  background: var(--surface-2);
-  border: none;
-  border-radius: 999px;
-  color: var(--text-2);
-  font-size: var(--font-size-0);
-  cursor: pointer;
-  transition: all 0.15s ease;
-
-  &:hover:not(:disabled) {
-    background: var(--surface-3);
-    color: var(--text-1);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  svg.rotate {
-    transform: rotate(180deg);
-  }
-
-  svg {
-    transition: transform 0.15s ease;
-  }
-`;
-
-const ButtonLabel = styled.span`
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const DropdownMenu = styled.div`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 100;
-  min-width: 240px;
-  max-width: 300px;
-  margin-top: var(--size-1);
-  background: var(--surface-2);
-  border: 1px solid var(--gray-4);
-  border-radius: var(--radius-2);
-  box-shadow: var(--shadow-4);
-  overflow: hidden;
-`;
-
-const SearchContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--size-2);
-  padding: var(--size-2) var(--size-3);
-  border-bottom: 1px solid var(--gray-4);
-  background: var(--surface-3);
-
-  svg {
-    color: var(--text-2);
-    flex-shrink: 0;
-  }
-`;
-
-const SearchInput = styled.input`
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: var(--text-1);
-  font-size: var(--font-size-1);
-  outline: none;
-
-  &::placeholder {
-    color: var(--text-3);
-  }
-`;
-
-const ClearButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--size-1);
-  background: transparent;
-  border: none;
-  color: var(--text-2);
-  cursor: pointer;
-  border-radius: var(--radius-1);
-
-  &:hover {
-    background: var(--surface-4);
-    color: var(--text-1);
-  }
-`;
-
-const LanguageList = styled.div`
-  max-height: 280px;
-  overflow-y: auto;
-`;
-
-const LanguageOption = styled.div<{ $isSelected: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--size-2) var(--size-3);
-  cursor: pointer;
-  background: ${(props) => (props.$isSelected ? 'var(--blue-6)' : 'transparent')};
-  color: ${(props) => (props.$isSelected ? 'white' : 'inherit')};
-
-  &:hover {
-    background: ${(props) => (props.$isSelected ? 'var(--blue-7)' : 'var(--surface-3)')};
-  }
-
-  span {
-    color: ${(props) => (props.$isSelected ? 'white' : 'inherit')};
-  }
-`;
-
-const LanguageName = styled.span`
-  color: var(--text-1);
-  font-size: var(--font-size-1);
-`;
-
-const LanguageCode = styled.span`
-  color: var(--text-3);
-  font-size: var(--font-size-0);
-  text-transform: uppercase;
-`;
-
-const NoResults = styled.div`
-  padding: var(--size-4);
-  text-align: center;
-  color: var(--text-2);
-  font-size: var(--font-size-1);
-`;

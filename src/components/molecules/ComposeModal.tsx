@@ -23,6 +23,7 @@ export function ComposeModal({ children }: ComposeModalProps) {
     router.back();
   }, [router]);
 
+
   // Handle Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -34,6 +35,16 @@ export function ComposeModal({ children }: ComposeModalProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleClose]);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
 
   // Handle click outside modal
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -124,6 +135,7 @@ const CloseButton = styled.button`
 
 const ModalContent = styled.div`
   flex: 1;
+  overflow-y: auto;
   padding: var(--size-4);
   padding-top: var(--size-6);
 `;
