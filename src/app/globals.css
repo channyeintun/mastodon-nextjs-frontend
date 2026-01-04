@@ -214,6 +214,7 @@ input[type="radio"] {
 }
 
 @media (max-width: 767px) {
+
   /* Authenticated users have bottom nav - subtract its height */
   .full-height-container {
     height: calc(100dvh - var(--app-bottom-nav-height));
@@ -622,8 +623,8 @@ input[type="radio"] {
    Responsive Breakpoints
    ==================================== */
 
-/* Mobile layout adjustments */
-body {
+/* Mobile layout adjustments - only apply padding when bottom nav is present */
+body:has(.navigation-bottom) {
   padding-bottom: var(--app-bottom-nav-height);
   /* Prevent content from being hidden behind bottom nav */
 }
