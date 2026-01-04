@@ -1,77 +1,50 @@
 'use client';
 
-import { useRef, useEffect, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 
 interface UseScrollAnchorOptions {
     /** Whether the target element is ready for initial scroll */
     isReady: boolean;
-    /** Number of items above the anchor that may change */
-    itemsAboveCount: number;
+    /** Unique key to reset scroll state (e.g., statusId for route changes) */
+    key?: string;
 }
 
 /**
- * Hook to maintain scroll position of an anchor element when content above it changes.
+ * Hook to scroll to an anchor element on initial load and on route changes.
  * 
- * This is useful for thread views where ancestors load after the main post,
- * ensuring the main post stays in the same visual position.
+ * Native CSS scroll anchoring (via overflow-anchor) handles keeping the anchor
+ * in place when content above it changes. This hook only handles:
+ * 1. Initial scroll to the anchor when ready
+ * 2. Reset scroll state when key changes (e.g., navigating to a different status)
  * 
  * @returns ref to attach to the anchor element
  */
-export function useScrollAnchor({ isReady, itemsAboveCount }: UseScrollAnchorOptions) {
+export function useScrollAnchor({ isReady, key }: UseScrollAnchorOptions) {
     const anchorRef = useRef<HTMLDivElement>(null);
     const hasScrolledRef = useRef(false);
-    const prevItemsAboveCountRef = useRef(0);
+    const prevKeyRef = useRef(key);
 
-    // Track previous viewport position of anchor (for scroll compensation)
-    const previousViewportTopRef = useRef<number | null>(null);
-
-    // Store current viewport position before render (called synchronously before layout)
+    // Reset scroll state when key changes (e.g., navigating to a different status)
     useLayoutEffect(() => {
-        const anchor = anchorRef.current;
-        if (anchor && hasScrolledRef.current) {
-            previousViewportTopRef.current = anchor.getBoundingClientRect().top;
+        if (key !== prevKeyRef.current) {
+            hasScrolledRef.current = false;
+            prevKeyRef.current = key;
         }
-    });
-
-    // Adjust scroll when items above the anchor change
-    useLayoutEffect(() => {
-        const anchor = anchorRef.current;
-        if (!anchor) return;
-
-        // Compensate scroll when items above changed (after initial scroll)
-        if (
-            hasScrolledRef.current &&
-            previousViewportTopRef.current !== null &&
-            itemsAboveCount !== prevItemsAboveCountRef.current
-        ) {
-            const currentViewportTop = anchor.getBoundingClientRect().top;
-            const viewportDiff = currentViewportTop - previousViewportTopRef.current;
-
-            // If the element moved in the viewport, compensate
-            if (Math.abs(viewportDiff) > 1) {
-                window.scrollBy(0, viewportDiff);
-            }
-        }
-
-        prevItemsAboveCountRef.current = itemsAboveCount;
-    }, [itemsAboveCount]);
+    }, [key]);
 
     // Initial scroll to anchor when ready
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (isReady && !hasScrolledRef.current) {
             const anchor = anchorRef.current;
             if (anchor) {
-                // Use double requestAnimationFrame to ensure CSS is fully computed
-                // First rAF: DOM is updated, second rAF: CSS is painted
+                // Use requestAnimationFrame to ensure layout is complete
                 requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        anchor.scrollIntoView({ behavior: 'instant', block: 'start' });
-                        hasScrolledRef.current = true;
-                    });
+                    anchor.scrollIntoView({ behavior: 'instant', block: 'start' });
+                    hasScrolledRef.current = true;
                 });
             }
         }
-    }, [isReady]);
+    }, [isReady, key]);
 
     return anchorRef;
 }

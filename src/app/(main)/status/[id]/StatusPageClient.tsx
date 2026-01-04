@@ -6,24 +6,21 @@ import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import { useScrollAnchor } from '@/hooks/useScrollAnchor';
+import { useDynamicBottomSpacer } from '@/hooks/useDynamicBottomSpacer';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, StatusStats } from '@/components/molecules';
 import { Button, IconButton } from '@/components/atoms';
 import { ComposerPanel } from '@/components/organisms/ComposerPanel';
 
 interface StatusPageClientProps {
-  /** The status ID */
   statusId: string;
 }
 
 /**
  * Client component for the status/post detail page.
- * Uses TanStack Query for data fetching.
  * 
- * For SSR hydration: Status renders immediately (from cache), context loads separately.
- * For client navigation: Status from prepopulated cache, context fetches.
- * 
- * This ensures no flash of loading skeleton when status data is already available.
+ * - SSR hydration: Status renders immediately from cache, context loads separately
+ * - Client navigation: Status from prepopulated cache, context fetches
  */
 export function StatusPageClient({ statusId }: StatusPageClientProps) {
   const {
@@ -33,23 +30,26 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
     error: statusErrorData,
   } = useStatus(statusId);
 
-  const { data: context, isLoading: contextLoading } = useStatusContext(statusId);
-
+  const { data: context } = useStatusContext(statusId);
   const authStore = useAuthStore();
   const router = useRouter();
 
   const ancestors = context?.ancestors ?? [];
   const descendants = context?.descendants ?? [];
 
-  // Keep main post in view when ancestors load
+  // Scroll to main post on load; CSS overflow-anchor keeps it stable when ancestors load
   const mainPostRef = useScrollAnchor({
     isReady: !!status && !statusLoading,
-    itemsAboveCount: ancestors.length,
+    key: statusId,
   });
 
-  const handlePostDeleted = () => {
-    router.push('/');
-  };
+  // Dynamic spacer ensures scroll anchoring works by providing scrollable space below
+  const { headerRef, contentBelowRef, height: bottomSpacerHeight } = useDynamicBottomSpacer({
+    anchorRef: mainPostRef,
+    deps: [status, descendants.length, authStore.isAuthenticated],
+  });
+
+  const handlePostDeleted = () => router.push('/');
 
   // Only show skeleton if status is loading (not hydrated/cached)
   if (statusLoading) {
@@ -90,7 +90,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   return (
     <Container>
       {/* Sticky header */}
-      <Header>
+      <Header ref={headerRef}>
         <IconButton onClick={() => router.back()}>
           <ArrowLeft size={20} />
         </IconButton>
@@ -99,9 +99,9 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
 
       {/* Thread container */}
       <div className="virtualized-list-container">
-        {/* Ancestors (parent posts) */}
+        {/* Ancestors (parent posts) - excluded from scroll anchoring */}
         {ancestors.length > 0 && (
-          <div>
+          <AncestorsContainer>
             {ancestors.map((ancestor) => (
               <div key={ancestor.id}>
                 <PostCard status={ancestor} />
@@ -110,7 +110,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
                 </ThreadLineContainer>
               </div>
             ))}
-          </div>
+          </AncestorsContainer>
         )}
 
         {/* Main status (highlighted) - renders immediately from SSR/cache */}
@@ -131,45 +131,44 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
           </StatusStatsWrapper>
         </HighlightedPost>
 
-        {/* Reply Composer */}
-        {authStore.isAuthenticated && (
-          <ReplyComposerContainer>
-            <ComposerPanel
-              key={`reply-${status.id}`}
-              initialVisibility={status.visibility}
-              mentionPrefix={status.account.acct}
-              inReplyToId={status.id}
-              isReply
-            />
-          </ReplyComposerContainer>
-        )}
+        {/* Content below main post - tracked for dynamic spacer calculation */}
+        <ContentBelowMain ref={contentBelowRef}>
+          {/* Reply Composer */}
+          {authStore.isAuthenticated && (
+            <ReplyComposerContainer>
+              <ComposerPanel
+                key={`reply-${status.id}`}
+                initialVisibility={status.visibility}
+                mentionPrefix={status.account.acct}
+                inReplyToId={status.id}
+                isReply
+              />
+            </ReplyComposerContainer>
+          )}
 
-        {/* Descendants (replies) */}
-        {descendants.length > 0 && (
-          <div>
-            <RepliesHeader>
-              Replies ({descendants.length})
-            </RepliesHeader>
-            {descendants.map((descendant, index) => (
-              <div key={descendant.id}>
-                {index > 0 && (
-                  <ThreadLineContainer>
-                    <ThreadLineShort />
-                  </ThreadLineContainer>
-                )}
-                <PostCard status={descendant} />
-              </div>
-            ))}
-          </div>
-        )}
+          {/* Descendants (replies) */}
+          {descendants.length > 0 && (
+            <div>
+              <RepliesHeader>
+                Replies ({descendants.length})
+              </RepliesHeader>
+              {descendants.map((descendant, index) => (
+                <div key={descendant.id}>
+                  {index > 0 && (
+                    <ThreadLineContainer>
+                      <ThreadLineShort />
+                    </ThreadLineContainer>
+                  )}
+                  <PostCard status={descendant} />
+                </div>
+              ))}
+            </div>
+          )}
+        </ContentBelowMain>
 
-        {/* Empty state for no replies - only show when context is loaded */}
-        {!contextLoading && descendants.length === 0 && (
-          <EmptyState>
-            <p>No replies yet.</p>
-            <EmptySubtext>Be the first to reply!</EmptySubtext>
-          </EmptyState>
-        )}
+        {/* Dynamic bottom spacer ensures scroll anchoring works properly */}
+        {/* Height calculated to allow main post to be scrolled to just below header */}
+        <BottomSpacer style={{ height: bottomSpacerHeight }} />
       </div>
     </Container>
   );
@@ -202,6 +201,13 @@ const HighlightedPost = styled.div`
   margin-bottom: var(--size-3);
   /* Account for sticky header height + margin when using scrollIntoView */
   scroll-margin-top: calc(var(--size-4) * 3 + var(--font-size-4) + 1px);
+  /* Make this the preferred anchor for native scroll anchoring */
+  overflow-anchor: auto;
+`;
+
+/* Exclude ancestors from being scroll anchors - main post should be the anchor */
+const AncestorsContainer = styled.div`
+  overflow-anchor: none;
 `;
 
 const StatusStatsWrapper = styled.div`
@@ -258,15 +264,15 @@ const ErrorMessage = styled.p`
   margin-bottom: var(--size-4);
 `;
 
-const EmptyState = styled.div`
-  text-align: center;
-  padding: var(--size-8) var(--size-4);
-  color: var(--text-2);
-  display: grid;
-  justify-content: center;
-`;
+/**
+ * Wrapper for content below the main post.
+ * Used to measure height for dynamic bottom spacer calculation.
+ */
+const ContentBelowMain = styled.div``;
 
-const EmptySubtext = styled.p`
-  font-size: var(--font-size-0);
-  margin-top: var(--size-2);
-`;
+/**
+ * Dynamic bottom spacer ensures scroll anchoring works correctly.
+ * Height is calculated dynamically based on viewport and content.
+ * This allows the main post to always be positionable at the top of the viewport.
+ */
+const BottomSpacer = styled.div``;
