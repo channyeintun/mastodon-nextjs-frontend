@@ -8,12 +8,7 @@ import { MediaUpload, PollComposer, VisibilitySettingsModal, ComposerToolbar, La
 import type { PollData } from '@/components/molecules/PollComposer';
 import type { Visibility, QuoteVisibility } from '@/components/molecules/VisibilitySettingsModal';
 import { Avatar, EmojiText, ContentWarningInput, ScheduleInput, CircleSkeleton, TextSkeleton } from '@/components/atoms';
-import dynamic from 'next/dynamic';
-
-const TiptapEditor = dynamic(
-  () => import('@/components/atoms/TiptapEditor').then(mod => mod.TiptapEditor),
-  { ssr: false }
-);
+import { TiptapEditor } from '@/components/atoms/TiptapEditor';
 import { EmojiPicker } from './EmojiPicker';
 import { createMentionSuggestion } from '@/lib/tiptap/MentionSuggestion';
 import { length as unicodeLength } from 'stringz';
