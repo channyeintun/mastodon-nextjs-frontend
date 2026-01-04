@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useLayoutEffect, useRef, RefObject } from 'react';
+import { useLayoutEffect, useRef, RefObject } from 'react';
 
 interface UseDynamicBottomSpacerOptions {
     /** Ref to the anchor element (e.g., main post) */
@@ -19,20 +19,24 @@ interface UseDynamicBottomSpacerOptions {
  * 
  * Formula: spacerHeight = viewportHeight - headerHeight - contentBelowAnchorHeight
  * 
- * @returns { headerRef, contentBelowRef, height }
+ * This optimized version uses direct DOM manipulation for the spacer height
+ * to avoid re-rendering the entire parent component.
+ * 
+ * @returns { headerRef, contentBelowRef, spacerRef }
  */
 export function useDynamicBottomSpacer({ anchorRef, deps = [] }: UseDynamicBottomSpacerOptions) {
     const headerRef = useRef<HTMLDivElement>(null);
     const contentBelowRef = useRef<HTMLDivElement>(null);
-    const [height, setHeight] = useState(0);
+    const spacerRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
         const calculate = () => {
             const anchor = anchorRef.current;
             const header = headerRef.current;
             const contentBelow = contentBelowRef.current;
+            const spacer = spacerRef.current;
 
-            if (!anchor || !header) return;
+            if (!anchor || !header || !spacer) return;
 
             const viewportHeight = window.innerHeight;
             const headerHeight = header.getBoundingClientRect().height;
@@ -40,7 +44,10 @@ export function useDynamicBottomSpacer({ anchorRef, deps = [] }: UseDynamicBotto
 
             // Ensure anchor can be scrolled to just below the header
             const requiredSpace = viewportHeight - headerHeight - contentBelowHeight;
-            setHeight(Math.max(0, requiredSpace));
+            const height = Math.max(0, requiredSpace);
+
+            // Direct DOM manipulation to avoid re-renders
+            spacer.style.height = `${height}px`;
         };
 
         calculate();
@@ -48,7 +55,7 @@ export function useDynamicBottomSpacer({ anchorRef, deps = [] }: UseDynamicBotto
         // Recalculate on resize
         window.addEventListener('resize', calculate);
 
-        // Recalculate when content below changes size
+        // Recalculate when content below changes size (e.g. images loading)
         const resizeObserver = new ResizeObserver(calculate);
         if (contentBelowRef.current) {
             resizeObserver.observe(contentBelowRef.current);
@@ -60,5 +67,5 @@ export function useDynamicBottomSpacer({ anchorRef, deps = [] }: UseDynamicBotto
         };
     }, [anchorRef, ...deps]);
 
-    return { headerRef, contentBelowRef, height };
+    return { headerRef, contentBelowRef, spacerRef };
 }

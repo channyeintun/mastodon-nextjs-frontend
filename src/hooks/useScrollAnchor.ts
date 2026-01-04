@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect, useEffect } from 'react';
 
 interface UseScrollAnchorOptions {
     /** Whether the target element is ready for initial scroll */
@@ -36,16 +36,14 @@ export function useScrollAnchor({ isReady, key }: UseScrollAnchorOptions) {
         }
     }, [key]);
 
-    // Initial scroll to anchor when ready
-    useLayoutEffect(() => {
+    // Initial scroll to anchor when ready using useEffect (after paint)
+    // This provides the necessary stability without needing requestAnimationFrame
+    useEffect(() => {
         if (isReady && !hasScrolledRef.current) {
             const anchor = anchorRef.current;
             if (anchor) {
-                // Use requestAnimationFrame to ensure layout is complete
-                requestAnimationFrame(() => {
-                    anchor.scrollIntoView({ behavior: 'instant', block: 'start' });
-                    hasScrolledRef.current = true;
-                });
+                anchor.scrollIntoView({ behavior: 'instant', block: 'start' });
+                hasScrolledRef.current = true;
             }
         }
     }, [isReady, key]);

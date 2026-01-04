@@ -45,7 +45,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   });
 
   // Dynamic spacer ensures scroll anchoring works by providing scrollable space below
-  const { headerRef, contentBelowRef, height: bottomSpacerHeight } = useDynamicBottomSpacer({
+  const { headerRef, contentBelowRef, spacerRef } = useDynamicBottomSpacer({
     anchorRef: mainPostRef,
     deps: [status, descendants.length, authStore.isAuthenticated],
   });
@@ -169,7 +169,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
 
         {/* Dynamic bottom spacer ensures scroll anchoring works properly */}
         {/* Height calculated to allow main post to be scrolled to just below header */}
-        <BottomSpacer style={{ height: bottomSpacerHeight }} />
+        <BottomSpacer ref={spacerRef} />
       </div>
     </Container>
   );
