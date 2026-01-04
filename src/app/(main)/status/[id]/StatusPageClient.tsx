@@ -1,11 +1,11 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useStatus, useStatusContext } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
+import { useScrollAnchor } from '@/hooks/useScrollAnchor';
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeleton, StatusStats } from '@/components/molecules';
 import { Button, IconButton } from '@/components/atoms';
@@ -26,8 +26,6 @@ interface StatusPageClientProps {
  * This ensures no flash of loading skeleton when status data is already available.
  */
 export function StatusPageClient({ statusId }: StatusPageClientProps) {
-  // Separate queries for status and context
-  // This allows status to render immediately from cache while context loads
   const {
     data: status,
     isLoading: statusLoading,
@@ -40,22 +38,18 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
   const authStore = useAuthStore();
   const router = useRouter();
 
-  // Handle deletion of the current post - redirect to home
+  const ancestors = context?.ancestors ?? [];
+  const descendants = context?.descendants ?? [];
+
+  // Keep main post in view when ancestors load
+  const mainPostRef = useScrollAnchor({
+    isReady: !!status && !statusLoading,
+    itemsAboveCount: ancestors.length,
+  });
+
   const handlePostDeleted = () => {
     router.push('/');
   };
-
-  // Scroll to main post after status loads (don't wait for context)
-  useEffect(() => {
-    if (status && !statusLoading) {
-      const mainPost = document.getElementById('main-post');
-      if (mainPost) {
-        setTimeout(() => {
-          mainPost.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    }
-  }, [status, statusLoading]);
 
   // Only show skeleton if status is loading (not hydrated/cached)
   if (statusLoading) {
@@ -92,12 +86,10 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
 
   // Status is available - render immediately
   // Context may still be loading - show its own loading indicators
-  const ancestors = context?.ancestors ?? [];
-  const descendants = context?.descendants ?? [];
 
   return (
     <Container>
-      {/* Header */}
+      {/* Sticky header */}
       <Header>
         <IconButton onClick={() => router.back()}>
           <ArrowLeft size={20} />
@@ -122,7 +114,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
         )}
 
         {/* Main status (highlighted) - renders immediately from SSR/cache */}
-        <HighlightedPost>
+        <HighlightedPost ref={mainPostRef}>
           <PostCard
             id="main-post"
             status={status}
@@ -192,8 +184,8 @@ const Container = styled.div`
 const Header = styled.div`
   position: sticky;
   top: 0;
-  background: var(--surface-1);
   z-index: 10;
+  background: var(--surface-1);
   padding: var(--size-4);
   margin-bottom: var(--size-4);
   border-bottom: 1px solid var(--surface-3);
@@ -208,6 +200,8 @@ const Title = styled.h1`
 
 const HighlightedPost = styled.div`
   margin-bottom: var(--size-3);
+  /* Account for sticky header height + margin when using scrollIntoView */
+  scroll-margin-top: calc(var(--size-4) * 3 + var(--font-size-4) + 1px);
 `;
 
 const StatusStatsWrapper = styled.div`
