@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import { SCROLL_ANCHOR_OFFSET } from '@/constants/layout';
 
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
@@ -209,8 +210,8 @@ const Title = styled.h1`
 
 const HighlightedPost = styled.div`
   margin-bottom: var(--size-3);
-  /* Account for sticky header height (approx 72px) + its margin-bottom (16px) when using scrollIntoView */
-  scroll-margin-top: 88px;
+  /* Account for sticky header height when scrolling; coordinate with SCROLL_ANCHOR_OFFSET */
+  scroll-margin-top: ${SCROLL_ANCHOR_OFFSET}px;
   /* Make this the preferred anchor for native scroll anchoring */
   overflow-anchor: auto;
 `;

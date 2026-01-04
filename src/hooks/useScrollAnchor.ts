@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useLayoutEffect, useEffect, RefObject } from 'react';
+import { SCROLL_ANCHOR_OFFSET } from '@/constants/layout';
 
 export interface UseScrollAnchorOptions {
     /** Whether the target element is ready for initial scroll */
@@ -81,7 +82,10 @@ function cumulativeScrollBy(element: HTMLElement, x: number, y: number) {
         const scrolled = scrollBy(container, x - cumulativeX, y - cumulativeY);
         cumulativeX += scrolled[0];
         cumulativeY += scrolled[1];
-        if (cumulativeX === x && cumulativeY === y) break;
+
+        // Use fuzzy matching for subpixel differences
+        if (Math.abs(cumulativeX - x) < 1 && Math.abs(cumulativeY - y) < 1) break;
+
         container = overflowParent(container);
     }
 }
@@ -102,6 +106,48 @@ export function useScrollAnchor({ isReady, key, anchorRef: externalAnchorRef, an
 
     // Track the last known viewport position of the anchor
     const lastPosRef = useRef<{ top: number; left: number } | null>(null);
+    // Guard to prevent baseline drift during automated adjustments
+    const isAdjustingRef = useRef(false);
+    // Track if the user is currently interacting with the page
+    const isInteractingRef = useRef(false);
+
+    // Sync lastPosRef with manual scrolls to avoid "fighting" the user
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const handleInteractionStart = () => { isInteractingRef.current = true; };
+        const handleInteractionEnd = () => { isInteractingRef.current = false; };
+
+        const handleScroll = () => {
+            if (!hasScrolledRef.current || !anchorRef.current || isAdjustingRef.current) return;
+
+            // Only update baseline if the user is actively scrolling/interacting
+            // or if it's the very first time we capture a position.
+            if (isInteractingRef.current || !lastPosRef.current) {
+                const rect = anchorRef.current.getBoundingClientRect();
+                lastPosRef.current = { top: rect.top, left: rect.left };
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+        window.addEventListener('wheel', handleInteractionStart, { passive: true });
+        window.addEventListener('touchstart', handleInteractionStart, { passive: true });
+        window.addEventListener('mousedown', handleInteractionStart, { passive: true });
+
+        // Reset interaction on mouseup/touchend; wheel events don't have an 'end',
+        // so we'll rely on the next mutation to reset if needed or just time it out.
+        window.addEventListener('mouseup', handleInteractionEnd, { passive: true });
+        window.addEventListener('touchend', handleInteractionEnd, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll, { capture: true });
+            window.removeEventListener('wheel', handleInteractionStart);
+            window.removeEventListener('touchstart', handleInteractionStart);
+            window.removeEventListener('mousedown', handleInteractionStart);
+            window.removeEventListener('mouseup', handleInteractionEnd);
+            window.removeEventListener('touchend', handleInteractionEnd);
+        };
+    }, [anchorRef]);
 
     // Reset scroll state when key changes
     useLayoutEffect(() => {
@@ -117,26 +163,26 @@ export function useScrollAnchor({ isReady, key, anchorRef: externalAnchorRef, an
         if (isReady && !hasScrolledRef.current) {
             const anchor = anchorRef.current;
             if (anchor) {
-                const rafId = requestAnimationFrame(() => {
-                    // Manual scroll calculation to ensure 88px offset is respected consistently
-                    // This avoids potential issues with Safari's scrollIntoView + scroll-margin-top
+                const scrollAndCapture = () => {
                     const rect = anchor.getBoundingClientRect();
-                    const targetTop = window.scrollY + rect.top - 88;
-
-                    window.scrollTo({ top: targetTop, behavior: 'instant' });
+                    // Use cumulativeScrollBy instead of window.scrollTo for robustness
+                    cumulativeScrollBy(anchor, 0, rect.top - SCROLL_ANCHOR_OFFSET);
                     hasScrolledRef.current = true;
 
                     // Capture baseline position immediately after manual scroll
-                    // The new top should theoretically be 88px
-                    const newRect = anchor.getBoundingClientRect();
-                    lastPosRef.current = { top: newRect.top, left: newRect.left };
-                });
+                    const finalRect = anchor.getBoundingClientRect();
+                    lastPosRef.current = { top: finalRect.top, left: finalRect.left };
+                };
+
+                // Execute once, then double check in next frame for layout stability
+                scrollAndCapture();
+                const rafId = requestAnimationFrame(scrollAndCapture);
                 return () => cancelAnimationFrame(rafId);
             }
         }
     }, [isReady, key, anchorRef]);
 
-    // Safari Polyfill: Ported preservePosition logic using MutationObserver
+    // Safari Polyfill: Ported preservePosition logic using MutationObserver & ResizeObserver
     useEffect(() => {
         if (typeof window === 'undefined' || !ancestorsRef) return;
         // Skip if native is supported
@@ -145,31 +191,43 @@ export function useScrollAnchor({ isReady, key, anchorRef: externalAnchorRef, an
         const container = ancestorsRef.current;
         if (!container) return;
 
-        const observer = new MutationObserver(() => {
-            if (!hasScrolledRef.current || !anchorRef.current || !lastPosRef.current) return;
+        const handleShift = () => {
+            if (!hasScrolledRef.current || !anchorRef.current || !lastPosRef.current || isAdjustingRef.current) return;
 
             const node = anchorRef.current;
             const { top, left } = node.getBoundingClientRect();
             const dx = left - lastPosRef.current.left;
             const dy = top - lastPosRef.current.top;
 
-            if (dx !== 0 || dy !== 0) {
-                // Restore the anchor to its previous viewport position
+            // Significant shift detected (> 0.5px)
+            if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+                isAdjustingRef.current = true;
                 cumulativeScrollBy(node, dx, dy);
 
-                // Note: After cumulativeScrollBy, the getBoundingClientRect().top 
-                // should be back to lastPosRef.current.top.
+                // Allow some time for scroll events to settle before re-enabling sync
+                requestAnimationFrame(() => {
+                    isAdjustingRef.current = false;
+                });
             }
-        });
+        };
 
-        observer.observe(container, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-            attributes: true
-        });
+        // MutationObserver for DOM changes, ResizeObserver for image/layout changes
+        const mObs = new MutationObserver(handleShift);
+        const rObs = new ResizeObserver(handleShift);
 
-        return () => observer.disconnect();
+        mObs.observe(container, { childList: true, subtree: true, characterData: true, attributes: true });
+        rObs.observe(container);
+
+        // Also observe the anchor itself for any internal layout changes
+        const node = anchorRef.current;
+        if (node) {
+            rObs.observe(node);
+        }
+
+        return () => {
+            mObs.disconnect();
+            rObs.disconnect();
+        };
     }, [ancestorsRef, key, ...deps]);
 
     return anchorRef;

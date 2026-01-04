@@ -1,6 +1,7 @@
 'use client';
 
 import { useLayoutEffect, useRef, RefObject } from 'react';
+import { SCROLL_ANCHOR_OFFSET } from '@/constants/layout';
 
 interface UseDynamicBottomSpacerOptions {
     /** Ref to the anchor element (e.g., main post) */
@@ -39,11 +40,13 @@ export function useDynamicBottomSpacer({ anchorRef, deps = [] }: UseDynamicBotto
             if (!anchor || !header || !spacer) return;
 
             const viewportHeight = window.innerHeight;
-            const headerHeight = header.getBoundingClientRect().height;
+            const anchorHeight = anchor.getBoundingClientRect().height;
             const contentBelowHeight = contentBelow?.getBoundingClientRect().height ?? 0;
 
-            // Ensure anchor can be scrolled to just below the header
-            const requiredSpace = viewportHeight - headerHeight - contentBelowHeight;
+            // Ensure anchor can be scrolled to exactly the offset below the top of the viewport.
+            // Formula: Space needed below anchor's TOP to fill viewport is (viewportHeight - SCROLL_ANCHOR_OFFSET).
+            // This space is filled by the anchor itself and the content below it.
+            const requiredSpace = (viewportHeight - SCROLL_ANCHOR_OFFSET) - (anchorHeight + contentBelowHeight);
             const height = Math.max(0, requiredSpace);
 
             // Direct DOM manipulation to avoid re-renders
