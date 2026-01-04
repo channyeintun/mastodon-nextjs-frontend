@@ -61,7 +61,7 @@ export function PostActions({
             <ActionGroup>
                 <BoostContainer className="boost-btn">
                     <ActionButton
-                        onClick={onReblog}
+                        onMouseDown={onReblog}
                         $isActive={reblogged}
                         $activeColor="var(--green-6)"
                         title={reblogged ? 'Undo boost' : 'Boost'}
@@ -69,11 +69,11 @@ export function PostActions({
                         <Repeat2 size={ICON_SIZE} />
                     </ActionButton>
                     <BoostPopover className="boost-popover">
-                        <PopoverButton onClick={onConfirmReblog} $isActive={reblogged}>
+                        <PopoverButton onMouseDown={onConfirmReblog} $isActive={reblogged}>
                             <Repeat2 size={ICON_SIZE} />
                             <span>{reblogged ? 'Undo Boost' : 'Boost'}</span>
                         </PopoverButton>
-                        <PopoverButton onClick={onQuote}>
+                        <PopoverButton onMouseDown={onQuote}>
                             <MessageSquareQuote size={ICON_SIZE} />
                             <span>Quote</span>
                         </PopoverButton>
