@@ -19,7 +19,7 @@ export function ImageCropper({
   image,
   onCropComplete,
   onCancel,
-  aspectRatio = 16 / 9,
+  aspectRatio = NaN,
 }: ImageCropperProps) {
   const cropperRef = useRef<ReactCropperElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);

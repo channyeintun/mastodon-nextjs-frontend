@@ -169,7 +169,6 @@ export const MediaUpload = forwardRef<MediaUploadHandle, MediaUploadProps>(funct
           image={cropperImage}
           onCropComplete={onCropComplete}
           onCancel={handleCropCancel}
-          aspectRatio={16 / 9}
         />
       )}
 
