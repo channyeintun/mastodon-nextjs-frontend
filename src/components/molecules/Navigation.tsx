@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Home, PenSquare, Search, Settings, Github, Bell, List, TrendingUp, Mail } from 'lucide-react';
 import { useInstance, useUnreadNotificationCount, useNotificationMarker, useAnnualReportState } from '@/api';
 import { CircleSkeleton, TextSkeleton } from '@/components/atoms';
-import { SiBuymeacoffee } from 'react-icons/si';
+
 import { GiRingedPlanet } from 'react-icons/gi';
 import { useGlobalModal } from '@/contexts/GlobalModalContext';
 import { WrapstodonModal } from '@/components/wrapstodon/WrapstodonModal';
@@ -165,17 +165,7 @@ export default function Navigation({ isAuthenticated, instanceURL }: NavigationP
             <span className="navigation-link-label">Source code</span>
           </a>
 
-          <a
-            href="https://buymeacoffee.com/channyeintun"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="navigation-sidebar-link"
-          >
-            <div className="navigation-link-icon">
-              <SiBuymeacoffee size={24} />
-            </div>
-            <span className="navigation-link-label">Buy me a coffee</span>
-          </a>
+
         </div>
       </nav>
 
