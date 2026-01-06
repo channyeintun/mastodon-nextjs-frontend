@@ -234,6 +234,7 @@ export function PostCard({
             <MediaContainer>
               <MediaGrid
                 $columns={displayStatus.media_attachments.length === 1 ? 1 : 2}
+                $count={displayStatus.media_attachments.length}
                 $blurred={!!(hasSensitiveMedia && !showCWMedia)}
               >
                 {displayStatus.media_attachments.map((media, index) => {
@@ -249,6 +250,8 @@ export function PostCard({
                       $singleMedia={isSingleMedia}
                       $isVideo={isVideo}
                       $aspectRatio={aspectRatio}
+                      $index={index}
+                      $total={displayStatus.media_attachments.length}
                     >
                       {isVideo ? (
                         <div onClick={handleMediaClick(index)}>
@@ -263,6 +266,7 @@ export function PostCard({
                           onClick={handleMediaClick(index)}
                           $clickable={!(hasSensitiveMedia && !showCWMedia)}
                           $singleMedia={isSingleMedia}
+                          $isSpanned={displayStatus.media_attachments.length === 3 && index === 0}
                           style={isSingleMedia ? { paddingTop: `${paddingTop}%` } : undefined}
                         >
                           <MediaItemInner $singleMedia={isSingleMedia}>
@@ -390,10 +394,13 @@ const MediaContainer = styled.div`
   justify-content: center;
 `;
 
-const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
+const MediaGrid = styled.div<{ $columns: number; $count: number; $blurred: boolean }>`
   display: grid;
   grid-template-columns: ${props => props.$columns === 1 ? '1fr' : 'repeat(2, 1fr)'};
   ${props => props.$columns === 1 && 'justify-items: center;'}
+  ${props => props.$count === 3 && `
+    grid-template-rows: repeat(2, 1fr);
+  `}
   gap: 2px;
   width: 100%;
   filter: ${props => props.$blurred ? 'blur(32px)' : 'none'};
@@ -401,18 +408,23 @@ const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
 `;
 
 // Single media wrapper - controls the responsive width like Facebook
-const MediaItemWrapper = styled.div<{ $singleMedia?: boolean; $isVideo?: boolean; $aspectRatio?: number }>`
+const MediaItemWrapper = styled.div<{ $singleMedia?: boolean; $isVideo?: boolean; $aspectRatio?: number; $index?: number; $total?: number }>`
   max-width: 100%;
   min-width: ${props => props.$singleMedia ? 'min(440px, 100%)' : 'auto'};
   width: ${props => props.$singleMedia ?
     (props.$isVideo ? '100%' : (props.$aspectRatio ? `min(100%, calc(${props.$aspectRatio} * 550px))` : '100%')) :
     'auto'};
+  
+  ${props => props.$total === 3 && props.$index === 0 && `
+    grid-row: span 2;
+  `}
 `;
 
-const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean }>`
+const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean; $isSpanned?: boolean }>`
   position: relative;
   width: 100%;
-  ${props => !props.$singleMedia && 'aspect-ratio: 16/9;'}
+  ${props => !props.$singleMedia && !props.$isSpanned && 'aspect-ratio: 16/9;'}
+  ${props => props.$isSpanned && 'height: 100%;'}
   background: #252527;
   cursor: ${props => props.$clickable ? 'pointer' : 'default'};
   transition: opacity 0.2s;
