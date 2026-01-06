@@ -242,7 +242,6 @@ export function PostCard({
                   const isVideo = media.type === 'video';
                   const isGifv = media.type === 'gifv';
                   const aspectRatio = media.meta?.original?.aspect || (media.meta?.small?.aspect) || 1.777;
-                  const paddingTop = isSingleMedia ? (1 / aspectRatio) * 100 : undefined;
 
                   return (
                     <MediaItemWrapper
@@ -267,17 +266,17 @@ export function PostCard({
                           $clickable={!(hasSensitiveMedia && !showCWMedia)}
                           $singleMedia={isSingleMedia}
                           $isSpanned={displayStatus.media_attachments.length === 3 && index === 0}
-                          style={isSingleMedia ? { paddingTop: `${paddingTop}%` } : undefined}
                         >
                           <MediaItemInner $singleMedia={isSingleMedia}>
-                            {media.type === 'image' && media.preview_url && (
+                            {media.type === 'image' && (media.url || media.preview_url) && (
                               <MediaImage
                                 $singleMedia={isSingleMedia}
-                                src={media.preview_url}
+                                src={media.url || media.preview_url || ''}
                                 alt={media.description || ''}
                                 loading="eager"
                                 width={media.meta?.original?.width}
                                 height={media.meta?.original?.height}
+                                style={isSingleMedia ? { aspectRatio: `${aspectRatio}` } : undefined}
                               />
                             )}
                             {isGifv && media.url && (
@@ -428,7 +427,6 @@ const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean; $is
   background: #252527;
   cursor: ${props => props.$clickable ? 'pointer' : 'default'};
   transition: opacity 0.2s;
-  max-height: 550px;
 
   &:hover {
     opacity: ${props => props.$clickable ? '0.9' : '1'};
@@ -438,17 +436,21 @@ const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean; $is
 const MediaItemInner = styled.div<{ $singleMedia?: boolean }>`
   width: 100%;
   height: 100%;
-  ${props => props.$singleMedia ? `
-    position: absolute;
-    top: 0;
-    left: 0;
-  ` : ''}
 `;
 
 const MediaImage = styled.img<{ $singleMedia?: boolean }>`
-  width: 100%;
-  height: 100%;
-  object-fit: ${props => props.$singleMedia ? 'contain' : 'cover'};
+  display: block;
+  max-width: 100%;
+  max-height: 550px;
+  ${props => props.$singleMedia ? `
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  ` : `
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  `}
 `;
 
 const SensitiveOverlay = styled.div`
