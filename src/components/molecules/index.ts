@@ -51,3 +51,5 @@ export { UserCard } from './UserCard';
 export { UserCardSkeleton } from './UserCardSkeleton';
 export { VisibilitySettingsModal } from './VisibilitySettingsModal';
 export { ReportModal } from './ReportModal';
+export { FeedVideoPlayer } from './FeedVideoPlayer';
+export { ModalVideoPlayer } from './ModalVideoPlayer';

@@ -16,6 +16,7 @@ import {
   MediaModal,
   TranslateButton,
   ReportModal,
+  FeedVideoPlayer,
 } from '@/components/molecules';
 import type { Status, Translation } from '@/types';
 import { usePostActions } from '@/hooks/usePostActions';
@@ -232,39 +233,54 @@ export function PostCard({
               >
                 {displayStatus.media_attachments.map((media, index) => {
                   const isSingleMedia = displayStatus.media_attachments.length === 1;
-                  // Calculate aspect ratio from metadata (height/width * 100 for padding-top percentage)
-                  const aspectRatio = media.meta?.original?.aspect || (media.meta?.small?.aspect) || 1.777; // default 16:9
+                  const isVideo = media.type === 'video';
+                  const isGifv = media.type === 'gifv';
+                  const aspectRatio = media.meta?.original?.aspect || (media.meta?.small?.aspect) || 1.777;
                   const paddingTop = isSingleMedia ? (1 / aspectRatio) * 100 : undefined;
 
                   return (
                     <MediaItemWrapper
                       key={media.id}
                       $singleMedia={isSingleMedia}
+                      $isVideo={isVideo}
                     >
-                      <MediaItem
-                        onClick={handleMediaClick(index)}
-                        $clickable={!(hasSensitiveMedia && !showCWMedia)}
-                        $singleMedia={isSingleMedia}
-                        style={isSingleMedia ? { paddingTop: `${paddingTop}%` } : undefined}
-                      >
-                        <MediaItemInner $singleMedia={isSingleMedia}>
-                          {media.type === 'image' && media.preview_url && (
-                            <MediaImage
-                              src={media.preview_url}
-                              alt={media.description || ''}
-                              loading="eager"
-                              width={media.meta?.original?.width}
-                              height={media.meta?.original?.height}
-                            />
-                          )}
-                          {media.type === 'video' && media.url && (
-                            <MediaVideo src={media.url} controls playsInline preload="metadata" />
-                          )}
-                          {media.type === 'gifv' && media.url && (
-                            <MediaVideo src={media.url} autoPlay loop muted playsInline preload="metadata" />
-                          )}
-                        </MediaItemInner>
-                      </MediaItem>
+                      {isVideo ? (
+                        <div onClick={handleMediaClick(index)}>
+                          <FeedVideoPlayer
+                            src={media.url || ''}
+                            aspectRatio={aspectRatio}
+                            autoPlay={false}
+                          />
+                        </div>
+                      ) : (
+                        <MediaItem
+                          onClick={handleMediaClick(index)}
+                          $clickable={!(hasSensitiveMedia && !showCWMedia)}
+                          $singleMedia={isSingleMedia}
+                          style={isSingleMedia ? { paddingTop: `${paddingTop}%` } : undefined}
+                        >
+                          <MediaItemInner $singleMedia={isSingleMedia}>
+                            {media.type === 'image' && media.preview_url && (
+                              <MediaImage
+                                src={media.preview_url}
+                                alt={media.description || ''}
+                                loading="eager"
+                                width={media.meta?.original?.width}
+                                height={media.meta?.original?.height}
+                              />
+                            )}
+                            {isGifv && media.url && (
+                              <FeedVideoPlayer
+                                src={media.url}
+                                autoPlay={true}
+                                loop={true}
+                                muted={true}
+                                showControls={false}
+                              />
+                            )}
+                          </MediaItemInner>
+                        </MediaItem>
+                      )}
                     </MediaItemWrapper>
                   );
                 })}
@@ -378,10 +394,10 @@ const MediaGrid = styled.div<{ $columns: number; $blurred: boolean }>`
 `;
 
 // Single media wrapper - controls the responsive width like Facebook
-const MediaItemWrapper = styled.div<{ $singleMedia?: boolean }>`
+const MediaItemWrapper = styled.div<{ $singleMedia?: boolean; $isVideo?: boolean }>`
   max-width: 100%;
   min-width: ${props => props.$singleMedia ? 'min(440px, 100%)' : 'auto'};
-  width: ${props => props.$singleMedia ? 'calc(-260px + 80vh)' : 'auto'};
+  width: ${props => props.$singleMedia ? (props.$isVideo ? '100%' : 'calc(-260px + 80vh)') : 'auto'};
 `;
 
 const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean }>`
@@ -398,22 +414,16 @@ const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean }>`
 `;
 
 const MediaItemInner = styled.div<{ $singleMedia?: boolean }>`
+  width: 100%;
+  height: 100%;
   ${props => props.$singleMedia ? `
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
   ` : ''}
 `;
 
 const MediaImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-const MediaVideo = styled.video`
   width: 100%;
   height: 100%;
   object-fit: cover;

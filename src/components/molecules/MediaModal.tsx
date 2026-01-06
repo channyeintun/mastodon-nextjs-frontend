@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { MediaAttachment } from '@/types';
+import { ModalVideoPlayer } from './ModalVideoPlayer';
 
 interface MediaModalProps {
   mediaAttachments: MediaAttachment[];
@@ -48,6 +49,9 @@ export function MediaModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hasMultiple]);
 
+  const isVideo = currentMedia.type === 'video' || currentMedia.type === 'gifv';
+  const isGifv = currentMedia.type === 'gifv';
+
   return (
     <ModalContainer className="media-modal">
       {/* Close button */}
@@ -83,22 +87,21 @@ export function MediaModal({
             alt={currentMedia.description || 'Image'}
           />
         )}
-        {currentMedia.type === 'video' && (
-          <MediaVideo
-            src={currentMedia.url || ''}
-            controls
-            autoPlay
-            playsInline
-          />
+        {isVideo && !isGifv && (
+          <VideoPlayerWrapper>
+            <ModalVideoPlayer src={currentMedia.url || ''} />
+          </VideoPlayerWrapper>
         )}
-        {currentMedia.type === 'gifv' && (
-          <MediaVideo
-            src={currentMedia.url || ''}
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
+        {isGifv && (
+          <VideoPlayerWrapper>
+            <ModalVideoPlayer
+              src={currentMedia.url || ''}
+              autoPlay
+              loop
+              muted
+              showControls={false}
+            />
+          </VideoPlayerWrapper>
         )}
 
         {/* Alt text toggle button and popover - inside MediaContent */}
@@ -203,10 +206,25 @@ const MediaImage = styled.img`
   object-fit: contain;
 `;
 
-const MediaVideo = styled.video`
-  max-width: 100%;
-  max-height: 100vh;
-  object-fit: contain;
+const VideoPlayerWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Ensure ReactPlayer fills the container properly */
+  & > div {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* Style the video inside ReactPlayer */
+  video {
+    object-fit: contain;
+    max-height: calc(100vh - 80px);
+  }
 `;
 
 const MediaCounter = styled.div`
