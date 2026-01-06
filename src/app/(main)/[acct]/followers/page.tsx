@@ -5,7 +5,7 @@ import { indexBy, prop } from 'ramda';
 import { useRouter, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { useAccountWithCache, useInfiniteFollowers, useRelationships } from '@/api';
+import { useAccountWithCache, useInfiniteFollowers, useRelationships, useCurrentAccount } from '@/api';
 import { AccountCard, AccountCardSkeleton, PageHeaderSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
 import { IconButton, EmojiText, Button, EmptyState } from '@/components/atoms';
@@ -40,7 +40,9 @@ export default function FollowersPage({
         hasNextPage,
         isFetchingNextPage,
     } = useInfiniteFollowers(account?.id || '');
+    const { data: currentAccount } = useCurrentAccount();
 
+    const isOwnFollowers = currentAccount?.id === account?.id;
     const followers = flattenPages(followerPages?.pages);
 
     // Batch fetch relationships for all loaded accounts
@@ -108,6 +110,7 @@ export default function FollowersPage({
                         account={follower}
                         relationship={relationshipMap[follower.id]}
                         showFollowButton
+                        showRemoveFromFollowers={isOwnFollowers}
                         skipRelationshipFetch
                         style={{ marginBottom: 'var(--size-2)' }}
                     />

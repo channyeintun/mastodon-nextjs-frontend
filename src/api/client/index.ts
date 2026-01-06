@@ -62,6 +62,7 @@ export {
     getMutedAccounts,
     getAccountLists,
     getFamiliarFollowers,
+    removeFromFollowers,
     type FollowAccountParams,
     type FamiliarFollowersResult
 } from './accounts'

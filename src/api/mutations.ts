@@ -22,6 +22,7 @@ import {
   unblockAccount,
   muteAccount,
   unmuteAccount,
+  removeFromFollowers,
   updateCredentials,
   votePoll,
   dismissNotification,
@@ -63,7 +64,7 @@ import {
 } from './client'
 import { queryKeys } from './queryKeys'
 import { findStatusInPages, findStatusInArray, updateStatusById, findFirstNonNil } from '@/utils/fp'
-import type { CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams, CreateReportParams } from '../types/mastodon'
+import type { Account, CreateStatusParams, Status, UpdateAccountParams, Poll, MuteAccountParams, CreateListParams, UpdateListParams, ScheduledStatusParams, Context, Conversation, NotificationRequest, UpdateNotificationPolicyParams, UpdateNotificationPolicyV1Params, CreatePushSubscriptionParams, UpdatePushSubscriptionParams, CreateFilterParams, UpdateFilterParams, CreateReportParams } from '../types/mastodon'
 import { useRouter } from 'next/navigation'
 
 // Annual Report (Wrapstodon) mutations
@@ -1111,6 +1112,78 @@ export function useBlockAccount() {
       // Invalidate timelines (blocked users' posts should disappear)
       queryClient.invalidateQueries({ queryKey: queryKeys.timelines.all })
     },
+  })
+}
+
+export function useRemoveFromFollowers() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => removeFromFollowers(id),
+    onMutate: async (id) => {
+      // 1. Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ['accounts'] })
+      await queryClient.cancelQueries({ queryKey: queryKeys.accounts.current() })
+
+      // 2. Snapshot the previous values
+      const previousAccount = queryClient.getQueryData<Account>(queryKeys.accounts.current())
+
+      // Get all followers queries to backup
+      const followersQueries = queryClient.getQueriesData<InfiniteData<PaginatedResponse<Account[]>>>({
+        predicate: (query) => query.queryKey[0] === 'accounts' && query.queryKey[2] === 'followers'
+      })
+
+      // 3. Optimistically update the current account (decrement followers count)
+      if (previousAccount) {
+        queryClient.setQueryData<Account>(queryKeys.accounts.current(), {
+          ...previousAccount,
+          followers_count: Math.max(0, previousAccount.followers_count - 1),
+        })
+      }
+
+      // 4. Optimistically update any followers lists in the cache
+      queryClient.setQueriesData<InfiniteData<PaginatedResponse<Account[]>>>(
+        {
+          predicate: (query) => query.queryKey[0] === 'accounts' && query.queryKey[2] === 'followers'
+        },
+        (old) => {
+          if (!old?.pages) return old
+          return {
+            ...old,
+            pages: old.pages.map(page => ({
+              ...page,
+              data: page.data.filter(account => account.id !== id)
+            }))
+          }
+        }
+      )
+
+      // Return a context object with the snapshotted values
+      return { previousAccount, followersQueries }
+    },
+    onError: (err, id, context) => {
+      // Rollback current account
+      if (context?.previousAccount) {
+        queryClient.setQueryData(queryKeys.accounts.current(), context.previousAccount)
+      }
+
+      // Rollback followers lists
+      if (context?.followersQueries) {
+        context.followersQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+
+      toast.error('Failed to remove follower.')
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure we are in sync with the server
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.accounts.current() })
+    },
+    onSuccess: () => {
+      toast.success('Follower removed.')
+    }
   })
 }
 

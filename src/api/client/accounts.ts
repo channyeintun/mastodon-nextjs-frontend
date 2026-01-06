@@ -143,6 +143,11 @@ export async function unfollowAccount(id: string): Promise<Relationship> {
     return data
 }
 
+export async function removeFromFollowers(id: string): Promise<Relationship> {
+    const { data } = await api.post<Relationship>(`/api/v1/accounts/${id}/remove_from_followers`)
+    return data
+}
+
 // Relationships
 export async function getRelationships(ids: string[], signal?: AbortSignal): Promise<Relationship[]> {
     // Build the query string manually to ensure correct format: id[]=1&id[]=2
