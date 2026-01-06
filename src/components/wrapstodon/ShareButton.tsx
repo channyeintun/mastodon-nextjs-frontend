@@ -48,7 +48,7 @@ export function ShareButton({ report, onClose }: ShareButtonProps) {
         // Close modal if provided
         onClose?.()
 
-        router.push(`/compose?text=${text}`)
+        router.push(`/compose?text=${text}`, { scroll: false })
     }, [report, router, onClose])
 
     const supportsNativeShare = typeof navigator !== 'undefined' && 'share' in navigator

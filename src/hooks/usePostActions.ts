@@ -92,7 +92,7 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
   const handleQuote = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    router.push(`/compose?quoted_status_id=${displayStatus.id}`);
+    router.push(`/compose?quoted_status_id=${displayStatus.id}`, { scroll: false });
   };
 
   const handleBookmark = (e: React.MouseEvent) => {
@@ -124,7 +124,7 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
   const handleEdit = () => {
     // Pre-populate status cache before navigation to avoid refetch
     queryClient.setQueryData(queryKeys.statuses.detail(displayStatus.id), displayStatus);
-    router.push(`/compose?edit_status_id=${displayStatus.id}`);
+    router.push(`/compose?edit_status_id=${displayStatus.id}`, { scroll: false });
   };
 
   const handleDelete = () => {
