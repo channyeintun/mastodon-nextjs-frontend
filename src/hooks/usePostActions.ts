@@ -122,7 +122,9 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
   };
 
   const handleEdit = () => {
-    router.push(`/status/${displayStatus.id}/edit`);
+    // Pre-populate status cache before navigation to avoid refetch
+    queryClient.setQueryData(queryKeys.statuses.detail(displayStatus.id), displayStatus);
+    router.push(`/compose?edit_status_id=${displayStatus.id}`);
   };
 
   const handleDelete = () => {
