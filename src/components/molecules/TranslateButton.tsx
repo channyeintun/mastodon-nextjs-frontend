@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import { Languages } from 'lucide-react';
 import { useTranslateStatus, useTranslationLanguages } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
 import type { Status, Translation } from '@/types';
@@ -78,7 +77,7 @@ export function TranslateButton({ status, onTranslated, onShowOriginal }: Transl
                     {translation.provider && ` · ${translation.provider}`}
                 </span>
                 <TranslateLink onClick={handleTranslate}>
-                    Show original
+                    See original
                 </TranslateLink>
             </TranslationInfo>
         );
@@ -86,8 +85,7 @@ export function TranslateButton({ status, onTranslated, onShowOriginal }: Transl
 
     return (
         <TranslateLink onClick={handleTranslate} disabled={translateMutation.isPending}>
-            <Languages size={14} />
-            {translateMutation.isPending ? 'Translating...' : 'Translate'}
+            {translateMutation.isPending ? 'Translating...' : 'See translation'}
         </TranslateLink>
     );
 }
@@ -117,22 +115,32 @@ const TranslateLink = styled.button`
   display: inline-flex;
   align-items: center;
   gap: var(--size-1);
-  padding: var(--size-1) var(--size-2);
+  padding: 0;
   background: transparent;
   border: none;
-  border-radius: var(--radius-1);
+  box-shadow: none;
   color: var(--blue-6);
   font-size: var(--font-size-1);
   cursor: pointer;
   transition: all 0.15s ease;
+  font-family: inherit;
+  outline: none;
 
   &:hover:not(:disabled) {
-    background: var(--blue-1);
+    color: var(--blue-5);
+    box-shadow: none;
+    outline: none;
+  }
+
+  &:focus, &:active, &:focus-visible {
+    outline: none;
+    box-shadow: none;
   }
 
   &:disabled {
     color: var(--text-3);
     cursor: not-allowed;
+    box-shadow: none;
   }
 `;
 
@@ -142,9 +150,7 @@ const TranslationInfo = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--size-2);
-  padding: var(--size-2);
-  background: var(--surface-2);
-  border-radius: var(--radius-2);
-  font-size: var(--font-size-0);
+  font-size: var(--font-size-1);
   color: var(--text-2);
+  padding-top: var(--size-1);
 `;
