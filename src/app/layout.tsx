@@ -41,7 +41,7 @@ export default async function RootLayout({
 
   const accessToken = cookieStore.get('accessToken')?.value ?? null;
   const clientId = cookieStore.get('clientId')?.value ?? null;
-  const clientSecret = cookieStore.get('clientSecret')?.value ?? null;
+  // Note: clientSecret is httpOnly and not accessible from client
   const theme = cookieStore.get('theme')?.value as 'light' | 'dark' | 'auto' | undefined;
 
   // Read annualReportState and wrapstodonYear for SSR Wrapstodon
@@ -58,7 +58,6 @@ export default async function RootLayout({
       instanceURL,
       accessToken,
       clientId,
-      clientSecret,
     },
     annualReportState,
     wrapstodonYear,

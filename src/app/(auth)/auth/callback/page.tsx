@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import axios from 'axios';
 import { getCookie, deleteCookie } from '@/utils/cookies';
 import { useAuthStore } from '@/hooks/useStores';
 import { getRedirectURI, retrievePKCEData } from '@/utils/oauth';
@@ -35,35 +34,28 @@ function CallbackContent() {
           throw new Error('Invalid state parameter - possible CSRF attack. Please try signing in again.');
         }
 
-        // Get stored auth data
-        const { instanceURL, clientId, clientSecret } = authStore.getState();
-        if (!instanceURL || !clientId || !clientSecret) {
-          throw new Error('Missing authentication data. Please try signing in again.');
+        // Exchange code for access token via server-side API
+        const response = await fetch('/api/auth/callback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            code,
+            code_verifier: pkceData.verifier,
+            redirect_uri: getRedirectURI(),
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Token exchange failed');
         }
 
-        // Create axios client for token exchange
-        const instanceClient = axios.create({
-          baseURL: instanceURL.replace(/\/$/, ''),
-        });
-
-        // Exchange code for access token using PKCE + client_secret (Mastodon requires both)
-        const formData = new URLSearchParams({
-          grant_type: 'authorization_code',
-          code,
-          client_id: clientId,
-          client_secret: clientSecret,
-          redirect_uri: getRedirectURI(),
-          code_verifier: pkceData.verifier,
-        });
-
-        const { data: token } = await instanceClient.post('/oauth/token', formData.toString(), {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        });
+        const tokenData = await response.json();
 
         // Store access token
-        authStore.setAccessToken(token.access_token);
+        authStore.setAccessToken(tokenData.access_token);
 
         // Get redirect path from cookie (set by middleware when accessing protected route)
         const rawRedirectPath = await getCookie('authRedirect') || '/';

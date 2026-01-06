@@ -2,6 +2,8 @@
  * Authentication Store
  * Manages authentication state, tokens, and instance configuration
  * Uses cookies for persistence to enable SSR hydration
+ * 
+ * Note: client_secret is stored as httpOnly cookie and handled server-side
  */
 
 import { makeAutoObservable } from 'mobx'
@@ -12,7 +14,6 @@ export interface AuthState {
   instanceURL: string | null
   accessToken: string | null
   clientId: string | null
-  clientSecret: string | null
   isAuthenticated: boolean
   showAuthModal: boolean
 }
@@ -26,7 +27,6 @@ export class AuthStore {
   instanceURL: string | null = null
   accessToken: string | null = null
   clientId: string | null = null
-  clientSecret: string | null = null
   showAuthModal: boolean = false
 
   constructor(initialState?: Partial<AuthState>) {
@@ -35,7 +35,6 @@ export class AuthStore {
       this.instanceURL = initialState.instanceURL ?? null
       this.accessToken = initialState.accessToken ?? null
       this.clientId = initialState.clientId ?? null
-      this.clientSecret = initialState.clientSecret ?? null
     }
     // Note: Client-side cookie hydration is now done via hydrate() method
     // since CookieStore API is async
@@ -46,21 +45,20 @@ export class AuthStore {
   /**
    * Hydrate auth state from cookies on client-side
    * Should be called once on app mount
+   * Note: clientSecret is httpOnly and not accessible from client
    */
   async hydrate(): Promise<void> {
     if (typeof window === 'undefined') return
 
-    const [instanceURL, accessToken, clientId, clientSecret] = await Promise.all([
+    const [instanceURL, accessToken, clientId] = await Promise.all([
       getCookie('instanceURL'),
       getCookie('accessToken'),
       getCookie('clientId'),
-      getCookie('clientSecret'),
     ])
 
     this.instanceURL = instanceURL ?? null
     this.accessToken = accessToken ?? null
     this.clientId = clientId ?? null
-    this.clientSecret = clientSecret ?? null
   }
 
   get isAuthenticated(): boolean {
@@ -75,23 +73,6 @@ export class AuthStore {
     }
   }
 
-  setCredentials(
-    accessToken: string,
-    clientId: string,
-    clientSecret: string,
-  ) {
-    this.accessToken = accessToken
-    this.clientId = clientId
-    this.clientSecret = clientSecret
-
-    if (typeof window !== 'undefined') {
-      // Fire-and-forget cookie operations
-      setCookie('accessToken', accessToken, COOKIE_OPTIONS)
-      setCookie('clientId', clientId, COOKIE_OPTIONS)
-      setCookie('clientSecret', clientSecret, COOKIE_OPTIONS)
-    }
-  }
-
   setAccessToken(token: string) {
     this.accessToken = token
     if (typeof window !== 'undefined') {
@@ -100,7 +81,7 @@ export class AuthStore {
   }
 
   /**
-   * Set only the client ID (use with PKCE flow - client_secret not needed)
+   * Set only the client ID (client_secret is stored as httpOnly via server action)
    */
   setClientId(clientId: string) {
     this.clientId = clientId
@@ -110,24 +91,21 @@ export class AuthStore {
     }
   }
 
-  /**
-   * @deprecated Use setClientId() with PKCE instead
-   */
-  setClientCredentials(clientId: string, clientSecret: string) {
-    this.clientId = clientId
-    this.clientSecret = clientSecret
-
-    if (typeof window !== 'undefined') {
-      setCookie('clientId', clientId, COOKIE_OPTIONS)
-      setCookie('clientSecret', clientSecret, COOKIE_OPTIONS)
+  async signOut() {
+    // Revoke token via server-side API (has access to httpOnly clientSecret)
+    if (this.accessToken) {
+      fetch('/api/auth/revoke', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: this.accessToken }),
+      }).catch((error) => {
+        console.error('Failed to revoke token during sign out:', error)
+      })
     }
-  }
 
-  signOut() {
     this.instanceURL = null
     this.accessToken = null
     this.clientId = null
-    this.clientSecret = null
 
     if (typeof window !== 'undefined') {
       // Clear all browser storage
@@ -144,7 +122,6 @@ export class AuthStore {
       instanceURL: this.instanceURL,
       accessToken: this.accessToken,
       clientId: this.clientId,
-      clientSecret: this.clientSecret,
       isAuthenticated: this.isAuthenticated,
       showAuthModal: this.showAuthModal,
     }

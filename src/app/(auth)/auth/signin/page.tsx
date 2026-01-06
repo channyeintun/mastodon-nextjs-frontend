@@ -17,6 +17,7 @@ import {
   generateState,
   storePKCEData,
 } from '@/utils/oauth';
+import { storeClientSecret, storeInstanceURL, storeClientId } from '@/app/api/auth/actions';
 
 function SubmitButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
@@ -69,9 +70,16 @@ export default function SignInPage() {
         website: typeof window !== 'undefined' ? window.location.origin : undefined,
       });
 
-      // Store instance URL and client credentials
+      // Store credentials as httpOnly cookies via server actions
+      await Promise.all([
+        storeInstanceURL(normalizedURL),
+        storeClientId(app.client_id),
+        storeClientSecret(app.client_secret),
+      ]);
+
+      // Also store instance URL and clientId in client-side store for immediate use
       authStore.setInstance(normalizedURL);
-      authStore.setClientCredentials(app.client_id, app.client_secret);
+      authStore.setClientId(app.client_id);
 
       // Generate PKCE and state parameters
       const codeVerifier = generateCodeVerifier();
