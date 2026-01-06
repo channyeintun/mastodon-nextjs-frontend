@@ -14,6 +14,7 @@ import {
   useUnpinStatus,
   useVotePoll,
   useCurrentAccount,
+  useBlockAccount,
   queryKeys,
 } from '@/api';
 import { useAuthStore } from '@/hooks/useStores';
@@ -40,6 +41,7 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
   const unmuteConversationMutation = useUnmuteConversation();
   const pinStatusMutation = usePinStatus();
   const unpinStatusMutation = useUnpinStatus();
+  const blockAccountMutation = useBlockAccount();
 
   // Handle reblog (boost) - show the original status
   const displayStatus = status.reblog || status;
@@ -131,6 +133,12 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
     // Call the callback provided by the component
     if (onDeleteClick) {
       onDeleteClick(displayStatus.id);
+    }
+  };
+
+  const handleBlockAccount = () => {
+    if (window.confirm(`Are you sure you want to block @${displayStatus.account.acct}?`)) {
+      blockAccountMutation.mutate(displayStatus.account.id);
     }
   };
 
@@ -241,6 +249,7 @@ export function usePostActions(status: Status, onDeleteClick?: (postId: string) 
     handlePin,
     handleEdit,
     handleDelete,
+    handleBlockAccount,
     handleShare,
     handleCardClick,
     handlePollChoiceToggle,

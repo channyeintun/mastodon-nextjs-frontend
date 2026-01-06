@@ -125,6 +125,7 @@ export function PostCard({
     handleReply,
     toggleCWContent,
     toggleCWMedia,
+    handleBlockAccount, // Added this destructured action
   } = actions;
 
   // Remove "RE: [link]" from content when displaying quotes
@@ -190,6 +191,10 @@ export function PostCard({
           }
           onMute={hideOptions ? undefined : handleMuteConversation}
           onReport={!hideOptions && !isOwnPost ? handleReportClick : undefined}
+          onBookmark={!hideOptions ? handleBookmark : undefined}
+          onShare={!hideOptions ? handleShare : undefined}
+          onBlock={!hideOptions && !isOwnPost ? handleBlockAccount : undefined}
+          bookmarked={displayStatus.bookmarked}
         />
 
         {/* Content Warning */}
@@ -343,14 +348,11 @@ export function PostCard({
             favouritesCount={displayStatus.favourites_count}
             reblogged={displayStatus.reblogged}
             favourited={displayStatus.favourited}
-            bookmarked={displayStatus.bookmarked}
             onReply={handleReply}
             onReblog={handleReblog}
             onConfirmReblog={confirmReblog}
             onQuote={handleQuote}
             onFavourite={handleFavourite}
-            onBookmark={handleBookmark}
-            onShare={handleShare}
           />
         )}
       </PostContent>

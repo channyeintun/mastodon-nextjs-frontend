@@ -15,6 +15,9 @@ import {
     Volume2,
     VolumeX,
     Flag,
+    Bookmark,
+    Share,
+    UserX,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, IconButton, EmojiText } from '@/components/atoms';
@@ -37,6 +40,10 @@ interface PostHeaderProps {
     onPin?: () => void;
     onMute?: () => void;
     onReport?: () => void;
+    onBookmark?: (e: React.MouseEvent) => void;
+    onShare?: (e: React.MouseEvent) => void;
+    onBlock?: () => void;
+    bookmarked?: boolean;
 }
 
 const VISIBILITY_ICONS = {
@@ -63,6 +70,10 @@ export function PostHeader({
     onPin,
     onMute,
     onReport,
+    onBookmark,
+    onShare,
+    onBlock,
+    bookmarked = false,
 }: PostHeaderProps) {
     const queryClient = useQueryClient();
 
@@ -148,6 +159,34 @@ export function PostHeader({
                                         </button>
                                     )}
 
+                                    {onBookmark && (
+                                        <button
+                                            className="options-menu-item"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                onBookmark(e);
+                                            }}
+                                        >
+                                            <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} />
+                                            <span>{bookmarked ? 'Remove bookmark' : 'Bookmark'}</span>
+                                        </button>
+                                    )}
+
+                                    {onShare && (
+                                        <button
+                                            className="options-menu-item"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                onShare(e);
+                                            }}
+                                        >
+                                            <Share size={16} />
+                                            <span>Share</span>
+                                        </button>
+                                    )}
+
                                     <MenuDivider />
 
                                     {onEdit && (
@@ -195,6 +234,50 @@ export function PostHeader({
                                 </IconButton>
 
                                 <div className="options-menu-popover">
+                                    {onBookmark && (
+                                        <button
+                                            className="options-menu-item"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                onBookmark(e);
+                                            }}
+                                        >
+                                            <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} />
+                                            <span>{bookmarked ? 'Remove bookmark' : 'Bookmark'}</span>
+                                        </button>
+                                    )}
+
+                                    {onShare && (
+                                        <button
+                                            className="options-menu-item"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                onShare(e);
+                                            }}
+                                        >
+                                            <Share size={16} />
+                                            <span>Share</span>
+                                        </button>
+                                    )}
+
+                                    {onBlock && (
+                                        <button
+                                            className="options-menu-item danger"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                onBlock();
+                                            }}
+                                        >
+                                            <UserX size={16} />
+                                            <span>Block @{account.acct}</span>
+                                        </button>
+                                    )}
+
+                                    <MenuDivider />
+
                                     <button
                                         className="options-menu-item danger"
                                         onMouseDown={(e) => {

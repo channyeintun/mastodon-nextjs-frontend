@@ -2,28 +2,23 @@
 
 import styled from '@emotion/styled';
 import {
-    Heart,
-    Repeat2,
-    MessageCircle,
-    Bookmark,
-    Share,
-    MessageSquareQuote,
+  Heart,
+  Repeat2,
+  MessageCircle,
+  MessageSquareQuote,
 } from 'lucide-react';
 
 interface PostActionsProps {
-    repliesCount: number;
-    reblogsCount: number;
-    favouritesCount: number;
-    reblogged?: boolean;
-    favourited?: boolean;
-    bookmarked?: boolean;
-    onReply: (e: React.MouseEvent) => void;
-    onReblog: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    onConfirmReblog: (e: React.MouseEvent) => void;
-    onQuote: (e: React.MouseEvent) => void;
-    onFavourite: (e: React.MouseEvent) => void;
-    onBookmark: (e: React.MouseEvent) => void;
-    onShare: (e: React.MouseEvent) => void;
+  repliesCount: number;
+  reblogsCount: number;
+  favouritesCount: number;
+  reblogged?: boolean;
+  favourited?: boolean;
+  onReply: (e: React.MouseEvent) => void;
+  onReblog: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onConfirmReblog: (e: React.MouseEvent) => void;
+  onQuote: (e: React.MouseEvent) => void;
+  onFavourite: (e: React.MouseEvent) => void;
 }
 
 const ICON_SIZE = 18;
@@ -33,85 +28,66 @@ const ICON_SIZE = 18;
  * (reply, boost, favourite, bookmark, share).
  */
 export function PostActions({
-    repliesCount,
-    reblogsCount,
-    favouritesCount,
-    reblogged = false,
-    favourited = false,
-    bookmarked = false,
-    onReply,
-    onReblog,
-    onConfirmReblog,
-    onQuote,
-    onFavourite,
-    onBookmark,
-    onShare,
+  repliesCount,
+  reblogsCount,
+  favouritesCount,
+  reblogged = false,
+  favourited = false,
+  onReply,
+  onReblog,
+  onConfirmReblog,
+  onQuote,
+  onFavourite,
 }: PostActionsProps) {
-    return (
-        <Container>
-            {/* Reply */}
-            <ActionGroup>
-                <ActionButton onClick={onReply} title="Reply">
-                    <MessageCircle size={ICON_SIZE} />
-                </ActionButton>
-                <Count>{repliesCount}</Count>
-            </ActionGroup>
+  return (
+    <Container>
+      {/* Reply */}
+      <ActionGroup>
+        <ActionButton onClick={onReply} title="Reply">
+          <MessageCircle size={ICON_SIZE} />
+        </ActionButton>
+        <Count>{repliesCount}</Count>
+      </ActionGroup>
 
-            {/* Boost with popover */}
-            <ActionGroup>
-                <BoostContainer className="boost-btn">
-                    <ActionButton
-                        onMouseDown={onReblog}
-                        $isActive={reblogged}
-                        $activeColor="var(--green-6)"
-                        title={reblogged ? 'Undo boost' : 'Boost'}
-                    >
-                        <Repeat2 size={ICON_SIZE} />
-                    </ActionButton>
-                    <BoostPopover className="boost-popover">
-                        <PopoverButton onMouseDown={onConfirmReblog} $isActive={reblogged}>
-                            <Repeat2 size={ICON_SIZE} />
-                            <span>{reblogged ? 'Undo Boost' : 'Boost'}</span>
-                        </PopoverButton>
-                        <PopoverButton onMouseDown={onQuote}>
-                            <MessageSquareQuote size={ICON_SIZE} />
-                            <span>Quote</span>
-                        </PopoverButton>
-                    </BoostPopover>
-                </BoostContainer>
-                <Count>{reblogsCount}</Count>
-            </ActionGroup>
+      {/* Boost with popover */}
+      <ActionGroup>
+        <BoostContainer className="boost-btn">
+          <ActionButton
+            onMouseDown={onReblog}
+            $isActive={reblogged}
+            $activeColor="var(--green-6)"
+            title={reblogged ? 'Undo boost' : 'Boost'}
+          >
+            <Repeat2 size={ICON_SIZE} />
+          </ActionButton>
+          <BoostPopover className="boost-popover">
+            <PopoverButton onMouseDown={onConfirmReblog} $isActive={reblogged}>
+              <Repeat2 size={ICON_SIZE} />
+              <span>{reblogged ? 'Undo Boost' : 'Boost'}</span>
+            </PopoverButton>
+            <PopoverButton onMouseDown={onQuote}>
+              <MessageSquareQuote size={ICON_SIZE} />
+              <span>Quote</span>
+            </PopoverButton>
+          </BoostPopover>
+        </BoostContainer>
+        <Count>{reblogsCount}</Count>
+      </ActionGroup>
 
-            {/* Favourite */}
-            <ActionGroup>
-                <ActionButton
-                    onClick={onFavourite}
-                    $isActive={favourited}
-                    $activeColor="var(--red-6)"
-                    title={favourited ? 'Unfavourite' : 'Favourite'}
-                >
-                    <Heart size={ICON_SIZE} fill={favourited ? 'currentColor' : 'none'} />
-                </ActionButton>
-                <Count>{favouritesCount}</Count>
-            </ActionGroup>
-
-            {/* Right side actions */}
-            <RightActions>
-                <ActionButton
-                    onClick={onBookmark}
-                    $isActive={bookmarked}
-                    $activeColor="var(--blue-6)"
-                    title={bookmarked ? 'Remove bookmark' : 'Bookmark'}
-                >
-                    <Bookmark size={ICON_SIZE} fill={bookmarked ? 'currentColor' : 'none'} />
-                </ActionButton>
-
-                <ActionButton onClick={onShare} title="Share">
-                    <Share size={ICON_SIZE} />
-                </ActionButton>
-            </RightActions>
-        </Container>
-    );
+      {/* Favourite */}
+      <ActionGroup>
+        <ActionButton
+          onClick={onFavourite}
+          $isActive={favourited}
+          $activeColor="var(--red-6)"
+          title={favourited ? 'Unfavourite' : 'Favourite'}
+        >
+          <Heart size={ICON_SIZE} fill={favourited ? 'currentColor' : 'none'} />
+        </ActionButton>
+        <Count>{favouritesCount}</Count>
+      </ActionGroup>
+    </Container>
+  );
 }
 
 
@@ -197,10 +173,4 @@ const PopoverButton = styled.button<{ $isActive?: boolean }>`
   &:hover {
     background: var(--surface-3);
   }
-`;
-
-const RightActions = styled.div`
-  margin-left: auto;
-  display: flex;
-  gap: var(--size-2);
 `;
