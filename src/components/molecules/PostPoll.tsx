@@ -35,10 +35,6 @@ export function PostPoll({
                         <OptionLabel
                             key={index}
                             $isSelected={selectedChoices.includes(index)}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                            }}
                         >
                             <OptionInput
                                 type={poll.multiple ? 'checkbox' : 'radio'}
@@ -131,7 +127,7 @@ const OptionLabel = styled.label<{ $isSelected: boolean }>`
   gap: var(--size-2);
   padding: var(--size-2);
   margin-bottom: var(--size-2);
-  background: ${({ $isSelected }) => ($isSelected ? 'var(--blue-2)' : 'var(--surface-2)')};
+  background: ${({ $isSelected }) => ($isSelected ? 'color-mix(in srgb, var(--blue-6), transparent 85%)' : 'var(--surface-2)')};
   border-radius: var(--radius-2);
   cursor: pointer;
   border: ${({ $isSelected }) => ($isSelected ? '2px solid var(--blue-6)' : '2px solid transparent')};
