@@ -160,6 +160,8 @@ export function PostCard({
       '--link': '#a78bfa',
     } as CSSProperties
     : (style || {});
+  // No longer using JS-based color extraction due to CORS issues
+  const singleMedia = displayStatus.media_attachments.length === 1 ? displayStatus.media_attachments[0] : null;
 
   return (
     <Card as="article" padding="medium" style={cardStyle} onClick={handleCardClick} id={id} className="post-card">
@@ -236,6 +238,15 @@ export function PostCard({
           (!hasContentWarning || showCWContent) &&
           displayStatus.media_attachments.length > 0 && (
             <MediaContainer>
+              {/* Dynamic Blurred Background for single media */}
+              {singleMedia && (
+                <BlurredBackground
+                  $url={singleMedia.type === 'video' || singleMedia.type === 'gifv'
+                    ? (singleMedia.preview_url || '')
+                    : (singleMedia.url || singleMedia.preview_url || '')
+                  }
+                />
+              )}
               <MediaGrid
                 $columns={displayStatus.media_attachments.length === 1 ? 1 : 2}
                 $count={displayStatus.media_attachments.length}
@@ -397,6 +408,7 @@ const MediaContainer = styled.div`
   max-height: 550px;
   display: flex;
   justify-content: center;
+  transition: background-color 0.3s ease;
 `;
 
 const MediaGrid = styled.div<{ $columns: number; $count: number; $blurred: boolean }>`
@@ -430,7 +442,7 @@ const MediaItem = styled.div<{ $clickable?: boolean; $singleMedia?: boolean; $is
   width: 100%;
   ${props => !props.$singleMedia && !props.$isSpanned && 'aspect-ratio: 16/9;'}
   ${props => props.$isSpanned && 'height: 100%;'}
-  background: #252527;
+  background: ${props => props.$singleMedia ? 'transparent' : '#252527'};
   cursor: ${props => props.$clickable ? 'pointer' : 'default'};
   transition: opacity 0.2s;
 
@@ -497,3 +509,19 @@ const TranslationContainer = styled.div`
   margin-top: var(--size-2);
   padding-top: var(--size-2);
 `;
+
+const BlurredBackground = styled.div<{ $url: string }>`
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  right: -20%;
+  bottom: -20%;
+  background-image: url(${props => props.$url});
+  background-size: cover;
+  background-position: center;
+  filter: blur(60px) brightness(0.7) saturate(1.4);
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
+`;
+
