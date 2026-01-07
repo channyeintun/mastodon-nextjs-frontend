@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { LiquidGlassFilter } from '@/components/atoms';
 import { lerp } from '@/lib/liquid-glass';
+import { useIsIOS } from '@/hooks/useIsIOS';
 import { NavigationLink } from './Navigation'; // We will export this from Navigation.tsx
 
 interface LiquidGlassBottomNavProps {
@@ -19,6 +20,7 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
     const [dimensions, setDimensions] = useState({ width: 0, height: 56 });
     const [itemWidth, setItemWidth] = useState(0);
     const [isPressed, setIsPressed] = useState(false);
+    const isIOS = useIsIOS();
 
     const [thumbState, setThumbState] = useState({
         x: 0,
@@ -110,7 +112,7 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
     return (
         <nav className="navigation-bottom" aria-label="Mobile navigation">
             <div ref={pillRef} className="navigation-bottom-pill-wrapper">
-                {dimensions.width > 0 && (
+                {dimensions.width > 0 && !isIOS && (
                     <LiquidGlassFilter
                         id={bgFilterId}
                         width={dimensions.width}
@@ -127,7 +129,7 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                     />
                 )}
 
-                {thumbWidth > 0 && (
+                {thumbWidth > 0 && !isIOS && (
                     <LiquidGlassFilter
                         id={thumbFilterId}
                         width={thumbWidth}
@@ -149,8 +151,8 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                         position: 'absolute',
                         inset: 0,
                         borderRadius: 28,
-                        backdropFilter: `url(#${bgFilterId})`,
-                        WebkitBackdropFilter: `url(#${bgFilterId})`,
+                        backdropFilter: isIOS ? 'blur(20px)' : `url(#${bgFilterId})`,
+                        WebkitBackdropFilter: isIOS ? 'blur(20px)' : `url(#${bgFilterId})`,
                         background: 'rgba(255, 255, 255, 0.05)',
                         border: '0.5px solid rgba(255, 255, 255, 0.1)',
                         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
@@ -176,8 +178,8 @@ export function LiquidGlassBottomNav({ bottomNavLinks, pathname }: LiquidGlassBo
                                 position: 'absolute',
                                 inset: 0,
                                 borderRadius: 24,
-                                backdropFilter: `url(#${thumbFilterId})`,
-                                WebkitBackdropFilter: `url(#${thumbFilterId})`,
+                                backdropFilter: isIOS ? 'blur(10px)' : `url(#${thumbFilterId})`,
+                                WebkitBackdropFilter: isIOS ? 'blur(10px)' : `url(#${thumbFilterId})`,
                                 background: isPressed ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.18)',
                                 boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
                                 border: '0.5px solid rgba(255, 255, 255, 0.25)',
