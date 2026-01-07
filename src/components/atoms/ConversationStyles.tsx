@@ -10,7 +10,11 @@ export const PageContainer = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  height: 100dvh;
+
+  @media (max-width: 767px) {
+    height: calc(100dvh - var(--app-bottom-nav-height));
+  }
 `
 
 export const Header = styled.div`
@@ -77,7 +81,7 @@ export const InputContainer = styled.div`
   box-shadow: var(--shadow-2);
 
   @media (max-width: 767px) {
-    padding-bottom: calc(64px + var(--size-2));
+    padding-bottom: var(--size-4);
   }
 `
 
