@@ -5,6 +5,7 @@ import { Mail, Edit } from 'lucide-react'
 import { useConversations } from '@/api/queries'
 import { ConversationCard } from '@/components/molecules/ConversationCard'
 import { ConversationCardSkeleton } from '@/components/molecules/ConversationCardSkeleton'
+import { TextSkeleton } from '@/components/atoms/TextSkeleton'
 import { VirtualizedList } from '@/components/organisms/VirtualizedList'
 import { useConversationStream } from '@/hooks/useStreaming'
 import { IconButton } from '@/components/atoms/IconButton'
@@ -31,9 +32,7 @@ export default function ConversationsPage() {
           <h1 style={{ fontSize: 'var(--font-size-4)', marginBottom: 'var(--size-1)' }}>
             Direct Messages
           </h1>
-          <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>
-            Loading conversations...
-          </p>
+          <TextSkeleton width="120px" height="var(--font-size-0)" />
         </div>
 
         {/* Skeleton Loaders */}
