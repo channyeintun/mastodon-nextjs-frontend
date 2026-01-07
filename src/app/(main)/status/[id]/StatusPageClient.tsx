@@ -131,6 +131,7 @@ export function StatusPageClient({ statusId }: StatusPageClientProps) {
             status={status}
             showEditHistory
             onDeleteSuccess={handlePostDeleted}
+            collapsible={false}
           />
           <StatusStatsWrapper>
             <StatusStats

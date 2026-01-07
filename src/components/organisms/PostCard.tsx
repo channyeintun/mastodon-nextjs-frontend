@@ -43,6 +43,8 @@ interface PostCardProps {
   depth?: number;
   /** Wrapstodon mode: transparent bg with light text colors for dark gradient */
   wrapstodon?: boolean;
+  /** Whether the post content can be collapsed with "See more" */
+  collapsible?: boolean;
 }
 
 /**
@@ -60,6 +62,7 @@ export function PostCard({
   id,
   depth = 0,
   wrapstodon = false,
+  collapsible = true,
 }: PostCardProps) {
   const { openModal, closeModal } = useGlobalModal();
 
@@ -213,6 +216,7 @@ export function PostCard({
               html={displayContent}
               emojis={displayStatus.emojis}
               mentions={displayStatus.mentions}
+              collapsible={collapsible}
             />
           )}
 
