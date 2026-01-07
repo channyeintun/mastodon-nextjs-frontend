@@ -48,7 +48,7 @@ const Header = styled.div`
 `;
 
 const Label = styled.label`
-    font-size: var(--font-size-1);
+    font-size: 0.9375rem;
     font-weight: var(--font-weight-6);
     color: var(--text-2);
 `;
@@ -75,16 +75,16 @@ const DateTimeInput = styled.input`
     border-radius: var(--radius-2);
     background: var(--surface-1);
     color: var(--text-1);
-    font-size: var(--font-size-2);
+    font-size: 0.9375rem;
     
     @media (max-width: 480px) {
         padding: var(--size-2);
-        font-size: var(--font-size-1);
+        font-size: 0.9375rem;
     }
 `;
 
 const HelpText = styled.div`
-    font-size: var(--font-size-0);
+    font-size: 0.9375rem;
     color: var(--text-3);
     margin-top: 4px;
 `;

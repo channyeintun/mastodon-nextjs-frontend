@@ -49,7 +49,7 @@ const Header = styled.div`
 `;
 
 const Label = styled.label`
-    font-size: var(--font-size-1);
+    font-size: 0.9375rem;
     font-weight: var(--font-weight-6);
     color: var(--text-2);
 `;
@@ -73,5 +73,5 @@ const Input = styled.input`
     border-radius: var(--radius-2);
     background: var(--surface-1);
     color: var(--text-1);
-    font-size: var(--font-size-2);
+    font-size: 0.9375rem;
 `;

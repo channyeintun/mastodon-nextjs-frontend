@@ -337,7 +337,7 @@ export function ComposerPanel({
                     type="button"
                     disabled={editMode}
                   >
-                    <VisibilityIcon size={16} />
+                    <VisibilityIcon size={18} />
                     <VisibilityLabel>{currentVisibility?.label}</VisibilityLabel>
                   </VisibilityButton>
                 </VisibilityButtonWrapper>

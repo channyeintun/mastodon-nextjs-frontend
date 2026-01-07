@@ -78,7 +78,7 @@ export function ComposerToolbar({
                             title="Add emoji"
                             aria-label="Add emoji"
                         >
-                            <Smile size={22} />
+                            <Smile size={18} />
                         </EmojiButton>
                         <Activity mode={showEmojiPicker ? 'visible' : 'hidden'}>
                             {emojiPicker}
@@ -94,7 +94,7 @@ export function ComposerToolbar({
                         title="Add media"
                         aria-label="Add media"
                     >
-                        <ImageIcon size={22} />
+                        <ImageIcon size={18} />
                     </button>
 
                     {/* Poll Button */}
@@ -106,7 +106,7 @@ export function ComposerToolbar({
                         title="Add poll"
                         aria-label="Add poll"
                     >
-                        <BarChart2 size={22} />
+                        <BarChart2 size={18} />
                     </button>
 
                     {/* Content Warning toggle */}
@@ -131,7 +131,7 @@ export function ComposerToolbar({
                         aria-label="Schedule post"
                         disabled={!canSchedule}
                     >
-                        <Clock size={22} />
+                        <Clock size={18} />
                     </ScheduleButton>
 
                     {/* Visibility Button (Only shown in toolbar if it's a reply) */}
@@ -142,7 +142,7 @@ export function ComposerToolbar({
                             onClick={onVisibilityClick}
                             title={`Visibility: ${visibilityLabel}`}
                         >
-                            <VisibilityIcon size={22} />
+                            <VisibilityIcon size={18} />
                         </button>
                     )}
                 </div>
@@ -185,7 +185,7 @@ const CWButton = styled.button<{ $isActive: boolean }>`
 `;
 
 const CWText = styled.span`
-  font-size: 14px;
+  font-size: 0.9375rem;
 `;
 
 const ScheduleButton = styled.button<{ $isActive: boolean }>`

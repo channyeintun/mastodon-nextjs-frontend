@@ -25,7 +25,7 @@ export const VisibilityButton = styled.button`
   border: none;
   border-radius: 999px;
   color: var(--text-2);
-  font-size: var(--font-size-0);
+  font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.15s ease;
 

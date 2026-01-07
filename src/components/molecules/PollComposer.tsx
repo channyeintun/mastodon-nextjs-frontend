@@ -176,7 +176,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h3`
-  font-size: var(--font-size-2);
+  font-size: 0.9375rem;
   font-weight: var(--font-weight-6);
   color: var(--text-1);
   margin: 0;
@@ -199,7 +199,7 @@ const OptionInput = styled.input`
   border-radius: var(--radius-2);
   background: var(--surface-1);
   color: var(--text-1);
-  font-size: var(--font-size-1);
+  font-size: 0.9375rem;
 `;
 
 const SettingsRow = styled.div`
@@ -216,7 +216,7 @@ const SettingField = styled.div`
 
 const SettingLabel = styled.label`
   display: block;
-  font-size: var(--font-size-0);
+  font-size: 0.9375rem;
   font-weight: var(--font-weight-6);
   margin-bottom: var(--size-1);
   color: var(--text-1);
@@ -229,7 +229,7 @@ const Select = styled.select`
   border-radius: var(--radius-2);
   background: var(--surface-1);
   color: var(--text-1);
-  font-size: var(--font-size-1);
+  font-size: 0.9375rem;
   cursor: pointer;
 `;
 
@@ -238,7 +238,7 @@ const CheckboxLabel = styled.label`
   align-items: center;
   gap: var(--size-2);
   cursor: pointer;
-  font-size: var(--font-size-1);
+  font-size: 0.9375rem;
 `;
 
 const Checkbox = styled.input`

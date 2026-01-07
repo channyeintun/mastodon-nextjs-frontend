@@ -32,7 +32,7 @@ const customStyles: StylesConfig<LanguageOption, false> = {
     display: 'flex',
     alignItems: 'center',
     gap: '2px',
-    fontSize: 'var(--font-size-0)',
+    fontSize: '0.9375rem',
     transition: 'all 0.15s ease',
     '&:hover': {
       background: 'var(--surface-3)',
@@ -69,12 +69,12 @@ const customStyles: StylesConfig<LanguageOption, false> = {
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'space-between',
-    fontSize: 'var(--font-size-1)',
+    fontSize: '0.9375rem',
   }),
   singleValue: (base) => ({
     ...base,
     color: 'var(--text-2)',
-    fontSize: 'var(--font-size-0)',
+    fontSize: '0.9375rem',
     display: 'flex',
     alignItems: 'center',
     gap: '4px',
@@ -82,7 +82,7 @@ const customStyles: StylesConfig<LanguageOption, false> = {
   input: (base) => ({
     ...base,
     color: 'var(--text-1)',
-    fontSize: 'var(--font-size-1)',
+    fontSize: '0.9375rem',
   }),
   placeholder: (base) => ({
     ...base,
@@ -114,7 +114,7 @@ const formatOptionLabel = (option: LanguageOption, { context }: { context: 'menu
   return (
     <span style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
       <span>{option.label}</span>
-      <span style={{ color: 'var(--text-3)', fontSize: 'var(--font-size-0)', textTransform: 'uppercase' }}>
+      <span style={{ color: 'var(--text-3)', fontSize: '0.9375rem', textTransform: 'uppercase' }}>
         {option.value}
       </span>
     </span>
