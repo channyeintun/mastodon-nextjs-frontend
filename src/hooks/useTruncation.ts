@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, RefObject } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 /**
  * Hook to detect if an element's content is truncated (e.g., by line-clamp)
