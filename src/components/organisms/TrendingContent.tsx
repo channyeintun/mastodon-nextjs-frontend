@@ -517,10 +517,11 @@ const DismissButton = styled.button`
     border: 1px solid var(--surface-4);
     background: var(--surface-3);
     color: var(--text-1);
-    font-size: var(--font-size-0);
+    font-size: inherit;
     font-weight: var(--font-weight-6);
     cursor: pointer;
     border-radius: var(--radius-2);
+    box-shadow: none;
     transition: all 0.2s ease;
 
     &:hover {

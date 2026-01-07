@@ -99,6 +99,8 @@ const SuggestionButton = styled.button<{ $isSelected: boolean }>`
   cursor: pointer;
   text-align: left;
   transition: background 0.15s;
+  font-size: inherit;
+  box-shadow: none;
 
   &:hover {
     background: var(--surface-3);

@@ -148,7 +148,7 @@ const BoostPopover = styled.div`
   margin-top: var(--size-2);
   background: var(--surface-2);
   border-radius: var(--radius-2);
-  box-shadow: var(--shadow-4);
+  border: 1px solid var(--surface-3);
   padding: var(--size-2);
   min-width: 150px;
   z-index: 50;
@@ -163,12 +163,12 @@ const PopoverButton = styled.button<{ $isActive?: boolean }>`
   padding: var(--size-2);
   border: none;
   background: transparent;
-  border-radius: var(--radius-2);
   cursor: pointer;
   color: ${({ $isActive }) => ($isActive ? 'var(--green-6)' : 'var(--text-1)')};
-  font-size: var(--font-size-1);
+  font-size: inherit;
   white-space: nowrap;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  box-shadow: none;
 
   &:hover {
     background: var(--surface-3);

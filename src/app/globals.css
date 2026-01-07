@@ -1018,7 +1018,7 @@ input[type="radio"] {
 .boost-popover {
   display: none;
   flex-direction: column;
-  box-shadow: var(--shadow-4);
+  border: 1px solid var(--surface-3);
 }
 
 /* Show boost popover when button wrapper has focus-within */
@@ -1052,9 +1052,7 @@ input[type="radio"] {
   margin-top: var(--size-2);
   background: var(--surface-2);
   border-radius: var(--radius-2);
-  box-shadow: var(--shadow-4);
   border: 1px solid var(--surface-3);
-  border-radius: var(--radius-3);
   padding: var(--size-2);
   min-width: 200px;
   z-index: 50;
@@ -1089,49 +1087,58 @@ input[type="radio"] {
   padding: var(--size-3);
   border: none;
   background: transparent;
-  border-radius: var(--radius-2);
   cursor: pointer;
   color: var(--text-1);
-  font-size: var(--font-size-1);
+  font-size: inherit;
+  /* Changed from var(--font-size-1) */
   font-weight: var(--font-weight-5);
   letter-spacing: -0.01em;
   text-align: left;
   white-space: nowrap;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
+  /* Reset Open Props defaults */
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+.options-menu-item:hover {
+  background: var(--surface-3) !important;
+}
+
+/* Changed from background 0.15s ease */
+
+svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--text-2);
+  transition: color 0.15s ease;
+}
+
+&:hover {
+  background: var(--surface-3);
 
   svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    color: var(--text-2);
-    transition: color 0.15s ease;
+    color: var(--text-1);
+  }
+}
+
+&:active {
+  background: var(--surface-4);
+}
+
+&.danger {
+  color: var(--red-6);
+
+  svg {
+    color: var(--red-6);
   }
 
   &:hover {
-    background: var(--surface-3);
+    background: var(--red-2);
 
     svg {
-      color: var(--text-1);
-    }
-  }
-
-  &:active {
-    background: var(--surface-4);
-  }
-
-  &.danger {
-    color: var(--red-6);
-
-    svg {
-      color: var(--red-6);
-    }
-
-    &:hover {
-      background: var(--red-2);
-
-      svg {
-        color: var(--red-7);
-      }
+      color: var(--red-7);
     }
   }
 }

@@ -343,10 +343,11 @@ const MenuItem = styled.button<{ $isDestructive?: boolean }>`
   border: none;
   color: ${({ $isDestructive }) => ($isDestructive ? 'var(--red-6)' : 'var(--text-1)')};
   cursor: pointer;
-  font-size: var(--font-size-0);
+  font-size: inherit;
   text-align: left;
   transition: background 0.2s ease;
   white-space: nowrap;
+  box-shadow: none;
 
   &:hover {
     background: var(--surface-3);
