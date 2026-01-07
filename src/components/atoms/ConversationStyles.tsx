@@ -152,6 +152,20 @@ export const MessagesContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--size-3);
+  overflow-anchor: auto;
+  scroll-behavior: auto;
+
+  /* Disable anchoring for all messages so only the sentinel at the bottom anchors */
+  & > * {
+    overflow-anchor: none;
+  }
+`
+
+export const ScrollSentinel = styled.div`
+  height: 1px;
+  width: 1px;
+  overflow-anchor: auto;
+  flex-shrink: 0;
 `
 
 // Re-export media preview styles for convenience

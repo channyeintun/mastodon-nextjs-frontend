@@ -18,7 +18,7 @@ import {
     FallbackTitle, InputContainer, MessageTextarea, SendButton, DeleteButton,
     EmptyState, MessagesContainer, MediaPreviewContainer, MediaPreviewItem,
     MediaPreviewImage, UploadingIndicator, AttachButton, HiddenInput,
-    MediaPreviewControls, MediaPreviewOverlayButton,
+    MediaPreviewControls, MediaPreviewOverlayButton, ScrollSentinel,
 } from '@/components/atoms/ConversationStyles'
 import { MessageBubble } from '@/components/molecules/MessageBubble'
 import { ConversationLoading, ConversationError } from '@/components/molecules/ConversationStates'
@@ -104,7 +104,20 @@ function ConversationChatContent() {
     useLayoutEffect(() => {
         const count = allStatuses.length
         if (count > 0 && (prevMessageCountRef.current === 0 || count > prevMessageCountRef.current)) {
-            messagesEndRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' })
+            const scroll = () => {
+                if (messagesEndRef.current?.parentElement) {
+                    const container = messagesEndRef.current.parentElement
+                    container.scrollTo({ top: container.scrollHeight, behavior: 'instant' })
+                }
+            }
+
+            // Initial load often needs a tiny delay for the browser to calculate scrollHeight correctly
+            if (prevMessageCountRef.current === 0) {
+                const timeout = setTimeout(scroll, 0)
+                return () => clearTimeout(timeout)
+            } else {
+                scroll()
+            }
         }
         prevMessageCountRef.current = count
     }, [allStatuses.length])
@@ -205,7 +218,7 @@ function ConversationChatContent() {
                         )
                     })
                 )}
-                <div ref={messagesEndRef} style={{ scrollMarginBottom: 0 }} />
+                <ScrollSentinel ref={messagesEndRef} />
             </MessagesContainer>
 
             {/* Image Cropper Modal */}
