@@ -250,11 +250,15 @@ export function MediaTabContent({
 export const ContentSection = styled.div`
   display: flex;
   flex-direction: column;
+  /* Disable scroll anchoring to prevent scroll jumps when skeleton is replaced with content */
+  overflow-anchor: none;
 `;
 
 const LoadingContainer = styled.div`
   flex: 1;
   overflow: auto;
+  /* Disable scroll anchoring to prevent scroll jumps when skeleton is replaced with content */
+  overflow-anchor: none;
 `;
 
 const VirtualContent = styled.div`
