@@ -1,8 +1,8 @@
-# <img src="https://joinmastodon.org/logos/logo-purple.svg" alt="Mastodon" height="32" /> Mastodon Next.js Client
+# <img src="public/icons/icon-192.png" alt="Logo" height="32" /> Mastodon Next.js Client
 
 <div align="center">
 
-<img src="https://joinmastodon.org/logos/logo-purple.svg" alt="Mastodon Logo" width="120" />
+<img src="public/icons/icon-192.png" alt="Logo" width="120" />
 
 **A beautiful, fast, and modern web client for Mastodon**
 
