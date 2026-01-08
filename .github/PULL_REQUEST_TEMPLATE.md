@@ -1,85 +1,43 @@
-# Pull Request
+## 📝 Description
 
-## Description
+<!-- What does this PR do? Keep it brief and focused. -->
 
-<!-- Provide a clear and concise description of what this PR does -->
+## 🏷️ Type of Change
 
-## Type of Change
+<!-- Check one: -->
 
-<!-- Mark the relevant option with an "x" -->
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 💥 Breaking change
+- [ ] ♻️ Refactor
+- [ ] 📖 Documentation
+- [ ] ⚡ Performance
 
-- [ ] Bug fix (non-breaking change that fixes an issue)
-- [ ] New feature (non-breaking change that adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Refactoring (code improvements without changing functionality)
-- [ ] Documentation update
-- [ ] Performance improvement
-- [ ] Code quality improvement
+## 🔗 Related Issues
 
-## Related Issues
+<!-- Use "Fixes #123" to auto-close issues -->
 
-<!-- Link to related issues using #issue_number -->
+## ✅ Checklist
 
-Fixes #
-Relates to #
+- [ ] Tested locally
+- [ ] Lint passes (`bun run lint`)
+- [ ] Build succeeds (`bun run build`)
+- [ ] Follows atomic design LOC limits
+- [ ] Uses Emotion styled components (no inline styles)
 
-## Changes Made
+## 📸 Screenshots
 
-<!-- List the key changes made in this PR -->
+<!-- For UI changes, show before/after -->
 
--
--
--
+<details>
+<summary>Before & After</summary>
 
-## Testing
+| Before | After |
+|--------|-------|
+|        |       |
 
-<!-- Describe how you tested these changes -->
+</details>
 
-- [ ] I have tested this locally
-- [ ] I have added/updated unit tests
-- [ ] All existing tests pass
-- [ ] I have tested on mobile/responsive views (if UI changes)
+## 💬 Notes for Reviewers
 
-### How to Test
-
-<!-- Provide steps for reviewers to test your changes -->
-
-1.
-2.
-3.
-
-## Code Quality Checklist
-
-- [ ] My code follows the project's coding style and conventions
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code where necessary, particularly in hard-to-understand areas
-- [ ] My changes generate no new warnings or errors
-- [ ] I have followed the atomic design pattern (atoms max 120 LOC, molecules max 200 LOC, organisms max 350 LOC)
-- [ ] I have used Emotion styled components instead of inline styles
-- [ ] Linting passes (`npm run lint`)
-- [ ] Build succeeds (`npm run build`)
-
-## Screenshots/Videos
-
-<!-- If applicable, add screenshots or videos to demonstrate the changes -->
-
-### Before
-
-
-### After
-
-
-## Additional Context
-
-<!-- Add any other context about the PR here -->
-
-## Reviewer Notes
-
-<!-- Any specific areas you'd like reviewers to focus on? -->
-
----
-
-**By submitting this PR, I confirm that:**
-- [ ] I have read and agree to the project's contribution guidelines
-- [ ] My commits follow the project's commit message conventions
-- [ ] I understand that this PR may be closed if it doesn't meet the project's standards
+<!-- Anything specific to focus on? -->
