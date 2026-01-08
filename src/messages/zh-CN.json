@@ -19,7 +19,7 @@
       "noMoreFollowers": "没有更多关注者了",
       "title": "关注者"
     },
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "正在关注",
     "followingPage": {
       "hiddenInfo": "This user has chosen to not make this information available",
@@ -47,7 +47,7 @@
       "next": "下一个置顶帖子",
       "prev": "上一个置顶帖子"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
     "requested": "已请求",
     "showProfile": "仍然显示个人资料",
     "startNotifying": "当 @{acct} 发布帖子时通知我",
@@ -336,13 +336,13 @@
     "types": {
       "mention": "<link>{name}</link> 提及了你",
       "status": "<link>{name}</link> 发布了新帖子",
-      "reblog": "{count, plural, one {<link>{name}</link> 转发了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人转发了你的帖子}}",
-      "follow": "{count, plural, one {<link>{name}</link> 关注了你} other {<link>{name}</link> 和其他 {remainingCount} 人关注了你}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> 请求关注你} other {<link>{name}</link> 和其他 {remainingCount} 人请求关注你}}",
-      "favourite": "{count, plural, one {<link>{name}</link> 收藏了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人收藏了你的帖子}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> 转发了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人转发了你的帖子}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> 关注了你} other {<link>{name}</link> 和其他 {remainingCount} 人关注了你}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> 请求关注你} other {<link>{name}</link> 和其他 {remainingCount} 人请求关注你}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> 收藏了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人收藏了你的帖子}}",
       "poll": "你参与的投票已结束",
       "update": "你转发的帖子已被编辑",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> 已注册} other {<link>{name}</link> 和其他 {remainingCount} 人已注册}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> 已注册} other {<link>{name}</link> 和其他 {remainingCount} 人已注册}}",
       "admin_report": "<link>{name}</link> 提交了一份报告",
       "severed_relationships": "你的一些关注关系已断开",
       "moderation_warning": "站务人员对你的账号采取了行动"
@@ -451,7 +451,7 @@
   "scheduled": {
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this scheduled post?",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "edit": "Edit",
     "empty": {
       "createPost": "Create Post",
@@ -596,7 +596,7 @@
   },
   "statusDetail": {
     "boostedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noBoostsYet": "No boosts yet",
       "noMoreUsers": "No more users",
       "title": "Boosted by"
@@ -604,7 +604,7 @@
     "errorLoading": "加载帖子出错",
     "failedLoadDesc": "找不到或无法加载此帖子。",
     "favouritedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noFavouritesYet": "No favourites yet",
       "noMoreUsers": "No more users",
       "title": "Favourited by"
@@ -613,7 +613,7 @@
     "postNotFound": "Post Not Found",
     "quotedBy": "引用了 @{acct} 的帖子",
     "quotesPage": {
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet",
       "title": "Quotes"

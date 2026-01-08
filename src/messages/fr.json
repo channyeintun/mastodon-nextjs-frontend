@@ -19,7 +19,7 @@
       "noMoreFollowers": "Plus aucun abonné",
       "title": "Abonnés"
     },
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Abonnements",
     "followingPage": {
       "hiddenInfo": "Cet utilisateur a choisi de masquer cette information",
@@ -47,7 +47,7 @@
       "next": "Publication épinglée suivante",
       "prev": "Publication épinglée précédente"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
     "requested": "Demandé",
     "showProfile": "Afficher le profil malgré tout",
     "startNotifying": "M'informer quand @{acct} publie",
@@ -185,7 +185,7 @@
     "typeMessage": "Écrire un message..."
   },
   "conversations": {
-    "count": "{count, plural, =0 {Aucune conversation} one {1 conversation} other {# conversations}}",
+    "count": "{count, plural, =0 {Aucune conversation} =1 {1 conversation} other {# conversations}}",
     "errorLoading": "Erreur lors du chargement des conversations",
     "failedLoadDesc": "Échec du chargement de vos messages directs. Veuillez réessayer plus tard.",
     "new": "Nouveau message",
@@ -250,7 +250,7 @@
     "zoomOut": "Zoom arrière"
   },
   "lists": {
-    "count": "{count, plural, =0 {Aucune liste} one {1 liste} other {# listes}}",
+    "count": "{count, plural, =0 {Aucune liste} =1 {1 liste} other {# listes}}",
     "create": "Créer une liste",
     "createFirst": "Créez votre première liste",
     "deleteConfirm": "Êtes-vous sûr de vouloir supprimer \"{title}\" ? Cette action est irréversible.",
@@ -307,7 +307,7 @@
       "mentionsTitle": "Aucune mention pour le moment"
     },
     "endOfList": "Vous avez atteint la fin de vos notifications",
-    "filtered": "{count} {count, plural, one {notification filtrée} other {notifications filtrées}}",
+    "filtered": "{count} {count, plural, =1 {notification filtrée} other {notifications filtrées}}",
     "filters": {
       "categories": {
         "for_limited_accounts": "Comptes modérés",
@@ -336,13 +336,13 @@
     "types": {
       "mention": "<link>{name}</link> vous a mentionné",
       "status": "<link>{name}</link> a publié",
-      "reblog": "{count, plural, one {<link>{name}</link> a boosté votre publication} other {<link>{name}</link> et {remainingCount} autres ont boosté votre publication}}",
-      "follow": "{count, plural, one {<link>{name}</link> vous suit} other {<link>{name}</link> et {remainingCount} autres vous suivent}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> a demandé à vous suivre} other {<link>{name}</link> et {remainingCount} autres ont demandé à vous suivre}}",
-      "favourite": "{count, plural, one {<link>{name}</link> a ajouté votre publication à ses favoris} other {<link>{name}</link> et {remainingCount} autres ont ajouté votre publication à leurs favoris}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> a boosté votre publication} other {<link>{name}</link> et {remainingCount} autres ont boosté votre publication}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> vous suit} other {<link>{name}</link> et {remainingCount} autres vous suivent}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> a demandé à vous suivre} other {<link>{name}</link> et {remainingCount} autres ont demandé à vous suivre}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> a ajouté votre publication à ses favoris} other {<link>{name}</link> et {remainingCount} autres ont ajouté votre publication à leurs favoris}}",
       "poll": "Un sondage auquel vous avez participé est terminé",
       "update": "Une publication que vous avez boostée a été modifiée",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> s'est inscrit} other {<link>{name}</link> et {remainingCount} autres se sont inscrits}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> s'est inscrit} other {<link>{name}</link> et {remainingCount} autres se sont inscrits}}",
       "admin_report": "<link>{name}</link> a envoyé un signalement",
       "severed_relationships": "Certaines de vos relations d'abonnement ont été rompues",
       "moderation_warning": "Un modérateur a pris des mesures concernant votre compte"
@@ -451,7 +451,7 @@
   "scheduled": {
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this scheduled post?",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "edit": "Edit",
     "empty": {
       "createPost": "Create Post",
@@ -487,7 +487,7 @@
     "appearance": "Apparence",
     "blockedAccounts": "Comptes bloqués",
     "blocksPage": {
-      "count": "{count} {count, plural, one {compte bloqué} other {comptes bloqués}}",
+      "count": "{count} {count, plural, =1 {compte bloqué} other {comptes bloqués}}",
       "emptyDesc": "Quand vous bloquez quelqu'un, il ne pourra plus voir vos publications ni interagir avec vous.",
       "emptyTitle": "Aucun compte bloqué",
       "title": "Comptes bloqués"
@@ -520,7 +520,7 @@
     "moderation": "Modération",
     "mutedAccounts": "Comptes masqués",
     "mutesPage": {
-      "count": "{count} {count, plural, one {compte masqué} other {comptes masqués}}",
+      "count": "{count} {count, plural, =1 {compte masqué} other {comptes masqués}}",
       "emptyDesc": "Quand vous masquez quelqu'un, ses publications et notifications seront masquées pour vous.",
       "emptyTitle": "Aucun compte masqué",
       "title": "Comptes masqués"
@@ -596,7 +596,7 @@
   },
   "statusDetail": {
     "boostedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noBoostsYet": "No boosts yet",
       "noMoreUsers": "No more users",
       "title": "Boosted by"
@@ -604,7 +604,7 @@
     "errorLoading": "Erreur de chargement du post",
     "failedLoadDesc": "Ce post n'a pas pu être trouvé ou chargé.",
     "favouritedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noFavouritesYet": "No favourites yet",
       "noMoreUsers": "No more users",
       "title": "Favourited by"
@@ -613,16 +613,16 @@
     "postNotFound": "Post Not Found",
     "quotedBy": "Quoted a post by @{acct}",
     "quotesPage": {
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet",
       "title": "Quotes"
     },
     "replies": "Réponses ({count})",
     "stats": {
-      "boosts": "{count, plural, one {Partage} other {Partages}}",
-      "favourites": "{count, plural, one {Favori} other {Favoris}}",
-      "quotes": "{count, plural, one {Citation} other {Citations}}"
+      "boosts": "{count, plural, =1 {Partage} other {Partages}}",
+      "favourites": "{count, plural, =1 {Favori} other {Favoris}}",
+      "quotes": "{count, plural, =1 {Citation} other {Citations}}"
     },
     "title": "Post"
   },

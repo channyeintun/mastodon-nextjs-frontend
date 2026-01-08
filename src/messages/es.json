@@ -19,7 +19,7 @@
       "noMoreFollowers": "No hay más seguidores",
       "title": "Seguidores"
     },
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Siguiendo",
     "followingPage": {
       "hiddenInfo": "Este usuario ha elegido ocultar esta información",
@@ -47,7 +47,7 @@
       "next": "Siguiente publicación fijada",
       "prev": "Publicación fijada anterior"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
     "requested": "Solicitado",
     "showProfile": "Mostrar perfil de todos modos",
     "startNotifying": "Notificarme cuando @{acct} publique",
@@ -185,7 +185,7 @@
     "typeMessage": "Escribe un mensaje..."
   },
   "conversations": {
-    "count": "{count, plural, =0 {Sin conversaciones} one {1 conversación} other {# conversaciones}}",
+    "count": "{count, plural, =0 {Sin conversaciones} =1 {1 conversación} other {# conversaciones}}",
     "errorLoading": "Error al cargar las conversaciones",
     "failedLoadDesc": "No se pudieron cargar tus mensajes directos. Por favor, inténtalo de nuevo más tarde.",
     "new": "Nuevo mensaje",
@@ -250,7 +250,7 @@
     "zoomOut": "Alejar"
   },
   "lists": {
-    "count": "{count, plural, =0 {Sin listas} one {1 lista} other {# listas}}",
+    "count": "{count, plural, =0 {Sin listas} =1 {1 lista} other {# listas}}",
     "create": "Crear lista",
     "createFirst": "Crea tu primera lista",
     "deleteConfirm": "¿Estás seguro de que quieres eliminar \"{title}\"? Esta acción no se puede deshacer.",
@@ -307,7 +307,7 @@
       "mentionsTitle": "Sin menciones aún"
     },
     "endOfList": "Has llegado al final de tus notificaciones",
-    "filtered": "{count} {count, plural, one {notificación filtrada} other {notificaciones filtradas}}",
+    "filtered": "{count} {count, plural, =1 {notificación filtrada} other {notificaciones filtradas}}",
     "filters": {
       "categories": {
         "for_limited_accounts": "Cuentas moderadas",
@@ -336,13 +336,13 @@
     "types": {
       "mention": "<link>{name}</link> te mencionó",
       "status": "<link>{name}</link> publicó",
-      "reblog": "{count, plural, one {<link>{name}</link> impulsó tu publicación} other {<link>{name}</link> y {remainingCount} más impulsaron tu publicación}}",
-      "follow": "{count, plural, one {<link>{name}</link> te empezó a seguir} other {<link>{name}</link> y {remainingCount} más te empezaron a seguir}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> solicitó seguirte} other {<link>{name}</link> y {remainingCount} más solicitaron seguirte}}",
-      "favourite": "{count, plural, one {<link>{name}</link> marcó como favorita tu publicación} other {<link>{name}</link> y {remainingCount} más marcaron como favorita tu publicación}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> impulsó tu publicación} other {<link>{name}</link> y {remainingCount} más impulsaron tu publicación}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> te empezó a seguir} other {<link>{name}</link> y {remainingCount} más te empezaron a seguir}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> solicitó seguirte} other {<link>{name}</link> y {remainingCount} más solicitaron seguirte}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> marcó como favorita tu publicación} other {<link>{name}</link> y {remainingCount} más marcaron como favorita tu publicación}}",
       "poll": "Una encuesta en la que votaste ha terminado",
       "update": "Una publicación que impulsaste ha sido editada",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> se registró} other {<link>{name}</link> y {remainingCount} más se registraron}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> se registró} other {<link>{name}</link> y {remainingCount} más se registraron}}",
       "admin_report": "<link>{name}</link> envió un reporte",
       "severed_relationships": "Algunas de tus relaciones de seguimiento se han roto",
       "moderation_warning": "Un moderador ha tomado medidas contra tu cuenta"
@@ -451,7 +451,7 @@
   "scheduled": {
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this scheduled post?",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "edit": "Edit",
     "empty": {
       "createPost": "Create Post",
@@ -487,7 +487,7 @@
     "appearance": "Apariencia",
     "blockedAccounts": "Cuentas bloqueadas",
     "blocksPage": {
-      "count": "{count} {count, plural, one {cuenta bloqueada} other {cuentas bloqueadas}}",
+      "count": "{count} {count, plural, =1 {cuenta bloqueada} other {cuentas bloqueadas}}",
       "emptyDesc": "Cuando bloqueas a alguien, no podrá ver tus publicaciones ni interactuar contigo.",
       "emptyTitle": "No hay cuentas bloqueadas",
       "title": "Cuentas bloqueadas"
@@ -520,7 +520,7 @@
     "moderation": "Moderación",
     "mutedAccounts": "Cuentas silenciadas",
     "mutesPage": {
-      "count": "{count} {count, plural, one {cuenta silenciada} other {cuentas silenciadas}}",
+      "count": "{count} {count, plural, =1 {cuenta silenciada} other {cuentas silenciadas}}",
       "emptyDesc": "Cuando silencias a alguien, sus publicaciones y notificaciones se ocultarán para ti.",
       "emptyTitle": "No hay cuentas silenciadas",
       "title": "Cuentas silenciadas"
@@ -596,7 +596,7 @@
   },
   "statusDetail": {
     "boostedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noBoostsYet": "No boosts yet",
       "noMoreUsers": "No more users",
       "title": "Boosted by"
@@ -604,7 +604,7 @@
     "errorLoading": "Error al cargar el post",
     "failedLoadDesc": "Este post no se pudo encontrar o cargar.",
     "favouritedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noFavouritesYet": "No favourites yet",
       "noMoreUsers": "No more users",
       "title": "Favourited by"
@@ -613,16 +613,16 @@
     "postNotFound": "Post Not Found",
     "quotedBy": "Quoted a post by @{acct}",
     "quotesPage": {
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet",
       "title": "Quotes"
     },
     "replies": "Respuestas ({count})",
     "stats": {
-      "boosts": "{count, plural, one {Impulso} other {Impulsos}}",
-      "favourites": "{count, plural, one {Favorito} other {Favoritos}}",
-      "quotes": "{count, plural, one {Cita} other {Citas}}"
+      "boosts": "{count, plural, =1 {Impulso} other {Impulsos}}",
+      "favourites": "{count, plural, =1 {Favorito} other {Favoritos}}",
+      "quotes": "{count, plural, =1 {Cita} other {Citas}}"
     },
     "title": "Post"
   },

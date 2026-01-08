@@ -19,7 +19,7 @@
       "noMoreFollowers": "ไม่มีผู้ติดตามเพิ่มเติม",
       "title": "ผู้ติดตาม"
     },
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "กำลังติดตาม",
     "followingPage": {
       "hiddenInfo": "ผู้ใช้นี้เลือกที่จะไม่แสดงข้อมูลนี้",
@@ -47,7 +47,7 @@
       "next": "โพสต์ที่ปักหมุดถัดไป",
       "prev": "โพสต์ที่ปักหมุดก่อนหน้า"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
     "requested": "ร้องขอแล้ว",
     "showProfile": "แสดงโปรไฟล์ต่อไป",
     "startNotifying": "แจ้งเตือนเมื่อ @{acct} โพสต์",
@@ -336,13 +336,13 @@
     "types": {
       "mention": "<link>{name}</link> กล่าวถึงคุณ",
       "status": "<link>{name}</link> โพสต์แล้ว",
-      "reblog": "{count, plural, one {<link>{name}</link> บูสต์โพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนบูสต์โพสต์ของคุณ}}",
-      "follow": "{count, plural, one {<link>{name}</link> ติดตามคุณ} other {<link>{name}</link> และอีก {remainingCount} คนติดตามคุณ}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> ขอติดตามคุณ} other {<link>{name}</link> และอีก {remainingCount} คนขอติดตามคุณ}}",
-      "favourite": "{count, plural, one {<link>{name}</link> ชื่นชอบโพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนชื่นชอบโพสต์ของคุณ}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> บูสต์โพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนบูสต์โพสต์ของคุณ}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> ติดตามคุณ} other {<link>{name}</link> และอีก {remainingCount} คนติดตามคุณ}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> ขอติดตามคุณ} other {<link>{name}</link> และอีก {remainingCount} คนขอติดตามคุณ}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> ชื่นชอบโพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนชื่นชอบโพสต์ของคุณ}}",
       "poll": "การโหวตที่คุณเข้าร่วมสิ้นสุดลงแล้ว",
       "update": "โพสต์ที่คุณบูสต์ได้รับการแก้ไข",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> ลงชื่อเข้าใช้แล้ว} other {<link>{name}</link> และอีก {remainingCount} คนลงชื่อเข้าใช้แล้ว}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> ลงชื่อเข้าใช้แล้ว} other {<link>{name}</link> และอีก {remainingCount} คนลงชื่อเข้าใช้แล้ว}}",
       "admin_report": "<link>{name}</link> ส่งรายงานแล้ว",
       "severed_relationships": "ความสัมพันธ์ในการติดตามบางส่วนของคุณขาดสะบั้นลง",
       "moderation_warning": "ผู้ดูแลระบบได้ดำเนินการกับบัญชีของคุณ"
@@ -451,7 +451,7 @@
   "scheduled": {
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this scheduled post?",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "edit": "Edit",
     "empty": {
       "createPost": "Create Post",
@@ -596,7 +596,7 @@
   },
   "statusDetail": {
     "boostedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noBoostsYet": "No boosts yet",
       "noMoreUsers": "No more users",
       "title": "Boosted by"
@@ -604,7 +604,7 @@
     "errorLoading": "เกิดข้อผิดพลาดในการโหลดโพสต์",
     "failedLoadDesc": "ไม่พบโพสต์นี้หรือโหลดไม่สำเร็จ",
     "favouritedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noFavouritesYet": "No favourites yet",
       "noMoreUsers": "No more users",
       "title": "Favourited by"
@@ -613,7 +613,7 @@
     "postNotFound": "Post Not Found",
     "quotedBy": "อ้างอิงโพสต์โดย @{acct}",
     "quotesPage": {
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet",
       "title": "Quotes"

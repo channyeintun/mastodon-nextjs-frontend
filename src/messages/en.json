@@ -59,8 +59,8 @@
       "twitterTitle": "{name} (@{acct})",
       "twitterDescription": "Profile of @{acct}"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following_count": "{count, plural, other {# following}}",
     "follow_hint": "Follow some people to see their posts here.",
     "end_of_timeline": "You've reached the end of your timeline",
@@ -369,7 +369,7 @@
   },
   "conversations": {
     "title": "Direct Messages",
-    "count": "{count, plural, =0 {No conversations} one {1 conversation} other {# conversations}}",
+    "count": "{count, plural, =0 {No conversations} =1 {1 conversation} other {# conversations}}",
     "new": "New message",
     "noConversations": "No conversations yet",
     "sendDirect": "Send a direct message to start a conversation",
@@ -382,7 +382,7 @@
     "all": "All",
     "mentions": "Mentions",
     "requests": "Requests",
-    "filtered": "{count} filtered {count, plural, one {notification} other {notifications}}",
+    "filtered": "{count} filtered {count, plural, =1 {notification} other {notifications}}",
     "loadError": "Failed to load notifications",
     "endOfList": "You've reached the end of your notifications",
     "actions": {
@@ -421,13 +421,13 @@
     "types": {
       "mention": "<link>{name}</link> mentioned you",
       "status": "<link>{name}</link> posted",
-      "reblog": "{count, plural, one {<link>{name}</link> boosted your post} other {<link>{name}</link> and {remainingCount} others boosted your post}}",
-      "follow": "{count, plural, one {<link>{name}</link> followed you} other {<link>{name}</link> and {remainingCount} others followed you}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> requested to follow you} other {<link>{name}</link> and {remainingCount} others requested to follow you}}",
-      "favourite": "{count, plural, one {<link>{name}</link> favourited your post} other {<link>{name}</link> and {remainingCount} others favourited your post}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> boosted your post} other {<link>{name}</link> and {remainingCount} others boosted your post}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> followed you} other {<link>{name}</link> and {remainingCount} others followed you}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> requested to follow you} other {<link>{name}</link> and {remainingCount} others requested to follow you}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> favourited your post} other {<link>{name}</link> and {remainingCount} others favourited your post}}",
       "poll": "A poll you voted in has ended",
       "update": "A post you boosted was edited",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> signed up} other {<link>{name}</link> and {remainingCount} others signed up}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> signed up} other {<link>{name}</link> and {remainingCount} others signed up}}",
       "admin_report": "<link>{name}</link> filed a report",
       "severed_relationships": "Some of your follow relationships have been severed",
       "moderation_warning": "A moderator has taken action against your account"
@@ -435,7 +435,7 @@
   },
   "lists": {
     "title": "Lists",
-    "count": "{count, plural, =0 {No lists} one {1 list} other {# lists}}",
+    "count": "{count, plural, =0 {No lists} =1 {1 list} other {# lists}}",
     "create": "Create list",
     "edit": "Edit List",
     "deleteTitle": "Delete list",
@@ -580,13 +580,13 @@
     },
     "mutesPage": {
       "title": "Muted Accounts",
-      "count": "{count} muted {count, plural, one {account} other {accounts}}",
+      "count": "{count} muted {count, plural, =1 {account} other {accounts}}",
       "emptyTitle": "No muted accounts",
       "emptyDesc": "When you mute someone, their posts and notifications will be hidden from you."
     },
     "blocksPage": {
       "title": "Blocked Accounts",
-      "count": "{count} blocked {count, plural, one {account} other {accounts}}",
+      "count": "{count} blocked {count, plural, =1 {account} other {accounts}}",
       "emptyTitle": "No blocked accounts",
       "emptyDesc": "When you block someone, they won't be able to see your posts or interact with you."
     }
@@ -605,35 +605,35 @@
     "failedLoadDesc": "This post could not be found or loaded.",
     "replies": "Replies ({count})",
     "stats": {
-      "boosts": "{count, plural, one {Boost} other {Boosts}}",
-      "favourites": "{count, plural, one {Favourite} other {Favourites}}",
-      "quotes": "{count, plural, one {Quote} other {Quotes}}"
+      "boosts": "{count, plural, =1 {Boost} other {Boosts}}",
+      "favourites": "{count, plural, =1 {Favourite} other {Favourites}}",
+      "quotes": "{count, plural, =1 {Quote} other {Quotes}}"
     },
     "quotedBy": "Quoted a post by @{acct}",
     "postNotFound": "Post Not Found",
     "goBack": "Go Back",
     "boostedBy": {
       "title": "Boosted by",
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noMoreUsers": "No more users",
       "noBoostsYet": "No boosts yet"
     },
     "favouritedBy": {
       "title": "Favourited by",
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noMoreUsers": "No more users",
       "noFavouritesYet": "No favourites yet"
     },
     "quotesPage": {
       "title": "Quotes",
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet"
     }
   },
   "scheduled": {
     "title": "Scheduled Posts",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "scheduledFor": "Scheduled for {date}",
     "edit": "Edit",
     "cancel": "Cancel",

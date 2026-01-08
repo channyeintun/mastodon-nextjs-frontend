@@ -19,7 +19,7 @@
       "noMoreFollowers": "これ以上のフォロワーはありません",
       "title": "フォロワー"
     },
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "フォロー中",
     "followingPage": {
       "hiddenInfo": "このユーザーは情報を公開していません",
@@ -47,7 +47,7 @@
       "next": "次の固定済み投稿",
       "prev": "前の固定済み投稿"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
     "requested": "リクエスト済み",
     "showProfile": "プロフィールを表示する",
     "startNotifying": "@{acct} が投稿した時に通知",
@@ -336,13 +336,13 @@
     "types": {
       "mention": "<link>{name}</link> さんがあなたをメンションしました",
       "status": "<link>{name}</link> さんが投稿しました",
-      "reblog": "{count, plural, one {<link>{name}</link> さんがあなたの投稿をブーストしました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をブーストしました}}",
-      "follow": "{count, plural, one {<link>{name}</link> さんにフォローされました} other {<link>{name}</link> さんと他 {remainingCount} 人にフォローされました}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> さんからフォローリクエストが届きました} other {<link>{name}</link> さんと他 {remainingCount} 人からフォローリクエストが届きました}}",
-      "favourite": "{count, plural, one {<link>{name}</link> さんがあなたの投稿をお気に入りに登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をお気に入りに登録しました}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> さんがあなたの投稿をブーストしました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をブーストしました}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> さんにフォローされました} other {<link>{name}</link> さんと他 {remainingCount} 人にフォローされました}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> さんからフォローリクエストが届きました} other {<link>{name}</link> さんと他 {remainingCount} 人からフォローリクエストが届きました}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> さんがあなたの投稿をお気に入りに登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をお気に入りに登録しました}}",
       "poll": "投票したアンケートが終了しました",
       "update": "ブーストした投稿が編集されました",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> さんが登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人が登録しました}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> さんが登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人が登録しました}}",
       "admin_report": "<link>{name}</link> さんから通報がありました",
       "severed_relationships": "フォロー関係の一部が切断されました",
       "moderation_warning": "モデレーターがあなたのアカウントに対して措置を講じました"
@@ -451,7 +451,7 @@
   "scheduled": {
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this scheduled post?",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "edit": "Edit",
     "empty": {
       "createPost": "Create Post",
@@ -596,7 +596,7 @@
   },
   "statusDetail": {
     "boostedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noBoostsYet": "No boosts yet",
       "noMoreUsers": "No more users",
       "title": "Boosted by"
@@ -604,7 +604,7 @@
     "errorLoading": "投稿の読み込みエラー",
     "failedLoadDesc": "この投稿は見つからないか、読み込めませんでした。",
     "favouritedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noFavouritesYet": "No favourites yet",
       "noMoreUsers": "No more users",
       "title": "Favourited by"
@@ -613,7 +613,7 @@
     "postNotFound": "Post Not Found",
     "quotedBy": "Quoted a post by @{acct}",
     "quotesPage": {
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet",
       "title": "Quotes"

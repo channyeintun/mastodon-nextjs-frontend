@@ -19,7 +19,7 @@
       "noMoreFollowers": "Không còn người theo dõi",
       "title": "Người theo dõi"
     },
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Đang theo dõi",
     "followingPage": {
       "hiddenInfo": "Người dùng này đã chọn ẩn thông tin",
@@ -47,7 +47,7 @@
       "next": "Bài ghim sau",
       "prev": "Bài ghim trước"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
     "requested": "Đã yêu cầu",
     "showProfile": "Vẫn hiển thị hồ sơ",
     "startNotifying": "Thông báo khi @{acct} đăng bài",
@@ -336,13 +336,13 @@
     "types": {
       "mention": "<link>{name}</link> đã nhắc đến bạn",
       "status": "<link>{name}</link> đã đăng bài",
-      "reblog": "{count, plural, one {<link>{name}</link> đã thúc đẩy bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thúc đẩy bài đăng của bạn}}",
-      "follow": "{count, plural, one {<link>{name}</link> bắt đầu theo dõi bạn} other {<link>{name}</link> và {remainingCount} người khác bắt đầu theo dõi bạn}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> đã yêu cầu theo dõi bạn} other {<link>{name}</link> và {remainingCount} người khác đã yêu cầu theo dõi bạn}}",
-      "favourite": "{count, plural, one {<link>{name}</link> đã thích bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thích bài đăng của bạn}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> đã thúc đẩy bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thúc đẩy bài đăng của bạn}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> bắt đầu theo dõi bạn} other {<link>{name}</link> và {remainingCount} người khác bắt đầu theo dõi bạn}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> đã yêu cầu theo dõi bạn} other {<link>{name}</link> và {remainingCount} người khác đã yêu cầu theo dõi bạn}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> đã thích bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thích bài đăng của bạn}}",
       "poll": "Cuộc thăm dò ý kiến bạn đã tham gia đã kết thúc",
       "update": "Một bài đăng bạn đã thúc đẩy đã được chỉnh sửa",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> đã đăng ký} other {<link>{name}</link> và {remainingCount} người khác đã đăng ký}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> đã đăng ký} other {<link>{name}</link> và {remainingCount} người khác đã đăng ký}}",
       "admin_report": "<link>{name}</link> đã gửi một báo cáo",
       "severed_relationships": "Một số mối quan hệ theo dõi của bạn đã bị cắt đứt",
       "moderation_warning": "Người điều hành đã thực hiện hành động đối với tài khoản của bạn"
@@ -451,7 +451,7 @@
   "scheduled": {
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this scheduled post?",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "edit": "Edit",
     "empty": {
       "createPost": "Create Post",
@@ -596,7 +596,7 @@
   },
   "statusDetail": {
     "boostedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noBoostsYet": "No boosts yet",
       "noMoreUsers": "No more users",
       "title": "Boosted by"
@@ -604,7 +604,7 @@
     "errorLoading": "Lỗi khi tải bài đăng",
     "failedLoadDesc": "Không tìm thấy hoặc không thể tải bài đăng này.",
     "favouritedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noFavouritesYet": "No favourites yet",
       "noMoreUsers": "No more users",
       "title": "Favourited by"
@@ -613,7 +613,7 @@
     "postNotFound": "Post Not Found",
     "quotedBy": "Trích dẫn bài đăng của @{acct}",
     "quotesPage": {
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet",
       "title": "Quotes"

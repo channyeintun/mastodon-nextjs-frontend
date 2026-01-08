@@ -19,7 +19,7 @@
       "noMoreFollowers": "더 이상 팔로워가 없습니다",
       "title": "팔로워"
     },
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "팔로잉",
     "followingPage": {
       "hiddenInfo": "이 사용자는 이 정보를 공개하지 않기로 선택했습니다",
@@ -47,7 +47,7 @@
       "next": "다음 고정 게시물",
       "prev": "이전 고정 게시물"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
     "requested": "요청됨",
     "showProfile": "프로필 표시하기",
     "startNotifying": "@{acct}의 게시물 알림 받기",
@@ -336,13 +336,13 @@
     "types": {
       "mention": "<link>{name}</link> 님이 당신을 언급했습니다",
       "status": "<link>{name}</link> 님이 게시물을 올렸습니다",
-      "reblog": "{count, plural, one {<link>{name}</link> 님이 당신의 게시물을 부스트했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 부스트했습니다}}",
-      "follow": "{count, plural, one {<link>{name}</link> 님이 당신을 팔로우했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신을 팔로우했습니다}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> 님이 팔로우 요청을 보냈습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 팔로우 요청을 보냈습니다}}",
-      "favourite": "{count, plural, one {<link>{name}</link> 님이 당신의 게시물을 즐겨찾기에 추가했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 즐겨찾기에 추가했습니다}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 부스트했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 부스트했습니다}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> 님이 당신을 팔로우했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신을 팔로우했습니다}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> 님이 팔로우 요청을 보냈습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 팔로우 요청을 보냈습니다}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 즐겨찾기에 추가했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 즐겨찾기에 추가했습니다}}",
       "poll": "참여한 투표가 종료되었습니다",
       "update": "부스트한 게시물이 수정되었습니다",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> 님이 가입했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 가입했습니다}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> 님이 가입했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 가입했습니다}}",
       "admin_report": "<link>{name}</link> 님이 신고를 제출했습니다",
       "severed_relationships": "일부 팔로우 관계가 끊어졌습니다",
       "moderation_warning": "중재자가 당신의 계정에 조치를 취했습니다"
@@ -451,7 +451,7 @@
   "scheduled": {
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this scheduled post?",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "edit": "Edit",
     "empty": {
       "createPost": "Create Post",
@@ -596,7 +596,7 @@
   },
   "statusDetail": {
     "boostedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noBoostsYet": "No boosts yet",
       "noMoreUsers": "No more users",
       "title": "Boosted by"
@@ -604,7 +604,7 @@
     "errorLoading": "게시물 로드 오류",
     "failedLoadDesc": "이 게시물을 찾을 수 없거나 로드할 수 없습니다.",
     "favouritedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noFavouritesYet": "No favourites yet",
       "noMoreUsers": "No more users",
       "title": "Favourited by"
@@ -613,7 +613,7 @@
     "postNotFound": "Post Not Found",
     "quotedBy": "@{acct}의 게시물을 인용했습니다",
     "quotesPage": {
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet",
       "title": "Quotes"

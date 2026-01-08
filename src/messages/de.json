@@ -19,7 +19,7 @@
       "noMoreFollowers": "Keine weiteren Folgenden",
       "title": "Folgende"
     },
-    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "followers_count": "{count, plural, =1 {# follower} other {# followers}}",
     "following": "Folgt",
     "followingPage": {
       "hiddenInfo": "Dieser Benutzer hat diese Information verborgen",
@@ -47,7 +47,7 @@
       "next": "Nächster angehefteter Beitrag",
       "prev": "Vorheriger angehefteter Beitrag"
     },
-    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "posts_count": "{count, plural, =1 {# post} other {# posts}}",
     "requested": "Angefragt",
     "showProfile": "Profil trotzdem anzeigen",
     "startNotifying": "Benachrichtigen, wenn @{acct} postet",
@@ -185,7 +185,7 @@
     "typeMessage": "Nachricht schreiben..."
   },
   "conversations": {
-    "count": "{count, plural, =0 {Keine Unterhaltungen} one {1 Unterhaltung} other {# Unterhaltungen}}",
+    "count": "{count, plural, =0 {Keine Unterhaltungen} =1 {1 Unterhaltung} other {# Unterhaltungen}}",
     "errorLoading": "Fehler beim Laden der Unterhaltungen",
     "failedLoadDesc": "Deine Direktnachrichten konnten nicht geladen werden. Bitte versuche es später erneut.",
     "new": "Neue Nachricht",
@@ -250,7 +250,7 @@
     "zoomOut": "Verkleinern"
   },
   "lists": {
-    "count": "{count, plural, =0 {Keine Listen} one {1 Liste} other {# Listen}}",
+    "count": "{count, plural, =0 {Keine Listen} =1 {1 Liste} other {# Listen}}",
     "create": "Liste erstellen",
     "createFirst": "Erstelle deine erste Liste",
     "deleteConfirm": "Bist du sicher, dass du \"{title}\" löschen möchtest? Dies kann nicht rückgängig gemacht werden.",
@@ -307,7 +307,7 @@
       "mentionsTitle": "Noch keine Erwähnungen"
     },
     "endOfList": "Du hast das Ende deiner Benachrichtigungen erreicht",
-    "filtered": "{count} gefilterte {count, plural, one {Benachrichtigung} other {Benachrichtigungen}}",
+    "filtered": "{count} gefilterte {count, plural, =1 {Benachrichtigung} other {Benachrichtigungen}}",
     "filters": {
       "categories": {
         "for_limited_accounts": "Moderierte Konten",
@@ -336,13 +336,13 @@
     "types": {
       "mention": "<link>{name}</link> hat dich erwähnt",
       "status": "<link>{name}</link> hat gepostet",
-      "reblog": "{count, plural, one {<link>{name}</link> hat deinen Beitrag geteilt} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag geteilt}}",
-      "follow": "{count, plural, one {<link>{name}</link> folgt dir jetzt} other {<link>{name}</link> und {remainingCount} weitere folgen dir jetzt}}",
-      "follow_request": "{count, plural, one {<link>{name}</link> möchte dir folgen} other {<link>{name}</link> und {remainingCount} weitere möchten dir folgen}}",
-      "favourite": "{count, plural, one {<link>{name}</link> hat deinen Beitrag favorisiert} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag favorisiert}}",
+      "reblog": "{count, plural, =1 {<link>{name}</link> hat deinen Beitrag geteilt} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag geteilt}}",
+      "follow": "{count, plural, =1 {<link>{name}</link> folgt dir jetzt} other {<link>{name}</link> und {remainingCount} weitere folgen dir jetzt}}",
+      "follow_request": "{count, plural, =1 {<link>{name}</link> möchte dir folgen} other {<link>{name}</link> und {remainingCount} weitere möchten dir folgen}}",
+      "favourite": "{count, plural, =1 {<link>{name}</link> hat deinen Beitrag favorisiert} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag favorisiert}}",
       "poll": "Eine Umfrage, an der du teilgenommen hast, ist beendet",
       "update": "Ein Beitrag, den du geteilt hast, wurde bearbeitet",
-      "admin_sign_up": "{count, plural, one {<link>{name}</link> hat sich registriert} other {<link>{name}</link> und {remainingCount} weitere haben sich registriert}}",
+      "admin_sign_up": "{count, plural, =1 {<link>{name}</link> hat sich registriert} other {<link>{name}</link> und {remainingCount} weitere haben sich registriert}}",
       "admin_report": "<link>{name}</link> hat eine Meldung eingereicht",
       "severed_relationships": "Einige deiner Follow-Beziehungen wurden getrennt",
       "moderation_warning": "Ein Moderator hat Maßnahmen gegen dein Konto ergriffen"
@@ -451,7 +451,7 @@
   "scheduled": {
     "cancel": "Cancel",
     "confirmCancel": "Are you sure you want to cancel this scheduled post?",
-    "count": "{count, plural, one {# post} other {# posts}}",
+    "count": "{count, plural, =1 {# post} other {# posts}}",
     "edit": "Edit",
     "empty": {
       "createPost": "Create Post",
@@ -487,7 +487,7 @@
     "appearance": "Erscheinungsbild",
     "blockedAccounts": "Blockierte Konten",
     "blocksPage": {
-      "count": "{count} blockierte {count, plural, one {Konto} other {Konten}}",
+      "count": "{count} blockierte {count, plural, =1 {Konto} other {Konten}}",
       "emptyDesc": "Wenn du jemanden blockierst, kann dieser deine Beiträge nicht sehen oder mit dir interagieren.",
       "emptyTitle": "Keine blockierten Konten",
       "title": "Blockierte Konten"
@@ -520,7 +520,7 @@
     "moderation": "Moderation",
     "mutedAccounts": "Stummgeschaltete Konten",
     "mutesPage": {
-      "count": "{count} stummgeschaltete {count, plural, one {Konto} other {Konten}}",
+      "count": "{count} stummgeschaltete {count, plural, =1 {Konto} other {Konten}}",
       "emptyDesc": "Wenn du jemanden stummschaltest, werden dessen Beiträge und Benachrichtigungen vor dir verborgen.",
       "emptyTitle": "Keine stummgeschalteten Konten",
       "title": "Stummgeschaltete Konten"
@@ -596,7 +596,7 @@
   },
   "statusDetail": {
     "boostedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noBoostsYet": "No boosts yet",
       "noMoreUsers": "No more users",
       "title": "Boosted by"
@@ -604,7 +604,7 @@
     "errorLoading": "Fehler beim Laden des Beitrags",
     "failedLoadDesc": "Dieser Beitrag konnte nicht gefunden oder geladen werden.",
     "favouritedBy": {
-      "count": "{count, plural, one {# person} other {# people}}",
+      "count": "{count, plural, =1 {# person} other {# people}}",
       "noFavouritesYet": "No favourites yet",
       "noMoreUsers": "No more users",
       "title": "Favourited by"
@@ -613,16 +613,16 @@
     "postNotFound": "Post Not Found",
     "quotedBy": "Quoted a post by @{acct}",
     "quotesPage": {
-      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "count": "{count, plural, =1 {# quote} other {# quotes}}",
       "noMoreQuotes": "No more quotes",
       "noQuotesYet": "No quotes yet",
       "title": "Quotes"
     },
     "replies": "Antworten ({count})",
     "stats": {
-      "boosts": "{count, plural, one {Share} other {Shares}}",
-      "favourites": "{count, plural, one {Favorit} other {Favoriten}}",
-      "quotes": "{count, plural, one {Zitat} other {Zitate}}"
+      "boosts": "{count, plural, =1 {Share} other {Shares}}",
+      "favourites": "{count, plural, =1 {Favorit} other {Favoriten}}",
+      "quotes": "{count, plural, =1 {Zitat} other {Zitate}}"
     },
     "title": "Beitrag"
   },
