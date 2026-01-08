@@ -333,6 +333,20 @@
       "goBack": "กลับ",
       "title": "การแจ้งเตือนที่ถูกกรอง"
     },
+    "types": {
+      "mention": "<link>{name}</link> กล่าวถึงคุณ",
+      "status": "<link>{name}</link> โพสต์แล้ว",
+      "reblog": "{count, plural, one {<link>{name}</link> บูสต์โพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนบูสต์โพสต์ของคุณ}}",
+      "follow": "{count, plural, one {<link>{name}</link> ติดตามคุณ} other {<link>{name}</link> และอีก {remainingCount} คนติดตามคุณ}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> ขอติดตามคุณ} other {<link>{name}</link> และอีก {remainingCount} คนขอติดตามคุณ}}",
+      "favourite": "{count, plural, one {<link>{name}</link> ชื่นชอบโพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนชื่นชอบโพสต์ของคุณ}}",
+      "poll": "การโหวตที่คุณเข้าร่วมสิ้นสุดลงแล้ว",
+      "update": "โพสต์ที่คุณบูสต์ได้รับการแก้ไข",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> ลงชื่อเข้าใช้แล้ว} other {<link>{name}</link> และอีก {remainingCount} คนลงชื่อเข้าใช้แล้ว}}",
+      "admin_report": "<link>{name}</link> ส่งรายงานแล้ว",
+      "severed_relationships": "ความสัมพันธ์ในการติดตามบางส่วนของคุณขาดสะบั้นลง",
+      "moderation_warning": "ผู้ดูแลระบบได้ดำเนินการกับบัญชีของคุณ"
+    },
     "title": "การแจ้งเตือน"
   },
   "poll": {

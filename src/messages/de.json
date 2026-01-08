@@ -333,6 +333,20 @@
       "goBack": "Zurück",
       "title": "Gefilterte Benachrichtigungen"
     },
+    "types": {
+      "mention": "<link>{name}</link> hat dich erwähnt",
+      "status": "<link>{name}</link> hat gepostet",
+      "reblog": "{count, plural, one {<link>{name}</link> hat deinen Beitrag geteilt} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag geteilt}}",
+      "follow": "{count, plural, one {<link>{name}</link> folgt dir jetzt} other {<link>{name}</link> und {remainingCount} weitere folgen dir jetzt}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> möchte dir folgen} other {<link>{name}</link> und {remainingCount} weitere möchten dir folgen}}",
+      "favourite": "{count, plural, one {<link>{name}</link> hat deinen Beitrag favorisiert} other {<link>{name}</link> und {remainingCount} weitere haben deinen Beitrag favorisiert}}",
+      "poll": "Eine Umfrage, an der du teilgenommen hast, ist beendet",
+      "update": "Ein Beitrag, den du geteilt hast, wurde bearbeitet",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> hat sich registriert} other {<link>{name}</link> und {remainingCount} weitere haben sich registriert}}",
+      "admin_report": "<link>{name}</link> hat eine Meldung eingereicht",
+      "severed_relationships": "Einige deiner Follow-Beziehungen wurden getrennt",
+      "moderation_warning": "Ein Moderator hat Maßnahmen gegen dein Konto ergriffen"
+    },
     "title": "Benachrichtigungen"
   },
   "poll": {

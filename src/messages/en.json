@@ -417,6 +417,20 @@
       "emptyDesc": "No filtered notifications to review.",
       "endOfList": "No more filtered notifications",
       "goBack": "Go back"
+    },
+    "types": {
+      "mention": "<link>{name}</link> mentioned you",
+      "status": "<link>{name}</link> posted",
+      "reblog": "{count, plural, one {<link>{name}</link> boosted your post} other {<link>{name}</link> and {remainingCount} others boosted your post}}",
+      "follow": "{count, plural, one {<link>{name}</link> followed you} other {<link>{name}</link> and {remainingCount} others followed you}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> requested to follow you} other {<link>{name}</link> and {remainingCount} others requested to follow you}}",
+      "favourite": "{count, plural, one {<link>{name}</link> favourited your post} other {<link>{name}</link> and {remainingCount} others favourited your post}}",
+      "poll": "A poll you voted in has ended",
+      "update": "A post you boosted was edited",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> signed up} other {<link>{name}</link> and {remainingCount} others signed up}}",
+      "admin_report": "<link>{name}</link> filed a report",
+      "severed_relationships": "Some of your follow relationships have been severed",
+      "moderation_warning": "A moderator has taken action against your account"
     }
   },
   "lists": {

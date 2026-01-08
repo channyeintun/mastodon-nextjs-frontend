@@ -333,6 +333,20 @@
       "goBack": "Quay lại",
       "title": "Thông báo đã lọc"
     },
+    "types": {
+      "mention": "<link>{name}</link> đã nhắc đến bạn",
+      "status": "<link>{name}</link> đã đăng bài",
+      "reblog": "{count, plural, one {<link>{name}</link> đã thúc đẩy bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thúc đẩy bài đăng của bạn}}",
+      "follow": "{count, plural, one {<link>{name}</link> bắt đầu theo dõi bạn} other {<link>{name}</link> và {remainingCount} người khác bắt đầu theo dõi bạn}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> đã yêu cầu theo dõi bạn} other {<link>{name}</link> và {remainingCount} người khác đã yêu cầu theo dõi bạn}}",
+      "favourite": "{count, plural, one {<link>{name}</link> đã thích bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thích bài đăng của bạn}}",
+      "poll": "Cuộc thăm dò ý kiến bạn đã tham gia đã kết thúc",
+      "update": "Một bài đăng bạn đã thúc đẩy đã được chỉnh sửa",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> đã đăng ký} other {<link>{name}</link> và {remainingCount} người khác đã đăng ký}}",
+      "admin_report": "<link>{name}</link> đã gửi một báo cáo",
+      "severed_relationships": "Một số mối quan hệ theo dõi của bạn đã bị cắt đứt",
+      "moderation_warning": "Người điều hành đã thực hiện hành động đối với tài khoản của bạn"
+    },
     "title": "Thông báo"
   },
   "poll": {

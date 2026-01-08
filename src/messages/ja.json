@@ -333,6 +333,20 @@
       "goBack": "戻る",
       "title": "フィルタリングされた通知"
     },
+    "types": {
+      "mention": "<link>{name}</link> さんがあなたをメンションしました",
+      "status": "<link>{name}</link> さんが投稿しました",
+      "reblog": "{count, plural, one {<link>{name}</link> さんがあなたの投稿をブーストしました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をブーストしました}}",
+      "follow": "{count, plural, one {<link>{name}</link> さんにフォローされました} other {<link>{name}</link> さんと他 {remainingCount} 人にフォローされました}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> さんからフォローリクエストが届きました} other {<link>{name}</link> さんと他 {remainingCount} 人からフォローリクエストが届きました}}",
+      "favourite": "{count, plural, one {<link>{name}</link> さんがあなたの投稿をお気に入りに登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人があなたの投稿をお気に入りに登録しました}}",
+      "poll": "投票したアンケートが終了しました",
+      "update": "ブーストした投稿が編集されました",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> さんが登録しました} other {<link>{name}</link> さんと他 {remainingCount} 人が登録しました}}",
+      "admin_report": "<link>{name}</link> さんから通報がありました",
+      "severed_relationships": "フォロー関係の一部が切断されました",
+      "moderation_warning": "モデレーターがあなたのアカウントに対して措置を講じました"
+    },
     "title": "通知"
   },
   "poll": {

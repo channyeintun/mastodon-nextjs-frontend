@@ -14,6 +14,7 @@ import {
     X,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
 import { PostCard } from '@/components/organisms';
 import { formatRelativeTime } from '@/utils/date';
@@ -31,67 +32,67 @@ interface NotificationCardProps {
 const NOTIFICATION_CONFIG: Record<NotificationType, {
     icon: React.ReactNode;
     color: string;
-    getMessage: (displayName: string) => string;
+    translationKey: string;
 }> = {
     mention: {
         icon: <MessageCircle size={16} />,
         color: 'var(--blue-6)',
-        getMessage: (name) => `${name} mentioned you`,
+        translationKey: 'mention',
     },
     status: {
         icon: <Bell size={16} />,
         color: 'var(--purple-6)',
-        getMessage: (name) => `${name} posted`,
+        translationKey: 'status',
     },
     reblog: {
         icon: <Repeat2 size={16} />,
         color: 'var(--green-6)',
-        getMessage: (name) => `${name} boosted your post`,
+        translationKey: 'reblog',
     },
     follow: {
         icon: <UserPlus size={16} />,
         color: 'var(--indigo-6)',
-        getMessage: (name) => `${name} followed you`,
+        translationKey: 'follow',
     },
     follow_request: {
         icon: <UserPlus size={16} />,
         color: 'var(--orange-6)',
-        getMessage: (name) => `${name} requested to follow you`,
+        translationKey: 'follow_request',
     },
     favourite: {
         icon: <Heart size={16} />,
         color: 'var(--red-6)',
-        getMessage: (name) => `${name} favourited your post`,
+        translationKey: 'favourite',
     },
     poll: {
         icon: <BarChart2 size={16} />,
         color: 'var(--teal-6)',
-        getMessage: () => `A poll you voted in has ended`,
+        translationKey: 'poll',
     },
     update: {
         icon: <Edit2 size={16} />,
         color: 'var(--yellow-6)',
-        getMessage: () => `A post you boosted was edited`,
+        translationKey: 'update',
     },
     'admin.sign_up': {
         icon: <UserPlus size={16} />,
         color: 'var(--cyan-6)',
-        getMessage: (name) => `${name} signed up`,
+        translationKey: 'admin_sign_up',
     },
     'admin.report': {
         icon: <Bell size={16} />,
         color: 'var(--red-6)',
-        getMessage: (name) => `${name} filed a report`,
+        translationKey: 'admin_report',
     },
     'severed_relationships': {
         icon: <Bell size={16} />,
         color: 'var(--orange-6)',
-        getMessage: () => 'Some of your follow relationships have been severed',
+        translationKey: 'severed_relationships',
     },
     'moderation_warning': {
         icon: <Bell size={16} />,
         color: 'var(--red-6)',
-        getMessage: () => 'A moderator has taken action against your account',
+        translationKey: 'moderation_warning',
     },
 };
 
@@ -99,6 +100,7 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
     const router = useRouter();
     const dismissMutation = useDismissNotification();
     const queryClient = useQueryClient();
+    const t = useTranslations('notifications.types');
 
     const config = NOTIFICATION_CONFIG[notification.type];
     const account = notification.account;
@@ -165,16 +167,26 @@ export function NotificationCard({ notification, onDismiss, style, isNew }: Noti
 
                             <InfoWrapper>
                                 <MessageText>
-                                    <AccountLink
-                                        href={`/@${account.acct}`}
-                                        onClick={handleAccountClick}
-                                    >
-                                        <EmojiText text={displayName} emojis={account.emojis} />
-                                    </AccountLink>
-                                    {' '}
-                                    <ActionText>
-                                        {config.getMessage(displayName).replace(displayName, '').trim()}
-                                    </ActionText>
+                                    {t.rich(config.translationKey, {
+                                        count: 1,
+                                        remainingCount: 0,
+                                        name: () => (
+                                            <AccountLink
+                                                href={`/@${account.acct}`}
+                                                onClick={handleAccountClick}
+                                            >
+                                                <EmojiText text={displayName} emojis={account.emojis} />
+                                            </AccountLink>
+                                        ),
+                                        link: (chunks) => (
+                                            <AccountLink
+                                                href={`/@${account.acct}`}
+                                                onClick={handleAccountClick}
+                                            >
+                                                {chunks}
+                                            </AccountLink>
+                                        )
+                                    })}
                                 </MessageText>
                                 <TimeText>
                                     {formatRelativeTime(notification.created_at)}
@@ -273,9 +285,6 @@ const AccountLink = styled(Link)`
     font-weight: var(--font-weight-6);
 `;
 
-const ActionText = styled.span`
-    color: var(--text-2);
-`;
 
 const TimeText = styled.div`
     font-size: var(--font-size-0);

@@ -14,6 +14,7 @@ import {
     X,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { Avatar, Card, EmojiText, IconButton } from '@/components/atoms';
 import { PostCard } from '@/components/organisms';
 import { formatRelativeTime } from '@/utils/date';
@@ -32,77 +33,67 @@ interface GroupedNotificationCardProps {
 const NOTIFICATION_CONFIG: Record<NotificationType, {
     icon: React.ReactNode;
     color: string;
-    getMessage: (count: number, firstName: string) => string;
+    translationKey: string;
 }> = {
     mention: {
         icon: <MessageCircle size={16} />,
         color: 'var(--blue-6)',
-        getMessage: (_count, name) => `${name} mentioned you`,
+        translationKey: 'mention',
     },
     status: {
         icon: <Bell size={16} />,
         color: 'var(--purple-6)',
-        getMessage: (_count, name) => `${name} posted`,
+        translationKey: 'status',
     },
     reblog: {
         icon: <Repeat2 size={16} />,
         color: 'var(--green-6)',
-        getMessage: (count, name) => count > 1
-            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} boosted your post`
-            : `${name} boosted your post`,
+        translationKey: 'reblog',
     },
     follow: {
         icon: <UserPlus size={16} />,
         color: 'var(--indigo-6)',
-        getMessage: (count, name) => count > 1
-            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} followed you`
-            : `${name} followed you`,
+        translationKey: 'follow',
     },
     follow_request: {
         icon: <UserPlus size={16} />,
         color: 'var(--orange-6)',
-        getMessage: (count, name) => count > 1
-            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} requested to follow you`
-            : `${name} requested to follow you`,
+        translationKey: 'follow_request',
     },
     favourite: {
         icon: <Heart size={16} />,
         color: 'var(--red-6)',
-        getMessage: (count, name) => count > 1
-            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} favourited your post`
-            : `${name} favourited your post`,
+        translationKey: 'favourite',
     },
     poll: {
         icon: <BarChart2 size={16} />,
         color: 'var(--teal-6)',
-        getMessage: () => `A poll you voted in has ended`,
+        translationKey: 'poll',
     },
     update: {
         icon: <Edit2 size={16} />,
         color: 'var(--yellow-6)',
-        getMessage: () => `A post you boosted was edited`,
+        translationKey: 'update',
     },
     'admin.sign_up': {
         icon: <UserPlus size={16} />,
         color: 'var(--cyan-6)',
-        getMessage: (count, name) => count > 1
-            ? `${name} and ${count - 1} other${count > 2 ? 's' : ''} signed up`
-            : `${name} signed up`,
+        translationKey: 'admin_sign_up',
     },
     'admin.report': {
         icon: <Bell size={16} />,
         color: 'var(--red-6)',
-        getMessage: (_count, name) => `${name} filed a report`,
+        translationKey: 'admin_report',
     },
     'severed_relationships': {
         icon: <Bell size={16} />,
         color: 'var(--orange-6)',
-        getMessage: () => 'Some of your follow relationships have been severed',
+        translationKey: 'severed_relationships',
     },
     'moderation_warning': {
         icon: <Bell size={16} />,
         color: 'var(--red-6)',
-        getMessage: () => 'A moderator has taken action against your account',
+        translationKey: 'moderation_warning',
     },
 };
 
@@ -121,6 +112,7 @@ export function GroupedNotificationCard({
     const router = useRouter();
     const dismissMutation = useDismissNotificationGroup();
     const queryClient = useQueryClient();
+    const t = useTranslations('notifications.types');
 
     const config = NOTIFICATION_CONFIG[group.type];
 
@@ -225,20 +217,24 @@ export function GroupedNotificationCard({
 
                             <InfoWrapper>
                                 <MessageText>
-                                    {primaryAccount && isFullAccount(primaryAccount) ? (
-                                        <>
-                                            <AccountLink
-                                                href={`/@${primaryAccount.acct}`}
-                                                onClick={handleAccountClick(primaryAccount)}
-                                            >
-                                                <EmojiText text={primaryDisplayName} emojis={primaryAccount.emojis} />
-                                            </AccountLink>
-                                            {' '}
-                                        </>
-                                    ) : null}
-                                    <ActionText>
-                                        {config.getMessage(group.notifications_count, primaryDisplayName).replace(primaryDisplayName, '').trim()}
-                                    </ActionText>
+                                    {t.rich(config.translationKey, {
+                                        count: group.notifications_count,
+                                        remainingCount: group.notifications_count - 1,
+                                        name: primaryDisplayName,
+                                        link: (chunks) => {
+                                            if (!primaryAccount) return chunks;
+                                            return (
+                                                <AccountLink
+                                                    href={`/@${primaryAccount.acct}`}
+                                                    onClick={handleAccountClick(primaryAccount)}
+                                                >
+                                                    {isFullAccount(primaryAccount) ? (
+                                                        <EmojiText text={primaryDisplayName} emojis={primaryAccount.emojis} />
+                                                    ) : chunks}
+                                                </AccountLink>
+                                            );
+                                        }
+                                    })}
                                 </MessageText>
                             </InfoWrapper>
 
@@ -367,9 +363,6 @@ const AccountLink = styled(Link)`
     font-weight: var(--font-weight-6);
 `;
 
-const ActionText = styled.span`
-    color: var(--text-2);
-`;
 
 const TopRightActions = styled.div`
     position: absolute;

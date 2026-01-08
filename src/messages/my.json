@@ -333,6 +333,20 @@
       "goBack": "နောက်သို့ ပြန်သွားရန်",
       "title": "စစ်ထုတ်ထားသော အကြောင်းကြားစာများ"
     },
+    "types": {
+      "mention": "<link>{name}</link> က သင့်ကို ဖော်ပြခဲ့သည်",
+      "status": "<link>{name}</link> က ပို့စ်အသစ် တင်ခဲ့သည်",
+      "reblog": "{count, plural, one {<link>{name}</link> က သင့်ပို့စ်ကို ပြန်မျှဝေခဲ့သည်} other {<link>{name}</link> နှင့် အခြား {remainingCount} ဦးက သင့်ပို့စ်ကို ပြန်မျှဝေခဲ့သည်}}",
+      "follow": "{count, plural, one {<link>{name}</link> က သင့်ကို ဖော်လိုလုပ်ခဲ့သည်} other {<link>{name}</link> နှင့် အခြား {remainingCount} ဦးက သင့်ကို ဖော်လိုလုပ်ခဲ့သည်}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> က သင့်ကို ဖော်လိုလုပ်ရန် တောင်ဆိုခဲ့သည်} other {<link>{name}</link> နှင့် အခြား {remainingCount} ဦးက သင့်ကို ဖော်လိုလုပ်ရန် တောင်းဆိုခဲ့သည်}}",
+      "favourite": "{count, plural, one {<link>{name}</link> က သင့်ပို့စ်ကို သဘောကျခဲ့သည်} other {<link>{name}</link> နှင့် အခြား {remainingCount} ဦးက သင့်ပို့စ်ကို သဘောကျခဲ့သည်}}",
+      "poll": "သင် မဲပေးထားသော စစ်တမ်း ပြီးဆုံးသွားပြီ",
+      "update": "သင် ပြန်မျှဝေထားသော ပို့စ်တစ်ခုကို ပြင်ဆင်လိုက်သည်",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> က အကောင့်သစ် ဖွင့်ခဲ့သည်} other {<link>{name}</link> နှင့် အခြား {remainingCount} ဦးက အကောင့်သစ် ဖွင့်ခဲ့သည်}}",
+      "admin_report": "<link>{name}</link> က တိုင်ကြားစာတစ်ခု ပေးပို့ခဲ့သည်",
+      "severed_relationships": "သင့်ဖော်လိုလုပ်မှု အချို့ ပြတ်တောက်သွားခဲ့သည်",
+      "moderation_warning": "စီမံခန့်ခွဲသူတစ်ဦးက သင့်အကောင့်အပေါ် အရေးယူဆောင်ရွက်မှု တစ်ခု ပြုလုပ်ခဲ့သည်"
+    },
     "title": "အကြောင်းကြားစာများ"
   },
   "poll": {

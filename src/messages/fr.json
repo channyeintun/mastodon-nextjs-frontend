@@ -333,6 +333,20 @@
       "goBack": "Retour",
       "title": "Notifications filtrées"
     },
+    "types": {
+      "mention": "<link>{name}</link> vous a mentionné",
+      "status": "<link>{name}</link> a publié",
+      "reblog": "{count, plural, one {<link>{name}</link> a boosté votre publication} other {<link>{name}</link> et {remainingCount} autres ont boosté votre publication}}",
+      "follow": "{count, plural, one {<link>{name}</link> vous suit} other {<link>{name}</link> et {remainingCount} autres vous suivent}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> a demandé à vous suivre} other {<link>{name}</link> et {remainingCount} autres ont demandé à vous suivre}}",
+      "favourite": "{count, plural, one {<link>{name}</link> a ajouté votre publication à ses favoris} other {<link>{name}</link> et {remainingCount} autres ont ajouté votre publication à leurs favoris}}",
+      "poll": "Un sondage auquel vous avez participé est terminé",
+      "update": "Une publication que vous avez boostée a été modifiée",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> s'est inscrit} other {<link>{name}</link> et {remainingCount} autres se sont inscrits}}",
+      "admin_report": "<link>{name}</link> a envoyé un signalement",
+      "severed_relationships": "Certaines de vos relations d'abonnement ont été rompues",
+      "moderation_warning": "Un modérateur a pris des mesures concernant votre compte"
+    },
     "title": "Notifications"
   },
   "poll": {

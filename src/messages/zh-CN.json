@@ -333,6 +333,20 @@
       "goBack": "返回",
       "title": "已过滤通知"
     },
+    "types": {
+      "mention": "<link>{name}</link> 提及了你",
+      "status": "<link>{name}</link> 发布了新帖子",
+      "reblog": "{count, plural, one {<link>{name}</link> 转发了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人转发了你的帖子}}",
+      "follow": "{count, plural, one {<link>{name}</link> 关注了你} other {<link>{name}</link> 和其他 {remainingCount} 人关注了你}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> 请求关注你} other {<link>{name}</link> 和其他 {remainingCount} 人请求关注你}}",
+      "favourite": "{count, plural, one {<link>{name}</link> 收藏了你的帖子} other {<link>{name}</link> 和其他 {remainingCount} 人收藏了你的帖子}}",
+      "poll": "你参与的投票已结束",
+      "update": "你转发的帖子已被编辑",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> 已注册} other {<link>{name}</link> 和其他 {remainingCount} 人已注册}}",
+      "admin_report": "<link>{name}</link> 提交了一份报告",
+      "severed_relationships": "你的一些关注关系已断开",
+      "moderation_warning": "站务人员对你的账号采取了行动"
+    },
     "title": "通知"
   },
   "poll": {

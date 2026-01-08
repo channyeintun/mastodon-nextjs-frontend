@@ -333,6 +333,20 @@
       "goBack": "뒤로 가기",
       "title": "필터링된 알림"
     },
+    "types": {
+      "mention": "<link>{name}</link> 님이 당신을 언급했습니다",
+      "status": "<link>{name}</link> 님이 게시물을 올렸습니다",
+      "reblog": "{count, plural, one {<link>{name}</link> 님이 당신의 게시물을 부스트했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 부스트했습니다}}",
+      "follow": "{count, plural, one {<link>{name}</link> 님이 당신을 팔로우했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신을 팔로우했습니다}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> 님이 팔로우 요청을 보냈습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 팔로우 요청을 보냈습니다}}",
+      "favourite": "{count, plural, one {<link>{name}</link> 님이 당신의 게시물을 즐겨찾기에 추가했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 즐겨찾기에 추가했습니다}}",
+      "poll": "참여한 투표가 종료되었습니다",
+      "update": "부스트한 게시물이 수정되었습니다",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> 님이 가입했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 가입했습니다}}",
+      "admin_report": "<link>{name}</link> 님이 신고를 제출했습니다",
+      "severed_relationships": "일부 팔로우 관계가 끊어졌습니다",
+      "moderation_warning": "중재자가 당신의 계정에 조치를 취했습니다"
+    },
     "title": "알림"
   },
   "poll": {

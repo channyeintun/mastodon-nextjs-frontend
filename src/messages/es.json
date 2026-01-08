@@ -333,6 +333,20 @@
       "goBack": "Volver",
       "title": "Notificaciones filtradas"
     },
+    "types": {
+      "mention": "<link>{name}</link> te mencionó",
+      "status": "<link>{name}</link> publicó",
+      "reblog": "{count, plural, one {<link>{name}</link> impulsó tu publicación} other {<link>{name}</link> y {remainingCount} más impulsaron tu publicación}}",
+      "follow": "{count, plural, one {<link>{name}</link> te empezó a seguir} other {<link>{name}</link> y {remainingCount} más te empezaron a seguir}}",
+      "follow_request": "{count, plural, one {<link>{name}</link> solicitó seguirte} other {<link>{name}</link> y {remainingCount} más solicitaron seguirte}}",
+      "favourite": "{count, plural, one {<link>{name}</link> marcó como favorita tu publicación} other {<link>{name}</link> y {remainingCount} más marcaron como favorita tu publicación}}",
+      "poll": "Una encuesta en la que votaste ha terminado",
+      "update": "Una publicación que impulsaste ha sido editada",
+      "admin_sign_up": "{count, plural, one {<link>{name}</link> se registró} other {<link>{name}</link> y {remainingCount} más se registraron}}",
+      "admin_report": "<link>{name}</link> envió un reporte",
+      "severed_relationships": "Algunas de tus relaciones de seguimiento se han roto",
+      "moderation_warning": "Un moderador ha tomado medidas contra tu cuenta"
+    },
     "title": "Notificaciones"
   },
   "poll": {
