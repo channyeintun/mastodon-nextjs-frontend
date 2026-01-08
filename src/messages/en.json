@@ -1,0 +1,660 @@
+{
+  "search": {
+    "title": "Search",
+    "placeholder": "Search for people, posts, or hashtags (press Enter to search)",
+    "tabs": {
+      "all": "All",
+      "accounts": "People",
+      "statuses": "Posts",
+      "hashtags": "Hashtags"
+    },
+    "recent": "Recent",
+    "clearAll": "Clear all",
+    "emptyHistory": "Search for people, posts, or hashtags",
+    "noResults": "No results found",
+    "tryDifferent": "Try searching with a different name",
+    "people": "Search for people",
+    "enterToStart": "Enter a name or username to start a conversation",
+    "error": "An error occurred while searching"
+  },
+  "account": {
+    "joined": "Joined {date}",
+    "viewOnInstance": "View on instance",
+    "bot": "BOT",
+    "hiddenProfile": "This profile has been hidden by the moderators of {domain}.",
+    "showProfile": "Show profile anyway",
+    "pinned": "Pinned",
+    "pinnedNav": {
+      "prev": "Previous pinned post",
+      "next": "Next pinned post"
+    },
+    "tabs": {
+      "posts": "Posts",
+      "posts_replies": "Posts & replies",
+      "media": "Media"
+    },
+    "empty": {
+      "posts": "No posts yet",
+      "end": "No more posts"
+    },
+    "loadMore": "Load more",
+    "loading": "Loading...",
+    "notFound": "Profile Not Found",
+    "backToTimeline": "Back to Timeline",
+    "editProfile": "Edit profile",
+    "follow": "Follow",
+    "following": "Following",
+    "requested": "Requested",
+    "unfollow": "Unfollow",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "block": "Block",
+    "unblock": "Unblock",
+    "stopNotifying": "Stop notifying me when @{acct} posts",
+    "startNotifying": "Notify me when @{acct} posts",
+    "meta": {
+      "title": "{name} (@{acct}) - Mastodon",
+      "description": "Profile of @{acct} on Mastodon",
+      "ogTitle": "{name} (@{acct})",
+      "ogDescription": "Profile of @{acct} on Mastodon",
+      "twitterTitle": "{name} (@{acct})",
+      "twitterDescription": "Profile of @{acct}"
+    },
+    "posts_count": "{count, plural, one {# post} other {# posts}}",
+    "followers_count": "{count, plural, one {# follower} other {# followers}}",
+    "following_count": "{count, plural, other {# following}}",
+    "follow_hint": "Follow some people to see their posts here.",
+    "end_of_timeline": "You've reached the end of your timeline",
+    "followingPage": {
+      "title": "Following",
+      "noMoreAccounts": "No more accounts",
+      "hiddenInfo": "This user has chosen to not make this information available",
+      "notFollowingYet": "Not following anyone yet"
+    },
+    "followersPage": {
+      "title": "Followers",
+      "noMoreFollowers": "No more followers",
+      "hiddenInfo": "This user has chosen to not make this information available",
+      "noFollowersYet": "No followers yet"
+    }
+  },
+  "common": {
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "remove": "Remove",
+    "share": "Share",
+    "report": "Report",
+    "verified": "Verified",
+    "close": "Close",
+    "loading": "Loading...",
+    "viewAll": "View all",
+    "dontShowAgain": "Don't show again",
+    "back": "Back",
+    "skipToMain": "Skip to main content",
+    "next": "Next",
+    "done": "Done",
+    "backToTop": "Back to top"
+  },
+  "media": {
+    "sensitive": "Click to view sensitive content"
+  },
+  "report": {
+    "title": "Report @{acct}",
+    "step": {
+      "category": {
+        "title": "Tell us what's going on with this {type}",
+        "description": "Choose the best match",
+        "post": "post",
+        "profile": "profile",
+        "dislike": {
+          "label": "I don't like it",
+          "description": "It is not something you want to see"
+        },
+        "spam": {
+          "label": "It's spam",
+          "description": "Malicious links, fake engagement, or repetitive replies"
+        },
+        "legal": {
+          "label": "It's illegal",
+          "description": "You believe it violates the law of your or the server's country"
+        },
+        "violation": {
+          "label": "It violates server rules",
+          "description": "You are aware that it breaks specific rules"
+        },
+        "other": {
+          "label": "It's something else",
+          "description": "The issue does not fit into other categories"
+        }
+      },
+      "rules": {
+        "title": "Which rules are being violated?",
+        "description": "Select all that apply"
+      },
+      "statuses": {
+        "title": "Is there anything else you want to add?",
+        "description": "You can include more posts from this account if you'd like",
+        "included": "The post you selected has been included in your report.",
+        "optional": "You can select specific posts to include in your report if relevant."
+      },
+      "comment": {
+        "title": "Anything else we should know?",
+        "description": "Add any additional comments that might help us understand the situation",
+        "placeholder": "Add any additional comments here...",
+        "forward": "Forward to {domain}",
+        "submitting": "Submitting...",
+        "submit": "Submit Report"
+      },
+      "thanks": {
+        "title": {
+          "dislike": "Noted",
+          "other": "Thanks for reporting"
+        },
+        "description": {
+          "dislike": "While we won't take action on this specific report, you have options to reduce what you see from this account.",
+          "other": "Your report has been submitted. We'll look into this and take appropriate action if needed."
+        },
+        "suggestions": {
+          "unfollow": "Unfollow or mute the account",
+          "block": "Block the account to hide their content",
+          "filter": "Filter specific keywords or phrases"
+        }
+      }
+    }
+  },
+  "deletePost": {
+    "title": "Delete post?",
+    "message": "This action cannot be undone. Your post will be permanently deleted from your profile and the timelines of your followers.",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "profileEditor": {
+    "title": "Edit profile",
+    "displayName": "Display name",
+    "bio": "Bio",
+    "extraFields": "Extra fields",
+    "extraFieldsDescription": "You can have up to 4 items displayed as a table on your profile",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "labelPlaceholder": "Label {number}",
+    "contentPlaceholder": "Content",
+    "verifiedOn": "Verified on {date}",
+    "uploadHeader": "Upload Header",
+    "linkVerification": {
+      "title": "Link verification",
+      "description": "You can verify yourself as the owner of the links in your profile metadata. For this, the linked website must contain a link back to your Mastodon profile. The link back must have a <code /> attribute.",
+      "copyTip": "<strong>Tip:</strong> The link on your website can be invisible. The important part is <code /> which prevents impersonation.",
+      "copyToClipboard": "Copy to clipboard"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "explore": "Explore",
+    "notifications": "Notifications",
+    "messages": "Messages",
+    "bookmarks": "Bookmarks",
+    "lists": "Lists",
+    "settings": "Settings",
+    "search": "Search",
+    "compose": "Compose",
+    "sourceCode": "Source code",
+    "about": "About"
+  },
+  "timeline": {
+    "title": "Home",
+    "subtitle": "Your personal timeline",
+    "empty": "Your timeline is empty",
+    "error": "Error loading timeline",
+    "trending": "Trending"
+  },
+  "profile": {
+    "posts": "Posts",
+    "following": "Following",
+    "followers": "Followers",
+    "noPosts": "No posts yet",
+    "noFollowers": "No followers yet",
+    "notFollowing": "Not following anyone yet",
+    "hiddenInfo": "This user has chosen to not make this information available",
+    "profileInfo": "Profile information",
+    "extraFields": "Extra fields"
+  },
+  "actions": {
+    "reply": "Reply",
+    "quote": "Quote",
+    "boost": "Boost",
+    "undoBoost": "Undo Boost",
+    "favourite": "Favourite",
+    "unfavourite": "Unfavourite",
+    "bookmark": "Bookmark",
+    "removeBookmark": "Remove bookmark",
+    "editStatus": "Edit status",
+    "deleteStatus": "Delete status",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "pin": "Pin to profile",
+    "unpin": "Unpin from profile",
+    "muteConversation": "Mute conversation",
+    "unmuteConversation": "Unmute conversation",
+    "blockAccount": "Block @{acct}"
+  },
+  "composer": {
+    "newPost": "New post",
+    "editPost": "Edit post",
+    "replyTo": "Reply to @{acct}",
+    "newMessage": "New message",
+    "addEmoji": "Add emoji",
+    "addMedia": "Add media",
+    "addPoll": "Add poll",
+    "addContentWarning": "Add content warning",
+    "schedulePost": "Schedule post",
+    "removePoll": "Remove poll",
+    "removeOption": "Remove option",
+    "poll": "Poll",
+    "editAltText": "Edit alt text",
+    "placeholder": "What's on your mind?",
+    "replyPlaceholder": "Post your reply",
+    "publish": "Publish",
+    "reply": "Reply",
+    "schedule": "Schedule",
+    "reschedule": "Reschedule",
+    "update": "Update",
+    "visibility": "Visibility",
+    "whoCanQuote": "Who can quote",
+    "visibilityInteraction": "Visibility and interaction",
+    "visibilityDescription": "Control who can interact with this post. You can also apply settings to all future posts by navigating to Preferences > Posting defaults.",
+    "quoteDisabled": "Follower-only posts authored on Mastodon can't be quoted by others.",
+    "cwLabel": "Content Warning",
+    "cwPlaceholder": "Write your warning here...",
+    "removeCW": "Remove content warning",
+    "scheduleLabel": "Schedule post",
+    "removeSchedule": "Remove schedule",
+    "scheduleHelp": "Post will be published automatically at this time.",
+    "addOption": "Add Option",
+    "pollDuration": "Poll duration",
+    "multipleChoice": "Multiple choice",
+    "optionPlaceholder": "Option {number}",
+    "options": {
+      "quotePublic": "Anyone",
+      "quotePublicDesc": "Anyone can quote this post",
+      "quoteFollowers": "Followers",
+      "quoteFollowersDesc": "Only your followers can quote this post",
+      "quoteNobody": "Nobody",
+      "quoteNobodyDesc": "Disable quoting for this post"
+    },
+    "duration": {
+      "5m": "5 minutes",
+      "30m": "30 minutes",
+      "1h": "1 hour",
+      "6h": "6 hours",
+      "1d": "1 day",
+      "3d": "3 days",
+      "7d": "7 days"
+    },
+    "language": "Language...",
+    "visibilityOptions": {
+      "public": "Public",
+      "publicDesc": "Visible to anyone",
+      "unlisted": "Unlisted",
+      "unlistedDesc": "Do not show in public timelines",
+      "private": "Followers only",
+      "privateDesc": "Visible to followers only",
+      "direct": "Direct",
+      "directDesc": "Only mentioned people"
+    },
+    "upload": {
+      "status": "Uploading media...",
+      "altText": "Alt Text",
+      "altTextDescription": "Describe this media for visually impaired users...",
+      "editAlt": "Edit alt text"
+    },
+    "charCount": "{count} characters remaining",
+    "visibilityLabel": "Visibility: {label}"
+  },
+  "explore": {
+    "title": "Explore",
+    "tabs": {
+      "posts": "Posts",
+      "tags": "Tags",
+      "people": "People",
+      "links": "News"
+    },
+    "personalizedHint": "Based on accounts you follow",
+    "personalizedLabel": "Personalized suggestion",
+    "staffPickLabel": "Staff pick",
+    "staffPickHint": "Hand-picked by the team",
+    "popularLabel": "Popular suggestion",
+    "popularHint": "Popular on this instance",
+    "noTrendingPosts": "No trending posts at the moment",
+    "noTrendingTags": "No trending tags at the moment",
+    "noTrendingNews": "No trending news at the moment",
+    "failedTrending": "Failed to load trending posts",
+    "failedTags": "Failed to load trending tags",
+    "failedNews": "Failed to load trending news",
+    "reachedEndPosts": "You've reached the end of trending posts",
+    "reachedEndTags": "You've reached the end of trending tags",
+    "reachedEndNews": "You've reached the end of trending news"
+  },
+  "imageCropper": {
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "rotateLeft": "Rotate Left 90°",
+    "rotateRight": "Rotate Right 90°",
+    "flipHorizontal": "Flip Horizontal",
+    "flipVertical": "Flip Vertical"
+  },
+  "suggestions": {
+    "whoToFollow": "Who to follow",
+    "dismissSuggestions": "Dismiss suggestions",
+    "previousItem": "Previous item",
+    "nextItem": "Next item",
+    "personalized": "Personalized",
+    "personalizedHint": "Based on accounts you follow",
+    "staffPick": "Staff pick",
+    "staffPickHint": "Hand-picked by the team",
+    "popular": "Popular",
+    "popularHint": "Popular on this instance",
+    "dontShowAgain": "Don't show again"
+  },
+  "conversation": {
+    "title": "Conversation",
+    "newMessage": "New Message",
+    "noMessages": "No messages yet",
+    "typeMessage": "Type a message...",
+    "deleteConfirm": "Delete this conversation?",
+    "deleteConfirmFull": "Are you sure you want to delete this conversation? This cannot be undone.",
+    "deleteError": "Failed to delete conversation. Please try again.",
+    "sendError": "Failed to send message",
+    "mediaOnly": "(Media only)"
+  },
+  "conversations": {
+    "title": "Direct Messages",
+    "count": "{count, plural, =0 {No conversations} one {1 conversation} other {# conversations}}",
+    "new": "New message",
+    "noConversations": "No conversations yet",
+    "sendDirect": "Send a direct message to start a conversation",
+    "errorLoading": "Error loading conversations",
+    "failedLoadDesc": "Failed to load your direct messages. Please try again later.",
+    "reachedEnd": "You've reached the end"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "all": "All",
+    "mentions": "Mentions",
+    "requests": "Requests",
+    "filtered": "{count} filtered {count, plural, one {notification} other {notifications}}",
+    "loadError": "Failed to load notifications",
+    "endOfList": "You've reached the end of your notifications",
+    "actions": {
+      "title": "Actions",
+      "markAllRead": "Mark all as read",
+      "clearAll": "Clear all"
+    },
+    "filters": {
+      "title": "Filters",
+      "categories": {
+        "for_not_following": "People you don't follow",
+        "for_not_followers": "People not following you",
+        "for_new_accounts": "New accounts",
+        "for_private_mentions": "Unsolicited private mentions",
+        "for_limited_accounts": "Moderated accounts"
+      },
+      "options": {
+        "accept": "Accept",
+        "filter": "Filter",
+        "drop": "Drop"
+      }
+    },
+    "empty": {
+      "allTitle": "No notifications yet",
+      "allDesc": "When someone interacts with your posts, you'll see it here.",
+      "mentionsTitle": "No mentions yet",
+      "mentionsDesc": "When someone mentions you, you'll see it here."
+    },
+    "requestsPage": {
+      "title": "Filtered notifications",
+      "emptyTitle": "All caught up!",
+      "emptyDesc": "No filtered notifications to review.",
+      "endOfList": "No more filtered notifications",
+      "goBack": "Go back"
+    }
+  },
+  "lists": {
+    "title": "Lists",
+    "count": "{count, plural, =0 {No lists} one {1 list} other {# lists}}",
+    "create": "Create list",
+    "edit": "Edit List",
+    "deleteTitle": "Delete list",
+    "deleteConfirm": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+    "noLists": "No lists yet",
+    "description": "Lists let you organize the accounts you follow into curated timelines.",
+    "createFirst": "Create your first list",
+    "nameLabel": "List Name",
+    "namePlaceholder": "My List",
+    "repliesPolicyLabel": "Show replies to",
+    "repliesPolicy": {
+      "followed": "Any followed user",
+      "list": "Members of the list",
+      "none": "No one"
+    },
+    "repliesPolicyShort": {
+      "followed": "Replies to followed users",
+      "list": "Replies to list members",
+      "none": "No replies"
+    },
+    "exclusiveLabel": "Hide these posts from home",
+    "exclusiveDesc": "Posts from list members won't appear in your home timeline",
+    "manageMembers": "Manage members",
+    "exclusive": "Exclusive"
+  },
+  "empty": {
+    "noBoosts": "No boosts yet",
+    "noFavourites": "No favourites yet",
+    "noQuotes": "No quotes yet",
+    "noFollowRequests": "No pending follow requests",
+    "noMessages": "No messages yet",
+    "noUsersFound": "No users found",
+    "noSuggestions": "No suggestions available",
+    "noTrendingPosts": "No trending posts at the moment",
+    "noTrendingTags": "No trending tags at the moment",
+    "noTrendingNews": "No trending news at the moment",
+    "signInToSee": "Sign in to see suggestions",
+    "failedTrending": "Failed to load trending posts",
+    "failedTags": "Failed to load trending tags",
+    "failedNews": "Failed to load trending news",
+    "failedSuggestions": "Failed to load suggestions"
+  },
+  "settings": {
+    "title": "Settings",
+    "nav": {
+      "bookmarks": "Bookmarks",
+      "lists": "Lists",
+      "search": "Search"
+    },
+    "preferences": "Preferences",
+    "notifications": "Notifications",
+    "interfaceLanguage": "Interface language",
+    "interfaceLanguageDesc": "Change the language of the application interface",
+    "editProfile": "Edit profile",
+    "quickLinks": "Quick links",
+    "appearance": "Appearance",
+    "moderation": "Moderation",
+    "server": "Server",
+    "aboutServer": "About this server",
+    "account": "Account",
+    "signOut": "Sign Out",
+    "signingOut": "Signing out...",
+    "trending": "Trending",
+    "scheduledPosts": "Scheduled posts",
+    "followRequests": "Follow requests",
+    "blockedAccounts": "Blocked accounts",
+    "mutedAccounts": "Muted accounts",
+    "pushNotifications": {
+      "title": "Push notifications",
+      "description": "Configure push notification settings for your device.",
+      "enabled": "Enabled - receive notifications even when the app is closed",
+      "disabled": "Receive notifications even when the app is closed",
+      "notSupported": "Not supported in this browser",
+      "permissionDenied": "Permission denied. Enable notifications in your browser settings.",
+      "alertTypes": "Alert types",
+      "mentions": "Mentions",
+      "favorites": "Favorites",
+      "boosts": "Boosts",
+      "follows": "Follows",
+      "polls": "Polls",
+      "enableLabel": "Enable push notifications",
+      "disableLabel": "Disable push notifications"
+    },
+    "preferencesPage": {
+      "postingDefaults": "Posting Defaults",
+      "postingDefaultsDesc": "Configure default settings for new posts",
+      "visibility": "Visibility",
+      "whoCanQuote": "Who can quote",
+      "quoteDisabled": "Follower-only and private posts can't be quoted by others.",
+      "markSensitive": "Mark media as sensitive by default",
+      "markSensitiveDesc": "Hide media attachments behind a content warning",
+      "privacy": "Privacy",
+      "privacyDesc": "Control your profile visibility and discoverability",
+      "lockedAccount": "Locked account",
+      "lockedAccountDesc": "Manually approve followers",
+      "botAccount": "Bot account",
+      "botAccountDesc": "This account mainly performs automated actions",
+      "hideCollections": "Hide followers and following",
+      "hideCollectionsDesc": "Hide your followers and who you follow from your profile",
+      "indexable": "Include public posts in search results",
+      "indexableDesc": "Allow your public posts to be discoverable through search",
+      "discoverable": "Suggest account to others",
+      "discoverableDesc": "Allow your account to be discovered",
+      "saveChanges": "Save changes"
+    },
+    "options": {
+      "public": "Public",
+      "publicDesc": "Anyone on and off Mastodon",
+      "unlisted": "Quiet public",
+      "unlistedDesc": "Hidden from search results, viral timelines",
+      "private": "Followers",
+      "privateDesc": "Only your followers",
+      "direct": "Private mention",
+      "directDesc": "Everyone mentioned in the post",
+      "quotePublic": "Everyone",
+      "quotePublicDesc": "Anyone can quote this post",
+      "quoteFollowers": "Followers",
+      "quoteFollowersDesc": "Only followers can quote",
+      "quoteNobody": "Just me",
+      "quoteNobodyDesc": "No one else can quote"
+    },
+    "filtersPage": {
+      "title": "Filters",
+      "addFilter": "Add filter",
+      "createFirst": "Create your first filter",
+      "empty": "You haven't created any filters yet.",
+      "emptyDesc": "Filters allow you to hide or blur posts containing specific words or phrases.",
+      "failedLoad": "Failed to load filters. Please try again.",
+      "warn": "Warn",
+      "hide": "Hide",
+      "blur": "Blur",
+      "context": {
+        "home": "Home",
+        "notifications": "Notifications",
+        "public": "Public",
+        "thread": "Conversations",
+        "account": "Profiles"
+      },
+      "expiresIn": "Expires in {count} {unit}",
+      "expired": "Expired",
+      "confirmDelete": "Are you sure you want to delete the filter \"{title}\"?"
+    },
+    "mutesPage": {
+      "title": "Muted Accounts",
+      "count": "{count} muted {count, plural, one {account} other {accounts}}",
+      "emptyTitle": "No muted accounts",
+      "emptyDesc": "When you mute someone, their posts and notifications will be hidden from you."
+    },
+    "blocksPage": {
+      "title": "Blocked Accounts",
+      "count": "{count} blocked {count, plural, one {account} other {accounts}}",
+      "emptyTitle": "No blocked accounts",
+      "emptyDesc": "When you block someone, they won't be able to see your posts or interact with you."
+    }
+  },
+  "visibility": {
+    "title": "Visibility",
+    "whoCanQuote": "Who can quote",
+    "public": "Public",
+    "unlisted": "Unlisted",
+    "private": "Followers only",
+    "direct": "Direct"
+  },
+  "statusDetail": {
+    "title": "Post",
+    "errorLoading": "Error Loading Post",
+    "failedLoadDesc": "This post could not be found or loaded.",
+    "replies": "Replies ({count})",
+    "stats": {
+      "boosts": "{count, plural, one {Boost} other {Boosts}}",
+      "favourites": "{count, plural, one {Favourite} other {Favourites}}",
+      "quotes": "{count, plural, one {Quote} other {Quotes}}"
+    },
+    "quotedBy": "Quoted a post by @{acct}",
+    "postNotFound": "Post Not Found",
+    "goBack": "Go Back",
+    "boostedBy": {
+      "title": "Boosted by",
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noMoreUsers": "No more users",
+      "noBoostsYet": "No boosts yet"
+    },
+    "favouritedBy": {
+      "title": "Favourited by",
+      "count": "{count, plural, one {# person} other {# people}}",
+      "noMoreUsers": "No more users",
+      "noFavouritesYet": "No favourites yet"
+    },
+    "quotesPage": {
+      "title": "Quotes",
+      "count": "{count, plural, one {# quote} other {# quotes}}",
+      "noMoreQuotes": "No more quotes",
+      "noQuotesYet": "No quotes yet"
+    }
+  },
+  "scheduled": {
+    "title": "Scheduled Posts",
+    "count": "{count, plural, one {# post} other {# posts}}",
+    "scheduledFor": "Scheduled for {date}",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "confirmCancel": "Are you sure you want to cancel this scheduled post?",
+    "failedToLoad": "Failed to load scheduled posts",
+    "endOfPosts": "End of scheduled posts",
+    "empty": {
+      "title": "No scheduled posts",
+      "description": "Posts you schedule will appear here.",
+      "createPost": "Create Post"
+    }
+  },
+  "poll": {
+    "closed": "Closed",
+    "vote": "Vote",
+    "votes": "votes"
+  },
+  "toast": {
+    "copiedToClipboard": "Copied to clipboard",
+    "filterDeleted": "Filter deleted",
+    "filterUpdated": "Filter updated",
+    "filterCreated": "Filter created",
+    "failedToDeleteFilter": "Failed to delete filter",
+    "postDeleted": "Post deleted",
+    "postShared": "Post shared"
+  },
+  "wrapstodon": {
+    "title": "Wrapstodon",
+    "notAvailable": "Wrapstodon not available",
+    "somethingWentWrong": "Something went wrong",
+    "mostUsedHashtag": "Most used hashtag",
+    "mostPopularPost": "Most popular post"
+  },
+  "about": {
+    "title": "About"
+  }
+}

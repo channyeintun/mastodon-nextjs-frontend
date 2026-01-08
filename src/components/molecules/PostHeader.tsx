@@ -20,6 +20,7 @@ import {
     UserX,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { Avatar, IconButton, EmojiText } from '@/components/atoms';
 import { formatRelativeTime } from '@/utils/date';
 import { prefillAccountCache } from '@/api';
@@ -76,6 +77,9 @@ export function PostHeader({
     bookmarked = false,
 }: PostHeaderProps) {
     const queryClient = useQueryClient();
+    const tActions = useTranslations('actions');
+    const tCommon = useTranslations('common');
+
 
     const handleProfileClick = () => {
         // Pre-populate account cache before navigation to avoid refetch
@@ -115,169 +119,124 @@ export function PostHeader({
                         <VisibilityIcon title={visibility}>
                             {VISIBILITY_ICONS[visibility]}
                         </VisibilityIcon>
-                        {isOwnPost && (
-                            <div className="options-menu-btn">
-                                <IconButton
-                                    size="small"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        e.currentTarget.focus();
-                                    }}
-                                >
-                                    <MoreHorizontal size={16} />
-                                </IconButton>
+                        <div className="options-menu-btn">
+                            <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    e.currentTarget.focus();
+                                }}
+                            >
+                                <MoreHorizontal size={16} />
+                            </IconButton>
 
-                                <div className="options-menu-popover">
-                                    {/* Pin/Unpin - Only for own public/unlisted posts */}
-                                    {(visibility === 'public' || visibility === 'unlisted') && onPin && (
-                                        <button
-                                            className="options-menu-item"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onPin();
-                                            }}
-                                        >
-                                            {pinned ? <PinOff size={16} /> : <Pin size={16} />}
-                                            <span>{pinned ? 'Unpin from profile' : 'Pin on profile'}</span>
-                                        </button>
-                                    )}
+                            <div className="options-menu-popover">
+                                {/* Pin/Unpin - Only for own public/unlisted posts */}
+                                {isOwnPost && (visibility === 'public' || visibility === 'unlisted') && onPin && (
+                                    <button
+                                        className="options-menu-item"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onPin();
+                                        }}
+                                    >
+                                        {pinned ? <PinOff size={16} /> : <Pin size={16} />}
+                                        <span>{pinned ? tActions('unpin') : tActions('pin')}</span>
+                                    </button>
+                                )}
 
-                                    {/* Mute/Unmute Conversation */}
-                                    {onMute && (
-                                        <button
-                                            className="options-menu-item"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onMute();
-                                            }}
-                                        >
-                                            {muted ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                                            <span>{muted ? 'Unmute conversation' : 'Mute conversation'}</span>
-                                        </button>
-                                    )}
+                                {/* Mute/Unmute Conversation - Visible for all posts */}
+                                {onMute && (
+                                    <button
+                                        className="options-menu-item"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onMute();
+                                        }}
+                                    >
+                                        {muted ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                                        <span>{muted ? tActions('unmuteConversation') : tActions('muteConversation')}</span>
+                                    </button>
+                                )}
 
-                                    {onBookmark && (
-                                        <button
-                                            className="options-menu-item"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onBookmark(e);
-                                            }}
-                                        >
-                                            <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} />
-                                            <span>{bookmarked ? 'Remove bookmark' : 'Bookmark'}</span>
-                                        </button>
-                                    )}
+                                {onBookmark && (
+                                    <button
+                                        className="options-menu-item"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onBookmark(e);
+                                        }}
+                                    >
+                                        <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} />
+                                        <span>{bookmarked ? tActions('removeBookmark') : tActions('bookmark')}</span>
+                                    </button>
+                                )}
 
-                                    {onShare && (
-                                        <button
-                                            className="options-menu-item"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onShare(e);
-                                            }}
-                                        >
-                                            <Share size={16} />
-                                            <span>Share</span>
-                                        </button>
-                                    )}
+                                {onShare && (
+                                    <button
+                                        className="options-menu-item"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onShare(e);
+                                        }}
+                                    >
+                                        <Share size={16} />
+                                        <span>{tCommon('share')}</span>
+                                    </button>
+                                )}
 
-                                    <MenuDivider />
+                                {isOwnPost && (onEdit || onDelete) && <MenuDivider />}
 
-                                    {onEdit && (
-                                        <button
-                                            className="options-menu-item"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onEdit();
-                                            }}
-                                        >
-                                            <Edit2 size={16} />
-                                            <span>Edit status</span>
-                                        </button>
-                                    )}
+                                {isOwnPost && onEdit && (
+                                    <button
+                                        className="options-menu-item"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onEdit();
+                                        }}
+                                    >
+                                        <Edit2 size={16} />
+                                        <span>{tActions('editStatus')}</span>
+                                    </button>
+                                )}
 
-                                    {onDelete && (
-                                        <button
-                                            className="options-menu-item danger"
-                                            onMouseDown={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onDelete();
-                                            }}
-                                        >
-                                            <Trash2 size={16} />
-                                            <span>Delete status</span>
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                        {/* Report option for other users' posts */}
-                        {!isOwnPost && onReport && (
-                            <div className="options-menu-btn">
-                                <IconButton
-                                    size="small"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        e.currentTarget.focus();
-                                    }}
-                                >
-                                    <MoreHorizontal size={16} />
-                                </IconButton>
+                                {isOwnPost && onDelete && (
+                                    <button
+                                        className="options-menu-item danger"
+                                        onMouseDown={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onDelete();
+                                        }}
+                                    >
+                                        <Trash2 size={16} />
+                                        <span>{tActions('deleteStatus')}</span>
+                                    </button>
+                                )}
 
-                                <div className="options-menu-popover">
-                                    {onBookmark && (
-                                        <button
-                                            className="options-menu-item"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onBookmark(e);
-                                            }}
-                                        >
-                                            <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} />
-                                            <span>{bookmarked ? 'Remove bookmark' : 'Bookmark'}</span>
-                                        </button>
-                                    )}
+                                {!isOwnPost && (onBlock || onReport) && <MenuDivider />}
 
-                                    {onShare && (
-                                        <button
-                                            className="options-menu-item"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onShare(e);
-                                            }}
-                                        >
-                                            <Share size={16} />
-                                            <span>Share</span>
-                                        </button>
-                                    )}
+                                {!isOwnPost && onBlock && (
+                                    <button
+                                        className="options-menu-item danger"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            onBlock();
+                                        }}
+                                    >
+                                        <UserX size={16} />
+                                        <span>{tActions('blockAccount', { acct: account.acct })}</span>
+                                    </button>
+                                )}
 
-                                    {onBlock && (
-                                        <button
-                                            className="options-menu-item danger"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                onBlock();
-                                            }}
-                                        >
-                                            <UserX size={16} />
-                                            <span>Block @{account.acct}</span>
-                                        </button>
-                                    )}
-
-                                    <MenuDivider />
-
+                                {!isOwnPost && onReport && (
                                     <button
                                         className="options-menu-item danger"
                                         onMouseDown={(e) => {
@@ -287,11 +246,11 @@ export function PostHeader({
                                         }}
                                     >
                                         <Flag size={16} />
-                                        <span>Report</span>
+                                        <span>{tCommon('report')}</span>
                                     </button>
-                                </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </MetaSection>
                 </HeaderRow>
             </ContentSection>

@@ -44,7 +44,12 @@ type ListItem =
     | { type: 'suggestions' }
     | { type: 'endIndicator' };
 
+import { useTranslations } from 'next-intl';
+
 export const TimelinePage = observer(() => {
+    const t = useTranslations('timeline');
+    const tCommon = useTranslations('common');
+    const tAccount = useTranslations('account');
     const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
     const queryClient = useQueryClient();
@@ -164,8 +169,8 @@ export const TimelinePage = observer(() => {
             <Container>
                 <Header>
                     <div>
-                        <Title>Home</Title>
-                        <Subtitle>Your personal timeline</Subtitle>
+                        <Title>{t('title')}</Title>
+                        <Subtitle>{t('subtitle')}</Subtitle>
                     </div>
                     <HeaderActions>
                         <SearchLink href="/search">
@@ -187,14 +192,14 @@ export const TimelinePage = observer(() => {
             <Container>
                 <Header>
                     <div>
-                        <Title>Home</Title>
-                        <Subtitle>Your personal timeline</Subtitle>
+                        <Title>{t('title')}</Title>
+                        <Subtitle>{t('subtitle')}</Subtitle>
                     </div>
                 </Header>
                 <ErrorContainer>
-                    <ErrorTitle>Error loading timeline</ErrorTitle>
+                    <ErrorTitle>{t('error')}</ErrorTitle>
                     <ErrorMessage>Please check your connection and try again.</ErrorMessage>
-                    <Button onClick={() => window.location.reload()}>Retry</Button>
+                    <Button onClick={() => window.location.reload()}>{tCommon('retry')}</Button>
                 </ErrorContainer>
             </Container>
         );
@@ -206,17 +211,17 @@ export const TimelinePage = observer(() => {
             <Container>
                 <Header>
                     <div>
-                        <Title>Home</Title>
-                        <Subtitle>Your personal timeline</Subtitle>
+                        <Title>{t('title')}</Title>
+                        <Subtitle>{t('subtitle')}</Subtitle>
                     </div>
                 </Header>
                 <EmptyContainer>
-                    <EmptyTitle>Your timeline is empty</EmptyTitle>
+                    <EmptyTitle>{t('empty')}</EmptyTitle>
                     <EmptyMessage>
-                        Follow some people to see their posts here.
+                        {tAccount('follow_hint')}
                     </EmptyMessage>
                     <Link href="/explore">
-                        <Button>Trending</Button>
+                        <Button>{t('trending')}</Button>
                     </Link>
                 </EmptyContainer>
             </Container>
@@ -229,8 +234,8 @@ export const TimelinePage = observer(() => {
             <StickyHeaderContainer>
                 <StickyHeaderContent>
                     <StickyHeaderTitle>
-                        <h1>Home</h1>
-                        <StickyHeaderSubtitle>Your personal timeline</StickyHeaderSubtitle>
+                        <h1>{t('title')}</h1>
+                        <StickyHeaderSubtitle>{t('subtitle')}</StickyHeaderSubtitle>
                     </StickyHeaderTitle>
                     <StickyHeaderActions>
                         <SearchLink href="/search">
@@ -276,7 +281,7 @@ export const TimelinePage = observer(() => {
                                 }}
                             >
                                 {item.type === 'endIndicator' ? (
-                                    <EndIndicator>You've reached the end of your timeline</EndIndicator>
+                                    <EndIndicator>{tAccount('end_of_timeline')}</EndIndicator>
                                 ) : item.type === 'suggestions' ? (
                                     <SuggestionsSection />
                                 ) : (
