@@ -4,7 +4,7 @@ A minimal, performant social media frontend for Mastodon built with Next.js 16 a
 
 ## Project Structure
 ```
-mastodon-nextjs-client/
+next-mastodon/
 ├── public/                     # Static assets
 │   ├── fonts/
 │   │   └── silkscreen-regular.woff2  # Custom font for Wrapstodon

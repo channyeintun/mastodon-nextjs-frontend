@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "mastodon-nextjs-client",
+      "name": "next-mastodon",
       "dependencies": {
         "@emoji-mart/data": "^1.2.1",
         "@emotion/react": "^11.14.0",
