@@ -14,7 +14,7 @@
 
 /* Override open-props smooth scrolling for TanStack Virtual scroll restoration */
 html {
-  scroll-behavior: auto !important;
+  scroll-behavior: smooth !important;
 }
 
 :root {
