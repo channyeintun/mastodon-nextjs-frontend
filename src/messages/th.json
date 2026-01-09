@@ -342,10 +342,13 @@
       "favourite": "{count, plural, =1 {<link>{name}</link> ชื่นชอบโพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนชื่นชอบโพสต์ของคุณ}}",
       "poll": "การโหวตที่คุณเข้าร่วมสิ้นสุดลงแล้ว",
       "update": "โพสต์ที่คุณบูสต์ได้รับการแก้ไข",
+      "quote": "{count, plural, =1 {<link>{name}</link> อ้างอิงโพสต์ของคุณ} other {<link>{name}</link> และอีก {remainingCount} คนอ้างอิงโพสต์ของคุณ}}",
+      "quoted_update": "โพสต์ที่คุณอ้างอิงได้รับการแก้ไข",
       "admin_sign_up": "{count, plural, =1 {<link>{name}</link> ลงชื่อเข้าใช้แล้ว} other {<link>{name}</link> และอีก {remainingCount} คนลงชื่อเข้าใช้แล้ว}}",
       "admin_report": "<link>{name}</link> ส่งรายงานแล้ว",
       "severed_relationships": "ความสัมพันธ์ในการติดตามบางส่วนของคุณขาดสะบั้นลง",
-      "moderation_warning": "ผู้ดูแลระบบได้ดำเนินการกับบัญชีของคุณ"
+      "moderation_warning": "ผู้ดูแลระบบได้ดำเนินการกับบัญชีของคุณ",
+      "annual_report": "รายงานประจำปีของคุณพร้อมแล้ว"
     },
     "title": "การแจ้งเตือน"
   },

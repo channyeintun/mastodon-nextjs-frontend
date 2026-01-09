@@ -342,10 +342,13 @@
       "favourite": "{count, plural, =1 {<link>{name}</link> đã thích bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã thích bài đăng của bạn}}",
       "poll": "Cuộc thăm dò ý kiến bạn đã tham gia đã kết thúc",
       "update": "Một bài đăng bạn đã thúc đẩy đã được chỉnh sửa",
+      "quote": "{count, plural, =1 {<link>{name}</link> đã trích dẫn bài đăng của bạn} other {<link>{name}</link> và {remainingCount} người khác đã trích dẫn bài đăng của bạn}}",
+      "quoted_update": "Một bài đăng bạn đã trích dẫn đã được chỉnh sửa",
       "admin_sign_up": "{count, plural, =1 {<link>{name}</link> đã đăng ký} other {<link>{name}</link> và {remainingCount} người khác đã đăng ký}}",
       "admin_report": "<link>{name}</link> đã gửi một báo cáo",
       "severed_relationships": "Một số mối quan hệ theo dõi của bạn đã bị cắt đứt",
-      "moderation_warning": "Người điều hành đã thực hiện hành động đối với tài khoản của bạn"
+      "moderation_warning": "Người điều hành đã thực hiện hành động đối với tài khoản của bạn",
+      "annual_report": "Báo cáo thường niên của bạn đã sẵn sàng"
     },
     "title": "Thông báo"
   },

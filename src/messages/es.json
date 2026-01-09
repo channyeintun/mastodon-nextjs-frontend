@@ -342,10 +342,13 @@
       "favourite": "{count, plural, =1 {<link>{name}</link> marcó como favorita tu publicación} other {<link>{name}</link> y {remainingCount} más marcaron como favorita tu publicación}}",
       "poll": "Una encuesta en la que votaste ha terminado",
       "update": "Una publicación que impulsaste ha sido editada",
+      "quote": "{count, plural, =1 {<link>{name}</link> citó tu publicación} other {<link>{name}</link> y {remainingCount} más citaron tu publicación}}",
+      "quoted_update": "Una publicación que citaste ha sido editada",
       "admin_sign_up": "{count, plural, =1 {<link>{name}</link> se registró} other {<link>{name}</link> y {remainingCount} más se registraron}}",
       "admin_report": "<link>{name}</link> envió un reporte",
       "severed_relationships": "Algunas de tus relaciones de seguimiento se han roto",
-      "moderation_warning": "Un moderador ha tomado medidas contra tu cuenta"
+      "moderation_warning": "Un moderador ha tomado medidas contra tu cuenta",
+      "annual_report": "Tu informe anual está listo"
     },
     "title": "Notificaciones"
   },

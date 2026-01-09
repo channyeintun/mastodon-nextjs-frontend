@@ -49,7 +49,16 @@ export interface Status {
   in_reply_to_account_id: string | null
   reblog: Status | null
   quote?: {
-    state: 'pending' | 'accepted' | 'rejected'
+    // Mastodon 4.5 quote states
+    state:
+    | 'pending'
+    | 'accepted'
+    | 'rejected'
+    | 'deleted'
+    | 'unauthorized'
+    | 'blocked_account'
+    | 'blocked_domain'
+    | 'muted_account'
     quoted_status: Status
   } | null
 
@@ -59,6 +68,7 @@ export interface Status {
   bookmarked?: boolean
   pinned?: boolean
   muted?: boolean
+  filtered?: FilterResult[]
 }
 
 export interface Account {
@@ -93,8 +103,22 @@ export interface Account {
   bot: boolean
   group?: boolean
   discoverable?: boolean
+  indexable?: boolean
   suspended?: boolean
   limited: boolean
+  memorial?: boolean
+  noindex?: boolean
+  hide_collections?: boolean
+
+  // Migration
+  moved?: Account
+
+  // Roles (for local accounts with highlighted roles)
+  roles?: Array<{
+    id: string
+    name: string
+    color: string
+  }>
 
   // Source
   source?: {
@@ -122,11 +146,15 @@ export interface Relationship {
   following: boolean
   followed_by: boolean
   requested: boolean
+  requested_by: boolean
   blocking: boolean
+  blocked_by: boolean
   muting: boolean
   muting_notifications: boolean
   showing_reblogs: boolean
   notifying: boolean
+  languages: string[] | null
+  domain_blocking: boolean
   endorsed: boolean
   note: string
 }
@@ -406,18 +434,24 @@ export type NotificationType =
   | 'favourite'
   | 'poll'
   | 'update'
+  | 'quote'
+  | 'quoted_update'
   | 'admin.sign_up'
   | 'admin.report'
   | 'severed_relationships'
   | 'moderation_warning'
+  | 'annual_report'
 
 // V1 Notification (individual)
 export interface Notification {
   id: string
   type: NotificationType
   created_at: string
+  group_key: string
   account: Account
   status?: Status
+  filtered?: boolean
+  report?: Report
 }
 
 export interface NotificationParams {

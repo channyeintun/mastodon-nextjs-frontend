@@ -74,6 +74,16 @@ const NOTIFICATION_CONFIG: Record<NotificationType, {
         color: 'var(--yellow-6)',
         translationKey: 'update',
     },
+    quote: {
+        icon: <MessageCircle size={16} />,
+        color: 'var(--cyan-6)',
+        translationKey: 'quote',
+    },
+    quoted_update: {
+        icon: <Edit2 size={16} />,
+        color: 'var(--yellow-6)',
+        translationKey: 'quoted_update',
+    },
     'admin.sign_up': {
         icon: <UserPlus size={16} />,
         color: 'var(--cyan-6)',
@@ -93,6 +103,11 @@ const NOTIFICATION_CONFIG: Record<NotificationType, {
         icon: <Bell size={16} />,
         color: 'var(--red-6)',
         translationKey: 'moderation_warning',
+    },
+    'annual_report': {
+        icon: <BarChart2 size={16} />,
+        color: 'var(--purple-6)',
+        translationKey: 'annual_report',
     },
 };
 

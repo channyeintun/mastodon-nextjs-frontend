@@ -342,10 +342,13 @@
       "favourite": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 즐겨찾기에 추가했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 즐겨찾기에 추가했습니다}}",
       "poll": "참여한 투표가 종료되었습니다",
       "update": "부스트한 게시물이 수정되었습니다",
+      "quote": "{count, plural, =1 {<link>{name}</link> 님이 당신의 게시물을 인용했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 당신의 게시물을 인용했습니다}}",
+      "quoted_update": "인용한 게시물이 수정되었습니다",
       "admin_sign_up": "{count, plural, =1 {<link>{name}</link> 님이 가입했습니다} other {<link>{name}</link> 님 외 {remainingCount} 명이 가입했습니다}}",
       "admin_report": "<link>{name}</link> 님이 신고를 제출했습니다",
       "severed_relationships": "일부 팔로우 관계가 끊어졌습니다",
-      "moderation_warning": "중재자가 당신의 계정에 조치를 취했습니다"
+      "moderation_warning": "중재자가 당신의 계정에 조치를 취했습니다",
+      "annual_report": "연간 리포트가 준비되었습니다"
     },
     "title": "알림"
   },

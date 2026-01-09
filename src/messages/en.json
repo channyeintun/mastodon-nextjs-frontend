@@ -427,10 +427,13 @@
       "favourite": "{count, plural, =1 {<link>{name}</link> favourited your post} other {<link>{name}</link> and {remainingCount} others favourited your post}}",
       "poll": "A poll you voted in has ended",
       "update": "A post you boosted was edited",
+      "quote": "{count, plural, =1 {<link>{name}</link> quoted your post} other {<link>{name}</link> and {remainingCount} others quoted your post}}",
+      "quoted_update": "A post you quoted was edited",
       "admin_sign_up": "{count, plural, =1 {<link>{name}</link> signed up} other {<link>{name}</link> and {remainingCount} others signed up}}",
       "admin_report": "<link>{name}</link> filed a report",
       "severed_relationships": "Some of your follow relationships have been severed",
-      "moderation_warning": "A moderator has taken action against your account"
+      "moderation_warning": "A moderator has taken action against your account",
+      "annual_report": "Your annual report is ready"
     }
   },
   "lists": {

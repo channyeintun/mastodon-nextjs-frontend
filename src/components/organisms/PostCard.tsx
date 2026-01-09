@@ -341,23 +341,49 @@ export function PostCard({
 
         {/* Quoted status */}
         {(!hasContentWarning || showCWContent) &&
-          displayStatus.quote?.state === 'accepted' &&
-          displayStatus.quote.quoted_status && (
-            <QuotedPostWrapper>
-              {depth < MAX_QUOTE_NESTING_LEVEL ? (
-                <PostCard
-                  status={displayStatus.quote.quoted_status}
-                  hideActions
-                  depth={depth + 1}
-                  style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
-                />
-              ) : (
-                <NestedQuoteLink href={`/status/${displayStatus.quote.quoted_status.id}`}>
-                  {t('quotedBy', { acct: displayStatus.quote.quoted_status.account.acct })}
-                </NestedQuoteLink>
-              )}
-            </QuotedPostWrapper>
-          )}
+          displayStatus.quote &&
+          displayStatus.quote.quoted_status &&
+          (() => {
+            const quoteState = displayStatus.quote.state;
+
+            // Show quote normally for accepted state
+            if (quoteState === 'accepted') {
+              return (
+                <QuotedPostWrapper>
+                  {depth < MAX_QUOTE_NESTING_LEVEL ? (
+                    <PostCard
+                      status={displayStatus.quote.quoted_status}
+                      hideActions
+                      depth={depth + 1}
+                      style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
+                    />
+                  ) : (
+                    <NestedQuoteLink href={`/status/${displayStatus.quote.quoted_status.id}`}>
+                      {t('quotedBy', { acct: displayStatus.quote.quoted_status.account.acct })}
+                    </NestedQuoteLink>
+                  )}
+                </QuotedPostWrapper>
+              );
+            }
+
+            // Show hidden quote notice for blocked/muted/unauthorized states
+            if (['blocked_account', 'blocked_domain', 'muted_account'].includes(quoteState)) {
+              return (
+                <HiddenQuoteNotice quoteState={quoteState} quotedStatus={displayStatus.quote.quoted_status} depth={depth} />
+              );
+            }
+
+            // Show unavailable message for deleted/unauthorized
+            if (quoteState === 'deleted' || quoteState === 'unauthorized') {
+              return (
+                <QuoteUnavailable>
+                  {quoteState === 'deleted' ? 'Quoted post was deleted' : 'Quote not available'}
+                </QuoteUnavailable>
+              );
+            }
+
+            return null;
+          })()}
 
         {/* Poll */}
         {(!hasContentWarning || showCWContent) && displayStatus.poll && (
@@ -543,3 +569,93 @@ const BlurredBackground = styled.div<{ $url: string }>`
   pointer-events: none;
 `;
 
+const QuoteUnavailable = styled.div`
+  padding: var(--size-2) var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  color: var(--text-3);
+  font-size: var(--font-size-1);
+  font-style: italic;
+  margin-top: var(--size-3);
+`;
+
+// Hidden quote notice for blocked/muted quotes - allows user to reveal if desired
+function HiddenQuoteNotice({
+  quoteState,
+  quotedStatus,
+  depth
+}: {
+  quoteState: string;
+  quotedStatus: Status;
+  depth: number;
+}) {
+  const [showAnyway, setShowAnyway] = useState(false);
+
+  if (showAnyway) {
+    return (
+      <QuotedPostWrapper>
+        {depth < MAX_QUOTE_NESTING_LEVEL ? (
+          <PostCard
+            status={quotedStatus}
+            hideActions
+            depth={depth + 1}
+            style={{ boxShadow: 'inset 0 4px 8px -4px rgba(0, 0, 0, 0.15)' }}
+          />
+        ) : (
+          <NestedQuoteLink href={`/status/${quotedStatus.id}`}>
+            Quoted a post by @{quotedStatus.account.acct}
+          </NestedQuoteLink>
+        )}
+      </QuotedPostWrapper>
+    );
+  }
+
+  const getMessage = () => {
+    switch (quoteState) {
+      case 'blocked_account': return 'Quoted post from a blocked account';
+      case 'blocked_domain': return 'Quoted post from a blocked domain';
+      case 'muted_account': return 'Quoted post from a muted account';
+      default: return 'Quote hidden';
+    }
+  };
+
+  return (
+    <HiddenQuoteContainer>
+      <HiddenQuoteText>{getMessage()}</HiddenQuoteText>
+      <ShowAnywayButton onClick={() => setShowAnyway(true)}>
+        Show anyway
+      </ShowAnywayButton>
+    </HiddenQuoteContainer>
+  );
+}
+
+const HiddenQuoteContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-2) var(--size-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+  margin-top: var(--size-3);
+`;
+
+const HiddenQuoteText = styled.span`
+  color: var(--text-3);
+  font-size: var(--font-size-1);
+  font-style: italic;
+`;
+
+const ShowAnywayButton = styled.button`
+  background: none;
+  border: none;
+  color: var(--link);
+  font-size: var(--font-size-0);
+  cursor: pointer;
+  padding: var(--size-1) var(--size-2);
+  border-radius: var(--radius-1);
+  
+  &:hover {
+    background: var(--surface-3);
+    text-decoration: underline;
+  }
+`;
