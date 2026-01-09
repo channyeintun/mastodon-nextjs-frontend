@@ -114,7 +114,7 @@ export const TimelinePage = observer(() => {
     }, [mixedItems]);
 
     const virtualizer = useWindowVirtualizer({
-        useFlushSync: false,
+        useFlushSync: true,
         count: mixedItems.length,
         estimateSize,
         getItemKey,
