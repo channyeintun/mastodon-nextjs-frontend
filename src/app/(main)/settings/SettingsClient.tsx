@@ -174,7 +174,17 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
 
       {/* Account Info Card */}
       <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--size-3)', marginBottom: 'var(--size-4)' }}>
+        <Link 
+          href={`/@${currentAccount.acct}`}
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 'var(--size-3)', 
+            marginBottom: 'var(--size-4)',
+            textDecoration: 'none',
+            color: 'inherit'
+          }}
+        >
           <Avatar
             src={currentAccount.avatar}
             alt={currentAccount.display_name || currentAccount.username}
@@ -193,7 +203,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
               </div>
             )}
           </div>
-        </div>
+        </Link>
 
         <Link href="/profile/edit" className="settings-link" style={{ marginBottom: 'var(--size-2)' }}>
           <User size={20} className="settings-link-icon" />
