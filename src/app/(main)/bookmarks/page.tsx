@@ -150,7 +150,6 @@ export default function BookmarksPage() {
         )}
         getItemKey={(status) => status.id}
         estimateSize={350}
-        overscan={12}
         onLoadMore={() => fetchNextPage()}
         isLoadingMore={isFetchingNextPage}
         hasMore={hasNextPage}

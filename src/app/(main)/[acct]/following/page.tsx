@@ -116,7 +116,6 @@ export default function FollowingPage({
                 )}
                 getItemKey={(account) => account.id}
                 estimateSize={80}
-                overscan={12}
                 onLoadMore={() => fetchNextPage()}
                 isLoadingMore={isFetchingNextPage}
                 hasMore={hasNextPage}

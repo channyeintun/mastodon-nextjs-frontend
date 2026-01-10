@@ -76,7 +76,6 @@ export default function BlockedAccountsPage() {
                 )}
                 getItemKey={(account) => account.id}
                 estimateSize={80}
-                overscan={12}
                 onLoadMore={() => fetchNextPage()}
                 isLoadingMore={isFetchingNextPage} hasMore={!!hasNextPage}
                 height="calc(100dvh - 120px)"

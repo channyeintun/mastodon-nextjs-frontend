@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { useRef, useEffect, useCallback, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
 
 interface VirtualizedListProps<T> {
@@ -30,7 +31,7 @@ interface VirtualizedListProps<T> {
 
   /**
    * Number of items to render outside visible area
-   * @default 5
+   * @default 12 (desktop) / 1 (mobile)
    */
   overscan?: number;
 
@@ -119,7 +120,7 @@ export function VirtualizedList<T>({
   renderItem,
   getItemKey,
   estimateSize = 350,
-  overscan = 12,
+  overscan: overscanProp,
   onLoadMore,
   isLoadingMore = false,
   hasMore = false,
@@ -135,6 +136,10 @@ export function VirtualizedList<T>({
   className,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
+  // Determine overscan: use prop if provided, otherwise conditional default
+  const overscan = overscanProp ?? (isMobile ? 1 : 12);
 
   // Scroll direction detection for scroll-to-top button
   const { showScrollTop, hideScrollTop } = useScrollDirection(parentRef);

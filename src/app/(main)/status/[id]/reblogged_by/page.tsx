@@ -111,7 +111,6 @@ export default function RebloggedByPage({
                 )}
                 getItemKey={(account) => account.id}
                 estimateSize={72}
-                overscan={12}
                 onLoadMore={fetchNextPage}
                 isLoadingMore={isFetchingNextPage}
                 hasMore={hasNextPage}

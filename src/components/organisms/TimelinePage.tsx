@@ -24,6 +24,7 @@ import { Search } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 import { useWindowScrollDirection } from '@/hooks/useScrollDirection';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 // Scroll restoration cache
 interface ScrollState {
@@ -59,6 +60,7 @@ export const TimelinePage = observer(() => {
 
     // Scroll direction detection for scroll-to-top button
     const { showScrollTop, hideScrollTop } = useWindowScrollDirection();
+    const isMobile = useIsMobile();
 
     const uniqueStatuses = useMemo(() => flattenAndUniqById(statusPages?.pages), [statusPages?.pages]);
 
@@ -118,7 +120,7 @@ export const TimelinePage = observer(() => {
         count: mixedItems.length,
         estimateSize,
         getItemKey,
-        overscan: 12,
+        overscan: isMobile ? 1 : 12,
         scrollMargin,
         initialOffset: cachedState?.offset,
         initialMeasurementsCache: cachedState?.measurementsCache,
