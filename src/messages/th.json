@@ -650,7 +650,8 @@
     "error": "เกิดข้อผิดพลาดในการโหลดไทม์ไลน์",
     "subtitle": "ไทม์ไลน์ส่วนตัวของคุณ",
     "title": "หน้าแรก",
-    "trending": "กำลังมาแรง"
+    "trending": "กำลังมาแรง",
+    "newPosts": "{count, plural, other {# โพสต์ใหม่}}"
   },
   "toast": {
     "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว",

@@ -650,7 +650,8 @@
     "error": "Lỗi khi tải bảng tin",
     "subtitle": "Bảng tin cá nhân của bạn",
     "title": "Trang chủ",
-    "trending": "Xu hướng"
+    "trending": "Xu hướng",
+    "newPosts": "{count, plural, other {# bài đăng mới}}"
   },
   "toast": {
     "copiedToClipboard": "Đã sao chép vào bộ nhớ tạm",

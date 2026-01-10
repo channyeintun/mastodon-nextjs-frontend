@@ -650,7 +650,8 @@
     "error": "Erreur de chargement du fil",
     "subtitle": "Votre fil personnel",
     "title": "Accueil",
-    "trending": "Tendances"
+    "trending": "Tendances",
+    "newPosts": "{count, plural, =1 {# Nouveau post} other {# Nouveaux posts}}"
   },
   "toast": {
     "copiedToClipboard": "Copié dans le presse-papiers",

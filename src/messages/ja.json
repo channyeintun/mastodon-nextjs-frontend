@@ -650,7 +650,8 @@
     "error": "タイムラインの読み込みエラー",
     "subtitle": "あなたのタイムライン",
     "title": "ホーム",
-    "trending": "トレンド"
+    "trending": "トレンド",
+    "newPosts": "{count, plural, other {# 件の新着投稿}}"
   },
   "toast": {
     "copiedToClipboard": "クリップボードにコピーしました",

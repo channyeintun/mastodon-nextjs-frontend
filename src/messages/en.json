@@ -206,7 +206,8 @@
     "subtitle": "Your personal timeline",
     "empty": "Your timeline is empty",
     "error": "Error loading timeline",
-    "trending": "Trending"
+    "trending": "Trending",
+    "newPosts": "{count, plural, =1 {# New Post} other {# New Posts}}"
   },
   "profile": {
     "posts": "Posts",

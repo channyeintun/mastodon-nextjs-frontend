@@ -5,7 +5,7 @@
  */
 
 import { makeAutoObservable, runInAction } from 'mobx'
-import type { Notification, Conversation } from '../types/mastodon'
+import type { Notification, Conversation, Status } from '../types/mastodon'
 
 export type StreamingStatus = 'disconnected' | 'connecting' | 'connected' | 'error'
 
@@ -24,6 +24,7 @@ export class StreamingStore {
     // Event callbacks (set by useStreaming hooks)
     onNotification: ((notification: Notification) => void) | null = null
     onConversation: ((conversation: Conversation) => void) | null = null
+    onTimelineUpdate: ((status: Status) => void) | null = null
 
     // Track which streams are subscribed
     private subscribedStreams: Set<string> = new Set()
@@ -50,6 +51,14 @@ export class StreamingStore {
         // Auto-subscribe to direct stream when callback is set
         if (callback && this.status === 'connected' && !this.subscribedStreams.has('direct')) {
             this.subscribe('direct')
+        }
+    }
+
+    setOnTimelineUpdate(callback: ((status: Status) => void) | null) {
+        this.onTimelineUpdate = callback
+        // Auto-subscribe to user stream when callback is set
+        if (callback && this.status === 'connected' && !this.subscribedStreams.has('user')) {
+            this.subscribe('user')
         }
     }
 
@@ -120,6 +129,9 @@ export class StreamingStore {
                 if (this.onConversation) {
                     this.subscribe('direct')
                 }
+                if (this.onTimelineUpdate) {
+                    this.subscribe('user')
+                }
             }
 
             socket.onmessage = (event) => {
@@ -136,6 +148,11 @@ export class StreamingStore {
                         const conversation: Conversation = JSON.parse(data.payload)
                         if (this.onConversation) {
                             this.onConversation(conversation)
+                        }
+                    } else if (data.event === 'update') {
+                        const status: Status = JSON.parse(data.payload)
+                        if (this.onTimelineUpdate) {
+                            this.onTimelineUpdate(status)
                         }
                     }
                 } catch {

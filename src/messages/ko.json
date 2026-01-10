@@ -650,7 +650,8 @@
     "error": "타임라인 로드 오류",
     "subtitle": "개인 타임라인",
     "title": "홈",
-    "trending": "인기"
+    "trending": "인기",
+    "newPosts": "{count, plural, other {#개의 새 게시물}}"
   },
   "toast": {
     "copiedToClipboard": "클립보드에 복사되었습니다",

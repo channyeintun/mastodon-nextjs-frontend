@@ -5,7 +5,7 @@
 
 'use client'
 
-import { useEffect, useEffectEvent } from 'react'
+import { useEffect, useEffectEvent, useState, useCallback } from 'react'
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import { getStreamingStore } from '../stores/streamingStore'
 import { getConversationStore } from '../stores/conversationStore'
@@ -14,7 +14,7 @@ import { markConversationAsRead, type PaginatedResponse } from '../api/client'
 import { useAuthStore } from './useStores'
 import { useNotificationSound } from './useNotificationSound'
 import { queryKeys } from '../api/queryKeys'
-import type { Notification, Conversation, Context } from '../types/mastodon'
+import type { Notification, Conversation, Context, Status } from '../types/mastodon'
 
 /**
  * Hook to manage notification streaming connection
@@ -236,4 +236,77 @@ export function useConversationStream() {
     }, [streamingStore])
 
     return { status: streamingStore.status }
+}
+
+/**
+ * Hook to manage home timeline streaming
+ * Queues new statuses and provides a way to merge them into the feed
+ */
+export function useTimelineStream() {
+    const queryClient = useQueryClient()
+    const streamingStore = getStreamingStore()
+    const [pendingStatuses, setPendingStatuses] = useState<Status[]>([])
+
+    // Handle incoming statuses
+    const handleTimelineUpdate = useEffectEvent((status: Status) => {
+        // Check if status is already in the main cache
+        const queryKey = queryKeys.timelines.home()
+        const existingData = queryClient.getQueryData<InfiniteData<PaginatedResponse<Status[]>>>(queryKey)
+
+        // Check if status exists in current cache
+        const existsInCache = existingData?.pages.some(page =>
+            page.data.some(s => s.id === status.id)
+        )
+
+        // Check if status is already in pending
+        const existsInPending = pendingStatuses.some(s => s.id === status.id)
+
+        if (!existsInCache && !existsInPending) {
+            setPendingStatuses(prev => [status, ...prev])
+        }
+    })
+
+    // Set up timeline handler
+    useEffect(() => {
+        streamingStore.setOnTimelineUpdate(handleTimelineUpdate)
+        return () => streamingStore.setOnTimelineUpdate(null)
+    }, [streamingStore])
+
+    const showNewPosts = useCallback(() => {
+        if (pendingStatuses.length === 0) return
+
+        const queryKey = queryKeys.timelines.home()
+
+        queryClient.setQueryData<InfiniteData<PaginatedResponse<Status[]>>>(
+            queryKey,
+            (oldData) => {
+                if (!oldData?.pages) return oldData
+
+                // Create a new first page with pending statuses prepended
+                const firstPage = oldData.pages[0]
+                const newFirstPage = {
+                    ...firstPage,
+                    data: [...pendingStatuses, ...firstPage.data]
+                }
+
+                return {
+                    ...oldData,
+                    pages: [newFirstPage, ...oldData.pages.slice(1)]
+                }
+            }
+        )
+
+        // Clear pending statuses
+        setPendingStatuses([])
+        
+        // Scroll to top
+        window.scrollTo(0, 0)
+        
+    }, [pendingStatuses, queryClient])
+
+    return { 
+        status: streamingStore.status,
+        newPostsCount: pendingStatuses.length,
+        showNewPosts
+    }
 }

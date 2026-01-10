@@ -650,7 +650,8 @@
     "error": "Fehler beim Laden der Zeitleiste",
     "subtitle": "Deine persönliche Zeitleiste",
     "title": "Startseite",
-    "trending": "Trends"
+    "trending": "Trends",
+    "newPosts": "{count, plural, =1 {# Neuer Beitrag} other {# Neue Beiträge}}"
   },
   "toast": {
     "copiedToClipboard": "In Zwischenablage kopiert",

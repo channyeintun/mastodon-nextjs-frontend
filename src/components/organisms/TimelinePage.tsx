@@ -20,11 +20,12 @@ import {
     StickyHeaderActions,
 } from '@/components/atoms';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
-import { Search } from 'lucide-react';
+import { Search, ArrowUp } from 'lucide-react';
 import { flattenAndUniqById } from '@/utils/fp';
 import type { Status } from '@/types';
 import { useWindowScrollDirection } from '@/hooks/useScrollDirection';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { useTimelineStream } from '@/hooks/useStreaming';
 
 // Scroll restoration cache
 interface ScrollState {
@@ -54,6 +55,7 @@ export const TimelinePage = observer(() => {
     const { data: statusPages, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteHomeTimeline();
     const { data: user, isLoading: isLoadingUser } = useCurrentAccount();
     const queryClient = useQueryClient();
+    const { newPostsCount, showNewPosts } = useTimelineStream();
 
     const listRef = useRef<HTMLDivElement>(null);
     const [scrollMargin, setScrollMargin] = useState(0);
@@ -304,6 +306,14 @@ export const TimelinePage = observer(() => {
                 </StickyHeaderContent>
             </StickyHeaderContainer>
 
+            {/* New Posts Pill */}
+            {newPostsCount > 0 && (
+                <NewPostsPill onClick={showNewPosts}>
+                    <ArrowUp size={16} />
+                    {t('newPosts', { count: newPostsCount })}
+                </NewPostsPill>
+            )}
+
             {/* Virtualized List */}
             <div ref={listRef}>
                 <VirtualContent style={{ height: `${virtualizer.getTotalSize()}px` }}>
@@ -352,6 +362,36 @@ const Container = styled.div`
 
     @media (max-width: 767px) {
         padding: 0 var(--size-2);
+    }
+`;
+
+const NewPostsPill = styled.button`
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background-color: var(--blue-6);
+    color: white;
+    padding: var(--size-2) var(--size-4);
+    border-radius: var(--radius-pill);
+    border: none;
+    box-shadow: var(--shadow-4);
+    cursor: pointer;
+    font-weight: var(--font-weight-6);
+    display: flex;
+    align-items: center;
+    gap: var(--size-2);
+    transition: transform 0.2s, background-color 0.2s;
+    font-size: var(--font-size-1);
+
+    &:hover {
+        background-color: var(--blue-7);
+        transform: translateX(-50%) scale(1.05);
+    }
+
+    &:active {
+        transform: translateX(-50%) scale(0.95);
     }
 `;
 
@@ -450,3 +490,4 @@ const EmptyMessage = styled.p`
     color: var(--text-2);
     margin-bottom: var(--size-4);
 `;
+

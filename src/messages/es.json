@@ -650,7 +650,8 @@
     "error": "Error al cargar la línea de tiempo",
     "subtitle": "Tu línea de tiempo personal",
     "title": "Inicio",
-    "trending": "Tendencias"
+    "trending": "Tendencias",
+    "newPosts": "{count, plural, =1 {# Nueva publicación} other {# Nuevas publicaciones}}"
   },
   "toast": {
     "copiedToClipboard": "Copiado al portapapeles",

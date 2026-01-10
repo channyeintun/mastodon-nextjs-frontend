@@ -650,7 +650,8 @@
     "error": "加载时间线时出错",
     "subtitle": "你的个人时间线",
     "title": "首页",
-    "trending": "热门"
+    "trending": "热门",
+    "newPosts": "{count, plural, other {# 条新帖子}}"
   },
   "toast": {
     "copiedToClipboard": "已复制到剪贴板",
