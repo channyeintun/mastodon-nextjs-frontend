@@ -248,17 +248,6 @@ input[type="radio"] {
 }
 
 @media (max-width: 767px) {
-
-  /* Authenticated users have bottom nav - subtract its height */
-  .full-height-container {
-    height: calc(100dvh - var(--app-bottom-nav-height));
-  }
-
-  /* Guest users have no bottom nav - use full viewport height */
-  .full-height-container.guest {
-    height: 100dvh;
-  }
-
   /* Remove border radius from header images on mobile */
   .profile-header-image {
     border-radius: 0 !important;
