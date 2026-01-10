@@ -182,6 +182,7 @@ self.addEventListener('notificationclick', (event) => {
 // Fetch listener - serve offline page when network is unavailable
 self.addEventListener('fetch', (event) => {
     // Only handle navigation requests (HTML pages)
+    // API requests and other resources should pass through without SW intervention
     if (event.request.mode === 'navigate') {
         event.respondWith(
             fetch(event.request).catch(() => {
@@ -189,9 +190,7 @@ self.addEventListener('fetch', (event) => {
                 return caches.match(OFFLINE_PAGE);
             })
         );
-        return;
     }
-
-    // For other requests, just fetch normally
-    event.respondWith(fetch(event.request).catch(() => new Response(null, { status: 500 })));
+    // Don't call event.respondWith() for non-navigation requests
+    // This lets them pass through to the network normally
 });
