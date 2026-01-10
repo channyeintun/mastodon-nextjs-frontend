@@ -4,7 +4,7 @@ import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, LogOut, User, Bookmark, UserPlus, Ban, VolumeX, Clock, List, Settings2, TrendingUp, Search, Bell, Filter, Info } from 'lucide-react';
-import { useCurrentAccount, useInstance, useAnnualReportState } from '@/api';
+import { useCurrentAccount, useInstance, useAnnualReportState, prefillAccountCache } from '@/api';
 import { Button, IconButton, Card, Avatar, EmojiText, CircleSkeleton, TextSkeleton } from '@/components/atoms';
 import { ThemeSelector } from '@/components/molecules';
 import { useAuthStore } from '@/hooks/useStores';
@@ -176,6 +176,7 @@ export function SettingsClient({ initialTheme }: SettingsClientProps) {
       <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
         <Link 
           href={`/@${currentAccount.acct}`}
+          onClick={() => prefillAccountCache(queryClient, currentAccount)}
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
