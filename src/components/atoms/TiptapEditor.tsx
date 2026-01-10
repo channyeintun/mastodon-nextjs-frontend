@@ -1,6 +1,7 @@
 'use client';
 
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, type Extensions } from '@tiptap/react';
+
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEffect, useMemo } from 'react';
@@ -81,7 +82,7 @@ export function TiptapEditor({
       maxFiles,
       allowedMimeTypes: ['image/*', 'video/*'],
     }),
-  ], [placeholder, mentionSuggestion, emojis, onFilePaste, onUrlPaste, maxFiles]);
+  ] as Extensions, [placeholder, mentionSuggestion, emojis, onFilePaste, onUrlPaste, maxFiles]);
 
   const editor = useEditor({
     immediatelyRender: false,
