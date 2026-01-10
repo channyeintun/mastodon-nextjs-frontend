@@ -139,7 +139,7 @@ export function VirtualizedList<T>({
   const isMobile = useIsMobile();
 
   // Determine overscan: use prop if provided, otherwise conditional default
-  const overscan = overscanProp ?? (isMobile ? 1 : 12);
+  const overscan = overscanProp ?? (isMobile ? 1 : 5);
 
   // Scroll direction detection for scroll-to-top button
   const { showScrollTop, hideScrollTop } = useScrollDirection(parentRef);
