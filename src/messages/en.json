@@ -94,7 +94,8 @@
     "skipToMain": "Skip to main content",
     "next": "Next",
     "done": "Done",
-    "backToTop": "Back to top"
+    "backToTop": "Back to top",
+    "open": "Open"
   },
   "media": {
     "sensitive": "Click to view sensitive content"
@@ -664,8 +665,9 @@
     "filterUpdated": "Filter updated",
     "filterCreated": "Filter created",
     "failedToDeleteFilter": "Failed to delete filter",
-    "postDeleted": "Post deleted",
-    "postShared": "Post shared"
+    "postDeleted": "Post deleted.",
+    "postPublished": "Post published.",
+    "postShared": "Post shared."
   },
   "wrapstodon": {
     "title": "Wrapstodon",

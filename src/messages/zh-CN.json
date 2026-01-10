@@ -98,7 +98,8 @@
     "share": "分享",
     "skipToMain": "跳转到主要内容",
     "verified": "已验证",
-    "viewAll": "查看全部"
+    "viewAll": "查看全部",
+    "open": "打开"
   },
   "composer": {
     "addContentWarning": "添加内容警告",
@@ -660,6 +661,7 @@
     "filterDeleted": "过滤器已删除",
     "filterUpdated": "过滤器已更新",
     "postDeleted": "帖子已删除",
+    "postPublished": "帖子已发布",
     "postShared": "帖子已分享"
   },
   "visibility": {

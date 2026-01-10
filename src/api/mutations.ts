@@ -5,6 +5,7 @@
 
 import { useMutation, useQueryClient, type QueryClient, type InfiniteData } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import {
   createStatus,
   deleteStatus,
@@ -580,6 +581,8 @@ async function cancelStatusQueries(queryClient: QueryClient, statusId: string) {
 export function useCreateStatus() {
   const queryClient = useQueryClient()
   const router = useRouter();
+  const t = useTranslations('toast');
+  const tCommon = useTranslations('common');
 
   return useMutation({
     mutationFn: (params: CreateStatusParams) => createStatus(params),
@@ -619,9 +622,9 @@ export function useCreateStatus() {
         queryClient.invalidateQueries({ queryKey: queryKeys.conversations.list() })
       } else {
         // Show success toast for non-direct messages with link to view post
-        toast.success('Post published.', {
+        toast.success(t('postPublished'), {
           action: {
-            label: 'OPEN',
+            label: tCommon('open').toUpperCase(),
             onClick: () => {
               // Pre-populate status cache before navigation to avoid refetch
               queryClient.setQueryData(queryKeys.statuses.detail(data.id), data);
@@ -638,6 +641,7 @@ export function useCreateStatus() {
 
 export function useDeleteStatus() {
   const queryClient = useQueryClient()
+  const t = useTranslations('toast');
 
   return useMutation({
     mutationFn: (id: string) => deleteStatus(id),
@@ -659,7 +663,7 @@ export function useDeleteStatus() {
       })
 
       // Show success toast
-      toast.success('Post deleted.')
+      toast.success(t('postDeleted'))
     },
   })
 }

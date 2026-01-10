@@ -98,7 +98,8 @@
     "share": "แชร์",
     "skipToMain": "ข้ามไปยังเนื้อหาหลัก",
     "verified": "ยืนยันแล้ว",
-    "viewAll": "ดูทั้งหมด"
+    "viewAll": "ดูทั้งหมด",
+    "open": "เปิด"
   },
   "composer": {
     "addContentWarning": "เพิ่มคำเตือนเนื้อหา",
@@ -659,7 +660,8 @@
     "filterCreated": "สร้างตัวกรองแล้ว",
     "filterDeleted": "ลบตัวกรองแล้ว",
     "filterUpdated": "อัปเดตตัวกรองแล้ว",
-    "postDeleted": "ลบโพสต์แล้ว",
+    "postDeleted": "ลบโพสต์แล้ว.",
+    "postPublished": "โพสต์ถูกเผยแพร่แล้ว.",
     "postShared": "แชร์โพสต์แล้ว"
   },
   "visibility": {

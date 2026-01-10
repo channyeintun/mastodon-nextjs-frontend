@@ -98,7 +98,8 @@
     "share": "共有",
     "skipToMain": "メインコンテンツにスキップ",
     "verified": "認証済み",
-    "viewAll": "すべて表示"
+    "viewAll": "すべて表示",
+    "open": "開く"
   },
   "composer": {
     "addContentWarning": "コンテンツ警告を追加",
@@ -660,6 +661,7 @@
     "filterDeleted": "フィルターを削除しました",
     "filterUpdated": "フィルターを更新しました",
     "postDeleted": "投稿を削除しました",
+    "postPublished": "投稿を公開しました",
     "postShared": "投稿を共有しました"
   },
   "visibility": {

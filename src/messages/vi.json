@@ -98,7 +98,8 @@
     "share": "Chia sẻ",
     "skipToMain": "Chuyển đến nội dung chính",
     "verified": "Đã xác minh",
-    "viewAll": "Xem tất cả"
+    "viewAll": "Xem tất cả",
+    "open": "Mở"
   },
   "composer": {
     "addContentWarning": "Thêm cảnh báo nội dung",
@@ -659,7 +660,8 @@
     "filterCreated": "Đã tạo bộ lọc",
     "filterDeleted": "Đã xóa bộ lọc",
     "filterUpdated": "Đã cập nhật bộ lọc",
-    "postDeleted": "Đã xóa bài đăng",
+    "postDeleted": "Đã xóa bài đăng.",
+    "postPublished": "Bài đăng đã được đăng.",
     "postShared": "Đã chia sẻ bài đăng"
   },
   "visibility": {

@@ -98,7 +98,8 @@
     "share": "Teilen",
     "skipToMain": "Zum Hauptinhalt springen",
     "verified": "Verifiziert",
-    "viewAll": "Alle anzeigen"
+    "viewAll": "Alle anzeigen",
+    "open": "Öffnen"
   },
   "composer": {
     "addContentWarning": "Inhaltswarnung hinzufügen",
@@ -659,7 +660,8 @@
     "filterCreated": "Filter erstellt",
     "filterDeleted": "Filter gelöscht",
     "filterUpdated": "Filter aktualisiert",
-    "postDeleted": "Beitrag gelöscht",
+    "postDeleted": "Beitrag gelöscht.",
+    "postPublished": "Beitrag veröffentlicht.",
     "postShared": "Beitrag geteilt"
   },
   "visibility": {
