@@ -109,10 +109,10 @@ export default function ConversationsPage() {
             conversation={conversation}
           />
         )}
-        getItemKey={(conversation) => conversation.id}
-        estimateSize={72}
-        overscan={5}
-        onLoadMore={fetchNextPage}
+        getItemKey={(c) => c.id}
+        estimateSize={112}
+        overscan={12}
+        onLoadMore={() => fetchNextPage()}
         isLoadingMore={isFetchingNextPage}
         hasMore={hasNextPage}
         loadMoreThreshold={3}

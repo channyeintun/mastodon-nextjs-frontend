@@ -173,7 +173,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             getItemKey={(status) => status.id}
                             getMediaUrls={(status) => status.media_attachments?.map(a => a.preview_url || a.url).filter(Boolean) as string[] || []}
                             estimateSize={350}
-                            overscan={5}
+                            overscan={12}
                             onLoadMore={fetchNextPage}
                             isLoadingMore={isFetchingNextPage}
                             hasMore={hasNextPage}
@@ -212,7 +212,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             )}
                             getItemKey={(tag) => tag.name}
                             estimateSize={80}
-                            overscan={5}
+                            overscan={12}
                             onLoadMore={fetchNextTags}
                             isLoadingMore={isFetchingNextTags}
                             hasMore={hasMoreTags}
@@ -252,7 +252,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             getItemKey={(link) => link.url}
                             getMediaUrls={(link) => link.image ? [link.image] : []}
                             estimateSize={120}
-                            overscan={5}
+                            overscan={12}
                             onLoadMore={fetchNextLinks}
                             isLoadingMore={isFetchingNextLinks}
                             hasMore={hasMoreLinks}

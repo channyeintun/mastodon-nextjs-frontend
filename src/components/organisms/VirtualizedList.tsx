@@ -119,7 +119,7 @@ export function VirtualizedList<T>({
   renderItem,
   getItemKey,
   estimateSize = 350,
-  overscan = 5,
+  overscan = 12,
   onLoadMore,
   isLoadingMore = false,
   hasMore = false,

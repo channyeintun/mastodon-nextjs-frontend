@@ -75,11 +75,10 @@ export default function BlockedAccountsPage() {
                     />
                 )}
                 getItemKey={(account) => account.id}
-                estimateSize={72}
-                overscan={5}
+                estimateSize={80}
+                overscan={12}
                 onLoadMore={() => fetchNextPage()}
-                isLoadingMore={isFetchingNextPage}
-                hasMore={!!hasNextPage}
+                isLoadingMore={isFetchingNextPage} hasMore={!!hasNextPage}
                 height="calc(100dvh - 120px)"
                 loadingIndicator={
                     <div style={{ display: 'grid', placeItems: 'center', padding: 'var(--size-4)' }}>

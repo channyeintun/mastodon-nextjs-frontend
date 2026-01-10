@@ -114,10 +114,10 @@ export default function FollowingPage({
                         style={{ marginBottom: 'var(--size-2)' }}
                     />
                 )}
-                getItemKey={(followedAccount) => followedAccount.id}
-                estimateSize={72}
-                overscan={5}
-                onLoadMore={fetchNextPage}
+                getItemKey={(account) => account.id}
+                estimateSize={80}
+                overscan={12}
+                onLoadMore={() => fetchNextPage()}
                 isLoadingMore={isFetchingNextPage}
                 hasMore={hasNextPage}
                 loadMoreThreshold={3}

@@ -110,9 +110,9 @@ export default function FavouritedByPage({
                     />
                 )}
                 getItemKey={(account) => account.id}
-                estimateSize={72}
-                overscan={5}
-                onLoadMore={fetchNextPage}
+                estimateSize={80}
+                overscan={12}
+                onLoadMore={() => fetchNextPage()}
                 isLoadingMore={isFetchingNextPage}
                 hasMore={hasNextPage}
                 loadMoreThreshold={3}

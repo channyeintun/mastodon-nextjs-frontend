@@ -119,7 +119,7 @@ export default function FollowersPage({
                 )}
                 getItemKey={(follower) => follower.id}
                 estimateSize={72}
-                overscan={5}
+                overscan={12}
                 onLoadMore={fetchNextPage}
                 isLoadingMore={isFetchingNextPage}
                 hasMore={hasNextPage}

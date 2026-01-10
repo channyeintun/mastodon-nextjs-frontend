@@ -118,7 +118,7 @@ export const TimelinePage = observer(() => {
         count: mixedItems.length,
         estimateSize,
         getItemKey,
-        overscan: 8,
+        overscan: 12,
         scrollMargin,
         initialOffset: cachedState?.offset,
         initialMeasurementsCache: cachedState?.measurementsCache,
