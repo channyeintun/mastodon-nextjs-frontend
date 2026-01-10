@@ -229,8 +229,46 @@ export const TimelinePage = observer(() => {
         );
     }
 
+    // Media Preloading Logic
+    const preloadUrls = useMemo(() => {
+        if (virtualItems.length === 0) return [];
+
+        const startIndex = virtualItems[0].index;
+        const endIndex = virtualItems[virtualItems.length - 1].index;
+
+        // Prefetch items a bit ahead/behind the current visible range
+        const preloadOverscan = 20;
+        const start = Math.max(0, startIndex - preloadOverscan);
+        const end = Math.min(mixedItems.length - 1, endIndex + preloadOverscan);
+
+        const urls = new Set<string>();
+        const visibleIndices = new Set(virtualItems.map(vi => vi.index));
+
+        for (let i = start; i <= end; i++) {
+            if (!visibleIndices.has(i)) {
+                const item = mixedItems[i];
+                if (item?.type === 'status') {
+                    item.data.media_attachments?.forEach(a => {
+                        const url = a.preview_url || a.url;
+                        if (url) urls.add(url);
+                    });
+                }
+            }
+        }
+        return Array.from(urls);
+    }, [mixedItems, virtualItems]);
+
     return (
         <Container>
+            {/* Hidden Preload Layer */}
+            {preloadUrls.length > 0 && (
+                <div style={{ display: 'none' }} aria-hidden="true">
+                    {preloadUrls.map(url => (
+                        <link key={url} rel="prefetch" href={url} />
+                    ))}
+                </div>
+            )}
+
             {/* Sticky Header */}
             <StickyHeaderContainer>
                 <StickyHeaderContent>

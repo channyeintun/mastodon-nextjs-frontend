@@ -171,6 +171,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                 <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
                             getItemKey={(status) => status.id}
+                            getMediaUrls={(status) => status.media_attachments?.map(a => a.preview_url || a.url).filter(Boolean) as string[] || []}
                             estimateSize={350}
                             overscan={5}
                             onLoadMore={fetchNextPage}
@@ -249,6 +250,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                                 <TrendingLinkCard link={link} style={{ marginBottom: 'var(--size-2)' }} />
                             )}
                             getItemKey={(link) => link.url}
+                            getMediaUrls={(link) => link.image ? [link.image] : []}
                             estimateSize={120}
                             overscan={5}
                             onLoadMore={fetchNextLinks}

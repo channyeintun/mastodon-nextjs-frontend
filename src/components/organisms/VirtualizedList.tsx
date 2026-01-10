@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useRef, useEffect, useCallback, type CSSProperties, type ReactNode } from 'react';
+import { useRef, useEffect, useCallback, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { ScrollToTopButton } from '@/components/atoms/ScrollToTopButton';
@@ -24,7 +24,7 @@ interface VirtualizedListProps<T> {
 
   /**
    * Estimated size of each item in pixels
-   * @default 300
+   * @default 350
    */
   estimateSize?: number;
 
@@ -95,6 +95,11 @@ interface VirtualizedListProps<T> {
   header?: ReactNode;
 
   /**
+   * Function to get media URLs from an item for preloading
+   */
+  getMediaUrls?: (item: T) => string[];
+
+  /**
    * Additional class name for the container
    */
   className?: string;
@@ -126,6 +131,7 @@ export function VirtualizedList<T>({
   style,
   scrollRestorationKey,
   header,
+  getMediaUrls,
   className,
 }: VirtualizedListProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -184,6 +190,36 @@ export function VirtualizedList<T>({
   });
 
   const virtualItems = virtualizer.getVirtualItems();
+
+  // Media Preloading Logic
+  const preloadUrls = useMemo(() => {
+    if (!getMediaUrls || virtualItems.length === 0) return [];
+
+    const startIndex = virtualItems[0].index;
+    const endIndex = virtualItems[virtualItems.length - 1].index;
+
+    // Prefetch items a bit ahead/behind the current visible range
+    const preloadOverscan = 20;
+    const start = Math.max(0, startIndex - preloadOverscan);
+    const end = Math.min(items.length - 1, endIndex + preloadOverscan);
+
+    const urls = new Set<string>();
+    const visibleIndices = new Set(virtualItems.map(vi => vi.index));
+
+    for (let i = start; i <= end; i++) {
+      // Only preload items that are NOT currently visible
+      if (!visibleIndices.has(i)) {
+        const item = items[i];
+        if (item) {
+          const itemUrls = getMediaUrls(item);
+          itemUrls.forEach(url => {
+            if (url) urls.add(url);
+          });
+        }
+      }
+    }
+    return Array.from(urls);
+  }, [items, virtualItems, getMediaUrls]);
 
   // Handle scroll to top
   const handleScrollToTop = () => {
@@ -249,6 +285,15 @@ export function VirtualizedList<T>({
       {/* End of list indicator */}
       {!hasMore && items.length > 0 && endIndicator && (
         <EndIndicator>{endIndicator}</EndIndicator>
+      )}
+
+      {/* Hidden Preload Layer */}
+      {preloadUrls.length > 0 && (
+        <div style={{ display: 'none' }} aria-hidden="true">
+          {preloadUrls.map((url: string) => (
+            <link key={url} rel="prefetch" href={url} />
+          ))}
+        </div>
       )}
 
       {/* Scroll to top button */}

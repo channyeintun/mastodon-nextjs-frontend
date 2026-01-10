@@ -204,6 +204,7 @@ export function SearchContent({
                                 <PostCard status={status} style={{ marginBottom: 'var(--size-3)' }} />
                             )}
                             getItemKey={(status) => status.id}
+                            getMediaUrls={(status) => status.media_attachments?.map(a => a.preview_url || a.url).filter(Boolean) as string[] || []}
                             estimateSize={250}
                             style={{ height: '100%' }}
                             scrollRestorationKey={`search-statuses-${query}`}
