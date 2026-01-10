@@ -573,6 +573,8 @@
       "privacy": "Privatsphäre",
       "privacyDesc": "Steuere deine Profilsichtbarkeit und Entdeckbarkeit",
       "quoteDisabled": "Beiträge nur für Follower und private Beiträge können nicht von anderen zitiert werden.",
+      "showScrollToTop": "Nach-oben-Schaltfläche anzeigen",
+      "showScrollToTopDesc": "Zeigt eine Schaltfläche an, um schnell zum Anfang der Timeline zu springen",
       "saveChanges": "Änderungen speichern",
       "visibility": "Sichtbarkeit",
       "whoCanQuote": "Wer darf zitieren"
