@@ -113,7 +113,7 @@ export default function ListMembersPage({ params }: { params: Promise<{ id: stri
                     )}
                     getItemKey={(account) => account.id}
                     estimateSize={72}
-                    overscan={3}
+                    overscan={5}
                     onLoadMore={() => fetchNextPage()}
                     isLoadingMore={isFetchingNextPage}
                     hasMore={!!hasNextPage}

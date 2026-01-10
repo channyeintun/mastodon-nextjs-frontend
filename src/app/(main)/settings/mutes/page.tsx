@@ -76,7 +76,7 @@ export default function MutedAccountsPage() {
                 )}
                 getItemKey={(account) => account.id}
                 estimateSize={72}
-                overscan={3}
+                overscan={5}
                 onLoadMore={() => fetchNextPage()}
                 isLoadingMore={isFetchingNextPage}
                 hasMore={!!hasNextPage}

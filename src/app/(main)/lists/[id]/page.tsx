@@ -147,7 +147,7 @@ export default function ListDetailPage({ params }: { params: Promise<{ id: strin
                     )}
                     getItemKey={(status) => status.id}
                     estimateSize={250}
-                    overscan={3}
+                    overscan={5}
                     onLoadMore={() => fetchNextPage()}
                     isLoadingMore={isFetchingNextPage}
                     hasMore={!!hasNextPage}
