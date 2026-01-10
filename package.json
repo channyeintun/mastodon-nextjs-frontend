@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun --bun next dev -p 9003 --inspect",
     "build": "bun --bun next build",
-    "start": "next start -p 9003",
+    "start": "bun --bun next start -p 9003",
     "lint": "eslint .",
     "lint:css": "eslint --ext .css .",
     "lint:locales": "node scripts/verify-locales.mjs",
