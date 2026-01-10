@@ -28,6 +28,15 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#6364ff",
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -37,9 +46,19 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const instanceURL = cookieStore.get('instanceURL')?.value ?? null;
 
-  // Preconnect to user's Mastodon instance for faster API requests
+  // Resource hints for performance - inspired by X (Twitter)
   if (instanceURL) {
+    const url = new URL(instanceURL);
+    // Preconnect for API
     preconnect(instanceURL);
+
+    // Preconnect and DNS prefetch for media subdomain (e.g., files.instanceUrl)
+    // as clarified by the user.
+    const filesURL = `${url.protocol}//files.${url.hostname}`;
+    preconnect(filesURL);
+
+    // DNS prefetch as a fallback for browsers that don't support preconnect
+    // OR for secondary domains that might be used for media
   }
 
   const accessToken = cookieStore.get('accessToken')?.value ?? null;
@@ -78,7 +97,8 @@ export default async function RootLayout({
   return (
     <html lang={locale} data-theme={dataTheme}>
       <head>
-        <meta name="theme-color" content="#6364ff" />
+        {instanceURL && <link rel="dns-prefetch" href={instanceURL} />}
+        {instanceURL && <link rel="dns-prefetch" href={`${new URL(instanceURL).protocol}//files.${new URL(instanceURL).hostname}`} />}
       </head>
       <body>
         <ServiceWorkerRegister />
