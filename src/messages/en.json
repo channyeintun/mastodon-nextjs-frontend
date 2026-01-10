@@ -547,6 +547,8 @@
       "indexableDesc": "Allow your public posts to be discoverable through search",
       "discoverable": "Suggest account to others",
       "discoverableDesc": "Allow your account to be discovered",
+      "showScrollToTop": "Show scroll to top button",
+      "showScrollToTopDesc": "Show a button to quickly scroll back to the top of the timeline",
       "saveChanges": "Save changes"
     },
     "options": {

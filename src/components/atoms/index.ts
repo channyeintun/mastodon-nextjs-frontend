@@ -14,6 +14,7 @@ export { ImageSkeleton } from './ImageSkeleton';
 export { Input } from './Input';
 export { LiquidGlassFilter } from './LiquidGlassFilter';
 export { ScrollToTopButton } from './ScrollToTopButton';
+export { Switch } from './Switch';
 export {
     StickyHeaderContainer,
     StickyHeaderContent,

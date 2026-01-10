@@ -560,6 +560,8 @@
       "botAccountDesc": "此账户主要执行自动化操作",
       "discoverable": "向他人推荐账户",
       "discoverableDesc": "允许你的账户被发现",
+      "showScrollToTop": "显示返回顶部按钮",
+      "showScrollToTopDesc": "显示一个快速回到时间轮顶部的按钮",
       "hideCollections": "隐藏关注者和关注中",
       "hideCollectionsDesc": "在个人资料中隐藏你的关注者和关注的人",
       "indexable": "在搜索结果中包含公开帖子",

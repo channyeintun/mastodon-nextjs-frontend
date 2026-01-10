@@ -5,6 +5,7 @@ import { ChevronUp } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useClientSettings } from '@/hooks/useClientSettings';
 
 const Button = styled.button<{ $visible: boolean }>`
     position: fixed;
@@ -17,7 +18,7 @@ const Button = styled.button<{ $visible: boolean }>`
     background: var(--blue-6);
     color: white;
     border: none;
-    border-radius: var(--radius-round);
+    border-radius: 999px;
     padding: var(--size-3) var(--size-4);
     cursor: pointer;
     display: flex;
@@ -46,6 +47,7 @@ interface ScrollToTopButtonProps {
 }
 
 export function ScrollToTopButton({ visible, onClick }: ScrollToTopButtonProps) {
+    const { showScrollToTop, isLoaded } = useClientSettings();
     const [mounted, setMounted] = useState(false);
     const t = useTranslations('common');
 
@@ -55,7 +57,7 @@ export function ScrollToTopButton({ visible, onClick }: ScrollToTopButtonProps) 
 
     const button = (
         <Button
-            $visible={visible}
+            $visible={isLoaded ? (showScrollToTop && visible) : false}
             onClick={onClick}
             aria-label={t('backToTop')}
         >

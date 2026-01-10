@@ -560,6 +560,8 @@
       "botAccountDesc": "Esta cuenta realiza principalmente acciones automatizadas",
       "discoverable": "Sugerir cuenta a otros",
       "discoverableDesc": "Permitir que tu cuenta sea descubierta",
+      "showScrollToTop": "Mostrar botón volver arriba",
+      "showScrollToTopDesc": "Muestra un botón para volver rápidamente al inicio de la línea de tiempo",
       "hideCollections": "Ocultar seguidores y seguidos",
       "hideCollectionsDesc": "Oculta tus seguidores y a quién sigues de tu perfil",
       "indexable": "Incluir publicaciones públicas en los resultados de búsqueda",

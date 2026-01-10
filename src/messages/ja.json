@@ -560,6 +560,8 @@
       "botAccountDesc": "このアカウントは主に自動化されたアクションを実行します",
       "discoverable": "他の人にアカウントをおすすめ",
       "discoverableDesc": "アカウントを発見可能にします",
+      "showScrollToTop": "トップに戻るボタンを表示",
+      "showScrollToTopDesc": "タイムラインのトップに素早く戻るためのボタンを表示します",
       "hideCollections": "フォロワー一覧とフォロー一覧を非公開にする",
       "hideCollectionsDesc": "プロフィールからフォロワーとフォローしている人を隠します",
       "indexable": "公開投稿を検索結果に含める",

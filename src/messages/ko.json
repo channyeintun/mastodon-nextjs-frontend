@@ -560,6 +560,8 @@
       "botAccountDesc": "이 계정은 주로 자동화된 작업을 수행합니다",
       "discoverable": "다른 사람에게 계정 추천",
       "discoverableDesc": "계정이 발견될 수 있도록 허용",
+      "showScrollToTop": "맨 위로 이동 버튼 표시",
+      "showScrollToTopDesc": "타임라인 맨 위로 빠르게 이동할 수 있는 버튼을 표시합니다",
       "hideCollections": "팔로워 및 팔로잉 숨기기",
       "hideCollectionsDesc": "프로필에서 팔로워와 팔로잉 목록을 숨깁니다",
       "indexable": "검색 결과에 공개 게시물 포함",

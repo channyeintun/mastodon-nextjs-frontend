@@ -560,6 +560,8 @@
       "botAccountDesc": "Tài khoản này chủ yếu thực hiện các hành động tự động",
       "discoverable": "Gợi ý tài khoản cho người khác",
       "discoverableDesc": "Cho phép tài khoản của bạn được khám phá",
+      "showScrollToTop": "Hiển thị nút cuộn lên đầu",
+      "showScrollToTopDesc": "Hiển thị một nút để nhanh chóng quay lại đầu dòng thời gian",
       "hideCollections": "Ẩn danh sách theo dõi và người theo dõi",
       "hideCollectionsDesc": "Ẩn thông tin về những người bạn theo dõi và những người theo dõi bạn",
       "indexable": "Bao gồm bài đăng công khai trong kết quả tìm kiếm",

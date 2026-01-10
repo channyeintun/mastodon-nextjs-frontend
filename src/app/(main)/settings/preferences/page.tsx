@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Settings2, Globe, Lock, Users, Mail } from 'lucide-react';
 import Select from 'react-select';
 import { useCurrentAccount, usePreferences, useUpdateAccount } from '@/api';
-import { Button, IconButton, Card, CircleSkeleton, TextSkeleton } from '@/components/atoms';
+import { Button, IconButton, Card, CircleSkeleton, TextSkeleton, Switch } from '@/components/atoms';
 import { customSelectStyles, CustomOption, CustomSingleValue, OptionType } from './SelectStyles';
 import { useTranslations } from 'next-intl';
+import { useClientSettings } from '@/hooks/useClientSettings';
 
 type Visibility = 'public' | 'unlisted' | 'private' | 'direct';
 type QuotePolicy = 'public' | 'followers' | 'nobody';
@@ -42,6 +43,7 @@ export default function PreferencesPage() {
     const [defaultSensitive, setDefaultSensitive] = useState(false);
     const [hideCollections, setHideCollections] = useState(false);
     const [indexable, setIndexable] = useState(true);
+    const { showScrollToTop, setShowScrollToTop } = useClientSettings();
     const [hasChanges, setHasChanges] = useState(false);
 
     useEffect(() => {
@@ -157,6 +159,18 @@ export default function PreferencesPage() {
                         <input type="checkbox" checked={indexable} onChange={(e) => setIndexable(e.target.checked)} style={checkboxStyle} />
                         <div><div style={{ fontWeight: 'var(--font-weight-6)', color: 'var(--text-1)' }}>{t('indexable')}</div><div style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)' }}>{t('indexableDesc')}</div></div>
                     </label>
+                </Card>
+
+                <Card padding="medium" style={{ marginBottom: 'var(--size-4)' }}>
+                    <h2 style={{ fontSize: 'var(--font-size-3)', fontWeight: 'var(--font-weight-6)', marginBottom: 'var(--size-2)', color: 'var(--text-1)' }}>{tSettings('appearance')}</h2>
+                    <p style={{ fontSize: 'var(--font-size-0)', color: 'var(--text-2)', marginBottom: 'var(--size-4)' }}>{t('showScrollToTopDesc')}</p>
+
+                    <Switch
+                        id="show-scroll-to-top"
+                        checked={showScrollToTop}
+                        onChange={setShowScrollToTop}
+                        label={t('showScrollToTop')}
+                    />
                 </Card>
 
                 <div style={{ display: 'flex', gap: 'var(--size-3)', justifyContent: 'flex-end' }}>
