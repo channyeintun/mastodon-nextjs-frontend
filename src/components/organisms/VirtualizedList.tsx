@@ -24,9 +24,10 @@ interface VirtualizedListProps<T> {
 
   /**
    * Estimated size of each item in pixels
+   * Can be a number or a function that returns a size based on item index
    * @default 350
    */
-  estimateSize?: number;
+  estimateSize?: number | ((index: number) => number);
 
   /**
    * Number of items to render outside visible area
@@ -146,7 +147,15 @@ export function VirtualizedList<T>({
     : undefined;
 
   // Memoize properties passed to component to avoid virtualizer re-initialization
-  const estimateSizeCallback = useCallback(() => estimateSize, [estimateSize]);
+  const estimateSizeCallback = useCallback(
+    (index: number) => {
+      if (typeof estimateSize === 'function') {
+        return estimateSize(index);
+      }
+      return estimateSize;
+    },
+    [estimateSize]
+  );
 
   // Use a ref to access items in getItemKey without creating a new function reference
   const itemsRef = useRef(items);

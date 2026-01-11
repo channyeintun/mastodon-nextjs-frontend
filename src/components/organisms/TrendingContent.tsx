@@ -10,6 +10,8 @@ import { useInfiniteTrendingStatuses, useInfiniteTrendingTags, useInfiniteTrendi
 import { PostCard } from '@/components/organisms';
 import { PostCardSkeletonList, PostCardSkeleton, TrendingTagCard, TrendingTagCardSkeleton, TrendingLinkCard, TrendingLinkCardSkeleton, AccountCardSkeleton } from '@/components/molecules';
 import { VirtualizedList } from '@/components/organisms/VirtualizedList';
+import { estimateStatusHeight } from '@/utils/heightEstimation';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { Tabs, EmptyState, Button, Avatar, EmojiText } from '@/components/atoms';
 import type { TabItem } from '@/components/atoms/Tabs';
 import { flattenAndUniqById, flattenAndUniqByKey } from '@/utils/fp';
@@ -68,6 +70,7 @@ interface TrendingContentProps {
 }
 
 export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'trending' }: TrendingContentProps) => {
+    const isMobile = useIsMobile();
     const t = useTranslations('explore');
     const commonT = useTranslations('common');
     const accountT = useTranslations('account');
@@ -172,7 +175,7 @@ export const TrendingContent = observer(({ header, scrollRestorationPrefix = 'tr
                             )}
                             getItemKey={(status) => status.id}
                             getMediaUrls={(status) => status.media_attachments?.map(a => a.preview_url || a.url).filter(Boolean) as string[] || []}
-                            estimateSize={350}
+                            estimateSize={(index) => estimateStatusHeight(uniqueStatuses[index], isMobile)}
                             onLoadMore={fetchNextPage}
                             isLoadingMore={isFetchingNextPage}
                             hasMore={hasNextPage}
