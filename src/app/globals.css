@@ -687,18 +687,6 @@ input[type="radio"] {
    Responsive Breakpoints
    ==================================== */
 
-/* Mobile layout adjustments - only apply padding when bottom nav is present AND visible */
-/* The .navigation-bottom is conditionally rendered only for authenticated users, */
-/* but on desktop it's hidden via display:none. We need both conditions: */
-/* 1. Element exists in DOM (authenticated) - checked via :has() */
-/* 2. On mobile viewport - checked via media query (nav visible only on mobile) */
-@media (max-width: 767.98px) {
-  body:has(.navigation-bottom) {
-    padding-bottom: var(--app-bottom-nav-height);
-    /* Prevent content from being hidden behind bottom nav */
-  }
-}
-
 /* Tablet and Desktop (768px+) */
 @media (min-width: 768px) {
   body {
